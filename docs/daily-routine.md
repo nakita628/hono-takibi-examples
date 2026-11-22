@@ -219,7 +219,7 @@ git push origin HEAD:main                            # fast-forward だけ。for
 GitHub 上の有名な OpenAPI 3.x 定義を 1 日最大 3 件、hono-takibi で app として追加し、生成物に問題があれば hono-takibi の問題として報告する（今は下書き）。
 
 ■ 手順
-1. docs/daily-routine.md と CLAUDE.md を読み、その手順どおりに進める（0 最新の main と CI の確認 → 1 hono-takibi の版 → 2 候補選び → 3 app の追加 → 4 結果の分類 → 5 問題の報告 → 6 記録と push）。候補は docs/candidates.md の Pending の先頭から最大 3 件。
+1. 最初に git fetch origin main を実行し、docs/daily-routine.md と CLAUDE.md は git show origin/main:<パス> で最新のものを読む（このセッションのクローンは古いことがある）。その手順どおりに進める（0 最新の main と CI の確認 → 1 hono-takibi の版 → 2 候補選び → 3 app の追加 → 4 結果の分類 → 5 問題の報告 → 6 記録と push）。候補は docs/candidates.md の Pending の先頭から最大 3 件。
 2. 起票モードは「下書き」。hono-takibi への書き込みはまだ許可されていないので、add_repo も gh・curl も使わず、問題は issue-drafts/ に下書きとして残す。既存の下書きと同じ原因なら、新規ではなく既存の下書きに実例を足す。
 3. main へ直接 push する。nakita628/hono-takibi-examples の main へはいつでも push してよいと、ユーザーから許可されている（PR は不要）。force push はしない。push の前に docs/daily-routine.md の「push 前の検査」を通す。
 
