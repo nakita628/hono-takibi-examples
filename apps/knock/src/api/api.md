@@ -9837,6 +9837,7 @@ Returns a paginated list of workflow recipient runs for the current environment.
 |status|paused|
 |status|completed|
 |status|cancelled|
+|status|exited|
 
 > Example responses
 
@@ -15999,6 +16000,7 @@ A single workflow recipient run with its events.
 |status|paused|
 |status|completed|
 |status|cancelled|
+|status|exited|
 
 <h2 id="tocS_GuideSeenRequest">GuideSeenRequest</h2>
 <!-- backwards compatibility -->
@@ -16906,6 +16908,7 @@ A workflow recipient run represents an individual execution of a workflow for a 
 |status|paused|
 |status|completed|
 |status|cancelled|
+|status|exited|
 
 <h2 id="tocS_DiscordChannelConnection">DiscordChannelConnection</h2>
 <!-- backwards compatibility -->

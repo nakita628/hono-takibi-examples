@@ -3219,7 +3219,6 @@ ListMemos lists the memos the caller can read, comments included. Narrow
         }
       ],
       "parent": "string",
-      "commentCount": 0,
       "tags": [
         "string"
       ],
@@ -3233,7 +3232,8 @@ ListMemos lists the memos the caller can read, comments included. Narrow
       },
       "snippet": "string",
       "createTime": "1970-01-01T00:00:00Z",
-      "updateTime": "1970-01-01T00:00:00Z"
+      "updateTime": "1970-01-01T00:00:00Z",
+      "commentCount": 0
     }
   ],
   "nextPageToken": "string"
@@ -3550,7 +3550,6 @@ CreateMemo creates a memo owned by the authenticated user. The request body
     }
   ],
   "parent": "string",
-  "commentCount": 0,
   "tags": [
     "string"
   ],
@@ -3564,7 +3563,8 @@ CreateMemo creates a memo owned by the authenticated user. The request body
   },
   "snippet": "string",
   "createTime": "1970-01-01T00:00:00Z",
-  "updateTime": "1970-01-01T00:00:00Z"
+  "updateTime": "1970-01-01T00:00:00Z",
+  "commentCount": 0
 }
 ```
 
@@ -3839,7 +3839,6 @@ GetMemo gets a memo. Requires read access to the memo.
     }
   ],
   "parent": "string",
-  "commentCount": 0,
   "tags": [
     "string"
   ],
@@ -3853,7 +3852,8 @@ GetMemo gets a memo. Requires read access to the memo.
   },
   "snippet": "string",
   "createTime": "1970-01-01T00:00:00Z",
-  "updateTime": "1970-01-01T00:00:00Z"
+  "updateTime": "1970-01-01T00:00:00Z",
+  "commentCount": 0
 }
 ```
 
@@ -4218,7 +4218,6 @@ UpdateMemo updates the memo fields listed in update_mask. Requires the memo
     }
   ],
   "parent": "string",
-  "commentCount": 0,
   "tags": [
     "string"
   ],
@@ -4232,7 +4231,8 @@ UpdateMemo updates the memo fields listed in update_mask. Requires the memo
   },
   "snippet": "string",
   "createTime": "1970-01-01T00:00:00Z",
-  "updateTime": "1970-01-01T00:00:00Z"
+  "updateTime": "1970-01-01T00:00:00Z",
+  "commentCount": 0
 }
 ```
 
@@ -5178,7 +5178,6 @@ GetSharedMemo resolves a share token to its memo. No authentication is
     }
   ],
   "parent": "string",
-  "commentCount": 0,
   "tags": [
     "string"
   ],
@@ -5192,7 +5191,8 @@ GetSharedMemo resolves a share token to its memo. No authentication is
   },
   "snippet": "string",
   "createTime": "1970-01-01T00:00:00Z",
-  "updateTime": "1970-01-01T00:00:00Z"
+  "updateTime": "1970-01-01T00:00:00Z",
+  "commentCount": 0
 }
 ```
 
@@ -11615,7 +11615,6 @@ Response message for UserService.ListMemoViews.
         }
       ],
       "parent": "string",
-      "commentCount": 0,
       "tags": [
         "string"
       ],
@@ -11629,7 +11628,8 @@ Response message for UserService.ListMemoViews.
       },
       "snippet": "string",
       "createTime": "1970-01-01T00:00:00Z",
-      "updateTime": "1970-01-01T00:00:00Z"
+      "updateTime": "1970-01-01T00:00:00Z",
+      "commentCount": 0
     }
   ],
   "nextPageToken": "string"
@@ -12287,7 +12287,6 @@ MediaMetadata contains normalized metadata explicitly supplied by a client.
     }
   ],
   "parent": "string",
-  "commentCount": 0,
   "tags": [
     "string"
   ],
@@ -12301,7 +12300,8 @@ MediaMetadata contains normalized metadata explicitly supplied by a client.
   },
   "snippet": "string",
   "createTime": "1970-01-01T00:00:00Z",
-  "updateTime": "1970-01-01T00:00:00Z"
+  "updateTime": "1970-01-01T00:00:00Z",
+  "commentCount": 0
 }
 ```
 
@@ -12323,12 +12323,12 @@ Memo is a Markdown note written by a user.
 |relations|[[MemoRelation](#schemamemorelation)]|false|none|Optional. The relations of the memo in both directions.|
 |reactions|[[Reaction](#schemareaction)]|false|read-only|Output only. The reactions to the memo.|
 |parent|string|false|none|Optional. Immutable. The memo this memo comments on. Set it on creation<br> to create a comment; unset for a top-level memo. Its identity is returned<br> even when the caller cannot read the parent, and grants no read access.<br> Format: memos/{memo}|
-|commentCount|integer(int32)|false|read-only|Output only. The number of comments directly on this memo that the caller<br> can read.|
 |tags|[string]|false|read-only|Output only. The tags extracted from the content.|
 |property|object|false|read-only|Output only. The properties computed from the content.|
 |snippet|string|false|read-only|Output only. A plain-text snippet of the content.|
 |createTime|string(date-time)|false|none|Optional. The creation time. Defaults to the current time when unset on<br> creation.|
 |updateTime|string(date-time)|false|none|Optional. The last update time. Defaults to the current time when unset on<br> creation.|
+|commentCount|integer(int32)|false|read-only|Output only. The number of comments directly on this memo that the caller<br> can read.|
 
 #### Enumerated Values
 

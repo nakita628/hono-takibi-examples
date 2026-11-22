@@ -257,7 +257,7 @@ curl https://control.knock.app/v1/headless_accounts/status \
 
 `GET /v1/headless_accounts/status`
 
-Returns whether the headless account is still being set up, waiting to be claimed, claimed by a person, or past its claim window. Agents poll this endpoint to find out when a person has claimed the account.
+Returns whether the headless account is still being set up, waiting to be claimed, claimed by a person, or past its claim window, and the monthly usage limits it has until it is claimed. Agents poll this endpoint to find out when a person has claimed the account.
 
 > Example responses
 
@@ -266,7 +266,11 @@ Returns whether the headless account is still being set up, waiting to be claime
 ```json
 {
   "expires_at": "2026-10-29T12:00:00.000Z",
-  "status": "unclaimed"
+  "status": "unclaimed",
+  "usage_limits": {
+    "message_limit": 100,
+    "workflow_run_limit": 100
+  }
 }
 ```
 
@@ -714,6 +718,154 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerAuth
 </aside>
 
+## Archive a workflow
+
+<a id="opIdarchiveWorkflow"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/workflows/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/workflows/{workflow_key}`
+
+Archives a workflow by key across all environments, not only the one in the request. The
+token needs the `workflows:manage` permission in every environment that holds a copy of the
+workflow.
+
+Archiving renames the workflow's key in every environment, so a new workflow can use the key.
+The archived workflow is deactivated and read-only, and the response returns it with its
+archived key. Restore it with the unarchive endpoint, using its original key.
+
+Returns a 404 when no live workflow has the key, including when it's already archived.
+
+
+<h3 id="archive-a-workflow-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workflow_key|path|string|true|The key of the workflow to archive.|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "workflow": {
+    "active": false,
+    "categories": [
+      "marketing",
+      "black-friday"
+    ],
+    "conditions": {
+      "all": [
+        {
+          "argument": "admin",
+          "operator": "equal_to",
+          "variable": "recipient.role"
+        }
+      ]
+    },
+    "created_at": "2022-12-16T19:07:50.027113Z",
+    "description": "This is a dummy workflow for demo purposes.",
+    "environment": "development",
+    "key": "december-16-demo",
+    "name": "december-16-demo",
+    "settings": {
+      "override_preferences": true
+    },
+    "sha": "f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y",
+    "steps": [
+      {
+        "channel_key": "in-app-feed",
+        "channel_type": "in_app_feed",
+        "description": "Main in-app feed",
+        "name": "In-app step",
+        "ref": "in_app_feed_1",
+        "template": {
+          "action_url": "{{ data.onboarding_url }}",
+          "markdown_body": "Hello **{{ recipient.name }}**. Click here to get started."
+        },
+        "type": "channel"
+      },
+      {
+        "ref": "delay_1",
+        "settings": {
+          "delay_for": {
+            "unit": "hours",
+            "value": 1
+          }
+        },
+        "type": "delay"
+      },
+      {
+        "channel_key": "postmark",
+        "channel_type": "email",
+        "ref": "email_1",
+        "template": {
+          "html_body": "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+          "settings": {
+            "layout_key": "default"
+          },
+          "subject": "Welcome to {{ vars.app_name }}!"
+        },
+        "type": "channel"
+      }
+    ],
+    "tags": [
+      "onboarding",
+      "growth"
+    ],
+    "trigger_data_json_schema": {
+      "properties": {
+        "onboarding_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "onboarding_url"
+      ],
+      "type": "object"
+    },
+    "trigger_events": [
+      {
+        "audience_action_type": "member_added",
+        "audience_key": "pro-users",
+        "type": "audience"
+      }
+    ],
+    "trigger_frequency": "every_trigger",
+    "updated_at": "2023-02-08T22:15:19.846681Z",
+    "valid": true
+  }
+}
+```
+
+<h3 id="archive-a-workflow-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="archive-a-workflow-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|workflow|[Workflow](#schemaworkflow)|true|none|A workflow object. Read more in the [docs](https://docs.knock.app/concepts/workflows).|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
 ## Validate a workflow
 
 <a id="opIdvalidateWorkflow"></a>
@@ -903,6 +1055,155 @@ to development, this endpoint accepts the development environment.
 |200|OK|OK|Inline|
 
 <h3 id="validate-a-workflow-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|workflow|[Workflow](#schemaworkflow)|true|none|A workflow object. Read more in the [docs](https://docs.knock.app/concepts/workflows).|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Unarchive a workflow
+
+<a id="opIdunarchiveWorkflow"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/workflows/string/unarchive \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v1/workflows/{workflow_key}/unarchive`
+
+Restores an archived workflow by its original key, with every copy archived alongside it in
+other environments. The token needs the `workflows:manage` permission in every environment
+that holds a copy of the archived workflow.
+
+The workflow comes back inactive with its original key, so activate it to run it again. When
+the key was archived more than once, the most recent archive in the environment is restored.
+
+Returns a 404 when the key isn't archived in the environment, including when an earlier or
+concurrent request already restored it. Returns a 422 with the code `key_in_use` when a live
+workflow uses the key.
+
+
+<h3 id="unarchive-a-workflow-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workflow_key|path|string|true|The original key of the archived workflow.|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "workflow": {
+    "active": false,
+    "categories": [
+      "marketing",
+      "black-friday"
+    ],
+    "conditions": {
+      "all": [
+        {
+          "argument": "admin",
+          "operator": "equal_to",
+          "variable": "recipient.role"
+        }
+      ]
+    },
+    "created_at": "2022-12-16T19:07:50.027113Z",
+    "description": "This is a dummy workflow for demo purposes.",
+    "environment": "development",
+    "key": "december-16-demo",
+    "name": "december-16-demo",
+    "settings": {
+      "override_preferences": true
+    },
+    "sha": "f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y",
+    "steps": [
+      {
+        "channel_key": "in-app-feed",
+        "channel_type": "in_app_feed",
+        "description": "Main in-app feed",
+        "name": "In-app step",
+        "ref": "in_app_feed_1",
+        "template": {
+          "action_url": "{{ data.onboarding_url }}",
+          "markdown_body": "Hello **{{ recipient.name }}**. Click here to get started."
+        },
+        "type": "channel"
+      },
+      {
+        "ref": "delay_1",
+        "settings": {
+          "delay_for": {
+            "unit": "hours",
+            "value": 1
+          }
+        },
+        "type": "delay"
+      },
+      {
+        "channel_key": "postmark",
+        "channel_type": "email",
+        "ref": "email_1",
+        "template": {
+          "html_body": "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+          "settings": {
+            "layout_key": "default"
+          },
+          "subject": "Welcome to {{ vars.app_name }}!"
+        },
+        "type": "channel"
+      }
+    ],
+    "tags": [
+      "onboarding",
+      "growth"
+    ],
+    "trigger_data_json_schema": {
+      "properties": {
+        "onboarding_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "onboarding_url"
+      ],
+      "type": "object"
+    },
+    "trigger_events": [
+      {
+        "audience_action_type": "member_added",
+        "audience_key": "pro-users",
+        "type": "audience"
+      }
+    ],
+    "trigger_frequency": "every_trigger",
+    "updated_at": "2023-02-08T22:15:19.846681Z",
+    "valid": true
+  }
+}
+```
+
+<h3 id="unarchive-a-workflow-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="unarchive-a-workflow-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1145,6 +1446,151 @@ Status Code **200**
 |---|---|---|---|---|
 |entries|[[Workflow](#schemaworkflow)]|true|none|A list of entries.|
 |page_info|[PageInfo](#schemapageinfo)|true|none|The information about a paginated result.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Discard a workflow's uncommitted changes
+
+<a id="opIddiscardWorkflowChanges"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/workflows/string/discard \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v1/workflows/{workflow_key}/discard`
+
+Discards the uncommitted changes to a workflow in a given environment, returning it to its
+last committed version. Other environments aren't changed.
+
+Returns the workflow unchanged when it has no uncommitted changes. Returns a 422 when the
+workflow has never been committed, or can't be changed in the environment.
+
+
+<h3 id="discard-a-workflows-uncommitted-changes-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workflow_key|path|string|true|The key of the workflow.|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+|branch|query|string|false|The slug of a branch to use. When `environment` is omitted, the branch is resolved from Development after the account default is injected. When `environment` is supplied, it must be `"development"`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "workflow": {
+    "active": false,
+    "categories": [
+      "marketing",
+      "black-friday"
+    ],
+    "conditions": {
+      "all": [
+        {
+          "argument": "admin",
+          "operator": "equal_to",
+          "variable": "recipient.role"
+        }
+      ]
+    },
+    "created_at": "2022-12-16T19:07:50.027113Z",
+    "description": "This is a dummy workflow for demo purposes.",
+    "environment": "development",
+    "key": "december-16-demo",
+    "name": "december-16-demo",
+    "settings": {
+      "override_preferences": true
+    },
+    "sha": "f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y",
+    "steps": [
+      {
+        "channel_key": "in-app-feed",
+        "channel_type": "in_app_feed",
+        "description": "Main in-app feed",
+        "name": "In-app step",
+        "ref": "in_app_feed_1",
+        "template": {
+          "action_url": "{{ data.onboarding_url }}",
+          "markdown_body": "Hello **{{ recipient.name }}**. Click here to get started."
+        },
+        "type": "channel"
+      },
+      {
+        "ref": "delay_1",
+        "settings": {
+          "delay_for": {
+            "unit": "hours",
+            "value": 1
+          }
+        },
+        "type": "delay"
+      },
+      {
+        "channel_key": "postmark",
+        "channel_type": "email",
+        "ref": "email_1",
+        "template": {
+          "html_body": "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+          "settings": {
+            "layout_key": "default"
+          },
+          "subject": "Welcome to {{ vars.app_name }}!"
+        },
+        "type": "channel"
+      }
+    ],
+    "tags": [
+      "onboarding",
+      "growth"
+    ],
+    "trigger_data_json_schema": {
+      "properties": {
+        "onboarding_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "onboarding_url"
+      ],
+      "type": "object"
+    },
+    "trigger_events": [
+      {
+        "audience_action_type": "member_added",
+        "audience_key": "pro-users",
+        "type": "audience"
+      }
+    ],
+    "trigger_frequency": "every_trigger",
+    "updated_at": "2023-02-08T22:15:19.846681Z",
+    "valid": true
+  }
+}
+```
+
+<h3 id="discard-a-workflows-uncommitted-changes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="discard-a-workflows-uncommitted-changes-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|workflow|[Workflow](#schemaworkflow)|true|none|A workflow object. Read more in the [docs](https://docs.knock.app/concepts/workflows).|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2389,6 +2835,71 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerAuth
 </aside>
 
+## Archive a partial
+
+<a id="opIdarchivePartial"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/partials/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/partials/{partial_key}`
+
+Archives a partial by key across all environments, not only the one in the request. The
+token needs the `partials:manage` permission in every environment that holds a copy of the
+partial.
+
+Archiving renames the partial's key in every environment, so a new partial can use the key.
+Templates that reference the archived partial keep using it until their workflow is next
+committed, and it can't be added to new templates. Restore it with the unarchive endpoint,
+using its original key.
+
+Returns a 422 with the code `partial_in_use` while a workflow or an unsent broadcast in any
+environment uses the partial. Remove it from them first. Returns a 404 when no live partial
+has the key, including when it's already archived.
+
+
+<h3 id="archive-a-partial-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+|partial_key|path|string|true|The key of the partial to archive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "result": "success"
+}
+```
+
+<h3 id="archive-a-partial-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="archive-a-partial-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|string|true|none|The result of the archive operation.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
 ## List partials
 
 <a id="opIdlistPartials"></a>
@@ -2473,6 +2984,178 @@ Status Code **200**
 |---|---|---|---|---|
 |entries|[[Partial](#schemapartial)]|true|none|A list of entries.|
 |page_info|[PageInfo](#schemapageinfo)|true|none|The information about a paginated result.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Discard a partial's uncommitted changes
+
+<a id="opIddiscardPartialChanges"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/partials/string/discard \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v1/partials/{partial_key}/discard`
+
+Discards the uncommitted changes to a partial in a given environment, returning it to its
+last committed version. Other environments aren't changed.
+
+Returns the partial unchanged when it has no uncommitted changes. Returns a 422 when the
+partial has never been committed, or can't be changed in the environment.
+
+
+<h3 id="discard-a-partials-uncommitted-changes-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+|branch|query|string|false|The slug of a branch to use. When `environment` is omitted, the branch is resolved from Development after the account default is injected. When `environment` is supplied, it must be `"development"`.|
+|partial_key|path|string|true|The key of the partial.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "partial": {
+    "content": "<p>Hello, world!</p>",
+    "description": "This is a test partial",
+    "environment": "development",
+    "icon_name": "icon-name",
+    "input_schema": [
+      {
+        "key": "text_field",
+        "label": "My text field",
+        "settings": {
+          "description": "A description of the text field",
+          "max_length": 100,
+          "min_length": 10,
+          "required": true
+        },
+        "type": "text"
+      }
+    ],
+    "inserted_at": "2021-01-01T00:00:00Z",
+    "key": "my-partial",
+    "name": "My Partial",
+    "type": "html",
+    "updated_at": "2021-01-01T00:00:00Z",
+    "valid": true,
+    "visual_block_enabled": true
+  }
+}
+```
+
+<h3 id="discard-a-partials-uncommitted-changes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="discard-a-partials-uncommitted-changes-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|partial|[Partial](#schemapartial)|true|none|A partial is a reusable piece of content that can be used in a template.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Unarchive a partial
+
+<a id="opIdunarchivePartial"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/partials/string/unarchive \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v1/partials/{partial_key}/unarchive`
+
+Restores an archived partial by its original key, with every copy archived alongside it in
+other environments. The token needs the `partials:manage` permission in every environment
+that holds a copy of the archived partial.
+
+When the key was archived more than once, the most recent archive in the environment is
+restored.
+
+Returns a 404 when the key isn't archived in the environment, including when an earlier or
+concurrent request already restored it. Returns a 422 with the code `key_in_use` when a live
+partial uses the key.
+
+
+<h3 id="unarchive-a-partial-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+|partial_key|path|string|true|The original key of the archived partial.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "partial": {
+    "content": "<p>Hello, world!</p>",
+    "description": "This is a test partial",
+    "environment": "development",
+    "icon_name": "icon-name",
+    "input_schema": [
+      {
+        "key": "text_field",
+        "label": "My text field",
+        "settings": {
+          "description": "A description of the text field",
+          "max_length": 100,
+          "min_length": 10,
+          "required": true
+        },
+        "type": "text"
+      }
+    ],
+    "inserted_at": "2021-01-01T00:00:00Z",
+    "key": "my-partial",
+    "name": "My Partial",
+    "type": "html",
+    "updated_at": "2021-01-01T00:00:00Z",
+    "valid": true,
+    "visual_block_enabled": true
+  }
+}
+```
+
+<h3 id="unarchive-a-partial-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="unarchive-a-partial-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|partial|[Partial](#schemapartial)|true|none|A partial is a reusable piece of content that can be used in a template.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6201,6 +6884,111 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerAuth
 </aside>
 
+## Unarchive a guide
+
+<a id="opIdunarchiveGuide"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/guides/string/unarchive \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v1/guides/{guide_key}/unarchive`
+
+Unarchives the newest archive of a guide by key, with every copy archived alongside it in
+other environments. Each restored copy comes back inactive.
+
+Returns a 404 when the key isn't archived, including when an earlier or concurrent request
+already restored it. Returns a 422 with the code `key_in_use` when a live guide uses the
+key.
+
+
+<h3 id="unarchive-a-guide-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|environment|query|string|false|The environment slug. When omitted, the account's default environment is used.|
+|guide_key|path|string|true|The key of the guide to unarchive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "guide": {
+    "activation_url_patterns": [
+      {
+        "directive": "allow",
+        "pathname": "/dashboard/*"
+      }
+    ],
+    "active": true,
+    "archived_at": null,
+    "channel_key": "in-app-guide",
+    "created_at": "2024-01-01T00:00:00Z",
+    "description": "A guide to help users get started with the application",
+    "environment": "development",
+    "key": "getting-started",
+    "name": "Getting Started Guide",
+    "semver": "0.0.1",
+    "sha": "1234567890",
+    "steps": [
+      {
+        "name": "Welcome to the App",
+        "ref": "welcome-step",
+        "schema_key": "tooltip",
+        "schema_semver": "1.0.0",
+        "schema_variant_key": "default",
+        "values": {
+          "text_field": "value"
+        }
+      }
+    ],
+    "tags": [
+      "onboarding",
+      "growth"
+    ],
+    "target_audience_key": null,
+    "target_property_conditions": {
+      "all": [
+        {
+          "argument": "some_property",
+          "operator": "equal_to",
+          "variable": "recipient.property"
+        }
+      ]
+    },
+    "type": "banner",
+    "updated_at": "2024-01-01T00:00:00Z",
+    "valid": true
+  }
+}
+```
+
+<h3 id="unarchive-a-guide-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="unarchive-a-guide-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|guide|[Guide](#schemaguide)|true|none|A guide defines an in-app guide that can be displayed to users based on priority and other conditions.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
 <h1 id="knock-management-api-mapi-audiences">Audiences</h1>
 
 Audiences define sets of users that can be targeted for notifications.
@@ -8946,6 +9734,99 @@ Returns all tags in the project's catalog, ordered by name. Tags are project-sco
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[TagsResponse](#schematagsresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+<h1 id="knock-management-api-mapi-feedback">Feedback</h1>
+
+Feedback lets you report bugs, friction, and feature requests to Knock.
+
+## Send feedback
+
+<a id="opIdcreateFeedback"></a>
+
+> Code samples
+
+```bash
+curl https://control.knock.app/v1/feedback \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "context": {
+      "expected": "An error that identifies the missing variable.",
+      "model": "claude-opus-5-5",
+      "tool": "upsertWorkflow",
+      "type": "friction"
+    },
+    "message": "Please name the missing variable in workflow validation errors."
+  }'
+```
+
+`POST /v1/feedback`
+
+Sends bugs, friction, and feature requests to the Knock team. Agents can use this to report issues they encounter while completing a task. Do not include secrets or personally identifiable information.
+
+> Body parameter
+
+```json
+{
+  "context": {
+    "expected": "An error that identifies the missing variable.",
+    "model": "claude-opus-5-5",
+    "tool": "upsertWorkflow",
+    "type": "friction"
+  },
+  "message": "Please name the missing variable in workflow validation errors."
+}
+```
+
+<h3 id="send-feedback-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[FeedbackRequest](#schemafeedbackrequest)|false|Params|
+|» context|body|object \| null|false|Relevant details about the feedback, up to 64 KiB when JSON encoded. The listed keys are recommended and any other keys are accepted.|
+|» » actual|body|string \| null|false|What happened, including any error text.|
+|» » expected|body|string \| null|false|What you expected to happen.|
+|» » impact|body|string \| null|false|The time spent, retries, or workarounds used.|
+|» » model|body|string \| null|false|The name of the model used for the task.|
+|» » product|body|string \| null|false|The Knock product involved, such as workflows or guides.|
+|» » task|body|string \| null|false|What you were trying to do.|
+|» » tool|body|string \| null|false|The tool, command, or endpoint affected.|
+|» » type|body|string \| null|false|A category such as bug, friction, or feature.|
+|» message|body|string|true|Your feedback. Must contain non-whitespace text.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "feedback": {
+    "created_at": "2021-01-01T00:00:00Z",
+    "id": "2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84"
+  }
+}
+```
+
+<h3 id="send-feedback-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Created|Inline|
+
+<h3 id="send-feedback-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|feedback|[Feedback](#schemafeedback)|true|none|Feedback received by Knock.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -11816,6 +12697,29 @@ A translation object.
 |format|json|
 |format|po|
 
+<h2 id="tocS_Feedback">Feedback</h2>
+<!-- backwards compatibility -->
+<a id="schemafeedback"></a>
+<a id="schema_Feedback"></a>
+<a id="tocSfeedback"></a>
+<a id="tocsfeedback"></a>
+
+```json
+{
+  "created_at": "2021-01-01T00:00:00Z",
+  "id": "2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84"
+}
+```
+
+Feedback received by Knock.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at|string(date-time)|true|none|The timestamp of when the feedback was received.|
+|id|string(uuid)|true|none|The unique identifier of the feedback.|
+
 <h2 id="tocS_SourceProvidersResponse">SourceProvidersResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemasourceprovidersresponse"></a>
@@ -12696,6 +13600,7 @@ A workflow object.
 |deleted_at|string(date-time)|false|none|The timestamp of when the workflow was deleted. (read-only).|
 |description|string|false|none|An arbitrary string attached to a workflow object. Useful for adding notes about the workflow for internal purposes. Maximum of 280 characters allowed.|
 |environment|string|true|none|The slug of the environment in which the workflow exists. (read-only).|
+|exit_criteria|[ExitCriteria](#schemaexitcriteria)|false|none|Exits in-flight workflow runs when any entry matches. Each entry is a goal condition. At most five entries.|
 |key|string|true|none|The unique key string for the workflow object. Must be at minimum 3 characters and at maximum 255 characters in length. Must be in the format of ^[a-z0-9_-]+$.|
 |name|string|true|none|A name for the workflow. Must be at maximum 255 characters in length.|
 |settings|object|false|none|A map of workflow settings.|
@@ -12887,6 +13792,7 @@ A workflow object. Read more in the [docs](https://docs.knock.app/concepts/workf
 |deleted_at|string(date-time)|false|none|The timestamp of when the workflow was deleted. (read-only).|
 |description|string|false|none|An arbitrary string attached to a workflow object. Useful for adding notes about the workflow for internal purposes. Maximum of 280 characters allowed.|
 |environment|string|true|none|The slug of the environment in which the workflow exists. (read-only).|
+|exit_criteria|[ExitCriteria](#schemaexitcriteria)|false|none|Exits in-flight workflow runs when any entry matches. Each entry is a goal condition. At most five entries.|
 |key|string|true|none|The unique key string for the workflow object. Must be at minimum 3 characters and at maximum 255 characters in length. Must be in the format of ^[a-z0-9_-]+$.|
 |name|string|true|none|A name for the workflow. Must be at maximum 255 characters in length.|
 |settings|object|false|none|A map of workflow settings.|
@@ -13186,6 +14092,35 @@ A warehouse is one database in your data warehouse that Knock reads from. Wareho
 |type|snowflake|
 |type|postgres|
 |type|bigquery|
+
+<h2 id="tocS_ExitCriteria">ExitCriteria</h2>
+<!-- backwards compatibility -->
+<a id="schemaexitcriteria"></a>
+<a id="schema_ExitCriteria"></a>
+<a id="tocSexitcriteria"></a>
+<a id="tocsexitcriteria"></a>
+
+```json
+[
+  {
+    "event": {
+      "event_type": "goal_completed"
+    },
+    "match_conditions": []
+  },
+  {
+    "event": {
+      "event_key": "payment.failed",
+      "event_type": "integration_source",
+      "integration_source_key": "shopify",
+      "recipient_path": "body.userId"
+    },
+    "match_conditions": []
+  }
+]
+```
+
+Exits in-flight workflow runs when any entry matches. Each entry is a goal condition. At most five entries.
 
 <h2 id="tocS_DetachGoalResponse">DetachGoalResponse</h2>
 <!-- backwards compatibility -->
@@ -14351,6 +15286,33 @@ A step within a workflow. Each workflow step, regardless of its type, share a co
 |*anyOf*|[WorkflowBranchStep](#schemaworkflowbranchstep)|false|none|A branch function step. Read more in the [docs](https://docs.knock.app/designing-workflows/branch-function).|
 |*anyOf*|[WorkflowRandomCohortStep](#schemaworkflowrandomcohortstep)|false|none|An experiment step. Deterministically assigns recipients to percentage-based cohorts for A/B testing and experimentation.|
 |*anyOf*|[WorkflowTriggerWorkflowStep](#schemaworkflowtriggerworkflowstep)|false|none|A workflow trigger function step. Read more in the [docs](https://docs.knock.app/designing-workflows/trigger-workflow-function).|
+
+<h2 id="tocS_GoalCompletedEvent">GoalCompletedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemagoalcompletedevent"></a>
+<a id="schema_GoalCompletedEvent"></a>
+<a id="tocSgoalcompletedevent"></a>
+<a id="tocsgoalcompletedevent"></a>
+
+```json
+{
+  "event_type": "goal_completed"
+}
+```
+
+The workflow's attached goal completed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event_type|string|true|none|The type of event.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_type|goal_completed|
 
 <h2 id="tocS_WorkflowUpdateUserStep">WorkflowUpdateUserStep</h2>
 <!-- backwards compatibility -->
@@ -16162,6 +17124,7 @@ A workflow request for upserting a workflow.
 |categories|[string]|false|none|A list of [categories](https://docs.knock.app/concepts/workflows#workflow-categories) that the workflow belongs to.|
 |conditions|object|false|none|A conditions object that describes one or more conditions to be met for the workflow to be executed. (optional).|
 |description|string|false|none|An arbitrary string attached to a workflow object. Useful for adding notes about the workflow for internal purposes. Maximum of 280 characters allowed.|
+|exit_criteria|[ExitCriteria](#schemaexitcriteria)|false|none|Exits in-flight workflow runs when any entry matches. Each entry is a goal condition. At most five entries.|
 |name|string|true|none|A name for the workflow. Must be at maximum 255 characters in length.|
 |settings|object|false|none|A map of workflow settings.|
 |steps|[[WorkflowStep](#schemaworkflowstep)]|true|none|A list of workflow step objects in the workflow.|
@@ -16495,6 +17458,63 @@ An in-app feed step within a workflow. Read more in the [docs](https://docs.knoc
 |channel_type|in_app_feed|
 |type|channel|
 
+<h2 id="tocS_WrappedFeedbackResponse">WrappedFeedbackResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemawrappedfeedbackresponse"></a>
+<a id="schema_WrappedFeedbackResponse"></a>
+<a id="tocSwrappedfeedbackresponse"></a>
+<a id="tocswrappedfeedbackresponse"></a>
+
+```json
+{
+  "feedback": {
+    "created_at": "2021-01-01T00:00:00Z",
+    "id": "2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84"
+  }
+}
+```
+
+Wraps the Feedback response under the `feedback` key.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|feedback|[Feedback](#schemafeedback)|true|none|Feedback received by Knock.|
+
+<h2 id="tocS_ExitCriteriaIntegrationSourceEvent">ExitCriteriaIntegrationSourceEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemaexitcriteriaintegrationsourceevent"></a>
+<a id="schema_ExitCriteriaIntegrationSourceEvent"></a>
+<a id="tocSexitcriteriaintegrationsourceevent"></a>
+<a id="tocsexitcriteriaintegrationsourceevent"></a>
+
+```json
+{
+  "event_key": "order.updated",
+  "event_type": "integration_source",
+  "integration_source_key": "segment",
+  "recipient_path": "body.userId"
+}
+```
+
+An integration source event that exits the run.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event_key|string|true|none|The name of the event.|
+|event_type|string|true|none|The type of event.|
+|integration_source_key|string|true|none|The key of the integration source that emits the event.|
+|recipient_path|string|true|none|JSON path into the source event that yields the recipient user ID, for example, body.userId. For legacy sources, use the field name without prefixing body.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_type|integration_source|
+
 <h2 id="tocS_PreferenceCategory">PreferenceCategory</h2>
 <!-- backwards compatibility -->
 <a id="schemapreferencecategory"></a>
@@ -16826,6 +17846,34 @@ A message type is a schema for a message that maps to a UI component or element 
 |---|---|
 |owner|system|
 |owner|user|
+
+<h2 id="tocS_FeedbackRequest">FeedbackRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemafeedbackrequest"></a>
+<a id="schema_FeedbackRequest"></a>
+<a id="tocSfeedbackrequest"></a>
+<a id="tocsfeedbackrequest"></a>
+
+```json
+{
+  "context": {
+    "expected": "An error that identifies the missing variable.",
+    "model": "claude-opus-5-5",
+    "tool": "upsertWorkflow",
+    "type": "friction"
+  },
+  "message": "Please name the missing variable in workflow validation errors."
+}
+```
+
+Feedback about Knock. Do not include credentials, secrets, personally identifiable information, or full conversations.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|context|object \| null|false|none|Relevant details about the feedback, up to 64 KiB when JSON encoded. The listed keys are recommended and any other keys are accepted.|
+|message|string|true|none|Your feedback. Must contain non-whitespace text.|
 
 <h2 id="tocS_BillingSummary">BillingSummary</h2>
 <!-- backwards compatibility -->
@@ -18914,6 +19962,27 @@ A response to an email layout preview request.
 |result|success|
 |result|error|
 
+<h2 id="tocS_ArchivePartialResponse">ArchivePartialResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivepartialresponse"></a>
+<a id="schema_ArchivePartialResponse"></a>
+<a id="tocSarchivepartialresponse"></a>
+<a id="tocsarchivepartialresponse"></a>
+
+```json
+{
+  "result": "success"
+}
+```
+
+The response from archiving a partial.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|string|true|none|The result of the archive operation.|
+
 <h2 id="tocS_AssetUpload">AssetUpload</h2>
 <!-- backwards compatibility -->
 <a id="schemaassetupload"></a>
@@ -20592,7 +21661,11 @@ A partial is a reusable piece of content that can be used in a template.
 ```json
 {
   "expires_at": "2026-10-29T12:00:00.000Z",
-  "status": "unclaimed"
+  "status": "unclaimed",
+  "usage_limits": {
+    "message_limit": 100,
+    "workflow_run_limit": 100
+  }
 }
 ```
 
@@ -20604,6 +21677,7 @@ Where a headless account stands, from the point of view of the agent.
 |---|---|---|---|---|
 |expires_at|string(date-time) \| null|true|none|When an unclaimed account is deleted, or null once it has been claimed.|
 |status|string|true|none|Whether the account is still being set up, waiting to be claimed, claimed by a person, or expired because its claim window closed or its setup never finished.|
+|usage_limits|object|true|none|How much the account can use per UTC calendar month until a person claims it. Each limit is null when there is none, which is always the case once the account is claimed.|
 
 #### Enumerated Values
 

@@ -7932,7 +7932,7 @@ const WorkflowRecipientRunSchema = z
       }),
     recipient: RecipientReferenceSchema,
     status: z
-      .enum(['queued', 'processing', 'paused', 'completed', 'cancelled'])
+      .enum(['queued', 'processing', 'paused', 'completed', 'cancelled', 'exited'])
       .openapi({
         description:
           'The current status of the workflow recipient run. One of `queued`, `processing`, `paused`, `completed`, or `cancelled`.',
@@ -16753,7 +16753,7 @@ export const getV1WorkflowRecipientRunsRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(
             z
-              .enum(['queued', 'processing', 'paused', 'completed', 'cancelled'])
+              .enum(['queued', 'processing', 'paused', 'completed', 'cancelled', 'exited'])
               .openapi({ 'x-struct': null, 'x-validate': null }),
           ),
         )
@@ -16766,7 +16766,7 @@ export const getV1WorkflowRecipientRunsRoute = createRoute({
             required: false,
             schema: {
               items: {
-                enum: ['queued', 'processing', 'paused', 'completed', 'cancelled'],
+                enum: ['queued', 'processing', 'paused', 'completed', 'cancelled', 'exited'],
                 type: 'string',
                 'x-struct': null,
                 'x-validate': null,

@@ -2014,6 +2014,144 @@ const MemberUserSchema = z
   })
   .openapi('MemberUser')
 
+const GoalCompletedEventSchema = z
+  .object({
+    event_type: z
+      .literal('goal_completed')
+      .openapi({
+        description: 'The type of event.',
+        example: 'goal_completed',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  })
+  .openapi({
+    description: "The workflow's attached goal completed.",
+    example: { event_type: 'goal_completed' },
+    required: ['event_type'],
+    title: 'GoalCompletedEvent',
+    'x-struct': 'Elixir.ControlWeb.V1.Specs.GoalCompletedEvent',
+    'x-validate': null,
+  })
+  .openapi('GoalCompletedEvent')
+
+const ExitCriteriaIntegrationSourceEventSchema = z
+  .object({
+    event_key: z
+      .string()
+      .openapi({
+        description: 'The name of the event.',
+        example: 'order.updated',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+    event_type: z
+      .literal('integration_source')
+      .openapi({
+        description: 'The type of event.',
+        example: 'integration_source',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+    integration_source_key: z
+      .string()
+      .openapi({
+        description: 'The key of the integration source that emits the event.',
+        example: 'segment',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+    recipient_path: z
+      .string()
+      .openapi({
+        description:
+          'JSON path into the source event that yields the recipient user ID, for example, body.userId. For legacy sources, use the field name without prefixing body.',
+        example: 'body.userId',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  })
+  .openapi({
+    description: 'An integration source event that exits the run.',
+    example: {
+      event_key: 'order.updated',
+      event_type: 'integration_source',
+      integration_source_key: 'segment',
+      recipient_path: 'body.userId',
+    },
+    required: ['event_type', 'integration_source_key', 'event_key', 'recipient_path'],
+    title: 'ExitCriteriaIntegrationSourceEvent',
+    'x-struct': 'Elixir.ControlWeb.V1.Specs.ExitCriteriaIntegrationSourceEvent',
+    'x-validate': null,
+  })
+  .openapi('ExitCriteriaIntegrationSourceEvent')
+
+type ExitCriteriaType =
+  | {
+      event:
+        | z.infer<typeof GoalCompletedEventSchema>
+        | z.infer<typeof ExitCriteriaIntegrationSourceEventSchema>
+        | z.infer<typeof WorkflowWaitForEventAudienceEventSchema>
+      match_conditions?: z.infer<typeof ConditionGroupSchema>[]
+    }[]
+  | null
+
+const ExitCriteriaSchema: z.ZodType<ExitCriteriaType> = z
+  .array(
+    z
+      .object({
+        event: z
+          .union([
+            GoalCompletedEventSchema,
+            ExitCriteriaIntegrationSourceEventSchema,
+            WorkflowWaitForEventAudienceEventSchema,
+          ])
+          .openapi({
+            description:
+              'The event to track. Supports goal_completed, integration_source, and audience.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        match_conditions: z
+          .array(ConditionGroupSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional list of condition groups. The rule matches when any group matches, and a group matches when all of its conditions match. Must be empty for goal_completed.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      })
+      .openapi({
+        description: 'A goal condition: an event plus optional match conditions.',
+        required: ['event'],
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  )
+  .max(5)
+  .nullable()
+  .openapi({
+    description:
+      'Exits in-flight workflow runs when any entry matches. Each entry is a goal condition. At most five entries.',
+    example: [
+      { event: { event_type: 'goal_completed' }, match_conditions: [] },
+      {
+        event: {
+          event_key: 'payment.failed',
+          event_type: 'integration_source',
+          integration_source_key: 'shopify',
+          recipient_path: 'body.userId',
+        },
+        match_conditions: [],
+      },
+    ],
+    title: 'ExitCriteria',
+    'x-struct': 'Elixir.ControlWeb.V1.Specs.ExitCriteria',
+    'x-validate': null,
+  })
+  .openapi('ExitCriteria')
+
 const WorkflowStepSchema: z.ZodType<WorkflowStepType> = z
   .lazy(() =>
     z
@@ -2239,6 +2377,7 @@ type ShowWorkflowResponseType = {
   deleted_at?: string
   description?: string
   environment: string
+  exit_criteria?: z.infer<typeof ExitCriteriaSchema>
   key: string
   name: string
   settings?: { is_commercial?: boolean; override_preferences?: boolean }
@@ -2261,6 +2400,7 @@ type WorkflowType = {
   deleted_at?: string
   description?: string
   environment: string
+  exit_criteria?: z.infer<typeof ExitCriteriaSchema>
   key: string
   name: string
   settings?: { is_commercial?: boolean; override_preferences?: boolean }
@@ -7689,6 +7829,7 @@ type WorkflowRequestType = {
   categories?: string[]
   conditions?: z.infer<typeof ConditionGroupSchema> | (unknown | null)
   description?: string
+  exit_criteria?: z.infer<typeof ExitCriteriaSchema>
   name: string
   settings?: { is_commercial?: boolean; override_preferences?: boolean }
   steps: z.infer<typeof WorkflowStepSchema>[]
@@ -7730,6 +7871,7 @@ const WorkflowRequestSchema: z.ZodType<WorkflowRequestType> = z
         'x-struct': null,
         'x-validate': null,
       }),
+    exit_criteria: ExitCriteriaSchema.exactOptional(),
     name: z
       .string()
       .openapi({
@@ -7978,6 +8120,7 @@ const WorkflowSchema: z.ZodType<WorkflowType> = z
         'x-struct': null,
         'x-validate': null,
       }),
+    exit_criteria: ExitCriteriaSchema.exactOptional(),
     key: z
       .string()
       .openapi({
@@ -9740,6 +9883,33 @@ const TranslationSchema = z
     'x-validate': null,
   })
   .openapi('Translation')
+
+const FeedbackSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp of when the feedback was received.',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+    id: z
+      .uuid()
+      .openapi({
+        description: 'The unique identifier of the feedback.',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  })
+  .openapi({
+    description: 'Feedback received by Knock.',
+    example: { created_at: '2021-01-01T00:00:00Z', id: '2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84' },
+    required: ['id', 'created_at'],
+    title: 'Feedback',
+    'x-struct': 'Elixir.ControlWeb.V1.Specs.Feedback',
+    'x-validate': null,
+  })
+  .openapi('Feedback')
 
 const SourceProvidersResponseSchema = z
   .object({
@@ -11521,6 +11691,7 @@ const ShowWorkflowResponseSchema: z.ZodType<ShowWorkflowResponseType> = z
         'x-struct': null,
         'x-validate': null,
       }),
+    exit_criteria: ExitCriteriaSchema.exactOptional(),
     key: z
       .string()
       .openapi({
@@ -15914,6 +16085,20 @@ const SourceStatusResponseSchema = z
   })
   .openapi('SourceStatusResponse')
 
+const WrappedFeedbackResponseSchema = z
+  .object({ feedback: FeedbackSchema })
+  .openapi({
+    description: 'Wraps the Feedback response under the `feedback` key.',
+    example: {
+      feedback: { created_at: '2021-01-01T00:00:00Z', id: '2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84' },
+    },
+    required: ['feedback'],
+    title: 'WrappedFeedbackResponse',
+    'x-struct': null,
+    'x-validate': null,
+  })
+  .openapi('WrappedFeedbackResponse')
+
 const PreferenceCategorySchema = z
   .object({
     archived_at: z.iso
@@ -16182,6 +16367,120 @@ const ReusableRequestRequestSchema = z
     'x-validate': null,
   })
   .openapi('ReusableRequestRequest')
+
+const FeedbackRequestSchema = z
+  .object({
+    context: z
+      .looseObject({
+        actual: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'What happened, including any error text.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        expected: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'What you expected to happen.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        impact: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The time spent, retries, or workarounds used.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        model: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The name of the model used for the task.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        product: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The Knock product involved, such as workflows or guides.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        task: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'What you were trying to do.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        tool: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The tool, command, or endpoint affected.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        type: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'A category such as bug, friction, or feature.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Relevant details about the feedback, up to 64 KiB when JSON encoded. The listed keys are recommended and any other keys are accepted.',
+        'x-struct': null,
+        'x-validate': null,
+        required: [],
+      }),
+    message: z
+      .string()
+      .max(10000)
+      .openapi({
+        description: 'Your feedback. Must contain non-whitespace text.',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  })
+  .openapi({
+    description:
+      'Feedback about Knock. Do not include credentials, secrets, personally identifiable information, or full conversations.',
+    example: {
+      context: {
+        expected: 'An error that identifies the missing variable.',
+        model: 'claude-opus-5-5',
+        tool: 'upsertWorkflow',
+        type: 'friction',
+      },
+      message: 'Please name the missing variable in workflow validation errors.',
+    },
+    required: ['message'],
+    title: 'FeedbackRequest',
+    'x-struct': 'Elixir.ControlWeb.V1.Specs.FeedbackRequest',
+    'x-validate': null,
+  })
+  .openapi('FeedbackRequest')
 
 const BillingCreditBlockSchema = z
   .object({
@@ -17697,6 +17996,27 @@ const PreviewEmailLayoutResponseSchema = z
   })
   .openapi('PreviewEmailLayoutResponse')
 
+const ArchivePartialResponseSchema = z
+  .object({
+    result: z
+      .string()
+      .openapi({
+        description: 'The result of the archive operation.',
+        example: 'success',
+        'x-struct': null,
+        'x-validate': null,
+      }),
+  })
+  .openapi({
+    description: 'The response from archiving a partial.',
+    example: { result: 'success' },
+    required: ['result'],
+    title: 'ArchivePartialResponse',
+    'x-struct': null,
+    'x-validate': null,
+  })
+  .openapi('ArchivePartialResponse')
+
 const AssetUploadSchema = z
   .object({
     content_length: z
@@ -18516,11 +18836,41 @@ const HeadlessAccountStatusSchema = z
         'x-struct': null,
         'x-validate': null,
       }),
+    usage_limits: z
+      .object({
+        message_limit: z
+          .int()
+          .nullable()
+          .openapi({
+            description: 'How many messages the account can send.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        workflow_run_limit: z
+          .int()
+          .nullable()
+          .openapi({
+            description: 'How many workflow runs, one per recipient, the account can trigger.',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      })
+      .openapi({
+        description:
+          'How much the account can use per UTC calendar month until a person claims it. Each limit is null when there is none, which is always the case once the account is claimed.',
+        required: ['workflow_run_limit', 'message_limit'],
+        'x-struct': null,
+        'x-validate': null,
+      }),
   })
   .openapi({
     description: 'Where a headless account stands, from the point of view of the agent.',
-    example: { expires_at: '2026-10-29T12:00:00.000Z', status: 'unclaimed' },
-    required: ['status', 'expires_at'],
+    example: {
+      expires_at: '2026-10-29T12:00:00.000Z',
+      status: 'unclaimed',
+      usage_limits: { message_limit: 100, workflow_run_limit: 100 },
+    },
+    required: ['status', 'expires_at', 'usage_limits'],
     title: 'HeadlessAccountStatus',
     'x-struct': 'Elixir.ControlWeb.V1.Specs.HeadlessAccountStatus',
     'x-validate': null,
@@ -20487,6 +20837,136 @@ export const putV1WorkflowsWorkflowKeyRoute = createRoute({
   callbacks: {},
 })
 
+export const deleteV1WorkflowsWorkflowKeyRoute = createRoute({
+  method: 'delete',
+  path: '/v1/workflows/{workflow_key}',
+  tags: ['Workflows'],
+  summary: 'Archive a workflow',
+  description:
+    "Archives a workflow by key across all environments, not only the one in the request. The\ntoken needs the `workflows:manage` permission in every environment that holds a copy of the\nworkflow.\n\nArchiving renames the workflow's key in every environment, so a new workflow can use the key.\nThe archived workflow is deactivated and read-only, and the response returns it with its\narchived key. Restore it with the unarchive endpoint, using its original key.\n\nReturns a 404 when no live workflow has the key, including when it's already archived.\n",
+  operationId: 'archiveWorkflow',
+  request: {
+    params: z.object({
+      workflow_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The key of the workflow to archive.',
+            in: 'path',
+            name: 'workflow_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z.object({ workflow: WorkflowSchema }).openapi({
+            description: 'Wraps the Workflow response under the `workflow` key.',
+            example: {
+              workflow: {
+                active: false,
+                categories: ['marketing', 'black-friday'],
+                conditions: {
+                  all: [{ argument: 'admin', operator: 'equal_to', variable: 'recipient.role' }],
+                },
+                created_at: '2022-12-16T19:07:50.027113Z',
+                description: 'This is a dummy workflow for demo purposes.',
+                environment: 'development',
+                key: 'december-16-demo',
+                name: 'december-16-demo',
+                settings: { override_preferences: true },
+                sha: 'f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y',
+                steps: [
+                  {
+                    channel_key: 'in-app-feed',
+                    channel_type: 'in_app_feed',
+                    description: 'Main in-app feed',
+                    name: 'In-app step',
+                    ref: 'in_app_feed_1',
+                    template: {
+                      action_url: '{{ data.onboarding_url }}',
+                      markdown_body: 'Hello **{{ recipient.name }}**. Click here to get started.',
+                    },
+                    type: 'channel',
+                  },
+                  {
+                    ref: 'delay_1',
+                    settings: { delay_for: { unit: 'hours', value: 1 } },
+                    type: 'delay',
+                  },
+                  {
+                    channel_key: 'postmark',
+                    channel_type: 'email',
+                    ref: 'email_1',
+                    template: {
+                      html_body:
+                        "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+                      settings: { layout_key: 'default' },
+                      subject: 'Welcome to {{ vars.app_name }}!',
+                    },
+                    type: 'channel',
+                  },
+                ],
+                tags: ['onboarding', 'growth'],
+                trigger_data_json_schema: {
+                  properties: { onboarding_url: { type: 'string' } },
+                  required: ['onboarding_url'],
+                  type: 'object',
+                },
+                trigger_events: [
+                  {
+                    audience_action_type: 'member_added',
+                    audience_key: 'pro-users',
+                    type: 'audience',
+                  },
+                ],
+                trigger_frequency: 'every_trigger',
+                updated_at: '2023-02-08T22:15:19.846681Z',
+                valid: true,
+              },
+            },
+            required: ['workflow'],
+            title: 'WrappedWorkflowResponse',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
 export const getV1CommitsIdRoute = createRoute({
   method: 'get',
   path: '/v1/commits/{id}',
@@ -22163,6 +22643,47 @@ export const putV1BroadcastsBroadcastKeyRoute = createRoute({
               },
               required: ['broadcast'],
               title: 'WrappedBroadcastResponse',
+              'x-struct': null,
+              'x-validate': null,
+            }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
+export const postV1FeedbackRoute = createRoute({
+  method: 'post',
+  path: '/v1/feedback',
+  tags: ['Feedback'],
+  summary: 'Send feedback',
+  description:
+    'Sends bugs, friction, and feature requests to the Knock team. Agents can use this to report issues they encounter while completing a task. Do not include secrets or personally identifiable information.',
+  operationId: 'createFeedback',
+  request: {
+    body: {
+      description: 'Params',
+      content: { 'application/json': { schema: FeedbackRequestSchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ feedback: FeedbackSchema })
+            .openapi({
+              description: 'Wraps the Feedback response under the `feedback` key.',
+              example: {
+                feedback: {
+                  created_at: '2021-01-01T00:00:00Z',
+                  id: '2f9a3b8e-6d1c-4c55-9b6e-0a7f3f2d1c84',
+                },
+              },
+              required: ['feedback'],
+              title: 'WrappedFeedbackResponse',
               'x-struct': null,
               'x-validate': null,
             }),
@@ -24661,6 +25182,85 @@ export const putV1PartialsPartialKeyRoute = createRoute({
   callbacks: {},
 })
 
+export const deleteV1PartialsPartialKeyRoute = createRoute({
+  method: 'delete',
+  path: '/v1/partials/{partial_key}',
+  tags: ['Partials'],
+  summary: 'Archive a partial',
+  description:
+    "Archives a partial by key across all environments, not only the one in the request. The\ntoken needs the `partials:manage` permission in every environment that holds a copy of the\npartial.\n\nArchiving renames the partial's key in every environment, so a new partial can use the key.\nTemplates that reference the archived partial keep using it until their workflow is next\ncommitted, and it can't be added to new templates. Restore it with the unarchive endpoint,\nusing its original key.\n\nReturns a 422 with the code `partial_in_use` while a workflow or an unsent broadcast in any\nenvironment uses the partial. Remove it from them first. Returns a 404 when no live partial\nhas the key, including when it's already archived.\n",
+  operationId: 'archivePartial',
+  request: {
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    params: z.object({
+      partial_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The key of the partial to archive.',
+            in: 'path',
+            name: 'partial_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              result: z
+                .string()
+                .openapi({
+                  description: 'The result of the archive operation.',
+                  example: 'success',
+                  'x-struct': null,
+                  'x-validate': null,
+                }),
+            })
+            .openapi({
+              description: 'The response from archiving a partial.',
+              example: { result: 'success' },
+              required: ['result'],
+              title: 'ArchivePartialResponse',
+              'x-struct': null,
+              'x-validate': null,
+            }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
 export const getV1VariablesRoute = createRoute({
   method: 'get',
   path: '/v1/variables',
@@ -25661,7 +26261,7 @@ export const getV1HeadlessAccountsStatusRoute = createRoute({
   tags: ['Headless accounts'],
   summary: "Get a headless account's status",
   description:
-    'Returns whether the headless account is still being set up, waiting to be claimed, claimed by a person, or past its claim window. Agents poll this endpoint to find out when a person has claimed the account.',
+    'Returns whether the headless account is still being set up, waiting to be claimed, claimed by a person, or past its claim window, and the monthly usage limits it has until it is claimed. Agents poll this endpoint to find out when a person has claimed the account.',
   operationId: 'getHeadlessAccountStatus',
   responses: {
     200: {
@@ -25864,6 +26464,136 @@ export const putV1MessageTypesMessageTypeKeyValidateRoute = createRoute({
               'x-struct': null,
               'x-validate': null,
             }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
+export const putV1WorkflowsWorkflowKeyUnarchiveRoute = createRoute({
+  method: 'put',
+  path: '/v1/workflows/{workflow_key}/unarchive',
+  tags: ['Workflows'],
+  summary: 'Unarchive a workflow',
+  description:
+    "Restores an archived workflow by its original key, with every copy archived alongside it in\nother environments. The token needs the `workflows:manage` permission in every environment\nthat holds a copy of the archived workflow.\n\nThe workflow comes back inactive with its original key, so activate it to run it again. When\nthe key was archived more than once, the most recent archive in the environment is restored.\n\nReturns a 404 when the key isn't archived in the environment, including when an earlier or\nconcurrent request already restored it. Returns a 422 with the code `key_in_use` when a live\nworkflow uses the key.\n",
+  operationId: 'unarchiveWorkflow',
+  request: {
+    params: z.object({
+      workflow_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The original key of the archived workflow.',
+            in: 'path',
+            name: 'workflow_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z.object({ workflow: WorkflowSchema }).openapi({
+            description: 'Wraps the Workflow response under the `workflow` key.',
+            example: {
+              workflow: {
+                active: false,
+                categories: ['marketing', 'black-friday'],
+                conditions: {
+                  all: [{ argument: 'admin', operator: 'equal_to', variable: 'recipient.role' }],
+                },
+                created_at: '2022-12-16T19:07:50.027113Z',
+                description: 'This is a dummy workflow for demo purposes.',
+                environment: 'development',
+                key: 'december-16-demo',
+                name: 'december-16-demo',
+                settings: { override_preferences: true },
+                sha: 'f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y',
+                steps: [
+                  {
+                    channel_key: 'in-app-feed',
+                    channel_type: 'in_app_feed',
+                    description: 'Main in-app feed',
+                    name: 'In-app step',
+                    ref: 'in_app_feed_1',
+                    template: {
+                      action_url: '{{ data.onboarding_url }}',
+                      markdown_body: 'Hello **{{ recipient.name }}**. Click here to get started.',
+                    },
+                    type: 'channel',
+                  },
+                  {
+                    ref: 'delay_1',
+                    settings: { delay_for: { unit: 'hours', value: 1 } },
+                    type: 'delay',
+                  },
+                  {
+                    channel_key: 'postmark',
+                    channel_type: 'email',
+                    ref: 'email_1',
+                    template: {
+                      html_body:
+                        "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+                      settings: { layout_key: 'default' },
+                      subject: 'Welcome to {{ vars.app_name }}!',
+                    },
+                    type: 'channel',
+                  },
+                ],
+                tags: ['onboarding', 'growth'],
+                trigger_data_json_schema: {
+                  properties: { onboarding_url: { type: 'string' } },
+                  required: ['onboarding_url'],
+                  type: 'object',
+                },
+                trigger_events: [
+                  {
+                    audience_action_type: 'member_added',
+                    audience_key: 'pro-users',
+                    type: 'audience',
+                  },
+                ],
+                trigger_frequency: 'every_trigger',
+                updated_at: '2023-02-08T22:15:19.846681Z',
+                valid: true,
+              },
+            },
+            required: ['workflow'],
+            title: 'WrappedWorkflowResponse',
+            'x-struct': null,
+            'x-validate': null,
+          }),
         },
       },
     },
@@ -27437,6 +28167,124 @@ export const postV1WebhooksRoute = createRoute({
               },
               required: ['webhook'],
               title: 'WrappedWebhookResponse',
+              'x-struct': null,
+              'x-validate': null,
+            }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
+export const putV1PartialsPartialKeyDiscardRoute = createRoute({
+  method: 'put',
+  path: '/v1/partials/{partial_key}/discard',
+  tags: ['Partials'],
+  summary: "Discard a partial's uncommitted changes",
+  description:
+    "Discards the uncommitted changes to a partial in a given environment, returning it to its\nlast committed version. Other environments aren't changed.\n\nReturns the partial unchanged when it has no uncommitted changes. Returns a 422 when the\npartial has never been committed, or can't be changed in the environment.\n",
+  operationId: 'discardPartialChanges',
+  request: {
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+      branch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The slug of a branch to use. When `environment` is omitted, the branch is resolved from Development after the account default is injected. When `environment` is supplied, it must be `"development"`.',
+            in: 'query',
+            name: 'branch',
+            required: false,
+            schema: {
+              example: 'feature-branch',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'feature-branch',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    params: z.object({
+      partial_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The key of the partial.',
+            in: 'path',
+            name: 'partial_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ partial: PartialSchema })
+            .openapi({
+              description: 'Wraps the Partial response under the `partial` key.',
+              example: {
+                partial: {
+                  content: '<p>Hello, world!</p>',
+                  description: 'This is a test partial',
+                  environment: 'development',
+                  icon_name: 'icon-name',
+                  input_schema: [
+                    {
+                      key: 'text_field',
+                      label: 'My text field',
+                      settings: {
+                        description: 'A description of the text field',
+                        max_length: 100,
+                        min_length: 10,
+                        required: true,
+                      },
+                      type: 'text',
+                    },
+                  ],
+                  inserted_at: '2021-01-01T00:00:00Z',
+                  key: 'my-partial',
+                  name: 'My Partial',
+                  type: 'html',
+                  updated_at: '2021-01-01T00:00:00Z',
+                  valid: true,
+                  visual_block_enabled: true,
+                },
+              },
+              required: ['partial'],
+              title: 'WrappedPartialResponse',
               'x-struct': null,
               'x-validate': null,
             }),
@@ -29254,6 +30102,103 @@ export const getV1BranchesRoute = createRoute({
               },
               required: ['entries', 'page_info'],
               title: 'PaginatedBranchResponse',
+              'x-struct': null,
+              'x-validate': null,
+            }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
+export const putV1PartialsPartialKeyUnarchiveRoute = createRoute({
+  method: 'put',
+  path: '/v1/partials/{partial_key}/unarchive',
+  tags: ['Partials'],
+  summary: 'Unarchive a partial',
+  description:
+    "Restores an archived partial by its original key, with every copy archived alongside it in\nother environments. The token needs the `partials:manage` permission in every environment\nthat holds a copy of the archived partial.\n\nWhen the key was archived more than once, the most recent archive in the environment is\nrestored.\n\nReturns a 404 when the key isn't archived in the environment, including when an earlier or\nconcurrent request already restored it. Returns a 422 with the code `key_in_use` when a live\npartial uses the key.\n",
+  operationId: 'unarchivePartial',
+  request: {
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    params: z.object({
+      partial_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The original key of the archived partial.',
+            in: 'path',
+            name: 'partial_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ partial: PartialSchema })
+            .openapi({
+              description: 'Wraps the Partial response under the `partial` key.',
+              example: {
+                partial: {
+                  content: '<p>Hello, world!</p>',
+                  description: 'This is a test partial',
+                  environment: 'development',
+                  icon_name: 'icon-name',
+                  input_schema: [
+                    {
+                      key: 'text_field',
+                      label: 'My text field',
+                      settings: {
+                        description: 'A description of the text field',
+                        max_length: 100,
+                        min_length: 10,
+                        required: true,
+                      },
+                      type: 'text',
+                    },
+                  ],
+                  inserted_at: '2021-01-01T00:00:00Z',
+                  key: 'my-partial',
+                  name: 'My Partial',
+                  type: 'html',
+                  updated_at: '2021-01-01T00:00:00Z',
+                  valid: true,
+                  visual_block_enabled: true,
+                },
+              },
+              required: ['partial'],
+              title: 'WrappedPartialResponse',
               'x-struct': null,
               'x-validate': null,
             }),
@@ -32225,6 +33170,157 @@ export const getV1WorkflowsRoute = createRoute({
   callbacks: {},
 })
 
+export const putV1WorkflowsWorkflowKeyDiscardRoute = createRoute({
+  method: 'put',
+  path: '/v1/workflows/{workflow_key}/discard',
+  tags: ['Workflows'],
+  summary: "Discard a workflow's uncommitted changes",
+  description:
+    "Discards the uncommitted changes to a workflow in a given environment, returning it to its\nlast committed version. Other environments aren't changed.\n\nReturns the workflow unchanged when it has no uncommitted changes. Returns a 422 when the\nworkflow has never been committed, or can't be changed in the environment.\n",
+  operationId: 'discardWorkflowChanges',
+  request: {
+    params: z.object({
+      workflow_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The key of the workflow.',
+            in: 'path',
+            name: 'workflow_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+      branch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The slug of a branch to use. When `environment` is omitted, the branch is resolved from Development after the account default is injected. When `environment` is supplied, it must be `"development"`.',
+            in: 'query',
+            name: 'branch',
+            required: false,
+            schema: {
+              example: 'feature-branch',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'feature-branch',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z.object({ workflow: WorkflowSchema }).openapi({
+            description: 'Wraps the Workflow response under the `workflow` key.',
+            example: {
+              workflow: {
+                active: false,
+                categories: ['marketing', 'black-friday'],
+                conditions: {
+                  all: [{ argument: 'admin', operator: 'equal_to', variable: 'recipient.role' }],
+                },
+                created_at: '2022-12-16T19:07:50.027113Z',
+                description: 'This is a dummy workflow for demo purposes.',
+                environment: 'development',
+                key: 'december-16-demo',
+                name: 'december-16-demo',
+                settings: { override_preferences: true },
+                sha: 'f7e9d3b2a1c8e6m4k5j7h9g0i2l3n4p6q8r0t1u3v5w7x9y',
+                steps: [
+                  {
+                    channel_key: 'in-app-feed',
+                    channel_type: 'in_app_feed',
+                    description: 'Main in-app feed',
+                    name: 'In-app step',
+                    ref: 'in_app_feed_1',
+                    template: {
+                      action_url: '{{ data.onboarding_url }}',
+                      markdown_body: 'Hello **{{ recipient.name }}**. Click here to get started.',
+                    },
+                    type: 'channel',
+                  },
+                  {
+                    ref: 'delay_1',
+                    settings: { delay_for: { unit: 'hours', value: 1 } },
+                    type: 'delay',
+                  },
+                  {
+                    channel_key: 'postmark',
+                    channel_type: 'email',
+                    ref: 'email_1',
+                    template: {
+                      html_body:
+                        "<p>Hello, {{ recipient.name }}! Welcome to {{ vars.app_name }} <a href='{{ data.onboarding_url }}'>Get started here</a>.</p>",
+                      settings: { layout_key: 'default' },
+                      subject: 'Welcome to {{ vars.app_name }}!',
+                    },
+                    type: 'channel',
+                  },
+                ],
+                tags: ['onboarding', 'growth'],
+                trigger_data_json_schema: {
+                  properties: { onboarding_url: { type: 'string' } },
+                  required: ['onboarding_url'],
+                  type: 'object',
+                },
+                trigger_events: [
+                  {
+                    audience_action_type: 'member_added',
+                    audience_key: 'pro-users',
+                    type: 'audience',
+                  },
+                ],
+                trigger_frequency: 'every_trigger',
+                updated_at: '2023-02-08T22:15:19.846681Z',
+                valid: true,
+              },
+            },
+            required: ['workflow'],
+            title: 'WrappedWorkflowResponse',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
 export const putV1GuidesGuideKeyValidateRoute = createRoute({
   method: 'put',
   path: '/v1/guides/{guide_key}/validate',
@@ -32753,6 +33849,114 @@ export const putV1BroadcastsBroadcastKeyValidateRoute = createRoute({
               },
               required: ['broadcast'],
               title: 'WrappedBroadcastResponse',
+              'x-struct': null,
+              'x-validate': null,
+            }),
+        },
+      },
+    },
+  },
+  callbacks: {},
+})
+
+export const putV1GuidesGuideKeyUnarchiveRoute = createRoute({
+  method: 'put',
+  path: '/v1/guides/{guide_key}/unarchive',
+  tags: ['Guides'],
+  summary: 'Unarchive a guide',
+  description:
+    "Unarchives the newest archive of a guide by key, with every copy archived alongside it in\nother environments. Each restored copy comes back inactive.\n\nReturns a 404 when the key isn't archived, including when an earlier or concurrent request\nalready restored it. Returns a 422 with the code `key_in_use` when a live guide uses the\nkey.\n",
+  operationId: 'unarchiveGuide',
+  request: {
+    query: z.object({
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "The environment slug. When omitted, the account's default environment is used.",
+            in: 'query',
+            name: 'environment',
+            required: false,
+            schema: {
+              example: 'development',
+              type: 'string',
+              'x-struct': null,
+              'x-validate': null,
+            },
+          },
+          example: 'development',
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+    params: z.object({
+      guide_key: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The key of the guide to unarchive.',
+            in: 'path',
+            name: 'guide_key',
+            required: true,
+            schema: { type: 'string', 'x-struct': null, 'x-validate': null },
+          },
+          'x-struct': null,
+          'x-validate': null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ guide: GuideSchema })
+            .openapi({
+              description: 'Wraps the Guide response under the `guide` key.',
+              example: {
+                guide: {
+                  activation_url_patterns: [{ directive: 'allow', pathname: '/dashboard/*' }],
+                  active: true,
+                  archived_at: null,
+                  channel_key: 'in-app-guide',
+                  created_at: '2024-01-01T00:00:00Z',
+                  description: 'A guide to help users get started with the application',
+                  environment: 'development',
+                  key: 'getting-started',
+                  name: 'Getting Started Guide',
+                  semver: '0.0.1',
+                  sha: '1234567890',
+                  steps: [
+                    {
+                      name: 'Welcome to the App',
+                      ref: 'welcome-step',
+                      schema_key: 'tooltip',
+                      schema_semver: '1.0.0',
+                      schema_variant_key: 'default',
+                      values: { text_field: 'value' },
+                    },
+                  ],
+                  tags: ['onboarding', 'growth'],
+                  target_audience_key: null,
+                  target_property_conditions: {
+                    all: [
+                      {
+                        argument: 'some_property',
+                        operator: 'equal_to',
+                        variable: 'recipient.property',
+                      },
+                    ],
+                  },
+                  type: 'banner',
+                  updated_at: '2024-01-01T00:00:00Z',
+                  valid: true,
+                },
+              },
+              required: ['guide'],
+              title: 'WrappedGuideResponse',
               'x-struct': null,
               'x-validate': null,
             }),

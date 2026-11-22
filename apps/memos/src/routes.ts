@@ -410,14 +410,6 @@ const MemoSchema = z
         description:
           'Optional. Immutable. The memo this memo comments on. Set it on creation\n to create a comment; unset for a top-level memo. Its identity is returned\n even when the caller cannot read the parent, and grants no read access.\n Format: memos/{memo}',
       }),
-    commentCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'Output only. The number of comments directly on this memo that the caller\n can read.',
-      }),
     tags: z
       .array(z.string())
       .exactOptional()
@@ -449,6 +441,14 @@ const MemoSchema = z
       .openapi({
         description:
           'Optional. The last update time. Defaults to the current time when unset on\n creation.',
+      }),
+    commentCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'Output only. The number of comments directly on this memo that the caller\n can read.',
       }),
   })
   .openapi({

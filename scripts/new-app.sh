@@ -4,8 +4,9 @@
 #   scripts/new-app.sh <name> "<API title>" <raw.githubusercontent.com URL> <baseUrl for curl examples>
 #
 # Writes package.json, tsconfig.json and hono-takibi.config.ts in the same shape as every other
-# single-spec app. The comment in the config pins the exact commit the document was taken from
-# (resolved with `git ls-remote`, because api.github.com is not reachable from the sandbox).
+# single-spec app, with every output hono-takibi can generate. The comment in the config pins the
+# exact commit the document was taken from (resolved with `git ls-remote`, because api.github.com
+# is not reachable from the sandbox).
 # Run `bun install` afterwards so bun.lock picks up the new workspace.
 set -euo pipefail
 
@@ -87,6 +88,11 @@ export default defineConfig({
   },
 })
 EOF
+
+# Every client-side output next to the routes (template, type, client, rpc, the hooks of all seven
+# query libraries) and the packages the hooks import, so one config generates everything.
+node "$root/scripts/add-client-outputs.mjs" "$dir/hono-takibi.config.ts" > /dev/null
+node "$root/scripts/add-client-deps.mjs" "$dir/package.json" > /dev/null
 
 echo "created apps/$name"
 echo "pinned:  $pinned"
