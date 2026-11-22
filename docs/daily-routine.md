@@ -18,7 +18,7 @@ GitHub 上にある有名な OpenAPI 3.x の定義を 1 日最大 3 件、hono-t
 
 - 作業ディレクトリはリポジトリのルート。使うのは bun, node, git, curl, python3。
 - サンドボックスから届くのは npm と `raw.githubusercontent.com`。`git ls-remote https://github.com/<owner>/<repo>.git` も使える。
-  `api.github.com` と `github.com` の Web ページ、`api.apis.guru` など GitHub 以外のホストは届かない。
+  `api.github.com`、`github.com` の Web ページ、`api.apis.guru` は届かなかった（環境のネットワークポリシー次第なので、届かないホストは回避せず、その候補を飛ばす）。
 - hono-takibi は OpenAPI 3.x だけを読む。Swagger 2.0 は仕様上の非対応で、バグではない。
 
 ## 1. 準備
