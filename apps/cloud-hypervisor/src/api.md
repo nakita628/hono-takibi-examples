@@ -100,6 +100,7 @@ curl http://localhost/api/v1/vm.info \
         "packages": 0
       },
       "kvm_hyperv": false,
+      "kvm_hint_realtime": false,
       "max_phys_bits": 0,
       "nested": false,
       "affinity": [
@@ -127,7 +128,7 @@ curl http://localhost/api/v1/vm.info \
       "hugepages": false,
       "hugepage_size": 0,
       "prefault": false,
-      "reserve": false,
+      "reserve": true,
       "thp": true,
       "zones": [
         {
@@ -142,7 +143,7 @@ curl http://localhost/api/v1/vm.info \
           "hotplug_size": 0,
           "hotplugged_size": 0,
           "prefault": false,
-          "reserve": false
+          "reserve": true
         }
       ]
     },
@@ -161,12 +162,18 @@ curl http://localhost/api/v1/vm.info \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         }
       }
@@ -185,12 +192,18 @@ curl http://localhost/api/v1/vm.info \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "pci_segment": 0,
@@ -216,8 +229,8 @@ curl http://localhost/api/v1/vm.info \
     "net": [
       {
         "tap": "string",
-        "ip": "192.168.249.1",
-        "mask": "255.255.255.0",
+        "ip": "string",
+        "mask": "string",
         "mac": "string",
         "host_mac": "string",
         "mtu": 0,
@@ -234,12 +247,18 @@ curl http://localhost/api/v1/vm.info \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "offload_tso": false,
@@ -358,6 +377,7 @@ curl http://localhost/api/v1/vm.info \
     "vsock": {
       "cid": 3,
       "socket": "string",
+      "socket_type": "Stream",
       "iommu": "Off",
       "pci_segment": 0,
       "pci_device_id": 0,
@@ -439,6 +459,7 @@ curl http://localhost/api/v1/vm.info \
       "resources": [
         {}
       ],
+      "parent": "string",
       "children": [
         "string"
       ],
@@ -449,6 +470,7 @@ curl http://localhost/api/v1/vm.info \
       "resources": [
         {}
       ],
+      "parent": "string",
       "children": [
         "string"
       ],
@@ -487,10 +509,12 @@ curl http://localhost/api/v1/vm.counters \
 ```json
 {
   "property1": {
+    "device_type": "string",
     "property1": 0,
     "property2": 0
   },
   "property2": {
+    "device_type": "string",
     "property1": 0,
     "property2": 0
   }
@@ -581,6 +605,7 @@ curl http://localhost/api/v1/vm.create \
         "packages": 0
       },
       "kvm_hyperv": false,
+      "kvm_hint_realtime": false,
       "max_phys_bits": 0,
       "nested": false,
       "affinity": [
@@ -608,7 +633,7 @@ curl http://localhost/api/v1/vm.create \
       "hugepages": false,
       "hugepage_size": 0,
       "prefault": false,
-      "reserve": false,
+      "reserve": true,
       "thp": true,
       "zones": [
         {
@@ -623,7 +648,7 @@ curl http://localhost/api/v1/vm.create \
           "hotplug_size": 0,
           "hotplugged_size": 0,
           "prefault": false,
-          "reserve": false
+          "reserve": true
         }
       ]
     },
@@ -642,12 +667,18 @@ curl http://localhost/api/v1/vm.create \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         }
       }
@@ -666,12 +697,18 @@ curl http://localhost/api/v1/vm.create \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "pci_segment": 0,
@@ -697,8 +734,8 @@ curl http://localhost/api/v1/vm.create \
     "net": [
       {
         "tap": "string",
-        "ip": "192.168.249.1",
-        "mask": "255.255.255.0",
+        "ip": "string",
+        "mask": "string",
         "mac": "string",
         "host_mac": "string",
         "mtu": 0,
@@ -715,12 +752,18 @@ curl http://localhost/api/v1/vm.create \
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "offload_tso": false,
@@ -839,6 +882,7 @@ curl http://localhost/api/v1/vm.create \
     "vsock": {
       "cid": 3,
       "socket": "string",
+      "socket_type": "Stream",
       "iommu": "Off",
       "pci_segment": 0,
       "pci_device_id": 0,
@@ -930,6 +974,7 @@ curl http://localhost/api/v1/vm.create \
       "packages": 0
     },
     "kvm_hyperv": false,
+    "kvm_hint_realtime": false,
     "max_phys_bits": 0,
     "nested": false,
     "affinity": [
@@ -957,7 +1002,7 @@ curl http://localhost/api/v1/vm.create \
     "hugepages": false,
     "hugepage_size": 0,
     "prefault": false,
-    "reserve": false,
+    "reserve": true,
     "thp": true,
     "zones": [
       {
@@ -972,7 +1017,7 @@ curl http://localhost/api/v1/vm.create \
         "hotplug_size": 0,
         "hotplugged_size": 0,
         "prefault": false,
-        "reserve": false
+        "reserve": true
       }
     ]
   },
@@ -991,12 +1036,18 @@ curl http://localhost/api/v1/vm.create \
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       }
     }
@@ -1015,12 +1066,18 @@ curl http://localhost/api/v1/vm.create \
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       },
       "pci_segment": 0,
@@ -1046,8 +1103,8 @@ curl http://localhost/api/v1/vm.create \
   "net": [
     {
       "tap": "string",
-      "ip": "192.168.249.1",
-      "mask": "255.255.255.0",
+      "ip": "string",
+      "mask": "string",
       "mac": "string",
       "host_mac": "string",
       "mtu": 0,
@@ -1064,12 +1121,18 @@ curl http://localhost/api/v1/vm.create \
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       },
       "offload_tso": false,
@@ -1188,6 +1251,7 @@ curl http://localhost/api/v1/vm.create \
   "vsock": {
     "cid": 3,
     "socket": "string",
+    "socket_type": "Stream",
     "iommu": "Off",
     "pci_segment": 0,
     "pci_device_id": 0,
@@ -1399,7 +1463,7 @@ curl http://localhost/api/v1/vm.resume \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|No Content|The VM instance successfully paused.|None|
+|204|No Content|The VM instance successfully resumed.|None|
 |404|Not Found|The VM instance could not resume because it is not booted yet|None|
 |405|Method Not Allowed|The VM instance could not resume because it is not paused.|None|
 |409|Conflict|The operation conflicts with the current state of the VM.|None|
@@ -1551,6 +1615,8 @@ curl http://localhost/api/v1/vm.resize-disk \
 
 `PUT /vm.resize-disk`
 
+Requires a booted VM.
+
 > Body parameter
 
 ```json
@@ -1565,8 +1631,8 @@ curl http://localhost/api/v1/vm.resize-disk \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VmResizeDisk](#schemavmresizedisk)|true|Resizes a disk attached to the VM|
-|» id|body|string|false|disk identifier|
-|» desired_size|body|integer(int64)|false|desired disk size in bytes|
+|» id|body|string|true|disk identifier|
+|» desired_size|body|integer(int64)|true|desired disk size in bytes|
 
 <h3 id="resize-a-disk-responses">Responses</h3>
 
@@ -1611,8 +1677,8 @@ curl http://localhost/api/v1/vm.resize-zone \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VmResizeZone](#schemavmresizezone)|true|The target size for the memory zone|
-|» id|body|string|false|none|
-|» desired_ram|body|integer(int64)|false|desired memory zone size in bytes|
+|» id|body|string|true|none|
+|» desired_ram|body|integer(int64)|true|desired memory zone size in bytes|
 
 <h3 id="resize-a-memory-zone-responses">Responses</h3>
 
@@ -1741,7 +1807,7 @@ curl http://localhost/api/v1/vm.remove-device \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VmRemoveDevice](#schemavmremovedevice)|true|The identifier of the device|
-|» id|body|string|false|none|
+|» id|body|string|true|none|
 
 <h3 id="remove-a-device-from-the-vm-responses">Responses</h3>
 
@@ -1777,12 +1843,18 @@ curl http://localhost/api/v1/vm.add-disk \
       "bandwidth": {
         "size": 0,
         "one_time_burst": 0,
-        "refill_time": 0
+        "refill_time": 0,
+        "burst_rate": 1,
+        "burst_seconds": 1,
+        "burst_recharge_seconds": 1
       },
       "ops": {
         "size": 0,
         "one_time_burst": 0,
-        "refill_time": 0
+        "refill_time": 0,
+        "burst_rate": 1,
+        "burst_seconds": 1,
+        "burst_recharge_seconds": 1
       }
     },
     "pci_segment": 0,
@@ -1824,12 +1896,18 @@ curl http://localhost/api/v1/vm.add-disk \
     "bandwidth": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     },
     "ops": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     }
   },
   "pci_segment": 0,
@@ -1964,8 +2042,8 @@ curl http://localhost/api/v1/vm.add-fs \
 |body|body|[FsConfig](#schemafsconfig)|true|The details of the new virtio-fs|
 |» tag|body|string|true|none|
 |» socket|body|string|true|none|
-|» num_queues|body|integer(uint16)|true|none|
-|» queue_size|body|integer|true|none|
+|» num_queues|body|integer(uint16)|false|none|
+|» queue_size|body|integer|false|none|
 |» pci_segment|body|integer(int16)|false|none|
 |» pci_device_id|body|integer(uint8)|false|none|
 |» id|body|string|false|none|
@@ -2166,8 +2244,8 @@ curl http://localhost/api/v1/vm.add-net \
   -H 'Accept: application/json' \
   -d '{
     "tap": "string",
-    "ip": "192.168.249.1",
-    "mask": "255.255.255.0",
+    "ip": "string",
+    "mask": "string",
     "mac": "string",
     "host_mac": "string",
     "mtu": 0,
@@ -2184,12 +2262,18 @@ curl http://localhost/api/v1/vm.add-net \
       "bandwidth": {
         "size": 0,
         "one_time_burst": 0,
-        "refill_time": 0
+        "refill_time": 0,
+        "burst_rate": 1,
+        "burst_seconds": 1,
+        "burst_recharge_seconds": 1
       },
       "ops": {
         "size": 0,
         "one_time_burst": 0,
-        "refill_time": 0
+        "refill_time": 0,
+        "burst_rate": 1,
+        "burst_seconds": 1,
+        "burst_recharge_seconds": 1
       }
     },
     "offload_tso": false,
@@ -2205,8 +2289,8 @@ curl http://localhost/api/v1/vm.add-net \
 ```json
 {
   "tap": "string",
-  "ip": "192.168.249.1",
-  "mask": "255.255.255.0",
+  "ip": "string",
+  "mask": "string",
   "mac": "string",
   "host_mac": "string",
   "mtu": 0,
@@ -2223,12 +2307,18 @@ curl http://localhost/api/v1/vm.add-net \
     "bandwidth": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     },
     "ops": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     }
   },
   "offload_tso": false,
@@ -2243,7 +2333,7 @@ curl http://localhost/api/v1/vm.add-net \
 |---|---|---|---|---|
 |body|body|[NetConfig](#schemanetconfig)|true|The details of the new network device|
 |» tap|body|string|false|none|
-|» ip|body|string|false|IPv4 or IPv6 address|
+|» ip|body|string|false|IPv4 or IPv6 address. If omitted, no address is assigned to the TAP device.|
 |» mask|body|string|false|Must be a valid IPv4 netmask if ip is an IPv4 address or a valid IPv6 netmask if ip is an IPv6 address.|
 |» mac|body|string|false|none|
 |» host_mac|body|string|false|none|
@@ -2269,6 +2359,8 @@ curl http://localhost/api/v1/vm.add-net \
 |» iommu|Off|
 |» iommu|Virtio|
 |» iommu|Smmuv3|
+|» vhost_mode|Client|
+|» vhost_mode|Server|
 
 > Example responses
 
@@ -2308,6 +2400,7 @@ curl http://localhost/api/v1/vm.add-vsock \
   -d '{
     "cid": 3,
     "socket": "string",
+    "socket_type": "Stream",
     "iommu": "Off",
     "pci_segment": 0,
     "pci_device_id": 0,
@@ -2323,6 +2416,7 @@ curl http://localhost/api/v1/vm.add-vsock \
 {
   "cid": 3,
   "socket": "string",
+  "socket_type": "Stream",
   "iommu": "Off",
   "pci_segment": 0,
   "pci_device_id": 0,
@@ -2337,6 +2431,7 @@ curl http://localhost/api/v1/vm.add-vsock \
 |body|body|[VsockConfig](#schemavsockconfig)|true|The details of the new vsock device|
 |» cid|body|integer(int64)|true|Guest Vsock CID|
 |» socket|body|string|true|Path to UNIX domain socket, used to proxy vsock connections.|
+|» socket_type|body|string|false|UNIX listener socket type for host initiated connections.|
 |» iommu|body|[IommuType](#schemaiommutype)|false|Virtual IOMMU the device is attached to.|
 |» pci_segment|body|integer(int16)|false|none|
 |» pci_device_id|body|integer(uint8)|false|none|
@@ -2346,6 +2441,8 @@ curl http://localhost/api/v1/vm.add-vsock \
 
 |Parameter|Value|
 |---|---|
+|» socket_type|Stream|
+|» socket_type|SeqPacket|
 |» iommu|Off|
 |» iommu|Virtio|
 |» iommu|Smmuv3|
@@ -2416,7 +2513,7 @@ curl http://localhost/api/v1/vm.add-vdpa \
 |---|---|---|---|---|
 |body|body|[VdpaConfig](#schemavdpaconfig)|true|The details of the new vDPA device|
 |» path|body|string|true|none|
-|» num_queues|body|integer(uint16)|true|none|
+|» num_queues|body|integer(uint16)|false|none|
 |» iommu|body|[IommuType](#schemaiommutype)|false|Virtual IOMMU the device is attached to.|
 |» pci_segment|body|integer(int16)|false|none|
 |» pci_device_id|body|integer(uint8)|false|none|
@@ -2468,7 +2565,8 @@ curl http://localhost/api/v1/vm.add-user-device \
   -d '{
     "socket": "string",
     "pci_segment": 0,
-    "pci_device_id": 0
+    "pci_device_id": 0,
+    "id": "string"
   }'
 ```
 
@@ -2480,7 +2578,8 @@ curl http://localhost/api/v1/vm.add-user-device \
 {
   "socket": "string",
   "pci_segment": 0,
-  "pci_device_id": 0
+  "pci_device_id": 0,
+  "id": "string"
 }
 ```
 
@@ -2492,6 +2591,7 @@ curl http://localhost/api/v1/vm.add-user-device \
 |» socket|body|string|true|none|
 |» pci_segment|body|integer(int16)|false|none|
 |» pci_device_id|body|integer(uint8)|false|none|
+|» id|body|string|false|none|
 
 > Example responses
 
@@ -2546,7 +2646,7 @@ curl http://localhost/api/v1/vm.snapshot \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VmSnapshotConfig](#schemavmsnapshotconfig)|true|The snapshot configuration|
-|» destination_url|body|string|false|none|
+|» destination_url|body|string|true|none|
 
 <h3 id="returns-a-vm-snapshot-responses">Responses</h3>
 
@@ -2589,7 +2689,7 @@ curl http://localhost/api/v1/vm.coredump \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VmCoredumpData](#schemavmcoredumpdata)|true|The coredump configuration|
-|» destination_url|body|string|false|none|
+|» destination_url|body|string|true|none|
 
 <h3 id="takes-a-vm-coredump-responses">Responses</h3>
 
@@ -2638,11 +2738,55 @@ curl http://localhost/api/v1/vm.restore \
     "source_url": "string",
     "prefault": true,
     "memory_restore_mode": "Copy",
+    "net_fds": [
+      {
+        "id": "string",
+        "num_fds": 0,
+        "fds": [
+          0
+        ]
+      }
+    ],
+    "vfio_fds": [
+      {
+        "id": "string",
+        "fd": 0
+      }
+    ],
+    "iommufd_fd": 0,
     "resume": true,
     "zone_updates": [
       {
         "id": "string",
         "host_numa_node": 0
+      }
+    ],
+    "serial": {
+      "file": "string",
+      "socket": "string",
+      "tcp": {
+        "address": "127.0.0.1:4444",
+        "server": true
+      },
+      "mode": "Off"
+    },
+    "console": {
+      "file": "string",
+      "socket": "string",
+      "tcp": {
+        "address": "127.0.0.1:4444",
+        "server": true
+      },
+      "mode": "Off"
+    },
+    "external_fds": [
+      {
+        "target": {
+          "Net": {
+            "id": "string"
+          }
+        },
+        "expected_fds": 0
       }
     ]
   }'
@@ -2657,11 +2801,55 @@ curl http://localhost/api/v1/vm.restore \
   "source_url": "string",
   "prefault": true,
   "memory_restore_mode": "Copy",
+  "net_fds": [
+    {
+      "id": "string",
+      "num_fds": 0,
+      "fds": [
+        0
+      ]
+    }
+  ],
+  "vfio_fds": [
+    {
+      "id": "string",
+      "fd": 0
+    }
+  ],
+  "iommufd_fd": 0,
   "resume": true,
   "zone_updates": [
     {
       "id": "string",
       "host_numa_node": 0
+    }
+  ],
+  "serial": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "console": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "external_fds": [
+    {
+      "target": {
+        "Net": {
+          "id": "string"
+        }
+      },
+      "expected_fds": 0
     }
   ]
 }
@@ -2675,8 +2863,28 @@ curl http://localhost/api/v1/vm.restore \
 |» source_url|body|string|true|none|
 |» prefault|body|boolean|false|none|
 |» memory_restore_mode|body|[MemoryRestoreMode](#schemamemoryrestoremode)|false|none|
+|» net_fds|body|[[RestoredNetConfig](#schemarestorednetconfig)]|false|**Deprecated.** Deprecated: use external_fds with Net targets instead.<br>|
+|» vfio_fds|body|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
+|» iommufd_fd|body|integer(int32)|false|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |» resume|body|boolean|false|none|
 |» zone_updates|body|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|
+|» serial|body|object|false|New output of the serial console, in the mode of the snapshot.|
+|» » file|body|string|false|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|» » socket|body|string|false|Required if `mode` is `Socket`.|
+|» » tcp|body|object|false|Required if `mode` is `Tcp`.|
+|» » » address|body|string|true|Loopback IPv4 or IPv6 literal and a nonzero port.<br>IPv6 addresses must be enclosed in brackets.<br>Hostnames are not accepted.<br>|
+|» » » server|body|boolean|false|Only server mode is supported.|
+|» » mode|body|[ConsoleMode](#schemaconsolemode)|true|none|
+|» console|body|object|false|New output of the virtio console, in the mode of the snapshot.|
+|» » file|body|string|false|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|» » socket|body|string|false|Required if `mode` is `Socket`.|
+|» » tcp|body|object|false|Required if `mode` is `Tcp`.|
+|» » » address|body|string|true|Loopback IPv4 or IPv6 literal and a nonzero port.<br>IPv6 addresses must be enclosed in brackets.<br>Hostnames are not accepted.<br>|
+|» » » server|body|boolean|false|Only server mode is supported.|
+|» » mode|body|[ConsoleMode](#schemaconsolemode)|true|none|
+|» external_fds|body|[object]|false|File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.<br>|
+|» » target|body|[ExternalFdTarget](#schemaexternalfdtarget)|true|none|
+|» » expected_fds|body|integer(uint64)|true|Number of file descriptors expected for this entry.|
 
 #### Enumerated Values
 
@@ -2684,7 +2892,24 @@ curl http://localhost/api/v1/vm.restore \
 |---|---|
 |» memory_restore_mode|Copy|
 |» memory_restore_mode|OnDemand|
+|» memory_restore_mode|OnDemandNoBackgroundFetchPages|
 |» memory_restore_mode|CopyOnWrite|
+|» » » server|true|
+|» » mode|Off|
+|» » mode|Pty|
+|» » mode|Tty|
+|» » mode|File|
+|» » mode|Socket|
+|» » mode|Tcp|
+|» » mode|Null|
+|» » » server|true|
+|» » mode|Off|
+|» » mode|Pty|
+|» » mode|Tty|
+|» » mode|File|
+|» » mode|Socket|
+|» » mode|Tcp|
+|» » mode|Null|
 
 <h3 id="restore-a-vm-from-a-snapshot-responses">Responses</h3>
 
@@ -2709,6 +2934,13 @@ curl http://localhost/api/v1/vm.receive-migration \
   -H 'Content-Type: application/json' \
   -d '{
     "receiver_url": "string",
+    "vfio_fds": [
+      {
+        "id": "string",
+        "fd": 0
+      }
+    ],
+    "iommufd_fd": 0,
     "tls_dir": "string",
     "zone_updates": [
       {
@@ -2716,7 +2948,35 @@ curl http://localhost/api/v1/vm.receive-migration \
         "host_numa_node": 0
       }
     ],
-    "background_fetch_pages": true
+    "background_fetch_pages": true,
+    "serial": {
+      "file": "string",
+      "socket": "string",
+      "tcp": {
+        "address": "127.0.0.1:4444",
+        "server": true
+      },
+      "mode": "Off"
+    },
+    "console": {
+      "file": "string",
+      "socket": "string",
+      "tcp": {
+        "address": "127.0.0.1:4444",
+        "server": true
+      },
+      "mode": "Off"
+    },
+    "external_fds": [
+      {
+        "target": {
+          "Net": {
+            "id": "string"
+          }
+        },
+        "expected_fds": 0
+      }
+    ]
   }'
 ```
 
@@ -2727,6 +2987,13 @@ curl http://localhost/api/v1/vm.receive-migration \
 ```json
 {
   "receiver_url": "string",
+  "vfio_fds": [
+    {
+      "id": "string",
+      "fd": 0
+    }
+  ],
+  "iommufd_fd": 0,
   "tls_dir": "string",
   "zone_updates": [
     {
@@ -2734,7 +3001,35 @@ curl http://localhost/api/v1/vm.receive-migration \
       "host_numa_node": 0
     }
   ],
-  "background_fetch_pages": true
+  "background_fetch_pages": true,
+  "serial": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "console": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "external_fds": [
+    {
+      "target": {
+        "Net": {
+          "id": "string"
+        }
+      },
+      "expected_fds": 0
+    }
+  ]
 }
 ```
 
@@ -2744,9 +3039,49 @@ curl http://localhost/api/v1/vm.receive-migration \
 |---|---|---|---|---|
 |body|body|[ReceiveMigrationData](#schemareceivemigrationdata)|true|The URL for the reception of migration state|
 |» receiver_url|body|string|true|none|
+|» vfio_fds|body|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
+|» iommufd_fd|body|integer(int32)|false|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |» tls_dir|body|string|false|Directory containing the TLS server certificate (server-cert.pem), the TLS server key (server-key.pem), and the client TLS root CA certificate (ca-cert.pem). TLS is only supported with tcp:<host>:<port> receiver URLs. Recommended for all TCP migrations. Omitting it is only intended for development and testing, as TCP migration is then unencrypted and unauthenticated.<br>|
 |» zone_updates|body|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|
 |» background_fetch_pages|body|boolean|false|Enable the background thread for faulting all remaining pages.|
+|» serial|body|object|false|New output of the serial console, in the mode of the source VM.|
+|» » file|body|string|false|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|» » socket|body|string|false|Required if `mode` is `Socket`.|
+|» » tcp|body|object|false|Required if `mode` is `Tcp`.|
+|» » » address|body|string|true|Loopback IPv4 or IPv6 literal and a nonzero port.<br>IPv6 addresses must be enclosed in brackets.<br>Hostnames are not accepted.<br>|
+|» » » server|body|boolean|false|Only server mode is supported.|
+|» » mode|body|[ConsoleMode](#schemaconsolemode)|true|none|
+|» console|body|object|false|New output of the virtio console, in the mode of the source VM.|
+|» » file|body|string|false|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|» » socket|body|string|false|Required if `mode` is `Socket`.|
+|» » tcp|body|object|false|Required if `mode` is `Tcp`.|
+|» » » address|body|string|true|Loopback IPv4 or IPv6 literal and a nonzero port.<br>IPv6 addresses must be enclosed in brackets.<br>Hostnames are not accepted.<br>|
+|» » » server|body|boolean|false|Only server mode is supported.|
+|» » mode|body|[ConsoleMode](#schemaconsolemode)|true|none|
+|» external_fds|body|[object]|false|File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.<br>|
+|» » target|body|[ExternalFdTarget](#schemaexternalfdtarget)|true|none|
+|» » expected_fds|body|integer(uint64)|true|Number of file descriptors expected for this entry.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » » server|true|
+|» » mode|Off|
+|» » mode|Pty|
+|» » mode|Tty|
+|» » mode|File|
+|» » mode|Socket|
+|» » mode|Tcp|
+|» » mode|Null|
+|» » » server|true|
+|» » mode|Off|
+|» » mode|Pty|
+|» » mode|Tty|
+|» » mode|File|
+|» » mode|Socket|
+|» » mode|Tcp|
+|» » mode|Null|
 
 <h3 id="receive-a-vm-migration-from-url-responses">Responses</h3>
 
@@ -2828,9 +3163,9 @@ curl http://localhost/api/v1/vm.send-migration \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|No Content|The VM migration was successfully sent.|None|
+|204|No Content|The VM migration was started. The result is reported through events.|None|
 |409|Conflict|The operation conflicts with the current state of the VMM.|None|
-|500|Internal Server Error|The VM migration could not be sent.|None|
+|500|Internal Server Error|The VM migration could not be started.|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -2887,10 +3222,10 @@ Virtual Machine Monitor information
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|build_version|string|false|none|none|
+|build_version|string|true|none|none|
 |version|string|true|none|none|
-|pid|integer(int64)|false|none|none|
-|features|[string]|false|none|none|
+|pid|integer(int64)|true|none|none|
+|features|[string]|true|none|none|
 
 <h2 id="tocS_VmState">VmState</h2>
 <!-- backwards compatibility -->
@@ -2923,6 +3258,7 @@ Virtual Machine Monitor information
         "packages": 0
       },
       "kvm_hyperv": false,
+      "kvm_hint_realtime": false,
       "max_phys_bits": 0,
       "nested": false,
       "affinity": [
@@ -2950,7 +3286,7 @@ Virtual Machine Monitor information
       "hugepages": false,
       "hugepage_size": 0,
       "prefault": false,
-      "reserve": false,
+      "reserve": true,
       "thp": true,
       "zones": [
         {
@@ -2965,7 +3301,7 @@ Virtual Machine Monitor information
           "hotplug_size": 0,
           "hotplugged_size": 0,
           "prefault": false,
-          "reserve": false
+          "reserve": true
         }
       ]
     },
@@ -2984,12 +3320,18 @@ Virtual Machine Monitor information
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         }
       }
@@ -3008,12 +3350,18 @@ Virtual Machine Monitor information
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "pci_segment": 0,
@@ -3039,8 +3387,8 @@ Virtual Machine Monitor information
     "net": [
       {
         "tap": "string",
-        "ip": "192.168.249.1",
-        "mask": "255.255.255.0",
+        "ip": "string",
+        "mask": "string",
         "mac": "string",
         "host_mac": "string",
         "mtu": 0,
@@ -3057,12 +3405,18 @@ Virtual Machine Monitor information
           "bandwidth": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           },
           "ops": {
             "size": 0,
             "one_time_burst": 0,
-            "refill_time": 0
+            "refill_time": 0,
+            "burst_rate": 1,
+            "burst_seconds": 1,
+            "burst_recharge_seconds": 1
           }
         },
         "offload_tso": false,
@@ -3181,6 +3535,7 @@ Virtual Machine Monitor information
     "vsock": {
       "cid": 3,
       "socket": "string",
+      "socket_type": "Stream",
       "iommu": "Off",
       "pci_segment": 0,
       "pci_device_id": 0,
@@ -3262,6 +3617,7 @@ Virtual Machine Monitor information
       "resources": [
         {}
       ],
+      "parent": "string",
       "children": [
         "string"
       ],
@@ -3272,6 +3628,7 @@ Virtual Machine Monitor information
       "resources": [
         {}
       ],
+      "parent": "string",
       "children": [
         "string"
       ],
@@ -3289,7 +3646,7 @@ Virtual Machine information
 |---|---|---|---|---|
 |config|[VmConfig](#schemavmconfig)|true|none|Virtual machine configuration|
 |state|[VmState](#schemavmstate)|true|none|none|
-|memory_actual_size|integer(int64)|false|none|none|
+|memory_actual_size|integer(int64)|true|none|none|
 |device_tree|object|false|none|none|
 
 #### Enumerated Values
@@ -3315,6 +3672,7 @@ Virtual Machine information
   "resources": [
     {}
   ],
+  "parent": "string",
   "children": [
     "string"
   ],
@@ -3326,9 +3684,10 @@ Virtual Machine information
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
-|resources|[object]|false|none|none|
-|children|[string]|false|none|none|
+|id|string|true|none|none|
+|resources|[object]|true|none|none|
+|parent|string|false|none|none|
+|children|[string]|true|none|none|
 |pci_bdf|string|false|none|none|
 
 <h2 id="tocS_VmCounters">VmCounters</h2>
@@ -3341,10 +3700,12 @@ Virtual Machine information
 ```json
 {
   "property1": {
+    "device_type": "string",
     "property1": 0,
     "property2": 0
   },
   "property2": {
+    "device_type": "string",
     "property1": 0,
     "property2": 0
   }
@@ -3519,6 +3880,7 @@ Payloads to boot in guest
       "packages": 0
     },
     "kvm_hyperv": false,
+    "kvm_hint_realtime": false,
     "max_phys_bits": 0,
     "nested": false,
     "affinity": [
@@ -3546,7 +3908,7 @@ Payloads to boot in guest
     "hugepages": false,
     "hugepage_size": 0,
     "prefault": false,
-    "reserve": false,
+    "reserve": true,
     "thp": true,
     "zones": [
       {
@@ -3561,7 +3923,7 @@ Payloads to boot in guest
         "hotplug_size": 0,
         "hotplugged_size": 0,
         "prefault": false,
-        "reserve": false
+        "reserve": true
       }
     ]
   },
@@ -3580,12 +3942,18 @@ Payloads to boot in guest
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       }
     }
@@ -3604,12 +3972,18 @@ Payloads to boot in guest
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       },
       "pci_segment": 0,
@@ -3635,8 +4009,8 @@ Payloads to boot in guest
   "net": [
     {
       "tap": "string",
-      "ip": "192.168.249.1",
-      "mask": "255.255.255.0",
+      "ip": "string",
+      "mask": "string",
       "mac": "string",
       "host_mac": "string",
       "mtu": 0,
@@ -3653,12 +4027,18 @@ Payloads to boot in guest
         "bandwidth": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         },
         "ops": {
           "size": 0,
           "one_time_burst": 0,
-          "refill_time": 0
+          "refill_time": 0,
+          "burst_rate": 1,
+          "burst_seconds": 1,
+          "burst_recharge_seconds": 1
         }
       },
       "offload_tso": false,
@@ -3777,6 +4157,7 @@ Payloads to boot in guest
   "vsock": {
     "cid": 3,
     "socket": "string",
+    "socket_type": "Stream",
     "iommu": "Off",
     "pci_segment": 0,
     "pci_device_id": 0,
@@ -3948,10 +4329,10 @@ Virtual machine configuration
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|threads_per_core|integer|false|none|none|
-|cores_per_die|integer|false|none|none|
-|dies_per_package|integer|false|none|none|
-|packages|integer|false|none|none|
+|threads_per_core|integer|true|none|none|
+|cores_per_die|integer|true|none|none|
+|dies_per_package|integer|true|none|none|
+|packages|integer|true|none|none|
 
 <h2 id="tocS_CoreSchedulingMode">CoreSchedulingMode</h2>
 <!-- backwards compatibility -->
@@ -4009,6 +4390,7 @@ CPU profile. File selects a JSON profile by path and is supported on x86-64 with
     "packages": 0
   },
   "kvm_hyperv": false,
+  "kvm_hint_realtime": false,
   "max_phys_bits": 0,
   "nested": false,
   "affinity": [
@@ -4036,6 +4418,7 @@ CPU profile. File selects a JSON profile by path and is supported on x86-64 with
 |max_vcpus|integer|true|none|none|
 |topology|[CpuTopology](#schemacputopology)|false|none|none|
 |kvm_hyperv|boolean|false|none|none|
+|kvm_hint_realtime|boolean|false|none|Advertise KVM_HINTS_REALTIME to the guest (x86-64 with KVM only)|
 |max_phys_bits|integer|false|none|none|
 |nested|boolean|false|none|none|
 |affinity|[[CpuAffinity](#schemacpuaffinity)]|false|none|none|
@@ -4113,7 +4496,7 @@ Unsigned 32-bit value encoded as a 0x-prefixed hex string.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pci_segment|integer(int16)|true|none|none|
+|pci_segment|integer(int16)|false|none|none|
 |mmio32_aperture_weight|integer(int32)|false|none|none|
 |mmio64_aperture_weight|integer(int32)|false|none|none|
 
@@ -4201,7 +4584,7 @@ Virtual IOMMU the device is attached to.
   "hotplug_size": 0,
   "hotplugged_size": 0,
   "prefault": false,
-  "reserve": false
+  "reserve": true
 }
 ```
 
@@ -4220,7 +4603,7 @@ Virtual IOMMU the device is attached to.
 |hotplug_size|integer(int64)|false|none|none|
 |hotplugged_size|integer(int64)|false|none|none|
 |prefault|boolean|false|none|none|
-|reserve|boolean|false|none|none|
+|reserve|boolean|false|none|Defaults to the value of hugepages.|
 
 <h2 id="tocS_MemoryConfig">MemoryConfig</h2>
 <!-- backwards compatibility -->
@@ -4240,7 +4623,7 @@ Virtual IOMMU the device is attached to.
   "hugepages": false,
   "hugepage_size": 0,
   "prefault": false,
-  "reserve": false,
+  "reserve": true,
   "thp": true,
   "zones": [
     {
@@ -4255,7 +4638,7 @@ Virtual IOMMU the device is attached to.
       "hotplug_size": 0,
       "hotplugged_size": 0,
       "prefault": false,
-      "reserve": false
+      "reserve": true
     }
   ]
 }
@@ -4269,14 +4652,21 @@ Virtual IOMMU the device is attached to.
 |hotplug_size|integer(int64)|false|none|none|
 |hotplugged_size|integer(int64)|false|none|none|
 |mergeable|boolean|false|none|none|
-|hotplug_method|string|false|none|none|
+|hotplug_method|string|false|none|ACPI memory hotplug is deprecated and will be removed in a future release. Use VirtioMem instead.|
 |shared|boolean|false|none|none|
 |hugepages|boolean|false|none|none|
 |hugepage_size|integer(int64)|false|none|none|
 |prefault|boolean|false|none|none|
-|reserve|boolean|false|none|none|
+|reserve|boolean|false|none|Defaults to the value of hugepages.|
 |thp|boolean|false|none|none|
 |zones|[[MemoryZoneConfig](#schemamemoryzoneconfig)]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|hotplug_method|Acpi|
+|hotplug_method|VirtioMem|
 
 <h2 id="tocS_TokenBucket">TokenBucket</h2>
 <!-- backwards compatibility -->
@@ -4289,11 +4679,14 @@ Virtual IOMMU the device is attached to.
 {
   "size": 0,
   "one_time_burst": 0,
-  "refill_time": 0
+  "refill_time": 0,
+  "burst_rate": 1,
+  "burst_seconds": 1,
+  "burst_recharge_seconds": 1
 }
 ```
 
-Defines a token bucket with a maximum capacity (_size_), an initial burst size (_one_time_burst_) and an interval for refilling purposes (_refill_time_). The refill-rate is derived from _size_ and _refill_time_, and it is the constant rate at which the tokens replenish. The refill process only starts happening after the initial burst budget is consumed. Consumption from the token bucket is unbounded in speed which allows for bursts bound in size by the amount of tokens available. Once the token bucket is empty, consumption speed is bound by the refill-rate.
+A plain bucket holds _size_ tokens, refills over _refill_time_ milliseconds, and allows initial _one_time_burst_ credit that does not replenish. Available tokens can be consumed at device speed. With bounded bursts, _size_ and _refill_time_ define the sustained rate, and the full initial depth is _burst_rate_ times _burst_seconds_. A peak bucket holds _burst_rate_ tokens and refills at _burst_rate_ tokens/s; requests need both meters. This is a token-bucket envelope, not a strict per-second ceiling, and oversized requests carry debt. Optional _burst_recharge_seconds_ changes idle recharge time without increasing the rate under continuous demand.
 
 ### Properties
 
@@ -4302,6 +4695,9 @@ Defines a token bucket with a maximum capacity (_size_), an initial burst size (
 |size|integer(int64)|true|none|The total number of tokens this bucket can hold.|
 |one_time_burst|integer(int64)|false|none|The initial size of a token bucket.|
 |refill_time|integer(int64)|true|none|The amount of milliseconds it takes for the bucket to refill.|
+|burst_rate|integer(int64)|false|none|The peak rate in tokens per second (bytes/s for bandwidth, operations/s for ops). Enables bounded bursts.|
+|burst_seconds|integer(int64)|false|none|The burst length in seconds, with depth equal to burst_rate times burst_seconds. Requires burst_rate and defaults to 1 when burst_rate is set.|
+|burst_recharge_seconds|integer(int64)|false|none|The seconds to regain full burst credit from empty while idle. Requires burst_rate and defaults to burst_rate times burst_seconds divided by the sustained rate.|
 
 <h2 id="tocS_RateLimiterConfig">RateLimiterConfig</h2>
 <!-- backwards compatibility -->
@@ -4315,12 +4711,18 @@ Defines a token bucket with a maximum capacity (_size_), an initial burst size (
   "bandwidth": {
     "size": 0,
     "one_time_burst": 0,
-    "refill_time": 0
+    "refill_time": 0,
+    "burst_rate": 1,
+    "burst_seconds": 1,
+    "burst_recharge_seconds": 1
   },
   "ops": {
     "size": 0,
     "one_time_burst": 0,
-    "refill_time": 0
+    "refill_time": 0,
+    "burst_rate": 1,
+    "burst_seconds": 1,
+    "burst_recharge_seconds": 1
   }
 }
 ```
@@ -4331,8 +4733,8 @@ Defines an IO rate limiter with independent bytes/s and ops/s limits. Limits are
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|bandwidth|[TokenBucket](#schematokenbucket)|false|none|Defines a token bucket with a maximum capacity (_size_), an initial burst size (_one_time_burst_) and an interval for refilling purposes (_refill_time_). The refill-rate is derived from _size_ and _refill_time_, and it is the constant rate at which the tokens replenish. The refill process only starts happening after the initial burst budget is consumed. Consumption from the token bucket is unbounded in speed which allows for bursts bound in size by the amount of tokens available. Once the token bucket is empty, consumption speed is bound by the refill-rate.|
-|ops|[TokenBucket](#schematokenbucket)|false|none|Defines a token bucket with a maximum capacity (_size_), an initial burst size (_one_time_burst_) and an interval for refilling purposes (_refill_time_). The refill-rate is derived from _size_ and _refill_time_, and it is the constant rate at which the tokens replenish. The refill process only starts happening after the initial burst budget is consumed. Consumption from the token bucket is unbounded in speed which allows for bursts bound in size by the amount of tokens available. Once the token bucket is empty, consumption speed is bound by the refill-rate.|
+|bandwidth|[TokenBucket](#schematokenbucket)|false|none|A plain bucket holds _size_ tokens, refills over _refill_time_ milliseconds, and allows initial _one_time_burst_ credit that does not replenish. Available tokens can be consumed at device speed. With bounded bursts, _size_ and _refill_time_ define the sustained rate, and the full initial depth is _burst_rate_ times _burst_seconds_. A peak bucket holds _burst_rate_ tokens and refills at _burst_rate_ tokens/s; requests need both meters. This is a token-bucket envelope, not a strict per-second ceiling, and oversized requests carry debt. Optional _burst_recharge_seconds_ changes idle recharge time without increasing the rate under continuous demand.|
+|ops|[TokenBucket](#schematokenbucket)|false|none|A plain bucket holds _size_ tokens, refills over _refill_time_ milliseconds, and allows initial _one_time_burst_ credit that does not replenish. Available tokens can be consumed at device speed. With bounded bursts, _size_ and _refill_time_ define the sustained rate, and the full initial depth is _burst_rate_ times _burst_seconds_. A peak bucket holds _burst_rate_ tokens and refills at _burst_rate_ tokens/s; requests need both meters. This is a token-bucket envelope, not a strict per-second ceiling, and oversized requests carry debt. Optional _burst_recharge_seconds_ changes idle recharge time without increasing the rate under continuous demand.|
 
 <h2 id="tocS_RateLimitGroupConfig">RateLimitGroupConfig</h2>
 <!-- backwards compatibility -->
@@ -4348,12 +4750,18 @@ Defines an IO rate limiter with independent bytes/s and ops/s limits. Limits are
     "bandwidth": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     },
     "ops": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     }
   }
 }
@@ -4434,12 +4842,18 @@ Unknown is only valid for vhost-user disks.
     "bandwidth": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     },
     "ops": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     }
   },
   "pci_segment": 0,
@@ -4462,6 +4876,8 @@ Unknown is only valid for vhost-user disks.
   "guest_block_size": 0
 }
 ```
+
+image_type is required unless vhost_user is true.
 
 ### Properties
 
@@ -4514,8 +4930,8 @@ Unknown is only valid for vhost-user disks.
 ```json
 {
   "tap": "string",
-  "ip": "192.168.249.1",
-  "mask": "255.255.255.0",
+  "ip": "string",
+  "mask": "string",
   "mac": "string",
   "host_mac": "string",
   "mtu": 0,
@@ -4532,12 +4948,18 @@ Unknown is only valid for vhost-user disks.
     "bandwidth": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     },
     "ops": {
       "size": 0,
       "one_time_burst": 0,
-      "refill_time": 0
+      "refill_time": 0,
+      "burst_rate": 1,
+      "burst_seconds": 1,
+      "burst_recharge_seconds": 1
     }
   },
   "offload_tso": false,
@@ -4551,7 +4973,7 @@ Unknown is only valid for vhost-user disks.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |tap|string|false|none|none|
-|ip|string|false|none|IPv4 or IPv6 address|
+|ip|string|false|none|IPv4 or IPv6 address. If omitted, no address is assigned to the TAP device.|
 |mask|string|false|none|Must be a valid IPv4 netmask if ip is an IPv4 address or a valid IPv6 netmask if ip is an IPv6 address.|
 |mac|string|false|none|none|
 |host_mac|string|false|none|none|
@@ -4577,6 +4999,8 @@ Unknown is only valid for vhost-user disks.
 |iommu|Off|
 |iommu|Virtio|
 |iommu|Smmuv3|
+|vhost_mode|Client|
+|vhost_mode|Server|
 
 <h2 id="tocS_RngConfig">RngConfig</h2>
 <!-- backwards compatibility -->
@@ -4710,8 +5134,8 @@ Unknown is only valid for vhost-user disks.
 |---|---|---|---|---|
 |tag|string|true|none|none|
 |socket|string|true|none|none|
-|num_queues|integer(uint16)|true|none|none|
-|queue_size|integer|true|none|none|
+|num_queues|integer(uint16)|false|none|none|
+|queue_size|integer|false|none|none|
 |pci_segment|integer(int16)|false|none|none|
 |pci_device_id|integer(uint8)|false|none|none|
 |id|string|false|none|none|
@@ -4851,9 +5275,9 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|file|string|false|none|none|
-|socket|string|false|none|none|
-|tcp|[TcpConsoleConfig](#schematcpconsoleconfig)|false|none|none|
+|file|string|false|none|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|socket|string|false|none|Required if `mode` is `Socket`.|
+|tcp|object|false|none|Required if `mode` is `Tcp`.|
 |mode|[ConsoleMode](#schemaconsolemode)|true|none|none|
 |iommu|[IommuType](#schemaiommutype)|false|none|Virtual IOMMU the device is attached to.|
 |id|string|false|none|none|
@@ -4898,9 +5322,9 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|file|string|false|none|none|
-|socket|string|false|none|none|
-|tcp|[TcpConsoleConfig](#schematcpconsoleconfig)|false|none|none|
+|file|string|false|none|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
+|socket|string|false|none|Required if `mode` is `Socket`.|
+|tcp|object|false|none|Required if `mode` is `Tcp`.|
 |mode|[ConsoleMode](#schemaconsolemode)|true|none|none|
 
 #### Enumerated Values
@@ -4934,8 +5358,8 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|file|string|false|none|none|
-|mode|[ConsoleMode](#schemaconsolemode)|true|none|none|
+|file|string|false|none|Required if `mode` is `File`.|
+|mode|string|true|none|none|
 |iobase|integer|false|none|none|
 
 #### Enumerated Values
@@ -4943,11 +5367,8 @@ Unknown is only valid for vhost-user disks.
 |Property|Value|
 |---|---|
 |mode|Off|
-|mode|Pty|
 |mode|Tty|
 |mode|File|
-|mode|Socket|
-|mode|Tcp|
 |mode|Null|
 
 <h2 id="tocS_DeviceConfig">DeviceConfig</h2>
@@ -5058,7 +5479,7 @@ Unknown is only valid for vhost-user disks.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |path|string|true|none|none|
-|num_queues|integer(uint16)|true|none|none|
+|num_queues|integer(uint16)|false|none|none|
 |iommu|[IommuType](#schemaiommutype)|false|none|Virtual IOMMU the device is attached to.|
 |pci_segment|integer(int16)|false|none|none|
 |pci_device_id|integer(uint8)|false|none|none|
@@ -5083,6 +5504,7 @@ Unknown is only valid for vhost-user disks.
 {
   "cid": 3,
   "socket": "string",
+  "socket_type": "Stream",
   "iommu": "Off",
   "pci_segment": 0,
   "pci_device_id": 0,
@@ -5096,6 +5518,7 @@ Unknown is only valid for vhost-user disks.
 |---|---|---|---|---|
 |cid|integer(int64)|true|none|Guest Vsock CID|
 |socket|string|true|none|Path to UNIX domain socket, used to proxy vsock connections.|
+|socket_type|string|false|none|UNIX listener socket type for host initiated connections.|
 |iommu|[IommuType](#schemaiommutype)|false|none|Virtual IOMMU the device is attached to.|
 |pci_segment|integer(int16)|false|none|none|
 |pci_device_id|integer(uint8)|false|none|none|
@@ -5105,6 +5528,8 @@ Unknown is only valid for vhost-user disks.
 
 |Property|Value|
 |---|---|
+|socket_type|Stream|
+|socket_type|SeqPacket|
 |iommu|Off|
 |iommu|Virtio|
 |iommu|Smmuv3|
@@ -5128,7 +5553,7 @@ Unknown is only valid for vhost-user disks.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |destination|integer(int32)|true|none|none|
-|distance|integer(int32)|true|none|none|
+|distance|integer(uint8)|true|none|none|
 
 <h2 id="tocS_NumaConfig">NumaConfig</h2>
 <!-- backwards compatibility -->
@@ -5167,7 +5592,7 @@ Unknown is only valid for vhost-user disks.
 |cpus|[integer(int32)]|false|none|none|
 |distances|[[NumaDistance](#schemanumadistance)]|false|none|none|
 |memory_zones|[string]|false|none|none|
-|pci_segments|[integer(int32)]|false|none|none|
+|pci_segments|[integer(uint16)]|false|none|none|
 |device_id|string|false|none|none|
 
 <h2 id="tocS_VmResize">VmResize</h2>
@@ -5211,8 +5636,8 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|disk identifier|
-|desired_size|integer(int64)|false|none|desired disk size in bytes|
+|id|string|true|none|disk identifier|
+|desired_size|integer(int64)|true|none|desired disk size in bytes|
 
 <h2 id="tocS_VmResizeZone">VmResizeZone</h2>
 <!-- backwards compatibility -->
@@ -5232,8 +5657,8 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
-|desired_ram|integer(int64)|false|none|desired memory zone size in bytes|
+|id|string|true|none|none|
+|desired_ram|integer(int64)|true|none|desired memory zone size in bytes|
 
 <h2 id="tocS_VmRemoveDevice">VmRemoveDevice</h2>
 <!-- backwards compatibility -->
@@ -5252,7 +5677,7 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|string|true|none|none|
 
 <h2 id="tocS_VmSnapshotConfig">VmSnapshotConfig</h2>
 <!-- backwards compatibility -->
@@ -5271,7 +5696,7 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|destination_url|string|false|none|none|
+|destination_url|string|true|none|none|
 
 <h2 id="tocS_VmCoredumpData">VmCoredumpData</h2>
 <!-- backwards compatibility -->
@@ -5290,7 +5715,7 @@ Unknown is only valid for vhost-user disks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|destination_url|string|false|none|none|
+|destination_url|string|true|none|none|
 
 <h2 id="tocS_MemoryRestoreMode">MemoryRestoreMode</h2>
 <!-- backwards compatibility -->
@@ -5302,6 +5727,83 @@ Unknown is only valid for vhost-user disks.
 ```json
 "Copy"
 ```
+
+<h2 id="tocS_ExternalFdTarget">ExternalFdTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfdtarget"></a>
+<a id="schema_ExternalFdTarget"></a>
+<a id="tocSexternalfdtarget"></a>
+<a id="tocsexternalfdtarget"></a>
+
+```json
+{
+  "Net": {
+    "id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|Net|object|true|none|none|
+|*oneOf*|object|false|none|none|
+|Vfio|object|true|none|none|
+|*oneOf*|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|*oneOf*|Iommu|
+
+<h2 id="tocS_RestoredNetConfig">RestoredNetConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemarestorednetconfig"></a>
+<a id="schema_RestoredNetConfig"></a>
+<a id="tocSrestorednetconfig"></a>
+<a id="tocsrestorednetconfig"></a>
+
+```json
+{
+  "id": "string",
+  "num_fds": 0,
+  "fds": [
+    0
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|num_fds|integer(uint64)|false|none|none|
+|fds|[integer(int32)]|false|none|Descriptor numbers in JSON are ignored; use SCM_RIGHTS.|
+
+<h2 id="tocS_RestoredVfioConfig">RestoredVfioConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemarestoredvfioconfig"></a>
+<a id="schema_RestoredVfioConfig"></a>
+<a id="tocSrestoredvfioconfig"></a>
+<a id="tocsrestoredvfioconfig"></a>
+
+```json
+{
+  "id": "string",
+  "fd": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|fd|integer(int32)|false|none|The descriptor number in JSON is ignored; use SCM_RIGHTS.|
 
 <h2 id="tocS_RestoreConfig">RestoreConfig</h2>
 <!-- backwards compatibility -->
@@ -5315,11 +5817,55 @@ Unknown is only valid for vhost-user disks.
   "source_url": "string",
   "prefault": true,
   "memory_restore_mode": "Copy",
+  "net_fds": [
+    {
+      "id": "string",
+      "num_fds": 0,
+      "fds": [
+        0
+      ]
+    }
+  ],
+  "vfio_fds": [
+    {
+      "id": "string",
+      "fd": 0
+    }
+  ],
+  "iommufd_fd": 0,
   "resume": true,
   "zone_updates": [
     {
       "id": "string",
       "host_numa_node": 0
+    }
+  ],
+  "serial": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "console": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "external_fds": [
+    {
+      "target": {
+        "Net": {
+          "id": "string"
+        }
+      },
+      "expected_fds": 0
     }
   ]
 }
@@ -5332,8 +5878,14 @@ Unknown is only valid for vhost-user disks.
 |source_url|string|true|none|none|
 |prefault|boolean|false|none|none|
 |memory_restore_mode|[MemoryRestoreMode](#schemamemoryrestoremode)|false|none|none|
+|net_fds|[[RestoredNetConfig](#schemarestorednetconfig)]|false|none|**Deprecated.** Deprecated: use external_fds with Net targets instead.<br>|
+|vfio_fds|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|none|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
+|iommufd_fd|integer(int32)|false|none|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |resume|boolean|false|none|none|
 |zone_updates|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|none|
+|serial|object|false|none|New output of the serial console, in the mode of the snapshot.|
+|console|object|false|none|New output of the virtio console, in the mode of the snapshot.|
+|external_fds|[object]|false|none|File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.<br>|
 
 #### Enumerated Values
 
@@ -5341,6 +5893,7 @@ Unknown is only valid for vhost-user disks.
 |---|---|
 |memory_restore_mode|Copy|
 |memory_restore_mode|OnDemand|
+|memory_restore_mode|OnDemandNoBackgroundFetchPages|
 |memory_restore_mode|CopyOnWrite|
 
 <h2 id="tocS_ReceiveMigrationData">ReceiveMigrationData</h2>
@@ -5353,6 +5906,13 @@ Unknown is only valid for vhost-user disks.
 ```json
 {
   "receiver_url": "string",
+  "vfio_fds": [
+    {
+      "id": "string",
+      "fd": 0
+    }
+  ],
+  "iommufd_fd": 0,
   "tls_dir": "string",
   "zone_updates": [
     {
@@ -5360,7 +5920,35 @@ Unknown is only valid for vhost-user disks.
       "host_numa_node": 0
     }
   ],
-  "background_fetch_pages": true
+  "background_fetch_pages": true,
+  "serial": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "console": {
+    "file": "string",
+    "socket": "string",
+    "tcp": {
+      "address": "127.0.0.1:4444",
+      "server": true
+    },
+    "mode": "Off"
+  },
+  "external_fds": [
+    {
+      "target": {
+        "Net": {
+          "id": "string"
+        }
+      },
+      "expected_fds": 0
+    }
+  ]
 }
 ```
 
@@ -5369,9 +5957,14 @@ Unknown is only valid for vhost-user disks.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |receiver_url|string|true|none|none|
+|vfio_fds|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|none|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
+|iommufd_fd|integer(int32)|false|none|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |tls_dir|string|false|none|Directory containing the TLS server certificate (server-cert.pem), the TLS server key (server-key.pem), and the client TLS root CA certificate (ca-cert.pem). TLS is only supported with tcp:<host>:<port> receiver URLs. Recommended for all TCP migrations. Omitting it is only intended for development and testing, as TCP migration is then unencrypted and unauthenticated.<br>|
 |zone_updates|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|none|
 |background_fetch_pages|boolean|false|none|Enable the background thread for faulting all remaining pages.|
+|serial|object|false|none|New output of the serial console, in the mode of the source VM.|
+|console|object|false|none|New output of the virtio console, in the mode of the source VM.|
+|external_fds|[object]|false|none|File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.<br>|
 
 <h2 id="tocS_MigrationMode">MigrationMode</h2>
 <!-- backwards compatibility -->
@@ -5476,7 +6069,8 @@ The strategy to apply when the migration timeout is reached. Cancel will abort t
 {
   "socket": "string",
   "pci_segment": 0,
-  "pci_device_id": 0
+  "pci_device_id": 0,
+  "id": "string"
 }
 ```
 
@@ -5487,6 +6081,7 @@ The strategy to apply when the migration timeout is reached. Cancel will abort t
 |socket|string|true|none|none|
 |pci_segment|integer(int16)|false|none|none|
 |pci_device_id|integer(uint8)|false|none|none|
+|id|string|false|none|none|
 
 <h2 id="tocS_LandlockConfig">LandlockConfig</h2>
 <!-- backwards compatibility -->

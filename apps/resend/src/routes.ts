@@ -103,16 +103,12 @@ const SendEmailRequestSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The plain text version of the message.' }),
-    template: EmailTemplateInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use a published template to send the email. If provided, do not include html or text.',
-        }),
-    ).exactOptional(),
+    template: EmailTemplateInputSchema.exactOptional().openapi({
+      description:
+        'Use a published template to send the email. If provided, do not include html or text.',
+    }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Custom headers to add to the email.' }),
     scheduled_at: z
@@ -320,6 +316,7 @@ const EmailMetricsDataRowSchema = z
   .openapi({
     description:
       'A single breakdown row. Which dimension fields are present depends on the requested `dimensions`; which metric fields are present depends on the requested `metrics`.',
+    required: [],
   })
   .openapi('EmailMetricsDataRow')
 
@@ -751,6 +748,35 @@ const DomainSchema = z
   })
   .openapi({ required: [] })
   .openapi('Domain')
+
+const EnableForgeRequestSchema = z
+  .object({
+    custom_return_path: z
+      .string()
+      .regex(/^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/)
+      .min(2)
+      .max(63)
+      .exactOptional()
+      .openapi({
+        description:
+          "The subdomain for the Forge Return-Path address, for example `forge` on `example.com` produces a `CNAME` record for `forge.example.com`. It must start with a letter, end with a letter or digit, and contain only letters, digits, and hyphens, and is stored lowercased. When omitted, Resend picks a subdomain that is free in your DNS. It is set once, when Forge is enabled, and cannot be changed afterwards. It cannot equal the domain's return path on the legacy engine, and the chosen host must not already have DNS records.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnableForgeRequest')
+
+const VerifyDomainOptionsSchema = z
+  .object({
+    scope: z
+      .array(z.literal('forge'))
+      .exactOptional()
+      .openapi({
+        description:
+          'Limit the check to specific records. The only supported value is `forge`: only the Forge record is checked, and the other records keep their current status. Requires Forge to be enabled on the domain, otherwise the endpoint responds with a `forge_not_enabled` error. When omitted, all records are checked.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VerifyDomainOptions')
 
 const CreateDomainClaimRequestSchema = z
   .object({
@@ -2471,7 +2497,7 @@ const GetReceivedEmailResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The plain text content of the email.', example: 'Email content' }),
     headers: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The email headers.', example: { 'X-Custom-Header': 'value' } }),
@@ -2956,7 +2982,7 @@ const GetWebhookEventResponseSchema = z
         example: '2026-08-22T15:33:00.000Z',
       }),
     payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The event payload sent to the webhook endpoint.',
@@ -3052,7 +3078,7 @@ const TemplateVariableSchema = z
       .enum(['string', 'number', 'boolean', 'object', 'list'])
       .openapi({ description: 'The type of the variable.' }),
     fallback_value: z
-      .xor([z.string(), z.number(), z.boolean(), z.object({}), z.array(z.any())])
+      .xor([z.string(), z.number(), z.boolean(), z.looseObject({}), z.array(z.any())])
       .exactOptional()
       .openapi({ description: 'The fallback value of the variable.' }),
     created_at: z
@@ -3080,7 +3106,7 @@ const TemplateVariableInputSchema = z
       .enum(['string', 'number', 'boolean', 'object', 'list'])
       .openapi({ description: 'The type of the variable.' }),
     fallback_value: z
-      .xor([z.string(), z.number(), z.boolean(), z.object({}), z.array(z.any())])
+      .xor([z.string(), z.number(), z.boolean(), z.looseObject({}), z.array(z.any())])
       .exactOptional()
       .openapi({ description: 'The fallback value of the variable.' }),
   })
@@ -3331,7 +3357,7 @@ const CreateSegmentOptionsSchema = z
         deprecated: true,
       }),
     filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Filter conditions for the segment.' }),
   })
@@ -3380,7 +3406,7 @@ const GetSegmentResponseSuccessSchema = z
         deprecated: true,
       }),
     filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Filter conditions for the segment.' }),
     created_at: z
@@ -4049,12 +4075,12 @@ const LogSchema = z
       .exactOptional()
       .openapi({ description: 'The user agent of the request.' }),
     request_body: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The request body sent to the API.' }),
     response_body: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The response body returned by the API.' }),
@@ -4098,10 +4124,10 @@ const AutomationStepSchema = z
       ])
       .openapi({ description: 'The type of automation step.' }),
     config: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
-          'Configuration for the step. Shape depends on `type`: - **trigger**: `{ event_name: string }` - **send_email**: `{ template: { id: string, variables?: object }, subject?: string, from?: string, reply_to?: string }` - **delay**: `{ duration: string }` — a human-readable duration (e.g. `"30 minutes"`) - **wait_for_event**: `{ event_name: string, timeout?: string, filter_rule?: object }` — `timeout` is a human-readable duration (e.g. `"1 hour"`) - **condition**: A rule tree with `type` (`rule`, `and`, `or`), `field`, `operator`, and `value` - **contact_update**: `{ first_name?: string|object, last_name?: string|object, unsubscribed?: boolean|object, properties?: object }` - **contact_delete**: `{}` - **add_to_segment**: `{ segment_id: string }`\n',
+          'Configuration for the step. Shape depends on `type`: - **trigger**: `{ event_name: string }` - **send_email**: `{ template: { id: string, variables?: object }, subject?: string, from?: string, reply_to?: string, topic_id?: string }` - **delay**: `{ duration: string }` — a human-readable duration (e.g. `"30 minutes"`) - **wait_for_event**: `{ event_name: string, timeout?: string, filter_rule?: object }` — `timeout` is a human-readable duration (e.g. `"1 hour"`) - **condition**: A rule tree with `type` (`rule`, `and`, `or`), `field`, `operator`, and `value` - **contact_update**: `{ first_name?: string|object, last_name?: string|object, unsubscribed?: boolean|object, properties?: object }` - **contact_delete**: `{}` - **add_to_segment**: `{ segment_id: string }`\n',
       }),
   })
   .openapi({
@@ -4131,7 +4157,7 @@ const AutomationStepResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The type of automation step.' }),
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4364,6 +4390,27 @@ const StopAutomationResponseSchema = z
   .openapi({ required: [] })
   .openapi('StopAutomationResponse')
 
+const CancelAutomationRunResponseSchema = z
+  .object({
+    object: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the response object.', example: 'automation_run' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the cancelled automation run.' }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the automation run after cancelling.',
+        example: 'cancelled',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CancelAutomationRunResponse')
+
 const AutomationRunStepSchema = z
   .object({
     key: z.string().exactOptional().openapi({ description: 'The key of the automation step.' }),
@@ -4401,12 +4448,12 @@ const AutomationRunStepSchema = z
         example: '2023-10-06 23:47:56.678+00',
       }),
     output: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The output produced by the step, if any.' }),
     error: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The error produced by the step, if any.' }),
@@ -4524,7 +4571,7 @@ const EventSchema = z
     id: z.uuid().exactOptional().openapi({ description: 'The event ID.' }),
     name: z.string().exactOptional().openapi({ description: 'The event name.' }),
     schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -4555,7 +4602,7 @@ const EventSummarySchema = z
     id: z.uuid().exactOptional().openapi({ description: 'The event ID.' }),
     name: z.string().exactOptional().openapi({ description: 'The event name.' }),
     schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -4589,7 +4636,7 @@ const CreateEventRequestSchema = z
         description: 'The name of the event. Cannot start with the reserved `resend:` prefix.',
       }),
     schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -4632,7 +4679,7 @@ const ListEventsResponseSchema = z
 const UpdateEventRequestSchema = z
   .object({
     schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .openapi({
         description:
@@ -6893,9 +6940,19 @@ const InboxDraftAttachmentInputSchema = z
   .object({
     content: z
       .string()
+      .exactOptional()
       .openapi({
-        description: 'The content of the file, encoded in base64. It cannot be empty.',
+        description:
+          'The content of the file, encoded in base64. It cannot be empty. Required without `path`.',
         example: 'aGVsbG8gZTJl',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URL to download the file from, starting with `http` or `https`. Required without `content`. A file that cannot be downloaded returns a 422, and so does a request whose downloads take more than 20 seconds together.',
+        example: 'https://example.com/invoice.pdf',
       }),
     filename: z
       .string()
@@ -6907,16 +6964,17 @@ const InboxDraftAttachmentInputSchema = z
     content_type: z
       .string()
       .min(1)
+      .exactOptional()
       .openapi({
         description:
-          'The MIME type of the attachment. It must be a valid MIME type, such as `application/pdf`, or the request returns a 422.',
+          'The MIME type of the attachment. It must be a valid MIME type, such as `application/pdf`, or the request returns a 422. Required with `content`. With `path`, it defaults to the content type of the downloaded file.',
         example: 'application/pdf',
       }),
   })
   .openapi({
     description:
-      'A file to store on a draft. Unlike `POST /emails` attachments, a draft attachment cannot use `path` or `content_id`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored.',
-    required: ['content', 'filename', 'content_type'],
+      'A file to store on a draft. Send either `content` or a `path` URL. Unlike `POST /emails` attachments, a `path` file is downloaded when the request is made, not when the draft is sent, and a draft attachment cannot use `content_id`. When both `content` and `path` are sent, `path` is ignored.',
+    required: ['filename'],
   })
   .openapi('InboxDraftAttachmentInput')
 
@@ -7182,7 +7240,7 @@ const CreateInboxDraftOptionsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422.',
+          'Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422.',
       }),
     thread_id: z
       .uuid()
@@ -7349,7 +7407,7 @@ const UpdateInboxDraftOptionsSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.',
+              'Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.',
           }),
       })
       .openapi({ required: [] }),
@@ -9070,7 +9128,7 @@ export const postDomainsDomainIdVerifyRoute = createRoute({
   tags: ['Domains'],
   summary: 'Verify an existing domain',
   description:
-    "Triggers verification of the domain's DNS records including DKIM, SPF, and the tracking CNAME (if a tracking subdomain is configured).",
+    "Triggers verification of the domain's DNS records including DKIM, SPF, and the tracking CNAME (if a tracking subdomain is configured). Pass `scope` to limit the check to specific records.",
   operationId: 'domains/verify',
   request: {
     params: z.object({
@@ -9086,12 +9144,59 @@ export const postDomainsDomainIdVerifyRoute = createRoute({
           },
         }),
     }),
+    body: { content: { 'application/json': { schema: VerifyDomainOptionsSchema } } },
   },
   responses: {
     200: {
       description: 'OK',
       content: { 'application/json': { schema: VerifyDomainResponseSchema } },
     },
+  },
+})
+
+export const postDomainsDomainIdForgeRoute = createRoute({
+  method: 'post',
+  path: '/domains/{domain_id}/forge',
+  tags: ['Domains'],
+  summary: 'Enable Forge for a domain',
+  description:
+    'Put a domain\'s sending on Resend Forge. The domain must be a sending domain: receive-only domains, domains on a dedicated IP, and domains with legacy DKIM get a `forge_unavailable` error. The response includes the DNS record Forge needs. Add it to your DNS and call the verify domain endpoint with `scope: ["forge"]`, then poll the retrieve domain endpoint until the Forge record\'s `status` is `verified`. The domain keeps sending through its current records while the Forge record verifies, so there is no interruption. Calling this endpoint again just returns the current state.',
+  operationId: 'domains/enable-forge',
+  request: {
+    headers: z.object({
+      'Idempotency-Key': z
+        .string()
+        .min(1)
+        .max(256)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'header',
+            name: 'Idempotency-Key',
+            required: false,
+            schema: { type: 'string', minLength: 1, maxLength: 256 },
+            description:
+              'A unique key for the request, so Forge is enabled only once. A retry with the same key within 24 hours returns the first successful (2xx) response, with the `idempotent-replayed: true` header. A failed request is not stored, so it can be retried with the same key. Reusing the key with a different body, or while the first request is still running, returns a 409. An empty key, or one longer than 256 characters, returns a 400 `invalid_idempotency_key`. [Learn more](https://resend.com/docs/dashboard/emails/idempotency-keys)',
+          },
+        }),
+    }),
+    params: z.object({
+      domain_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'domain_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+            description: 'The ID of the domain.',
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: EnableForgeRequestSchema } } },
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: DomainSchema } } },
   },
 })
 
@@ -11399,6 +11504,48 @@ export const getAutomationsAutomationIdRunsRunIdRoute = createRoute({
   },
 })
 
+export const postAutomationsAutomationIdRunsRunIdCancelRoute = createRoute({
+  method: 'post',
+  path: '/automations/{automation_id}/runs/{run_id}/cancel',
+  tags: ['Automations'],
+  summary: 'Cancel an automation run',
+  description:
+    'Stops a running automation run. Steps that have not started yet are skipped. Returns 422 if the run has already finished.',
+  operationId: 'automations/cancel-run',
+  request: {
+    params: z.object({
+      automation_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'automation_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+            description: 'The ID of the automation.',
+          },
+        }),
+      run_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'run_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+            description: 'The ID of the automation run.',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: CancelAutomationRunResponseSchema } },
+    },
+  },
+})
+
 export const getEventsRoute = createRoute({
   method: 'get',
   path: '/events',
@@ -12708,7 +12855,7 @@ export const postInboxesInboxIdDraftsRoute = createRoute({
   tags: ['Inboxes'],
   summary: 'Create a draft',
   description:
-    "Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` for a draft that starts a new thread. Pass both together for a reply draft in an existing thread. A reply draft without `to` is addressed to the sender of the email it replies to, or to its Reply-To when set. For an email the inbox sent, it defaults to that email's `to` recipients. Send `to: []` to leave it empty. At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` must be non-empty. The combined recipients of `to`, `cc` and `bcc` cannot exceed 50. Attachments are stored on the draft, so each one needs `content`, `filename` and `content_type`. Returns 201 for a new draft. Only one unsent reply draft can target an email, so a reply draft request for an email that already has one returns 200 with the ID of the existing draft. An unknown `thread_id`, or a `reply_to_email_id` that is not in that thread, returns a 404. That request ignores every other field, except `attachments`, which replaces the attachments of the existing draft when sent. A reply draft created without `subject` stores an empty subject. When it is sent, it takes the thread subject, prefixed with `Re:` when it does not already start with it.",
+    "Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` for a draft that starts a new thread. Pass both together for a reply draft in an existing thread. A reply draft without `to` is addressed to the sender of the email it replies to, or to its Reply-To when set. For an email the inbox sent, it defaults to that email's `to` recipients. Send `to: []` to leave it empty. At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` must be non-empty. The combined recipients of `to`, `cc` and `bcc` cannot exceed 50. Attachments are stored on the draft, so a `path` file is downloaded when the request is made. Returns 201 for a new draft. Only one unsent reply draft can target an email, so a reply draft request for an email that already has one returns 200 with the ID of the existing draft. An unknown `thread_id`, or a `reply_to_email_id` that is not in that thread, returns a 404. That request ignores every other field, except `attachments`, which replaces the attachments of the existing draft when sent. A reply draft created without `subject` stores an empty subject. When it is sent, it takes the thread subject, prefixed with `Re:` when it does not already start with it.",
   operationId: 'inboxes/create-draft',
   request: {
     headers: z.object({

@@ -281,6 +281,231 @@ const DirectoryUserSchema = z
   })
   .openapi('DirectoryUser')
 
+const FlagRuleSchema = z
+  .object({
+    object: z.literal('flag_rule'),
+    id: z
+      .string()
+      .openapi({
+        description: 'Unique identifier of the Flag Rule.',
+        example: 'flag_rule_01EHZNVPK3SFK441A1RGBFSHRT',
+      }),
+    flag_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the Feature Flag the rule belongs to.',
+        example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+      }),
+    flag_slug: z
+      .string()
+      .openapi({
+        description: 'The slug of the Feature Flag the rule belongs to.',
+        example: 'new-checkout',
+      }),
+    environment_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the environment the Flag Rule belongs to.',
+        example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+      }),
+    target_type: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The target type slug, if the rule targets a specific type.',
+        example: 'organization',
+      }),
+    position: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'The zero-based position of the rule in evaluation order.',
+        example: 0,
+      }),
+    value_type: z.literal('boolean'),
+    value: z
+      .boolean()
+      .openapi({
+        description: 'The value the Feature Flag evaluates to when the rule matches.',
+        example: false,
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'flag_id',
+      'flag_slug',
+      'environment_id',
+      'target_type',
+      'position',
+      'value_type',
+      'value',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('FlagRule')
+
+const FlagTargetSchema = z
+  .xor([
+    z
+      .object({
+        object: z
+          .literal('flag_target')
+          .openapi({ description: 'Distinguishes the Flag Target object.' }),
+        id: z
+          .string()
+          .openapi({
+            description: 'Unique identifier of the Flag Target.',
+            example: 'flag_target_01EHZNVPK3SFK441A1RGBFSHRT',
+          }),
+        flag_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the Feature Flag the target belongs to.',
+            example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+          }),
+        flag_slug: z
+          .string()
+          .openapi({
+            description:
+              'The slug of the Feature Flag the target belongs to, which is how the Feature Flag endpoints address it.',
+            example: 'new-checkout',
+          }),
+        environment_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the environment the Flag Target belongs to.',
+            example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+          }),
+        target_type: z
+          .string()
+          .openapi({
+            description:
+              'The type of the target: `organization`, `user`, or a custom target type slug.',
+            example: 'organization',
+          }),
+        target_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the targeted entity.',
+            example: 'org_01EHWNCE74X7JSDV0X3SZ3KJNY',
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+        rule_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the rule this target belongs to.',
+            example: 'flag_rule_01EHZNVPK3SFK441A1RGBFSHRT',
+          }),
+      })
+      .openapi({
+        required: [
+          'object',
+          'id',
+          'flag_id',
+          'flag_slug',
+          'environment_id',
+          'target_type',
+          'target_id',
+          'created_at',
+          'updated_at',
+          'rule_id',
+        ],
+      }),
+    z
+      .object({
+        object: z
+          .literal('flag_target')
+          .openapi({ description: 'Distinguishes the Flag Target object.' }),
+        id: z
+          .string()
+          .openapi({
+            description: 'Unique identifier of the Flag Target.',
+            example: 'flag_target_01EHZNVPK3SFK441A1RGBFSHRT',
+          }),
+        flag_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the Feature Flag the target belongs to.',
+            example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+          }),
+        flag_slug: z
+          .string()
+          .openapi({
+            description:
+              'The slug of the Feature Flag the target belongs to, which is how the Feature Flag endpoints address it.',
+            example: 'new-checkout',
+          }),
+        environment_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the environment the Flag Target belongs to.',
+            example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+          }),
+        target_type: z
+          .string()
+          .openapi({
+            description:
+              'The type of the target: `organization`, `user`, or a custom target type slug.',
+            example: 'organization',
+          }),
+        target_id: z
+          .string()
+          .openapi({
+            description: 'The ID of the targeted entity.',
+            example: 'org_01EHWNCE74X7JSDV0X3SZ3KJNY',
+          }),
+        value_type: z
+          .literal('boolean')
+          .openapi({
+            description:
+              'The type of `value`. Only `boolean` is supported today; additional types are reserved for future multivariate Feature Flags.',
+            example: 'boolean',
+          }),
+        value: z
+          .boolean()
+          .openapi({
+            description: 'The value the Feature Flag evaluates to for this target.',
+            example: true,
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+      })
+      .openapi({
+        required: [
+          'object',
+          'id',
+          'flag_id',
+          'flag_slug',
+          'environment_id',
+          'target_type',
+          'target_id',
+          'value_type',
+          'value',
+          'created_at',
+          'updated_at',
+        ],
+      }),
+  ])
+  .openapi('FlagTarget')
+
 const GroupSchema = z
   .object({
     object: z.literal('group').openapi({ description: 'The Group object.', example: 'group' }),
@@ -858,9 +1083,37 @@ const EventSchemaSchema = z
               permissions: z
                 .array(z.string())
                 .openapi({
+                  deprecated: true,
                   description:
-                    'Permission slugs forming the ceiling on what sessions minted from this blueprint may do.',
+                    'Deprecated: use `scoped_permissions`. Slugs of every permission in the ceiling, across all instance types.',
                   example: ['crm:read', 'email:send'],
+                }),
+              scoped_permissions: z
+                .array(
+                  z
+                    .object({
+                      slug: z
+                        .string()
+                        .openapi({ description: 'Slug of the permission.', example: 'email:send' }),
+                      instance_types: z
+                        .array(z.enum(['delegated', 'autonomous']))
+                        .min(1)
+                        .openapi({
+                          description:
+                            'Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both.',
+                          example: ['delegated'],
+                        }),
+                    })
+                    .openapi({ required: ['slug', 'instance_types'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Permissions forming the ceiling on what sessions minted from this blueprint may do, with the instance types that receive each one. Absent from events emitted before this field was added.',
+                  example: [
+                    { slug: 'crm:read', instance_types: ['delegated', 'autonomous'] },
+                    { slug: 'email:send', instance_types: ['delegated'] },
+                  ],
                 }),
               invocable_by: z
                 .object({
@@ -1055,9 +1308,37 @@ const EventSchemaSchema = z
               permissions: z
                 .array(z.string())
                 .openapi({
+                  deprecated: true,
                   description:
-                    'Permission slugs forming the ceiling on what sessions minted from this blueprint may do.',
+                    'Deprecated: use `scoped_permissions`. Slugs of every permission in the ceiling, across all instance types.',
                   example: ['crm:read', 'email:send'],
+                }),
+              scoped_permissions: z
+                .array(
+                  z
+                    .object({
+                      slug: z
+                        .string()
+                        .openapi({ description: 'Slug of the permission.', example: 'email:send' }),
+                      instance_types: z
+                        .array(z.enum(['delegated', 'autonomous']))
+                        .min(1)
+                        .openapi({
+                          description:
+                            'Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both.',
+                          example: ['delegated'],
+                        }),
+                    })
+                    .openapi({ required: ['slug', 'instance_types'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Permissions forming the ceiling on what sessions minted from this blueprint may do, with the instance types that receive each one. Absent from events emitted before this field was added.',
+                  example: [
+                    { slug: 'crm:read', instance_types: ['delegated', 'autonomous'] },
+                    { slug: 'email:send', instance_types: ['delegated'] },
+                  ],
                 }),
               invocable_by: z
                 .object({
@@ -1605,6 +1886,13 @@ const EventSchemaSchema = z
                 .openapi({
                   description: 'The ID of the agent registration.',
                   example: 'agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              organization_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'The ID of the organization the registration belongs to.',
+                  example: 'org_01EHWNCE74X7JSDV0X3SZ3KJNY',
                 }),
               completed_by_attempt_id: z
                 .string()
@@ -2431,6 +2719,159 @@ const EventSchemaSchema = z
               description: 'Unique identifier for the event.',
               example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
             }),
+          event: z.literal('application.token_exchange_failed'),
+          data: z
+            .object({
+              grant_type: z
+                .string()
+                .openapi({
+                  description:
+                    'The OAuth grant type of the token request that presented the token to exchange.',
+                  example: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                }),
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID of the application that made the token request.',
+                  example: 'client_01HXYZ123456789ABCDEFGHIJ',
+                }),
+              issuer: z
+                .string()
+                .nullable()
+                .openapi({
+                  description:
+                    'The issuer the presented token claims. It is not verified, and is `null` when the token could not be read.',
+                  example: 'https://example.okta.com',
+                }),
+              error: z
+                .object({
+                  code: z
+                    .string()
+                    .openapi({
+                      description: 'The OAuth error code returned to the application.',
+                      example: 'invalid_grant',
+                    }),
+                  message: z
+                    .string()
+                    .openapi({
+                      description: 'A human-readable description of the error.',
+                      example: 'The assertion issuer is not trusted in this environment.',
+                    }),
+                })
+                .openapi({
+                  required: ['code', 'message'],
+                  description: 'Why the token exchange failed.',
+                }),
+            })
+            .openapi({
+              required: ['grant_type', 'client_id', 'issuer', 'error'],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('application.token_exchange_succeeded'),
+          data: z
+            .object({
+              grant_type: z
+                .string()
+                .openapi({
+                  description:
+                    'The OAuth grant type of the token request that presented the token to exchange.',
+                  example: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                }),
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID of the application that made the token request.',
+                  example: 'client_01HXYZ123456789ABCDEFGHIJ',
+                }),
+              user_id: z
+                .string()
+                .openapi({
+                  description: 'The ID of the user the access token was issued for.',
+                  example: 'user_01E4ZCR3C56J083X43JQXF3JK5',
+                }),
+              email: z
+                .string()
+                .openapi({
+                  description: 'The email address of the user.',
+                  example: 'user@example.com',
+                }),
+              organization_id: z
+                .string()
+                .nullable()
+                .openapi({
+                  description: 'The ID of the organization the access token is scoped to.',
+                  example: 'org_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              issuer: z
+                .string()
+                .openapi({
+                  description: 'The issuer of the token that was exchanged.',
+                  example: 'https://example.okta.com',
+                }),
+              connection_id: z
+                .string()
+                .nullable()
+                .openapi({
+                  description:
+                    'The ID of the SSO connection whose identity provider issued the exchanged token. `null` when the AI client issued it.',
+                  example: 'conn_01E4ZCR3C56J083X43JQXF3JK5',
+                }),
+              jti: z
+                .string()
+                .openapi({
+                  description: 'The `jti` claim of the access token that was issued.',
+                  example: '01HXYZ123456789ABCDEFGHIJ',
+                }),
+            })
+            .openapi({
+              required: [
+                'grant_type',
+                'client_id',
+                'user_id',
+                'email',
+                'organization_id',
+                'issuer',
+                'connection_id',
+                'jti',
+              ],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
           event: z.literal('authentication.email_verification_failed'),
           data: z
             .object({
@@ -2471,6 +2912,14 @@ const EventSchemaSchema = z
                     .openapi({
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
+                    }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
                 .openapi({
@@ -2592,6 +3041,14 @@ const EventSchemaSchema = z
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
                     }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
+                    }),
                 })
                 .openapi({
                   required: ['code', 'message'],
@@ -2712,6 +3169,14 @@ const EventSchemaSchema = z
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
                     }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
+                    }),
                 })
                 .openapi({
                   required: ['code', 'message'],
@@ -2831,6 +3296,14 @@ const EventSchemaSchema = z
                     .openapi({
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
+                    }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
                 .openapi({
@@ -2967,6 +3440,14 @@ const EventSchemaSchema = z
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
                     }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
+                    }),
                 })
                 .openapi({
                   required: ['code', 'message'],
@@ -3086,6 +3567,14 @@ const EventSchemaSchema = z
                     .openapi({
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
+                    }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
                 .openapi({
@@ -3209,6 +3698,13 @@ const EventSchemaSchema = z
                 .openapi({
                   description: 'The email address of the user.',
                   example: 'user@example.com',
+                }),
+              radar_detection_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'The ID of the Radar detection that challenged the authentication.',
+                  example: 'detection_01HZBC6N1EB1ZY7KG32X',
                 }),
             })
             .openapi({
@@ -3361,6 +3857,14 @@ const EventSchemaSchema = z
                     .openapi({
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
+                    }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
                 .openapi({
@@ -3628,6 +4132,14 @@ const EventSchemaSchema = z
                     .openapi({
                       description: 'A human-readable error message.',
                       example: 'The MFA challenge has failed.',
+                    }),
+                  radar_detection_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                      example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
                 .openapi({
@@ -5072,6 +5584,767 @@ const EventSchemaSchema = z
               description: 'Unique identifier for the event.',
               example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
             }),
+          event: z.literal('feature_flags.flag.created'),
+          data: z
+            .object({
+              object: z.literal('feature_flag'),
+              id: z
+                .string()
+                .openapi({
+                  description: 'Unique identifier of the Feature Flag.',
+                  example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+                }),
+              environment_id: z
+                .string()
+                .openapi({
+                  description: 'The ID of the environment the Feature Flag belongs to.',
+                  example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              slug: z
+                .string()
+                .openapi({
+                  description: 'A unique key to reference the Feature Flag.',
+                  example: 'advanced-analytics',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description: 'A descriptive name for the Feature Flag.',
+                  example: 'Advanced Analytics',
+                }),
+              description: z
+                .string()
+                .nullable()
+                .openapi({
+                  description: 'A description for the Feature Flag.',
+                  example: 'Enable advanced analytics dashboard feature',
+                }),
+              owner: z
+                .xor([
+                  z
+                    .object({
+                      email: z
+                        .string()
+                        .openapi({
+                          description: 'The email address of the flag owner.',
+                          example: 'jane@example.com',
+                        }),
+                      first_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The first name of the flag owner.',
+                          example: 'Jane',
+                        }),
+                      last_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The last name of the flag owner.',
+                          example: 'Doe',
+                        }),
+                    })
+                    .openapi({ required: ['email', 'first_name', 'last_name'] }),
+                  z.null().nullable(),
+                ])
+                .openapi({ description: 'The owner of the Feature Flag.' }),
+              tags: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'Labels assigned to the Feature Flag for categorizing and filtering.',
+                  example: ['reports'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Specifies whether the Feature Flag is active for the current environment.',
+                  example: true,
+                }),
+              default_value: z
+                .boolean()
+                .openapi({
+                  description:
+                    "The value returned for users and organizations who don't match any configured targeting rules.",
+                  example: false,
+                }),
+              created_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+              updated_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+            })
+            .openapi({
+              required: [
+                'object',
+                'id',
+                'environment_id',
+                'slug',
+                'name',
+                'description',
+                'owner',
+                'tags',
+                'enabled',
+                'default_value',
+                'created_at',
+                'updated_at',
+              ],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id', 'actor'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag.deleted'),
+          data: z
+            .object({
+              object: z.literal('feature_flag'),
+              id: z
+                .string()
+                .openapi({
+                  description: 'Unique identifier of the Feature Flag.',
+                  example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+                }),
+              environment_id: z
+                .string()
+                .openapi({
+                  description: 'The ID of the environment the Feature Flag belongs to.',
+                  example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              slug: z
+                .string()
+                .openapi({
+                  description: 'A unique key to reference the Feature Flag.',
+                  example: 'advanced-analytics',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description: 'A descriptive name for the Feature Flag.',
+                  example: 'Advanced Analytics',
+                }),
+              description: z
+                .string()
+                .nullable()
+                .openapi({
+                  description: 'A description for the Feature Flag.',
+                  example: 'Enable advanced analytics dashboard feature',
+                }),
+              owner: z
+                .xor([
+                  z
+                    .object({
+                      email: z
+                        .string()
+                        .openapi({
+                          description: 'The email address of the flag owner.',
+                          example: 'jane@example.com',
+                        }),
+                      first_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The first name of the flag owner.',
+                          example: 'Jane',
+                        }),
+                      last_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The last name of the flag owner.',
+                          example: 'Doe',
+                        }),
+                    })
+                    .openapi({ required: ['email', 'first_name', 'last_name'] }),
+                  z.null().nullable(),
+                ])
+                .openapi({ description: 'The owner of the Feature Flag.' }),
+              tags: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'Labels assigned to the Feature Flag for categorizing and filtering.',
+                  example: ['reports'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Specifies whether the Feature Flag is active for the current environment.',
+                  example: true,
+                }),
+              default_value: z
+                .boolean()
+                .openapi({
+                  description:
+                    "The value returned for users and organizations who don't match any configured targeting rules.",
+                  example: false,
+                }),
+              created_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+              updated_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+            })
+            .openapi({
+              required: [
+                'object',
+                'id',
+                'environment_id',
+                'slug',
+                'name',
+                'description',
+                'owner',
+                'tags',
+                'enabled',
+                'default_value',
+                'created_at',
+                'updated_at',
+              ],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id', 'actor'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag_rule.created'),
+          data: FlagRuleSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag_rule.deleted'),
+          data: FlagRuleSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag_rule.updated'),
+          data: FlagRuleSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+              previous_attributes: z
+                .object({
+                  data: z
+                    .object({
+                      value: z
+                        .boolean()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The value the rule served before the update.',
+                          example: true,
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description: 'The previous data attributes of the flag rule.',
+                      required: [],
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description: 'Attributes that changed from their previous values.',
+                  required: [],
+                }),
+            })
+            .openapi({
+              required: ['client_id'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag.updated'),
+          data: z
+            .object({
+              object: z.literal('feature_flag'),
+              id: z
+                .string()
+                .openapi({
+                  description: 'Unique identifier of the Feature Flag.',
+                  example: 'flag_01EHZNVPK3SFK441A1RGBFSHRT',
+                }),
+              environment_id: z
+                .string()
+                .openapi({
+                  description: 'The ID of the environment the Feature Flag belongs to.',
+                  example: 'environment_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              slug: z
+                .string()
+                .openapi({
+                  description: 'A unique key to reference the Feature Flag.',
+                  example: 'advanced-analytics',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description: 'A descriptive name for the Feature Flag.',
+                  example: 'Advanced Analytics',
+                }),
+              description: z
+                .string()
+                .nullable()
+                .openapi({
+                  description: 'A description for the Feature Flag.',
+                  example: 'Enable advanced analytics dashboard feature',
+                }),
+              owner: z
+                .xor([
+                  z
+                    .object({
+                      email: z
+                        .string()
+                        .openapi({
+                          description: 'The email address of the flag owner.',
+                          example: 'jane@example.com',
+                        }),
+                      first_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The first name of the flag owner.',
+                          example: 'Jane',
+                        }),
+                      last_name: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description: 'The last name of the flag owner.',
+                          example: 'Doe',
+                        }),
+                    })
+                    .openapi({ required: ['email', 'first_name', 'last_name'] }),
+                  z.null().nullable(),
+                ])
+                .openapi({ description: 'The owner of the Feature Flag.' }),
+              tags: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'Labels assigned to the Feature Flag for categorizing and filtering.',
+                  example: ['reports'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Specifies whether the Feature Flag is active for the current environment.',
+                  example: true,
+                }),
+              default_value: z
+                .boolean()
+                .openapi({
+                  description:
+                    "The value returned for users and organizations who don't match any configured targeting rules.",
+                  example: false,
+                }),
+              created_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+              updated_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+            })
+            .openapi({
+              required: [
+                'object',
+                'id',
+                'environment_id',
+                'slug',
+                'name',
+                'description',
+                'owner',
+                'tags',
+                'enabled',
+                'default_value',
+                'created_at',
+                'updated_at',
+              ],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+              previous_attributes: z
+                .object({
+                  data: z
+                    .object({
+                      name: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The previous name of the flag.',
+                          example: 'My Feature Flag',
+                        }),
+                      description: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The previous description of the flag.',
+                          example: 'Enables the new feature.',
+                        }),
+                      tags: z
+                        .array(z.string())
+                        .exactOptional()
+                        .openapi({
+                          description: 'The previous tags of the flag.',
+                          example: ['beta', 'release'],
+                        }),
+                      owner: z
+                        .xor([
+                          z
+                            .object({
+                              email: z
+                                .string()
+                                .openapi({
+                                  description: 'The email address of the flag owner.',
+                                  example: 'jane@example.com',
+                                }),
+                              first_name: z
+                                .string()
+                                .nullable()
+                                .openapi({
+                                  description: 'The first name of the flag owner.',
+                                  example: 'Jane',
+                                }),
+                              last_name: z
+                                .string()
+                                .nullable()
+                                .openapi({
+                                  description: 'The last name of the flag owner.',
+                                  example: 'Doe',
+                                }),
+                            })
+                            .openapi({ required: ['email', 'first_name', 'last_name'] }),
+                          z.null().nullable(),
+                        ])
+                        .exactOptional()
+                        .openapi({
+                          description: 'The previous owner of the flag, or `null` if it had none.',
+                        }),
+                      enabled: z
+                        .boolean()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Whether the flag was previously enabled.',
+                          example: true,
+                        }),
+                      default_value: z
+                        .boolean()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The previous default value of the flag.',
+                          example: false,
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description: 'The previous data attributes of the flag.',
+                      required: [],
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description: 'Attributes that changed from their previous values.',
+                  required: [],
+                }),
+            })
+            .openapi({
+              required: ['client_id', 'actor'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
           event: z.literal('flag.created'),
           data: z
             .object({
@@ -5699,6 +6972,110 @@ const EventSchemaSchema = z
                 'configured_targets',
                 'previous_attributes',
               ],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag_target.created'),
+          data: FlagTargetSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id', 'actor'],
+              description: 'Additional context about the event.',
+            }),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'context', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('feature_flags.flag_target.deleted'),
+          data: FlagTargetSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: z
+            .object({
+              client_id: z
+                .string()
+                .openapi({
+                  description: 'The client ID associated with the flag event.',
+                  example: 'client_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                }),
+              actor: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the actor.',
+                      example: 'user_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  source: z
+                    .enum(['api', 'dashboard', 'admin_portal', 'system'])
+                    .openapi({ description: 'The source of the actor that performed the action.' }),
+                  name: z
+                    .string()
+                    .nullable()
+                    .openapi({ description: 'The name of the actor.', example: 'Jane Doe' }),
+                })
+                .openapi({
+                  required: ['id', 'source', 'name'],
+                  description: 'The actor who performed the action.',
+                }),
+            })
+            .openapi({
+              required: ['client_id', 'actor'],
               description: 'Additional context about the event.',
             }),
           object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
@@ -9008,6 +10385,7 @@ const EventSchemaSchema = z
                   'directoryUsers',
                   'scimLogs',
                   'radarDetections',
+                  'teamActivityLogEvents',
                 ])
                 .openapi({ description: 'The type of resource being exported.', example: 'users' }),
             })
@@ -9050,6 +10428,7 @@ const EventSchemaSchema = z
                   'directoryUsers',
                   'scimLogs',
                   'radarDetections',
+                  'teamActivityLogEvents',
                 ])
                 .openapi({ description: 'The type of resource being exported.', example: 'users' }),
             })
@@ -9092,6 +10471,7 @@ const EventSchemaSchema = z
                   'directoryUsers',
                   'scimLogs',
                   'radarDetections',
+                  'teamActivityLogEvents',
                 ])
                 .openapi({ description: 'The type of resource being exported.', example: 'users' }),
             })
@@ -9134,6 +10514,7 @@ const EventSchemaSchema = z
                   'directoryUsers',
                   'scimLogs',
                   'radarDetections',
+                  'teamActivityLogEvents',
                 ])
                 .openapi({ description: 'The type of resource being exported.', example: 'users' }),
             })
@@ -10628,7 +12009,15 @@ const AuditLogEventActorDtoSchema = z
       .exactOptional()
       .openapi({ description: 'Optional actor name.', example: 'Jon Smith' }),
     metadata: z
-      .strictObject({})
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter(
+          (k) => !['^[a-zA-Z0-9_-]{0,40}$'].some((p) => new RegExp(p).test(k)),
+        )
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
       .refine((val) => Object.keys(val).length <= 50)
       .superRefine((o, ctx) => {
         const regex = new RegExp('^[a-zA-Z0-9_-]{0,40}$')
@@ -10647,6 +12036,14 @@ const AuditLogEventActorDtoSchema = z
       })
       .exactOptional()
       .openapi({
+        ...{
+          patternProperties: {
+            '^[a-zA-Z0-9_-]{0,40}$': {
+              anyOf: [{ type: 'string', maxLength: 500 }, { type: 'number' }, { type: 'boolean' }],
+            },
+          },
+        },
+        additionalProperties: false,
         description: 'Additional data associated with the event or entity.',
         example: { owner: 'user_01GBTCQ2' },
       }),
@@ -10663,7 +12060,15 @@ const AuditLogEventTargetDtoSchema = z
       .exactOptional()
       .openapi({ description: 'Optional target name.', example: 'Jon Smith' }),
     metadata: z
-      .strictObject({})
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter(
+          (k) => !['^[a-zA-Z0-9_-]{0,40}$'].some((p) => new RegExp(p).test(k)),
+        )
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
       .refine((val) => Object.keys(val).length <= 50)
       .superRefine((o, ctx) => {
         const regex = new RegExp('^[a-zA-Z0-9_-]{0,40}$')
@@ -10682,6 +12087,14 @@ const AuditLogEventTargetDtoSchema = z
       })
       .exactOptional()
       .openapi({
+        ...{
+          patternProperties: {
+            '^[a-zA-Z0-9_-]{0,40}$': {
+              anyOf: [{ type: 'string', maxLength: 500 }, { type: 'number' }, { type: 'boolean' }],
+            },
+          },
+        },
+        additionalProperties: false,
         description: 'Additional data associated with the event or entity.',
         example: { owner: 'user_01GBTCQ2' },
       }),
@@ -10712,8 +12125,10 @@ const AuditLogEventDtoSchema = z
       .openapi({ description: 'Identifier of what happened.', example: 'user.signed_in' }),
     occurred_at: z.iso
       .datetime({ offset: true })
+      .exactOptional()
       .openapi({
-        description: 'ISO-8601 value of when the action occurred.',
+        description:
+          'ISO-8601 timestamp of when the action occurred. When omitted, defaults to the time WorkOS receives the event. Explicit JSON null is rejected.',
         example: '2026-02-02T16:35:39.317Z',
       }),
     actor: AuditLogEventActorDtoSchema.openapi({
@@ -10726,7 +12141,15 @@ const AuditLogEventDtoSchema = z
       description: 'Additional context about where and how the action occurred.',
     }),
     metadata: z
-      .strictObject({})
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter(
+          (k) => !['^[a-zA-Z0-9_-]{0,40}$'].some((p) => new RegExp(p).test(k)),
+        )
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
       .refine((val) => Object.keys(val).length <= 50)
       .superRefine((o, ctx) => {
         const regex = new RegExp('^[a-zA-Z0-9_-]{0,40}$')
@@ -10745,6 +12168,14 @@ const AuditLogEventDtoSchema = z
       })
       .exactOptional()
       .openapi({
+        ...{
+          patternProperties: {
+            '^[a-zA-Z0-9_-]{0,40}$': {
+              anyOf: [{ type: 'string', maxLength: 500 }, { type: 'number' }, { type: 'boolean' }],
+            },
+          },
+        },
+        additionalProperties: false,
         description: 'Additional data associated with the event or entity.',
         example: { owner: 'user_01GBTCQ2' },
       }),
@@ -10753,7 +12184,7 @@ const AuditLogEventDtoSchema = z
       .exactOptional()
       .openapi({ description: 'What schema version the event is associated with.', example: 1 }),
   })
-  .openapi({ required: ['action', 'occurred_at', 'actor', 'targets', 'context'] })
+  .openapi({ required: ['action', 'actor', 'targets', 'context'] })
   .openapi('AuditLogEventDto')
 
 const AuditLogEventIngestionDtoSchema = z
@@ -10780,14 +12211,16 @@ const AuditLogExportCreationDtoSchema = z
     range_start: z.iso
       .datetime({ offset: true })
       .openapi({
-        description: 'ISO-8601 value for start of the export range.',
+        description:
+          'ISO-8601 value for start of the export range. The range must span no more than 31 days.',
         example: '2022-07-02T18:09:06.996Z',
       }),
     range_end: z.iso
       .datetime({ offset: true })
       .openapi({
-        description: 'ISO-8601 value for end of the export range.',
-        example: '2022-09-02T18:09:06.996Z',
+        description:
+          'ISO-8601 value for end of the export range. Must be no more than 31 days after the start.',
+        example: '2022-08-02T18:09:06.996Z',
       }),
     actions: z
       .array(z.string())
@@ -10868,7 +12301,17 @@ const UpdateAuditLogsRetentionDtoSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({ required: ['retention_period'] }),
+      .openapi({
+        required: ['retention_period'],
+        not: {
+          anyOf: [
+            {
+              properties: { retention_period_in_days: { 'x-exclude-from-lint': true } },
+              required: ['retention_period_in_days'],
+            },
+          ],
+        },
+      }),
     z
       .object({
         retention_period_in_days: z
@@ -10892,7 +12335,17 @@ const UpdateAuditLogsRetentionDtoSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({ required: ['retention_period_in_days'] }),
+      .openapi({
+        required: ['retention_period_in_days'],
+        not: {
+          anyOf: [
+            {
+              properties: { retention_period: { 'x-exclude-from-lint': true } },
+              required: ['retention_period'],
+            },
+          ],
+        },
+      }),
   ])
   .openapi({
     'x-mutually-exclusive-body-groups': {
@@ -11003,7 +12456,21 @@ const CheckAuthorizationDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_id'] }),
+        .openapi({
+          required: ['resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_external_id'],
+              },
+              {
+                properties: { resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           resource_external_id: z
@@ -11034,7 +12501,17 @@ const CheckAuthorizationDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_external_id', 'resource_type_slug'] }),
+        .openapi({
+          required: ['resource_external_id', 'resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_id'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -11206,7 +12683,21 @@ const AssignRoleDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_id'] }),
+        .openapi({
+          required: ['resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_external_id'],
+              },
+              {
+                properties: { resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           resource_external_id: z
@@ -11237,7 +12728,17 @@ const AssignRoleDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_external_id', 'resource_type_slug'] }),
+        .openapi({
+          required: ['resource_external_id', 'resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_id'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -11252,6 +12753,141 @@ const AssignRoleDtoSchema = z
     },
   })
   .openapi('AssignRoleDto')
+
+const PatchRoleAssignmentEntryDtoSchema = z
+  .object({
+    role_slug: z.string().openapi({ description: 'The slug of the role.', example: 'editor' }),
+  })
+  .openapi({ required: ['role_slug'] })
+  .and(
+    z.xor([
+      z
+        .object({
+          resource_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`.',
+              example: 'authz_resource_01HXYZ123456789ABCDEFGH',
+            }),
+        })
+        .openapi({ required: [] })
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .object({
+                    resource_external_id: z.any().openapi({ 'x-exclude-from-lint': true }),
+                  })
+                  .openapi({ required: ['resource_external_id'] }),
+                z
+                  .object({ resource_type_slug: z.any().openapi({ 'x-exclude-from-lint': true }) })
+                  .openapi({ required: ['resource_type_slug'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({
+          required: ['resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_external_id'],
+              },
+              {
+                properties: { resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['resource_type_slug'],
+              },
+            ],
+          },
+        }),
+      z
+        .object({
+          resource_external_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`.',
+              example: 'project-ext-456',
+            }),
+          resource_type_slug: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The resource type slug. Required with `resource_external_id`. Mutually exclusive with `resource_id`.',
+              example: 'project',
+            }),
+        })
+        .openapi({ required: [] })
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .object({ resource_id: z.any().openapi({ 'x-exclude-from-lint': true }) })
+                  .openapi({ required: ['resource_id'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({
+          required: ['resource_external_id', 'resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_id'],
+              },
+            ],
+          },
+        }),
+    ]),
+  )
+  .openapi({
+    'x-mutually-exclusive-body-groups': {
+      resource_target: {
+        optional: false,
+        variants: {
+          by_id: ['resource_id'],
+          by_external_id: ['resource_external_id', 'resource_type_slug'],
+        },
+      },
+    },
+  })
+  .openapi('PatchRoleAssignmentEntryDto')
+
+const PatchRoleAssignmentsDtoSchema = z
+  .object({
+    add: z
+      .array(PatchRoleAssignmentEntryDtoSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'Role assignments to add to the organization membership. Assignments that already exist are skipped.',
+        example: [{ role_slug: 'editor', resource_id: 'authz_resource_01HXYZ123456789ABCDEFGH' }],
+      }),
+    remove: z
+      .array(PatchRoleAssignmentEntryDtoSchema)
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'Role assignments to remove from the organization membership. Entries that match no assignment are skipped. Roles granted through a group cannot be removed.',
+        example: [
+          {
+            role_slug: 'viewer',
+            resource_type_slug: 'project',
+            resource_external_id: 'project-ext-456',
+          },
+        ],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PatchRoleAssignmentsDto')
 
 const RemoveRoleDtoSchema = z
   .object({
@@ -11289,7 +12925,21 @@ const RemoveRoleDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_id'] }),
+        .openapi({
+          required: ['resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_external_id'],
+              },
+              {
+                properties: { resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           resource_external_id: z
@@ -11320,7 +12970,17 @@ const RemoveRoleDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['resource_external_id', 'resource_type_slug'] }),
+        .openapi({
+          required: ['resource_external_id', 'resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { resource_id: { 'x-exclude-from-lint': true } },
+                required: ['resource_id'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -11575,7 +13235,25 @@ const UpdateAuthorizationResourceDtoSchema = z
                   .openapi({ required: ['parent_resource_type_slug'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_id'],
+              },
+              {
+                properties: { parent_resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_external_id'],
+              },
+              {
+                properties: { parent_resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           parent_resource_id: z
@@ -11605,7 +13283,21 @@ const UpdateAuthorizationResourceDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['parent_resource_id'] }),
+        .openapi({
+          required: ['parent_resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_external_id'],
+              },
+              {
+                properties: { parent_resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           parent_resource_external_id: z
@@ -11636,7 +13328,17 @@ const UpdateAuthorizationResourceDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['parent_resource_external_id', 'parent_resource_type_slug'] }),
+        .openapi({
+          required: ['parent_resource_external_id', 'parent_resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_id'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -11709,7 +13411,25 @@ const CreateAuthorizationResourceDtoSchema = z
                   .openapi({ required: ['parent_resource_type_slug'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_id'],
+              },
+              {
+                properties: { parent_resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_external_id'],
+              },
+              {
+                properties: { parent_resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           parent_resource_id: z
@@ -11740,7 +13460,21 @@ const CreateAuthorizationResourceDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['parent_resource_id'] }),
+        .openapi({
+          required: ['parent_resource_id'],
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_external_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_external_id'],
+              },
+              {
+                properties: { parent_resource_type_slug: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_type_slug'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           parent_resource_external_id: z
@@ -11771,7 +13505,17 @@ const CreateAuthorizationResourceDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['parent_resource_external_id', 'parent_resource_type_slug'] }),
+        .openapi({
+          required: ['parent_resource_external_id', 'parent_resource_type_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { parent_resource_id: { 'x-exclude-from-lint': true } },
+                required: ['parent_resource_id'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -12073,7 +13817,17 @@ const CreateConnectionDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['saml_options'] }),
+        .openapi({
+          required: ['saml_options'],
+          not: {
+            anyOf: [
+              {
+                properties: { oidc_options: { 'x-exclude-from-lint': true } },
+                required: ['oidc_options'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           oidc_options: CreateConnectionOidcOptionsDtoSchema.exactOptional().openapi({
@@ -12092,7 +13846,17 @@ const CreateConnectionDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['oidc_options'] }),
+        .openapi({
+          required: ['oidc_options'],
+          not: {
+            anyOf: [
+              {
+                properties: { saml_options: { 'x-exclude-from-lint': true } },
+                required: ['saml_options'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -12340,7 +14104,21 @@ const PatchConnectionDtoSchema = z
                   .openapi({ required: ['oidc_options'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              {
+                properties: { saml_options: { 'x-exclude-from-lint': true } },
+                required: ['saml_options'],
+              },
+              {
+                properties: { oidc_options: { 'x-exclude-from-lint': true } },
+                required: ['oidc_options'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           saml_options: PatchConnectionSamlOptionsDtoSchema.exactOptional().openapi({
@@ -12359,7 +14137,17 @@ const PatchConnectionDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['saml_options'] }),
+        .openapi({
+          required: ['saml_options'],
+          not: {
+            anyOf: [
+              {
+                properties: { oidc_options: { 'x-exclude-from-lint': true } },
+                required: ['oidc_options'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           oidc_options: PatchConnectionOidcOptionsDtoSchema.exactOptional().openapi({
@@ -12378,7 +14166,17 @@ const PatchConnectionDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['oidc_options'] }),
+        .openapi({
+          required: ['oidc_options'],
+          not: {
+            anyOf: [
+              {
+                properties: { saml_options: { 'x-exclude-from-lint': true } },
+                required: ['saml_options'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -13052,6 +14850,14 @@ const CreateOrganizationConnectedAccountDtoSchema = z
         description: 'A developer-attested account identifier; null clears it.',
         example: 'workspace_123',
       }),
+    config: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.',
+        example: {},
+      }),
     access_token: z
       .string()
       .exactOptional()
@@ -13096,6 +14902,14 @@ const CreateOrganizationConnectedAccountDtoSchema = z
           'The [User](/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.',
         example: 'user_01EHZNVPK3SFK441A1RGBFSHRT',
       }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.',
+        example: {},
+      }),
     connection_intent: z
       .literal('add')
       .exactOptional()
@@ -13127,6 +14941,14 @@ const OrganizationConnectedAccountDtoSchema = z
       .openapi({
         description: 'A developer-attested account identifier; null clears it.',
         example: 'workspace_123',
+      }),
+    config: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.',
+        example: {},
       }),
     access_token: z
       .string()
@@ -13196,6 +15018,14 @@ const CreateConnectedAccountDtoSchema = z
         description: 'A developer-attested account identifier; null clears it.',
         example: 'workspace_123',
       }),
+    config: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.',
+        example: {},
+      }),
     access_token: z
       .string()
       .exactOptional()
@@ -13233,6 +15063,14 @@ const CreateConnectedAccountDtoSchema = z
           'Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.',
         example: 'connected',
       }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.',
+        example: {},
+      }),
     connection_intent: z
       .literal('add')
       .exactOptional()
@@ -13264,6 +15102,14 @@ const ConnectedAccountDtoSchema = z
       .openapi({
         description: 'A developer-attested account identifier; null clears it.',
         example: 'workspace_123',
+      }),
+    config: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.',
+        example: {},
       }),
     access_token: z
       .string()
@@ -13946,7 +15792,21 @@ const CreateUserlandUserOrganizationMembershipDtoSchema = z
                   .openapi({ required: ['role_slugs'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              {
+                properties: { role_slug: { 'x-exclude-from-lint': true } },
+                required: ['role_slug'],
+              },
+              {
+                properties: { role_slugs: { 'x-exclude-from-lint': true } },
+                required: ['role_slugs'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           role_slug: z
@@ -13969,7 +15829,17 @@ const CreateUserlandUserOrganizationMembershipDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['role_slug'] }),
+        .openapi({
+          required: ['role_slug'],
+          not: {
+            anyOf: [
+              {
+                properties: { role_slugs: { 'x-exclude-from-lint': true } },
+                required: ['role_slugs'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           role_slugs: z
@@ -13992,7 +15862,17 @@ const CreateUserlandUserOrganizationMembershipDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['role_slugs'] }),
+        .openapi({
+          required: ['role_slugs'],
+          not: {
+            anyOf: [
+              {
+                properties: { role_slug: { 'x-exclude-from-lint': true } },
+                required: ['role_slug'],
+              },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -14018,7 +15898,18 @@ const UpdateUserlandUserOrganizationMembershipDtoSchema = z
                 .openapi({ required: ['role_slugs'] }),
             ])
             .safeParse(val).success,
-      ),
+      )
+      .openapi({
+        not: {
+          anyOf: [
+            { properties: { role_slug: { 'x-exclude-from-lint': true } }, required: ['role_slug'] },
+            {
+              properties: { role_slugs: { 'x-exclude-from-lint': true } },
+              required: ['role_slugs'],
+            },
+          ],
+        },
+      }),
     z
       .object({
         role_slug: z
@@ -14041,7 +15932,17 @@ const UpdateUserlandUserOrganizationMembershipDtoSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({ required: ['role_slug'] }),
+      .openapi({
+        required: ['role_slug'],
+        not: {
+          anyOf: [
+            {
+              properties: { role_slugs: { 'x-exclude-from-lint': true } },
+              required: ['role_slugs'],
+            },
+          ],
+        },
+      }),
     z
       .object({
         role_slugs: z
@@ -14064,7 +15965,14 @@ const UpdateUserlandUserOrganizationMembershipDtoSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({ required: ['role_slugs'] }),
+      .openapi({
+        required: ['role_slugs'],
+        not: {
+          anyOf: [
+            { properties: { role_slug: { 'x-exclude-from-lint': true } }, required: ['role_slug'] },
+          ],
+        },
+      }),
   ])
   .openapi({
     'x-mutually-exclusive-body-groups': {
@@ -14207,7 +16115,26 @@ const CreateUserlandUserDtoSchema = z
                   .openapi({ required: ['password_salt_position'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              { properties: { password: { 'x-exclude-from-lint': true } }, required: ['password'] },
+              {
+                properties: { password_hash: { 'x-exclude-from-lint': true } },
+                required: ['password_hash'],
+              },
+              {
+                properties: { password_hash_type: { 'x-exclude-from-lint': true } },
+                required: ['password_hash_type'],
+              },
+              {
+                properties: { password_salt_position: { 'x-exclude-from-lint': true } },
+                required: ['password_salt_position'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           password: z
@@ -14239,7 +16166,25 @@ const CreateUserlandUserDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['password'] }),
+        .openapi({
+          required: ['password'],
+          not: {
+            anyOf: [
+              {
+                properties: { password_hash: { 'x-exclude-from-lint': true } },
+                required: ['password_hash'],
+              },
+              {
+                properties: { password_hash_type: { 'x-exclude-from-lint': true } },
+                required: ['password_hash_type'],
+              },
+              {
+                properties: { password_salt_position: { 'x-exclude-from-lint': true } },
+                required: ['password_salt_position'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           password_hash: z
@@ -14278,7 +16223,14 @@ const CreateUserlandUserDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['password_hash', 'password_hash_type'] }),
+        .openapi({
+          required: ['password_hash', 'password_hash_type'],
+          not: {
+            anyOf: [
+              { properties: { password: { 'x-exclude-from-lint': true } }, required: ['password'] },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -14370,7 +16322,26 @@ const UpdateUserlandUserDtoSchema = z
                   .openapi({ required: ['password_salt_position'] }),
               ])
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              { properties: { password: { 'x-exclude-from-lint': true } }, required: ['password'] },
+              {
+                properties: { password_hash: { 'x-exclude-from-lint': true } },
+                required: ['password_hash'],
+              },
+              {
+                properties: { password_hash_type: { 'x-exclude-from-lint': true } },
+                required: ['password_hash_type'],
+              },
+              {
+                properties: { password_salt_position: { 'x-exclude-from-lint': true } },
+                required: ['password_salt_position'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           password: z
@@ -14401,7 +16372,25 @@ const UpdateUserlandUserDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['password'] }),
+        .openapi({
+          required: ['password'],
+          not: {
+            anyOf: [
+              {
+                properties: { password_hash: { 'x-exclude-from-lint': true } },
+                required: ['password_hash'],
+              },
+              {
+                properties: { password_hash_type: { 'x-exclude-from-lint': true } },
+                required: ['password_hash_type'],
+              },
+              {
+                properties: { password_salt_position: { 'x-exclude-from-lint': true } },
+                required: ['password_salt_position'],
+              },
+            ],
+          },
+        }),
       z
         .object({
           password_hash: z
@@ -14440,7 +16429,14 @@ const UpdateUserlandUserDtoSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ required: ['password_hash', 'password_hash_type'] }),
+        .openapi({
+          required: ['password_hash', 'password_hash_type'],
+          not: {
+            anyOf: [
+              { properties: { password: { 'x-exclude-from-lint': true } }, required: ['password'] },
+            ],
+          },
+        }),
     ]),
   )
   .openapi({
@@ -14910,6 +16906,8 @@ const CreateWebhookEndpointDtoSchema = z
           'api_key.created',
           'api_key.revoked',
           'api_key.updated',
+          'application.token_exchange_failed',
+          'application.token_exchange_succeeded',
           'connection.activated',
           'connection.deactivated',
           'connection.saml_certificate_renewal_required',
@@ -14935,6 +16933,14 @@ const CreateWebhookEndpointDtoSchema = z
           'flag.deleted',
           'flag.updated',
           'flag.rule_updated',
+          'feature_flags.flag.created',
+          'feature_flags.flag.updated',
+          'feature_flags.flag.deleted',
+          'feature_flags.flag_rule.created',
+          'feature_flags.flag_rule.updated',
+          'feature_flags.flag_target.created',
+          'feature_flags.flag_rule.deleted',
+          'feature_flags.flag_target.deleted',
           'invitation.accepted',
           'invitation.created',
           'invitation.resent',
@@ -15044,6 +17050,8 @@ const UpdateWebhookEndpointDtoSchema = z
           'api_key.created',
           'api_key.revoked',
           'api_key.updated',
+          'application.token_exchange_failed',
+          'application.token_exchange_succeeded',
           'connection.activated',
           'connection.deactivated',
           'connection.saml_certificate_renewal_required',
@@ -15069,6 +17077,14 @@ const UpdateWebhookEndpointDtoSchema = z
           'flag.deleted',
           'flag.updated',
           'flag.rule_updated',
+          'feature_flags.flag.created',
+          'feature_flags.flag.updated',
+          'feature_flags.flag.deleted',
+          'feature_flags.flag_rule.created',
+          'feature_flags.flag_rule.updated',
+          'feature_flags.flag_target.created',
+          'feature_flags.flag_rule.deleted',
+          'feature_flags.flag_target.deleted',
           'invitation.accepted',
           'invitation.created',
           'invitation.resent',
@@ -15169,13 +17185,13 @@ const ClientApiTokenDtoSchema = z
     organization_id: z
       .string()
       .openapi({
-        description: 'The ID of the organization to scope the Client API token to.',
+        description: 'The ID of the organization to scope the Widgets API token to.',
         example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
       }),
     user_id: z
       .string()
       .openapi({
-        description: 'The ID of the user to issue the Client API token for.',
+        description: 'The ID of the user to issue the Widgets API token for.',
         example: 'user_01E4ZCR3C56J083X43JQXF3JK5',
       }),
   })
@@ -15263,6 +17279,7 @@ const ErrorBodyCodeSchema = z
     'cannot_deactivate_pending_organization_membership',
     'cannot_delete_last_certificate',
     'cannot_reactivate_pending_organization_membership',
+    'cannot_remove_group_sourced_role',
     'certificate_expired',
     'chain_depth_exceeded',
     'claim_denied',
@@ -15286,6 +17303,7 @@ const ErrorBodyCodeSchema = z
     'directory_sync_rate_limited',
     'directory_sync_unsupported',
     'discovery_endpoint_must_use_https',
+    'discovery_endpoint_tenant_not_allowed',
     'domain_already_exists',
     'domain_already_verified',
     'duplicate_endpoint',
@@ -15382,7 +17400,6 @@ const ErrorBodyCodeSchema = z
     'permission_not_found',
     'permission_slug_conflict',
     'phone_number_required',
-    'policy_denied',
     'production_feature_requires_billing',
     'radar_challenge',
     'radar_sign_up_challenge',
@@ -15391,6 +17408,7 @@ const ErrorBodyCodeSchema = z
     'resource_has_dependents',
     'resource_limit_exceeded',
     'resource_type_update_in_progress',
+    'role_assignment_update_overlap',
     'role_has_assignments',
     'role_has_group_role_mappings',
     'role_not_found',
@@ -15407,6 +17425,7 @@ const ErrorBodyCodeSchema = z
     'sub_resource_scoped_role_not_allowed',
     'team_not_found',
     'token_authentication_method_not_supported',
+    'too_many_failed_verification_attempts',
     'too_many_sp_encryption_certs',
     'unsupported_invocation_type',
     'user_already_exists',
@@ -15450,7 +17469,7 @@ const ErrorBodyWithErrorSchema = z
       .string()
       .openapi({
         description: 'A human-readable description of the error.',
-        example: 'Claim "sub" is reserved and cannot be used.',
+        example: 'Request could not be processed.',
       }),
   })
   .openapi({ required: ['error', 'message'] })
@@ -15571,6 +17590,30 @@ const ErrorBodyWithErrorMessageListSchema = z
   })
   .openapi({ required: ['message', 'error'] })
   .openapi('ErrorBodyWithErrorMessageList')
+
+const TooManyFailedVerificationAttemptsErrorBodyWithRetryAfterSchema = z
+  .object({
+    code: z
+      .literal('too_many_failed_verification_attempts')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'too_many_failed_verification_attempts',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+    retry_after: z
+      .int()
+      .openapi({
+        description: 'How many seconds to wait before verification can be retried.',
+        example: 900,
+      }),
+  })
+  .openapi({ required: ['code', 'message', 'retry_after'] })
+  .openapi('TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter')
 
 const RateLimitExceededErrorBodyWithRetryAfterSchema = z
   .object({
@@ -15870,6 +17913,32 @@ const OAuthErrorBodySchema = z
   .openapi({ required: ['error', 'error_description'] })
   .openapi('OAuthErrorBody')
 
+const PolicyDeniedErrorBodySchema = z
+  .object({
+    code: z
+      .literal('policy_denied')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'policy_denied',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+    radar_detection_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Radar detection that blocked the request. Only set when Radar blocked it.',
+        example: 'detection_01HZBC6N1EB1ZY7KG32X',
+      }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('PolicyDeniedErrorBody')
+
 const SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlugSchema = z
   .object({
     message: z
@@ -16082,6 +18151,24 @@ const SmsChallengeQuotaReachedErrorBodySchema = z
   })
   .openapi({ required: ['code', 'message'] })
   .openapi('SmsChallengeQuotaReachedErrorBody')
+
+const RoleAssignmentUpdateOverlapErrorBodySchema = z
+  .object({
+    code: z
+      .literal('role_assignment_update_overlap')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'role_assignment_update_overlap',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('RoleAssignmentUpdateOverlapErrorBody')
 
 const IdpMetadataFetchFailedErrorBodySchema = z
   .object({
@@ -17234,24 +19321,6 @@ const ApplicationConsentRequiredErrorBodySchema = z
   .openapi({ required: ['code', 'message'] })
   .openapi('ApplicationConsentRequiredErrorBody')
 
-const PolicyDeniedErrorBodySchema = z
-  .object({
-    code: z
-      .literal('policy_denied')
-      .openapi({
-        description: 'The error code identifying the type of error.',
-        example: 'policy_denied',
-      }),
-    message: z
-      .string()
-      .openapi({
-        description: 'A human-readable description of the error.',
-        example: 'Request could not be processed.',
-      }),
-  })
-  .openapi({ required: ['code', 'message'] })
-  .openapi('PolicyDeniedErrorBody')
-
 const ActionDeniedErrorBodySchema = z
   .object({
     code: z
@@ -17949,9 +20018,36 @@ const AgentBlueprintSchema = z
     permissions: z
       .array(z.string())
       .openapi({
+        deprecated: true,
         description:
-          'Permission slugs forming the ceiling on what sessions minted from this blueprint may do.',
+          'Deprecated: use `scoped_permissions`. Slugs of every permission in the ceiling, across all instance types.',
         example: ['crm:read', 'email:send'],
+      }),
+    scoped_permissions: z
+      .array(
+        z
+          .object({
+            slug: z
+              .string()
+              .openapi({ description: 'Slug of the permission.', example: 'email:send' }),
+            instance_types: z
+              .array(z.enum(['delegated', 'autonomous']))
+              .min(1)
+              .openapi({
+                description:
+                  'Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both.',
+                example: ['delegated'],
+              }),
+          })
+          .openapi({ required: ['slug', 'instance_types'] }),
+      )
+      .openapi({
+        description:
+          'Permissions forming the ceiling on what sessions minted from this blueprint may do, with the instance types that receive each one.',
+        example: [
+          { slug: 'crm:read', instance_types: ['delegated', 'autonomous'] },
+          { slug: 'email:send', instance_types: ['delegated'] },
+        ],
       }),
     invocable_by: z
       .object({
@@ -18034,6 +20130,7 @@ const AgentBlueprintSchema = z
       'name',
       'description',
       'permissions',
+      'scoped_permissions',
       'invocable_by',
       'invocable_as',
       'session_settings',
@@ -20307,7 +22404,7 @@ const DirectoryUserWithGroupsSchema = z
       .array(DirectoryGroupSchema)
       .openapi({
         description:
-          "The directory groups the user belongs to. Deprecated: starting May 1, 2026, this field returns an empty array by default for newly created teams. Existing teams currently depending on this field should migrate to the new access pattern for better throughput performance — the field is unbounded by user, so users with many group memberships produce large, slow response payloads. Use the List Directory Groups endpoint with a `user` filter to fetch a user's group memberships.",
+          'The directory groups the user belongs to. Deprecated: use `GET /directories/{directoryId}/groups?user={userId}` instead.',
         deprecated: true,
       }),
   })
@@ -24411,7 +26508,7 @@ const ClientApiTokenResponseSchema = z
     token: z
       .string()
       .openapi({
-        description: 'The Client API token.',
+        description: 'The Widgets API token.',
         example: 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNlc3Npb24...',
       }),
   })
@@ -24867,14 +26964,53 @@ export const postAgentsBlueprintsRoute = createRoute({
                   example: 'Finds and qualifies sales prospects.',
                 }),
               permissions: z
-                .array(z.string().min(1))
+                .array(
+                  z.xor([
+                    z
+                      .object({
+                        slug: z
+                          .string()
+                          .min(1)
+                          .openapi({
+                            description: 'Slug of a permission in the environment.',
+                            example: 'email:send',
+                          }),
+                        instance_types: z
+                          .array(z.enum(['delegated', 'autonomous']))
+                          .min(1)
+                          .max(2)
+                          .openapi({
+                            description:
+                              'Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both. Agent-delegated chaining and refreshes use the type of the presenting instance.',
+                            example: ['delegated'],
+                          }),
+                      })
+                      .openapi({
+                        required: ['slug', 'instance_types'],
+                        description:
+                          'A permission in the blueprint ceiling and the sessions it applies to.',
+                      }),
+                    z
+                      .string()
+                      .min(1)
+                      .openapi({
+                        deprecated: true,
+                        description:
+                          'Deprecated: a bare permission slug. An existing permission keeps its instance types; a new one applies to both `delegated` and `autonomous`. Pass an object instead.',
+                        example: 'crm:read',
+                      }),
+                  ]),
+                )
                 .max(1000)
                 .default([])
                 .exactOptional()
                 .openapi({
                   description:
-                    'Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.',
-                  example: ['crm:read', 'email:send'],
+                    'Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.',
+                  example: [
+                    { slug: 'crm:read', instance_types: ['delegated', 'autonomous'] },
+                    { slug: 'email:send', instance_types: ['delegated'] },
+                  ],
                 }),
               invocable_by: z
                 .object({
@@ -25104,13 +27240,52 @@ export const patchAgentsBlueprintsAgentBlueprintIdRoute = createRoute({
                   example: 'Finds and qualifies sales prospects.',
                 }),
               permissions: z
-                .array(z.string().min(1))
+                .array(
+                  z.xor([
+                    z
+                      .object({
+                        slug: z
+                          .string()
+                          .min(1)
+                          .openapi({
+                            description: 'Slug of a permission in the environment.',
+                            example: 'email:send',
+                          }),
+                        instance_types: z
+                          .array(z.enum(['delegated', 'autonomous']))
+                          .min(1)
+                          .max(2)
+                          .openapi({
+                            description:
+                              'Instance types whose sessions receive the permission: `delegated`, `autonomous`, or both. Agent-delegated chaining and refreshes use the type of the presenting instance.',
+                            example: ['delegated'],
+                          }),
+                      })
+                      .openapi({
+                        required: ['slug', 'instance_types'],
+                        description:
+                          'A permission in the blueprint ceiling and the sessions it applies to.',
+                      }),
+                    z
+                      .string()
+                      .min(1)
+                      .openapi({
+                        deprecated: true,
+                        description:
+                          'Deprecated: a bare permission slug. An existing permission keeps its instance types; a new one applies to both `delegated` and `autonomous`. Pass an object instead.',
+                        example: 'crm:read',
+                      }),
+                  ]),
+                )
                 .max(1000)
                 .exactOptional()
                 .openapi({
                   description:
-                    'Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.',
-                  example: ['crm:read', 'email:send'],
+                    'Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.',
+                  example: [
+                    { slug: 'crm:read', instance_types: ['delegated', 'autonomous'] },
+                    { slug: 'email:send', instance_types: ['delegated'] },
+                  ],
                 }),
               invocable_by: z
                 .object({
@@ -26820,6 +28995,23 @@ export const postAuthChallengesIdVerifyRoute = createRoute({
       description: 'Unprocessable Entity',
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
+    429: {
+      description: '',
+      content: {
+        'application/json': {
+          schema: TooManyFailedVerificationAttemptsErrorBodyWithRetryAfterSchema,
+        },
+      },
+      headers: z.object({
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds to wait before verification can be retried.',
+            param: { required: false },
+          }),
+      }),
+    },
   },
 })
 
@@ -27014,7 +29206,7 @@ export const postAuthkitOauth2CompleteRoute = createRoute({
   tags: ['workos-connect'],
   summary: 'Complete external authentication',
   description:
-    'Completes an external authentication flow and returns control to AuthKit. This endpoint is used with [Standalone Connect](/authkit/connect/standalone) to bridge your existing authentication system with the Connect OAuth API infrastructure.\n\nAfter successfully authenticating a user in your application, calling this endpoint will:\n\n- Create or update the user in AuthKit, using the given `id` as its `external_id`.\n- Return a `redirect_uri` your application should redirect to in order for AuthKit to complete the flow\n\nUsers are automatically created or updated based on the `id` and `email` provided. If a user with the same `id` exists, their information is updated. Otherwise, a new user is created.\n\nIf you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.',
+    'Completes a [Standalone Connect](/authkit/connect/standalone) login by creating or updating the AuthKit user and returning a `redirect_uri` your application should redirect to so AuthKit can finish the flow.\n\nThe user is matched by `id`, stored as its `external_id`, and updated if found. Otherwise:\n\n- If a user with the given `email` has no `external_id`, it is linked to `id`.\n- If a user with the given `email` has a different `external_id`, the request fails.\n- If no user has the given `email`, a new user is created.',
   operationId: 'ExternalAuthController_completeLogin',
   request: {
     body: {
@@ -28038,7 +30230,8 @@ export const postAuthorizationOrganizationMembershipsOrganizationMembershipIdRol
     path: '/authorization/organization_memberships/{organization_membership_id}/role_assignments',
     tags: ['authorization'],
     summary: 'Assign a role',
-    description: 'Assign a role to an organization membership on a specific resource.',
+    description:
+      'Assign a role to an organization membership on a specific resource. If the role is already assigned to the membership on that resource, the existing role assignment is returned and no changes are made.',
     operationId: 'AuthorizationRoleAssignmentsController_assignRole',
     request: {
       params: z.object({
@@ -28133,6 +30326,68 @@ export const deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdR
       404: {
         description: 'Not Found',
         content: { 'application/json': { schema: ErrorBodySchema } },
+      },
+      422: {
+        description: 'Unprocessable Entity',
+        content: { 'application/json': { schema: ErrorBodySchema } },
+      },
+    },
+  })
+
+export const patchAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute =
+  createRoute({
+    method: 'patch',
+    path: '/authorization/organization_memberships/{organization_membership_id}/role_assignments',
+    tags: ['authorization'],
+    summary: 'Update role assignments for an organization membership',
+    description:
+      'Add and remove role assignments for an organization membership in a single atomic operation. Each entry identifies a role and a resource, either by `resource_id` or by `resource_type_slug` and `resource_external_id`; to change an organization-level role, target the organization resource. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected, as is a removal of a role granted only through a group. `add` and `remove` must contain between 1 and 100 entries combined.',
+    operationId: 'AuthorizationRoleAssignmentsController_patchRoleAssignments',
+    request: {
+      params: z.object({
+        organization_membership_id: z
+          .string()
+          .openapi({
+            param: {
+              name: 'organization_membership_id',
+              required: true,
+              in: 'path',
+              description: 'The ID of the organization membership.',
+              schema: { type: 'string', example: 'om_01HXYZ123456789ABCDEFGHIJ' },
+            },
+            example: 'om_01HXYZ123456789ABCDEFGHIJ',
+          }),
+      }),
+      body: {
+        content: { 'application/json': { schema: PatchRoleAssignmentsDtoSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      204: { description: 'No Content' },
+      400: {
+        description: 'Bad Request',
+        content: {
+          'application/json': {
+            schema: z.union([RoleAssignmentUpdateOverlapErrorBodySchema, ErrorBodyWithErrorSchema]),
+          },
+        },
+      },
+      402: {
+        description: '',
+        content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
+      },
+      403: {
+        description: 'Forbidden',
+        content: { 'application/json': { schema: ErrorBodySchema } },
+      },
+      404: {
+        description: 'Not Found',
+        content: { 'application/json': { schema: ErrorBodySchema } },
+      },
+      409: {
+        description: '',
+        content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
       },
       422: {
         description: 'Unprocessable Entity',
@@ -31166,9 +33421,9 @@ export const postClientTokenRoute = createRoute({
   method: 'post',
   path: '/client/token',
   tags: ['client'],
-  summary: 'Generate a Client API token',
+  summary: 'Generate a Widgets API token',
   description:
-    'Generate a short-lived, session-bound token for the Client GraphQL API, scoped to an organization and user.',
+    'Generate a short-lived, session-bound token for the Widgets API, scoped to an organization and user.',
   operationId: 'ClientApiTokenController_issueClientApiToken',
   request: {
     body: { content: { 'application/json': { schema: ClientApiTokenDtoSchema } }, required: true },
@@ -31820,6 +34075,23 @@ export const getConnectionsRoute = createRoute({
             schema: { example: 'Foo Corp', type: 'string' },
           },
           example: 'Foo Corp',
+        }),
+      state: z
+        .enum(['active', 'inactive', 'validating'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'state',
+            required: false,
+            in: 'query',
+            description: 'Filter Connections by their state.',
+            schema: {
+              example: 'active',
+              enum: ['active', 'inactive', 'validating'],
+              type: 'string',
+            },
+          },
+          example: 'active',
         }),
     }),
   },
@@ -34039,6 +36311,433 @@ export const getDirectoriesRoute = createRoute({
   },
 })
 
+export const getDirectoriesDirectoryIdGroupsRoute = createRoute({
+  method: 'get',
+  path: '/directories/{directoryId}/groups',
+  tags: ['directory-groups'],
+  summary: 'List Groups for a Directory',
+  description:
+    'Get a list of the Directory Groups in a Directory, optionally filtered to the groups a Directory User belongs to.',
+  operationId: 'DirectoriesGroupsController_list',
+  request: {
+    params: z.object({
+      directoryId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'directoryId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier of the Directory.',
+            schema: { type: 'string', example: 'directory_01ECAZ4NV9QMV47GW873HDCX74' },
+          },
+          example: 'directory_01ECAZ4NV9QMV47GW873HDCX74',
+        }),
+    }),
+    query: z.object({
+      before: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'before',
+            required: false,
+            in: 'query',
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.',
+            schema: { example: 'xxx_01HXYZ123456789ABCDEFGHIJ', type: 'string' },
+          },
+          example: 'xxx_01HXYZ123456789ABCDEFGHIJ',
+        }),
+      after: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'after',
+            required: false,
+            in: 'query',
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.',
+            schema: { example: 'xxx_01HXYZ987654321KJIHGFEDCBA', type: 'string' },
+          },
+          example: 'xxx_01HXYZ987654321KJIHGFEDCBA',
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(10)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            description: 'Upper limit on the number of objects to return, between `1` and `100`.',
+            schema: { minimum: 1, maximum: 100, default: 10, example: 10, type: 'integer' },
+          },
+          example: 10,
+        }),
+      order: PaginationOrderSchema.openapi({
+        param: {
+          name: 'order',
+          required: false,
+          in: 'query',
+          description:
+            'Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `normal`.',
+          schema: { $ref: '#/components/schemas/PaginationOrder' },
+        },
+      }).exactOptional(),
+      user: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'user',
+            required: false,
+            in: 'query',
+            description: 'Filter Directory Groups to those this Directory User belongs to.',
+            schema: { example: 'directory_user_01E1JG7J09H96KYP8HM9B0G5SJ', type: 'string' },
+          },
+          example: 'directory_user_01E1JG7J09H96KYP8HM9B0G5SJ',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              object: z
+                .literal('list')
+                .exactOptional()
+                .openapi({ description: 'Indicates this is a list response.' }),
+              list_metadata: z
+                .object({
+                  before: z
+                    .string()
+                    .nullable()
+                    .openapi({
+                      description:
+                        'An object ID that defines your place in the list. When the ID is not present, you are at the start of the list.',
+                      example: 'directory_group_01HXYZ123456789ABCDEFGHIJ',
+                    }),
+                  after: z
+                    .string()
+                    .nullable()
+                    .openapi({
+                      description:
+                        'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.',
+                      example: 'directory_group_01HXYZ987654321KJIHGFEDCBA',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['before', 'after'],
+                  description: 'Pagination cursors for navigating between pages of results.',
+                }),
+            })
+            .openapi({ required: [] })
+            .and(
+              z
+                .object({
+                  data: z
+                    .array(DirectoryGroupSchema)
+                    .exactOptional()
+                    .openapi({ description: 'The list of records for the current page.' }),
+                })
+                .openapi({ required: [] }),
+            ),
+        },
+      },
+    },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ErrorBodySchema } },
+    },
+  },
+})
+
+export const getDirectoriesDirectoryIdGroupsGroupIdRoute = createRoute({
+  method: 'get',
+  path: '/directories/{directoryId}/groups/{groupId}',
+  tags: ['directory-groups'],
+  summary: 'Get a Group for a Directory',
+  description: 'Get the details of a Directory Group in a Directory.',
+  operationId: 'DirectoriesGroupsController_find',
+  request: {
+    params: z.object({
+      directoryId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'directoryId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier of the Directory.',
+            schema: { type: 'string', example: 'directory_01ECAZ4NV9QMV47GW873HDCX74' },
+          },
+          example: 'directory_01ECAZ4NV9QMV47GW873HDCX74',
+        }),
+      groupId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'groupId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier for the Directory Group.',
+            schema: { example: 'directory_group_01E1JJS84MFPPQ3G655FHTKX6Z', type: 'string' },
+          },
+          example: 'directory_group_01E1JJS84MFPPQ3G655FHTKX6Z',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: DirectoryGroupSchema } } },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const getDirectoriesDirectoryIdUsersRoute = createRoute({
+  method: 'get',
+  path: '/directories/{directoryId}/users',
+  tags: ['directory-users'],
+  summary: 'List Users for a Directory',
+  description:
+    'Get a list of the Directory Users in a Directory, optionally filtered to the members of a Directory Group.',
+  operationId: 'DirectoriesUsersController_list',
+  request: {
+    params: z.object({
+      directoryId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'directoryId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier of the Directory.',
+            schema: { type: 'string', example: 'directory_01ECAZ4NV9QMV47GW873HDCX74' },
+          },
+          example: 'directory_01ECAZ4NV9QMV47GW873HDCX74',
+        }),
+    }),
+    query: z.object({
+      before: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'before',
+            required: false,
+            in: 'query',
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.',
+            schema: { example: 'xxx_01HXYZ123456789ABCDEFGHIJ', type: 'string' },
+          },
+          example: 'xxx_01HXYZ123456789ABCDEFGHIJ',
+        }),
+      after: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'after',
+            required: false,
+            in: 'query',
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.',
+            schema: { example: 'xxx_01HXYZ987654321KJIHGFEDCBA', type: 'string' },
+          },
+          example: 'xxx_01HXYZ987654321KJIHGFEDCBA',
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(10)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            description: 'Upper limit on the number of objects to return, between `1` and `100`.',
+            schema: { minimum: 1, maximum: 100, default: 10, example: 10, type: 'integer' },
+          },
+          example: 10,
+        }),
+      order: PaginationOrderSchema.openapi({
+        param: {
+          name: 'order',
+          required: false,
+          in: 'query',
+          description:
+            'Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `normal`.',
+          schema: { $ref: '#/components/schemas/PaginationOrder' },
+        },
+      }).exactOptional(),
+      group: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'group',
+            required: false,
+            in: 'query',
+            description: 'Filter Directory Users to the members of this Directory Group.',
+            schema: { example: 'directory_group_01E64QTDNS0EGJ0FMCVY9BWGZT', type: 'string' },
+          },
+          example: 'directory_group_01E64QTDNS0EGJ0FMCVY9BWGZT',
+        }),
+      idp_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'idp_id',
+            required: false,
+            in: 'query',
+            description:
+              "Filter Directory Users by the identity provider's unique identifier (`idp_id`).",
+            schema: { example: '2836', type: 'string' },
+          },
+          example: '2836',
+        }),
+      email: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'email',
+            required: false,
+            in: 'query',
+            description: 'Filter Directory Users by their primary email address.',
+            schema: { example: 'jane.doe@example.com', type: 'string' },
+          },
+          example: 'jane.doe@example.com',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              object: z
+                .literal('list')
+                .exactOptional()
+                .openapi({ description: 'Indicates this is a list response.' }),
+              list_metadata: z
+                .object({
+                  before: z
+                    .string()
+                    .nullable()
+                    .openapi({
+                      description:
+                        'An object ID that defines your place in the list. When the ID is not present, you are at the start of the list.',
+                      example: 'directory_user_01HXYZ123456789ABCDEFGHIJ',
+                    }),
+                  after: z
+                    .string()
+                    .nullable()
+                    .openapi({
+                      description:
+                        'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.',
+                      example: 'directory_user_01HXYZ987654321KJIHGFEDCBA',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['before', 'after'],
+                  description: 'Pagination cursors for navigating between pages of results.',
+                }),
+            })
+            .openapi({ required: [] })
+            .and(
+              z
+                .object({
+                  data: z
+                    .array(DirectoryUserSchema)
+                    .exactOptional()
+                    .openapi({ description: 'The list of records for the current page.' }),
+                })
+                .openapi({ required: [] }),
+            ),
+        },
+      },
+    },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ErrorBodySchema } },
+    },
+  },
+})
+
+export const getDirectoriesDirectoryIdUsersUserIdRoute = createRoute({
+  method: 'get',
+  path: '/directories/{directoryId}/users/{userId}',
+  tags: ['directory-users'],
+  summary: 'Get a User for a Directory',
+  description: 'Get the details of a Directory User in a Directory.',
+  operationId: 'DirectoriesUsersController_find',
+  request: {
+    params: z.object({
+      directoryId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'directoryId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier of the Directory.',
+            schema: { type: 'string', example: 'directory_01ECAZ4NV9QMV47GW873HDCX74' },
+          },
+          example: 'directory_01ECAZ4NV9QMV47GW873HDCX74',
+        }),
+      userId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'userId',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier for the Directory User.',
+            schema: { example: 'directory_user_01E1JG7J09H96KYP8HM9B0G5SJ', type: 'string' },
+          },
+          example: 'directory_user_01E1JG7J09H96KYP8HM9B0G5SJ',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: DirectoryUserSchema } } },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
 export const getDirectoriesIdRoute = createRoute({
   method: 'get',
   path: '/directories/{id}',
@@ -34164,7 +36863,8 @@ export const getDirectoryGroupsRoute = createRoute({
   path: '/directory_groups',
   tags: ['directory-groups'],
   summary: 'List Directory Groups',
-  description: 'Get a list of all of existing directory groups matching the criteria specified.',
+  description:
+    'Get a list of all of existing directory groups matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/groups` instead.',
   operationId: 'DirectoryGroupsController_list',
   request: {
     query: z.object({
@@ -34270,6 +36970,7 @@ export const getDirectoryGroupsRoute = createRoute({
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
   },
+  deprecated: true,
 })
 
 export const getDirectoryGroupsIdRoute = createRoute({
@@ -34277,7 +36978,8 @@ export const getDirectoryGroupsIdRoute = createRoute({
   path: '/directory_groups/{id}',
   tags: ['directory-groups'],
   summary: 'Get a Directory Group',
-  description: 'Get the details of an existing Directory Group.',
+  description:
+    'Get the details of an existing Directory Group. Deprecated: use `GET /directories/{directoryId}/groups/{groupId}` instead.',
   operationId: 'DirectoryGroupsController_find',
   request: {
     params: z.object({
@@ -34300,6 +37002,7 @@ export const getDirectoryGroupsIdRoute = createRoute({
     403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
     404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
   },
+  deprecated: true,
 })
 
 export const getDirectoryUsersRoute = createRoute({
@@ -34307,7 +37010,8 @@ export const getDirectoryUsersRoute = createRoute({
   path: '/directory_users',
   tags: ['directory-users'],
   summary: 'List Directory Users',
-  description: 'Get a list of all of existing Directory Users matching the criteria specified.',
+  description:
+    'Get a list of all of existing Directory Users matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/users` instead.',
   operationId: 'DirectoryUsersController_list',
   request: {
     query: z.object({
@@ -34442,6 +37146,7 @@ export const getDirectoryUsersRoute = createRoute({
     },
     429: { description: '', content: { 'application/json': { schema: z.literal('Ratelimited') } } },
   },
+  deprecated: true,
 })
 
 export const getDirectoryUsersIdRoute = createRoute({
@@ -34449,7 +37154,8 @@ export const getDirectoryUsersIdRoute = createRoute({
   path: '/directory_users/{id}',
   tags: ['directory-users'],
   summary: 'Get a Directory User',
-  description: 'Get the details of an existing Directory User.',
+  description:
+    'Get the details of an existing Directory User. Deprecated: use `GET /directories/{directoryId}/users/{userId}` instead.',
   operationId: 'DirectoryUsersController_find',
   request: {
     params: z.object({
@@ -34475,6 +37181,7 @@ export const getDirectoryUsersIdRoute = createRoute({
     403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
     404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
   },
+  deprecated: true,
 })
 
 export const getEventsRoute = createRoute({
@@ -35915,6 +38622,28 @@ export const getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute = 
           example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
         }),
     }),
+    query: z.object({
+      ownership: z
+        .enum(['user', 'organization'])
+        .default('user')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownership',
+            required: false,
+            in: 'query',
+            description:
+              'Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership.',
+            schema: {
+              default: 'user',
+              example: 'user',
+              enum: ['user', 'organization'],
+              type: 'string',
+            },
+          },
+          example: 'user',
+        }),
+    }),
   },
   responses: {
     200: {
@@ -35924,6 +38653,10 @@ export const getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute = 
     401: { description: 'The request is missing a valid API key.' },
     404: {
       description: 'The organization was not found.',
+      content: { 'application/json': { schema: ErrorBodySchema } },
+    },
+    422: {
+      description: 'The ownership selector is invalid.',
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
   },
@@ -35966,6 +38699,28 @@ export const putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRout
           example: 'github',
         }),
     }),
+    query: z.object({
+      ownership: z
+        .enum(['user', 'organization'])
+        .default('user')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownership',
+            required: false,
+            in: 'query',
+            description:
+              'Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership.',
+            schema: {
+              default: 'user',
+              example: 'user',
+              enum: ['user', 'organization'],
+              type: 'string',
+            },
+          },
+          example: 'user',
+        }),
+    }),
     body: {
       content: { 'application/json': { schema: ConfigureDataIntegrationBodySchema } },
       required: true,
@@ -35983,12 +38738,12 @@ export const putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRout
     },
     401: { description: 'The request is missing a valid API key.' },
     404: {
-      description: 'The organization or provider was not found.',
+      description: 'The organization or selected provider was not found.',
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
     422: {
       description:
-        'One or more of the supplied `scopes` are not valid for the provider. Only scopes configured on the provider may be used.',
+        'The ownership selector is invalid, or one or more of the supplied `scopes` are not valid for the provider.',
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
   },
@@ -36878,7 +39633,7 @@ export const putOrganizationsOrganizationIdConnectedAccountsSlugRoute = createRo
   tags: ['organizations.data-providers'],
   summary: 'Update an organization connected account',
   description:
-    "Updates an organization's [connected account](/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.",
+    "Updates an organization's [connected account](/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.",
   operationId: 'DataIntegrationsOrganizationController_updateOrganizationDataInstallation',
   request: {
     params: z.object({
@@ -39353,7 +42108,11 @@ export const postUserManagementAuthenticateRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.union([DailyQuotaExceededErrorBodySchema, TooManyRequestsOAuthErrorBodySchema]),
+          schema: z.union([
+            DailyQuotaExceededErrorBodySchema,
+            TooManyFailedVerificationAttemptsErrorBodyWithRetryAfterSchema,
+            TooManyRequestsOAuthErrorBodySchema,
+          ]),
         },
       },
     },
@@ -40842,7 +43601,7 @@ export const postUserManagementMagicAuthRoute = createRoute({
     },
     403: {
       description: 'Forbidden',
-      content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
+      content: { 'application/json': { schema: PolicyDeniedErrorBodySchema } },
     },
     422: {
       description: 'Unprocessable Entity',
@@ -42198,7 +44957,7 @@ export const postUserManagementUsersRoute = createRoute({
     },
     403: {
       description: 'Forbidden',
-      content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
+      content: { 'application/json': { schema: PolicyDeniedErrorBodySchema } },
     },
     404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
     422: {
@@ -43471,7 +46230,7 @@ export const putUserManagementUsersUserIdConnectedAccountsSlugRoute = createRout
   tags: ['user-management.data-providers'],
   summary: 'Update a connected account',
   description:
-    "Updates a user's [connected account](/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.",
+    "Updates a user's [connected account](/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.",
   operationId: 'DataIntegrationsUserManagementController_updateUserDataInstallation',
   request: {
     params: z.object({

@@ -1,511 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DimensionsSchema = z
-  .object({
-    heightPixels: z.int32().exactOptional().openapi({ description: 'The height in pixels.' }),
-    widthPixels: z.int32().exactOptional().openapi({ description: 'The width in pixels.' }),
-  })
-  .openapi({ description: 'Dimensions.', required: [] })
-  .openapi('Dimensions')
-
-const InventorySourceDisplayCreativeConfigSchema = z
-  .object({
-    creativeSize: DimensionsSchema.exactOptional().openapi({
-      description:
-        'The size requirements for display creatives that can be assigned to the inventory source.',
-    }),
-  })
-  .openapi({ description: 'The configuration for display creatives.', required: [] })
-  .openapi('InventorySourceDisplayCreativeConfig')
-
-const InventorySourceVideoCreativeConfigSchema = z
-  .object({
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The duration requirements for the video creatives that can be assigned to the inventory source.',
-      }),
-  })
-  .openapi({ description: 'The configuration for video creatives.', required: [] })
-  .openapi('InventorySourceVideoCreativeConfig')
-
-type CreativeConfigType = {
-  creativeType?:
-    | 'CREATIVE_TYPE_UNSPECIFIED'
-    | 'CREATIVE_TYPE_STANDARD'
-    | 'CREATIVE_TYPE_EXPANDABLE'
-    | 'CREATIVE_TYPE_VIDEO'
-    | 'CREATIVE_TYPE_NATIVE'
-    | 'CREATIVE_TYPE_TEMPLATED_APP_INSTALL'
-    | 'CREATIVE_TYPE_NATIVE_SITE_SQUARE'
-    | 'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_INTERSTITIAL'
-    | 'CREATIVE_TYPE_LIGHTBOX'
-    | 'CREATIVE_TYPE_NATIVE_APP_INSTALL'
-    | 'CREATIVE_TYPE_NATIVE_APP_INSTALL_SQUARE'
-    | 'CREATIVE_TYPE_AUDIO'
-    | 'CREATIVE_TYPE_PUBLISHER_HOSTED'
-    | 'CREATIVE_TYPE_NATIVE_VIDEO'
-    | 'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_VIDEO'
-  displayCreativeConfig?: z.infer<typeof InventorySourceDisplayCreativeConfigSchema>
-  videoCreativeConfig?: z.infer<typeof InventorySourceVideoCreativeConfigSchema>
-}
-
-const ActivateManualTriggerRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for ManualTriggerService.ActivateManualTrigger.' })
-  .openapi('ActivateManualTriggerRequest')
-
-const ActiveViewVideoViewabilityMetricConfigSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The display name of the custom metric.' }),
-    minimumDuration: z
-      .enum([
-        'VIDEO_DURATION_UNSPECIFIED',
-        'VIDEO_DURATION_SECONDS_NONE',
-        'VIDEO_DURATION_SECONDS_0',
-        'VIDEO_DURATION_SECONDS_1',
-        'VIDEO_DURATION_SECONDS_2',
-        'VIDEO_DURATION_SECONDS_3',
-        'VIDEO_DURATION_SECONDS_4',
-        'VIDEO_DURATION_SECONDS_5',
-        'VIDEO_DURATION_SECONDS_6',
-        'VIDEO_DURATION_SECONDS_7',
-        'VIDEO_DURATION_SECONDS_8',
-        'VIDEO_DURATION_SECONDS_9',
-        'VIDEO_DURATION_SECONDS_10',
-        'VIDEO_DURATION_SECONDS_11',
-        'VIDEO_DURATION_SECONDS_12',
-        'VIDEO_DURATION_SECONDS_13',
-        'VIDEO_DURATION_SECONDS_14',
-        'VIDEO_DURATION_SECONDS_15',
-        'VIDEO_DURATION_SECONDS_30',
-        'VIDEO_DURATION_SECONDS_45',
-        'VIDEO_DURATION_SECONDS_60',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The minimum visible video duration required (in seconds) in order for an impression to be recorded. You must specify minimum_duration, minimum_quartile or both. If both are specified, an impression meets the metric criteria if either requirement is met (whichever happens first).',
-      }),
-    minimumQuartile: z
-      .enum([
-        'VIDEO_DURATION_QUARTILE_UNSPECIFIED',
-        'VIDEO_DURATION_QUARTILE_NONE',
-        'VIDEO_DURATION_QUARTILE_FIRST',
-        'VIDEO_DURATION_QUARTILE_SECOND',
-        'VIDEO_DURATION_QUARTILE_THIRD',
-        'VIDEO_DURATION_QUARTILE_FOURTH',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The minimum visible video duration required, based on the video quartiles, in order for an impression to be recorded. You must specify minimum_duration, minimum_quartile or both. If both are specified, an impression meets the metric criteria if either requirement is met (whichever happens first).',
-      }),
-    minimumViewability: z
-      .enum([
-        'VIEWABILITY_PERCENT_UNSPECIFIED',
-        'VIEWABILITY_PERCENT_0',
-        'VIEWABILITY_PERCENT_25',
-        'VIEWABILITY_PERCENT_50',
-        'VIEWABILITY_PERCENT_75',
-        'VIEWABILITY_PERCENT_100',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The minimum percentage of the video ad's pixels visible on the screen in order for an impression to be recorded.",
-      }),
-    minimumVolume: z
-      .enum([
-        'VIDEO_VOLUME_PERCENT_UNSPECIFIED',
-        'VIDEO_VOLUME_PERCENT_0',
-        'VIDEO_VOLUME_PERCENT_10',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The minimum percentage of the video ad's volume required in order for an impression to be recorded.",
-      }),
-  })
-  .openapi({
-    description: 'Configuration for custom Active View video viewability metrics.',
-    required: [],
-  })
-  .openapi('ActiveViewVideoViewabilityMetricConfig')
-
-const AdUrlSchema = z
-  .object({
-    type: z
-      .enum([
-        'AD_URL_TYPE_UNSPECIFIED',
-        'AD_URL_TYPE_BEACON_IMPRESSION',
-        'AD_URL_TYPE_BEACON_EXPANDABLE_DCM_IMPRESSION',
-        'AD_URL_TYPE_BEACON_CLICK',
-        'AD_URL_TYPE_BEACON_SKIP',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the Ad URL.' }),
-    url: z.string().exactOptional().openapi({ description: 'The URL string value.' }),
-  })
-  .openapi({ description: 'Additional URLs related to the ad, including beacons.', required: [] })
-  .openapi('AdUrl')
-
-const AdlooxSchema = z
-  .object({
-    excludedAdlooxCategories: z
-      .array(
-        z.enum([
-          'ADLOOX_UNSPECIFIED',
-          'ADULT_CONTENT_HARD',
-          'ADULT_CONTENT_SOFT',
-          'ILLEGAL_CONTENT',
-          'BORDERLINE_CONTENT',
-          'DISCRIMINATORY_CONTENT',
-          'VIOLENT_CONTENT_WEAPONS',
-          'LOW_VIEWABILITY_DOMAINS',
-          'FRAUD',
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: "Adloox's brand safety settings." }),
-  })
-  .openapi({ description: 'Details of Adloox settings.', required: [] })
-  .openapi('Adloox')
-
-const CmHybridConfigSchema = z
-  .object({
-    cmAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. Account ID of the CM360 Floodlight configuration linked with the DV360 advertiser.',
-      }),
-    cmFloodlightConfigId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. ID of the CM360 Floodlight configuration linked with the DV360 advertiser.',
-      }),
-    cmFloodlightLinkingAuthorized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. By setting this field to `true`, you, on behalf of your company, authorize the sharing of information from the given Floodlight configuration to this Display & Video 360 advertiser.',
-      }),
-    cmSyncableSiteIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of CM360 sites whose placements will be synced to DV360 as creatives. If absent or empty in CreateAdvertiser method, the system will automatically create a CM360 site. Removing sites from this list may cause DV360 creatives synced from CM360 to be deleted. At least one site must be specified.',
-      }),
-    dv360ToCmCostReportingEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not to report DV360 cost to CM360.' }),
-    dv360ToCmDataSharingEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not to include DV360 data in CM360 data transfer reports.',
-      }),
-  })
-  .openapi({
-    description:
-      'Settings for advertisers that use both Campaign Manager 360 (CM360) and third-party ad servers.',
-    required: [],
-  })
-  .openapi('CmHybridConfig')
-
-const ThirdPartyOnlyConfigSchema = z
-  .object({
-    pixelOrderIdReportingEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not order ID reporting for pixels is enabled. This value cannot be changed once set to `true`.',
-      }),
-  })
-  .openapi({
-    description: 'Settings for advertisers that use third-party ad servers only.',
-    required: [],
-  })
-  .openapi('ThirdPartyOnlyConfig')
-
-const AdvertiserAdServerConfigSchema = z
-  .object({
-    cmHybridConfig: CmHybridConfigSchema.exactOptional().openapi({
-      description:
-        'The configuration for advertisers that use both Campaign Manager 360 (CM360) and third-party ad servers.',
-    }),
-    thirdPartyOnlyConfig: ThirdPartyOnlyConfigSchema.exactOptional().openapi({
-      description: 'The configuration for advertisers that use third-party ad servers only.',
-    }),
-  })
-  .openapi({ description: 'Ad server related settings of an advertiser.', required: [] })
-  .openapi('AdvertiserAdServerConfig')
-
-const AdvertiserBillingConfigSchema = z
-  .object({
-    billingProfileId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ID of a billing profile assigned to the advertiser. This field will default to the default billing profile ID of the advertiser's parent partner if a value is not provided.",
-      }),
-  })
-  .openapi({ description: 'Billing related settings of an advertiser.', required: [] })
-  .openapi('AdvertiserBillingConfig')
-
-const AdvertiserCreativeConfigSchema = z
-  .object({
-    dynamicCreativeEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the advertiser is enabled for dynamic creatives.' }),
-    iasClientId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An ID for configuring campaign monitoring provided by Integral Ad Service (IAS). The DV360 system will append an IAS "Campaign Monitor" tag containing this ID to the creative tag.',
-      }),
-    obaComplianceDisabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether or not to use DV360's Online Behavioral Advertising (OBA) compliance. Warning: Changing OBA settings may cause the audit status of your creatives to be reset by some ad exchanges, making them ineligible to serve until they are re-approved.",
-      }),
-    videoCreativeDataSharingAuthorized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "By setting this field to `true`, you, on behalf of your company, authorize Google to use video creatives associated with this Display & Video 360 advertiser to provide reporting and features related to the advertiser's television campaigns. Applicable only when the advertiser has a CM360 hybrid ad server configuration.",
-      }),
-  })
-  .openapi({ description: 'Creatives related settings of an advertiser.', required: [] })
-  .openapi('AdvertiserCreativeConfig')
-
-const SdfConfigSchema = z
-  .object({
-    adminEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An administrator email address to which the SDF processing status reports will be sent.',
-      }),
-    version: z
-      .enum([
-        'SDF_VERSION_UNSPECIFIED',
-        'SDF_VERSION_3_1',
-        'SDF_VERSION_4',
-        'SDF_VERSION_4_1',
-        'SDF_VERSION_4_2',
-        'SDF_VERSION_5',
-        'SDF_VERSION_5_1',
-        'SDF_VERSION_5_2',
-        'SDF_VERSION_5_3',
-        'SDF_VERSION_5_4',
-        'SDF_VERSION_5_5',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. The version of SDF being used.' }),
-  })
-  .openapi({ description: 'Structured Data File (SDF) related settings.', required: [] })
-  .openapi('SdfConfig')
-
-const AdvertiserSdfConfigSchema = z
-  .object({
-    overridePartnerSdfConfig: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not this advertiser overrides the SDF configuration of its parent partner. By default, an advertiser inherits the SDF configuration from the parent partner. To override the partner configuration, set this field to `true` and provide the new configuration in sdfConfig.',
-      }),
-    sdfConfig: SdfConfigSchema.exactOptional().openapi({
-      description:
-        'The SDF configuration for the advertiser. * Required when overridePartnerSdfConfig is `true`. * Output only when overridePartnerSdfConfig is `false`.',
-    }),
-  })
-  .openapi({ description: 'Structured Data Files (SDF) settings of an advertiser.', required: [] })
-  .openapi('AdvertiserSdfConfig')
-
-const AdvertiserDataAccessConfigSchema = z
-  .object({
-    sdfConfig: AdvertiserSdfConfigSchema.exactOptional().openapi({
-      description:
-        'Structured Data Files (SDF) settings for the advertiser. If not specified, the SDF settings of the parent partner are used.',
-    }),
-  })
-  .openapi({
-    description: 'Settings that control how advertiser related data may be accessed.',
-    required: [],
-  })
-  .openapi('AdvertiserDataAccessConfig')
-
-const AdvertiserGeneralConfigSchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Immutable. Advertiser's currency in ISO 4217 format. Accepted codes and the currencies they represent are: Currency Code : Currency Name * `ARS` : Argentine Peso * `AUD` : Australian Dollar * `BRL` : Brazilian Real * `CAD` : Canadian Dollar * `CHF` : Swiss Franc * `CLP` : Chilean Peso * `CNY` : Chinese Yuan * `COP` : Colombian Peso * `CZK` : Czech Koruna * `DKK` : Danish Krone * `EGP` : Egyption Pound * `EUR` : Euro * `GBP` : British Pound * `HKD` : Hong Kong Dollar * `HUF` : Hungarian Forint * `IDR` : Indonesian Rupiah * `ILS` : Israeli Shekel * `INR` : Indian Rupee * `JPY` : Japanese Yen * `KRW` : South Korean Won * `MXN` : Mexican Pesos * `MYR` : Malaysian Ringgit * `NGN` : Nigerian Naira * `NOK` : Norwegian Krone * `NZD` : New Zealand Dollar * `PEN` : Peruvian Nuevo Sol * `PLN` : Polish Zloty * `RON` : New Romanian Leu * `RUB` : Russian Ruble * `SEK` : Swedish Krona * `TRY` : Turkish Lira * `TWD` : New Taiwan Dollar * `USD` : US Dollar * `ZAR` : South African Rand",
-      }),
-    domainUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The domain URL of the advertiser's primary website. The system will send this information to publishers that require website URL to associate a campaign with an advertiser. Provide a URL with no path or query string, beginning with `http:` or `https:`. For example, http://www.example.com",
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The standard TZ database name of the advertiser's time zone. For example, `America/New_York`. See more at: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones For CM360 hybrid advertisers, the time zone is the same as that of the associated CM360 account; for third-party only advertisers, the time zone is the same as that of the parent partner.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'General settings of an advertiser.', required: [] })
-  .openapi('AdvertiserGeneralConfig')
-
-const IntegrationDetailsSchema = z
-  .object({
-    details: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional details of the entry in string format. Must be UTF-8 encoded with a length of no more than 1000 characters.',
-      }),
-    integrationCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An external identifier to be associated with the entry. The integration code will show up together with the entry in many places in the system, for example, reporting. Must be UTF-8 encoded with a length of no more than 500 characters.',
-      }),
-  })
-  .openapi({ description: 'Integration details of an entry.', required: [] })
-  .openapi('IntegrationDetails')
-
-const AdvertiserTargetingConfigSchema = z
-  .object({
-    exemptTvFromViewabilityTargeting: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not connected TV devices are exempt from viewability targeting for all video line items under the advertiser.',
-      }),
-  })
-  .openapi({
-    description: 'Targeting settings related to ad serving of an advertiser.',
-    required: [],
-  })
-  .openapi('AdvertiserTargetingConfig')
-
-const AdvertiserSchema = z
-  .object({
-    adServerConfig: AdvertiserAdServerConfigSchema.exactOptional().openapi({
-      description: 'Required. Immutable. Ad server related settings of the advertiser.',
-    }),
-    advertiserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique ID of the advertiser. Assigned by the system.',
-        readOnly: true,
-      }),
-    billingConfig: AdvertiserBillingConfigSchema.exactOptional().openapi({
-      description: 'Billing related settings of the advertiser.',
-    }),
-    creativeConfig: AdvertiserCreativeConfigSchema.exactOptional().openapi({
-      description: 'Required. Creative related settings of the advertiser.',
-    }),
-    dataAccessConfig: AdvertiserDataAccessConfigSchema.exactOptional().openapi({
-      description: 'Settings that control how advertiser data may be accessed.',
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The display name of the advertiser. Must be UTF-8 encoded with a maximum size of 240 bytes.',
-      }),
-    entityStatus: z
-      .enum([
-        'ENTITY_STATUS_UNSPECIFIED',
-        'ENTITY_STATUS_ACTIVE',
-        'ENTITY_STATUS_ARCHIVED',
-        'ENTITY_STATUS_DRAFT',
-        'ENTITY_STATUS_PAUSED',
-        'ENTITY_STATUS_SCHEDULED_FOR_DELETION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Controls whether or not insertion orders and line items of the advertiser can spend their budgets and bid on inventory. * Accepted values are `ENTITY_STATUS_ACTIVE`, `ENTITY_STATUS_PAUSED` and `ENTITY_STATUS_SCHEDULED_FOR_DELETION`. * If set to `ENTITY_STATUS_SCHEDULED_FOR_DELETION`, the advertiser will be deleted 30 days from when it was first scheduled for deletion.',
-      }),
-    generalConfig: AdvertiserGeneralConfigSchema.exactOptional().openapi({
-      description: 'Required. General settings of the advertiser.',
-    }),
-    integrationDetails: IntegrationDetailsSchema.exactOptional().openapi({
-      description:
-        'Integration details of the advertiser. Only integrationCode is currently applicable to advertiser. Other fields of IntegrationDetails are not supported and will be ignored if provided.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The resource name of the advertiser.',
-        readOnly: true,
-      }),
-    partnerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The unique ID of the partner that the advertiser belongs to.',
-      }),
-    prismaEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether integration with Mediaocean (Prisma) is enabled. By enabling this, you agree to the following: On behalf of my company, I authorize Mediaocean (Prisma) to send budget segment plans to Google, and I authorize Google to send corresponding reporting and invoices from DV360 to Mediaocean for the purposes of budget planning, billing, and reconciliation for this advertiser.',
-      }),
-    servingConfig: AdvertiserTargetingConfigSchema.exactOptional().openapi({
-      description: 'Targeting settings related to ad serving of the advertiser.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The timestamp when the advertiser was last updated. Assigned by the system.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A single advertiser in Display & Video 360 (DV360).', required: [] })
-  .openapi('Advertiser')
-
 const AgeRangeAssignedTargetingOptionDetailsSchema = z
   .object({
     ageRange: z
@@ -542,38 +36,33 @@ const AgeRangeAssignedTargetingOptionDetailsSchema = z
   })
   .openapi('AgeRangeAssignedTargetingOptionDetails')
 
-const AgeRangeTargetingOptionDetailsSchema = z
+const AppCategoryAssignedTargetingOptionDetailsSchema = z
   .object({
-    ageRange: z
-      .enum([
-        'AGE_RANGE_UNSPECIFIED',
-        'AGE_RANGE_18_24',
-        'AGE_RANGE_25_34',
-        'AGE_RANGE_35_44',
-        'AGE_RANGE_45_54',
-        'AGE_RANGE_55_64',
-        'AGE_RANGE_65_PLUS',
-        'AGE_RANGE_UNKNOWN',
-        'AGE_RANGE_18_20',
-        'AGE_RANGE_21_24',
-        'AGE_RANGE_25_29',
-        'AGE_RANGE_30_34',
-        'AGE_RANGE_35_39',
-        'AGE_RANGE_40_44',
-        'AGE_RANGE_45_49',
-        'AGE_RANGE_50_54',
-        'AGE_RANGE_55_59',
-        'AGE_RANGE_60_64',
-      ])
+    displayName: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'Output only. The age range of an audience.', readOnly: true }),
+      .openapi({
+        description: 'Output only. The display name of the app category.',
+        readOnly: true,
+      }),
+    negative: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if this option is being negatively targeted.' }),
+    targetingOptionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The targeting_option_id field when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
+      }),
   })
   .openapi({
     description:
-      'Represents a targetable age range. This will be populated in the age_range_details field when targeting_type is `TARGETING_TYPE_AGE_RANGE`.',
+      'Details for assigned app category targeting option. This will be populated in the app_category_details field of an AssignedTargetingOption when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
     required: [],
   })
-  .openapi('AgeRangeTargetingOptionDetails')
+  .openapi('AppCategoryAssignedTargetingOptionDetails')
 
 const AppAssignedTargetingOptionDetailsSchema = z
   .object({
@@ -618,157 +107,6 @@ const AppAssignedTargetingOptionDetailsSchema = z
     required: [],
   })
   .openapi('AppAssignedTargetingOptionDetails')
-
-const AppCategoryAssignedTargetingOptionDetailsSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The display name of the app category.',
-        readOnly: true,
-      }),
-    negative: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if this option is being negatively targeted.' }),
-    targetingOptionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The targeting_option_id field when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Details for assigned app category targeting option. This will be populated in the app_category_details field of an AssignedTargetingOption when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
-    required: [],
-  })
-  .openapi('AppCategoryAssignedTargetingOptionDetails')
-
-const AppCategoryTargetingOptionDetailsSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the app collection.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Represents a targetable collection of apps. A collection lets you target dynamic groups of related apps that are maintained by the platform, for example `All Apps/Google Play/Games`. This will be populated in the app_category_details field when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
-    required: [],
-  })
-  .openapi('AppCategoryTargetingOptionDetails')
-
-const AssetSchema = z
-  .object({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The asset content. For uploaded assets, the content is the serving path.',
-      }),
-    mediaId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Media ID of the uploaded asset. This is a unique identifier for the asset. This ID can be passed to other API calls, e.g. CreateCreative to associate the asset with a creative. The Media ID space updated on **April 5, 2023**. Update media IDs cached before **April 5, 2023** by retrieving the new media ID from associated creative resources or re-uploading the asset.',
-      }),
-  })
-  .openapi({ description: 'A single asset.', required: [] })
-  .openapi('Asset')
-
-const AssetAssociationSchema = z
-  .object({
-    asset: AssetSchema.exactOptional().openapi({ description: 'The associated asset.' }),
-    role: z
-      .enum([
-        'ASSET_ROLE_UNSPECIFIED',
-        'ASSET_ROLE_MAIN',
-        'ASSET_ROLE_BACKUP',
-        'ASSET_ROLE_POLITE_LOAD',
-        'ASSET_ROLE_HEADLINE',
-        'ASSET_ROLE_LONG_HEADLINE',
-        'ASSET_ROLE_BODY',
-        'ASSET_ROLE_LONG_BODY',
-        'ASSET_ROLE_CAPTION_URL',
-        'ASSET_ROLE_CALL_TO_ACTION',
-        'ASSET_ROLE_ADVERTISER_NAME',
-        'ASSET_ROLE_PRICE',
-        'ASSET_ROLE_ANDROID_APP_ID',
-        'ASSET_ROLE_IOS_APP_ID',
-        'ASSET_ROLE_RATING',
-        'ASSET_ROLE_ICON',
-        'ASSET_ROLE_COVER_IMAGE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The role of this asset for the creative.' }),
-  })
-  .openapi({ description: 'Asset association for the creative.', required: [] })
-  .openapi('AssetAssociation')
-
-const AssignedInventorySourceSchema = z
-  .object({
-    assignedInventorySourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The unique ID of the assigned inventory source. The ID is only unique within a given inventory source group. It may be reused in other contexts.',
-        readOnly: true,
-      }),
-    inventorySourceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the inventory source entity being targeted.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The resource name of the assigned inventory source.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'An assignment between a targetable inventory source and an inventory source group.',
-    required: [],
-  })
-  .openapi('AssignedInventorySource')
-
-const AssignedLocationSchema = z
-  .object({
-    assignedLocationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The unique ID of the assigned location. The ID is only unique within a location list. It may be reused in other contexts.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The resource name of the assigned location.',
-        readOnly: true,
-      }),
-    targetingOptionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ID of the targeting option assigned to the location list. Must be of type TARGETING_TYPE_GEO_REGION.',
-      }),
-  })
-  .openapi({
-    description:
-      'An assignment between a location list and a relevant targeting option. Currently, geo region targeting options are the only supported option for assignment.',
-    required: [],
-  })
-  .openapi('AssignedLocation')
 
 const FirstAndThirdPartyAudienceTargetingSettingSchema = z
   .object({
@@ -2048,6 +1386,28 @@ const SubExchangeAssignedTargetingOptionDetailsSchema = z
   })
   .openapi('SubExchangeAssignedTargetingOptionDetails')
 
+const AdlooxSchema = z
+  .object({
+    excludedAdlooxCategories: z
+      .array(
+        z.enum([
+          'ADLOOX_UNSPECIFIED',
+          'ADULT_CONTENT_HARD',
+          'ADULT_CONTENT_SOFT',
+          'ILLEGAL_CONTENT',
+          'BORDERLINE_CONTENT',
+          'DISCRIMINATORY_CONTENT',
+          'VIOLENT_CONTENT_WEAPONS',
+          'LOW_VIEWABILITY_DOMAINS',
+          'FRAUD',
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: "Adloox's brand safety settings." }),
+  })
+  .openapi({ description: 'Details of Adloox settings.', required: [] })
+  .openapi('Adloox')
+
 const DoubleVerifyAppStarRatingSchema = z
   .object({
     avoidInsufficientStarRating: z
@@ -2837,6 +2197,1490 @@ const AssignedTargetingOptionSchema = z
   })
   .openapi('AssignedTargetingOption')
 
+type CreateAssignedTargetingOptionsRequestType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  targetingType?:
+    | 'TARGETING_TYPE_UNSPECIFIED'
+    | 'TARGETING_TYPE_CHANNEL'
+    | 'TARGETING_TYPE_APP_CATEGORY'
+    | 'TARGETING_TYPE_APP'
+    | 'TARGETING_TYPE_URL'
+    | 'TARGETING_TYPE_DAY_AND_TIME'
+    | 'TARGETING_TYPE_AGE_RANGE'
+    | 'TARGETING_TYPE_REGIONAL_LOCATION_LIST'
+    | 'TARGETING_TYPE_PROXIMITY_LOCATION_LIST'
+    | 'TARGETING_TYPE_GENDER'
+    | 'TARGETING_TYPE_VIDEO_PLAYER_SIZE'
+    | 'TARGETING_TYPE_USER_REWARDED_CONTENT'
+    | 'TARGETING_TYPE_PARENTAL_STATUS'
+    | 'TARGETING_TYPE_CONTENT_INSTREAM_POSITION'
+    | 'TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION'
+    | 'TARGETING_TYPE_DEVICE_TYPE'
+    | 'TARGETING_TYPE_AUDIENCE_GROUP'
+    | 'TARGETING_TYPE_BROWSER'
+    | 'TARGETING_TYPE_HOUSEHOLD_INCOME'
+    | 'TARGETING_TYPE_ON_SCREEN_POSITION'
+    | 'TARGETING_TYPE_THIRD_PARTY_VERIFIER'
+    | 'TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION'
+    | 'TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION'
+    | 'TARGETING_TYPE_ENVIRONMENT'
+    | 'TARGETING_TYPE_CARRIER_AND_ISP'
+    | 'TARGETING_TYPE_OPERATING_SYSTEM'
+    | 'TARGETING_TYPE_DEVICE_MAKE_MODEL'
+    | 'TARGETING_TYPE_KEYWORD'
+    | 'TARGETING_TYPE_NEGATIVE_KEYWORD_LIST'
+    | 'TARGETING_TYPE_VIEWABILITY'
+    | 'TARGETING_TYPE_CATEGORY'
+    | 'TARGETING_TYPE_INVENTORY_SOURCE'
+    | 'TARGETING_TYPE_LANGUAGE'
+    | 'TARGETING_TYPE_AUTHORIZED_SELLER_STATUS'
+    | 'TARGETING_TYPE_GEO_REGION'
+    | 'TARGETING_TYPE_INVENTORY_SOURCE_GROUP'
+    | 'TARGETING_TYPE_EXCHANGE'
+    | 'TARGETING_TYPE_SUB_EXCHANGE'
+    | 'TARGETING_TYPE_POI'
+    | 'TARGETING_TYPE_BUSINESS_CHAIN'
+    | 'TARGETING_TYPE_CONTENT_DURATION'
+    | 'TARGETING_TYPE_CONTENT_STREAM_TYPE'
+    | 'TARGETING_TYPE_NATIVE_CONTENT_POSITION'
+    | 'TARGETING_TYPE_OMID'
+    | 'TARGETING_TYPE_AUDIO_CONTENT_TYPE'
+    | 'TARGETING_TYPE_CONTENT_GENRE'
+    | 'TARGETING_TYPE_YOUTUBE_VIDEO'
+    | 'TARGETING_TYPE_YOUTUBE_CHANNEL'
+    | 'TARGETING_TYPE_SESSION_POSITION'
+}
+
+const CreateAssignedTargetingOptionsRequestSchema: z.ZodType<CreateAssignedTargetingOptionsRequestType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Required. The assigned targeting options to create and add.' }),
+      targetingType: z
+        .enum([
+          'TARGETING_TYPE_UNSPECIFIED',
+          'TARGETING_TYPE_CHANNEL',
+          'TARGETING_TYPE_APP_CATEGORY',
+          'TARGETING_TYPE_APP',
+          'TARGETING_TYPE_URL',
+          'TARGETING_TYPE_DAY_AND_TIME',
+          'TARGETING_TYPE_AGE_RANGE',
+          'TARGETING_TYPE_REGIONAL_LOCATION_LIST',
+          'TARGETING_TYPE_PROXIMITY_LOCATION_LIST',
+          'TARGETING_TYPE_GENDER',
+          'TARGETING_TYPE_VIDEO_PLAYER_SIZE',
+          'TARGETING_TYPE_USER_REWARDED_CONTENT',
+          'TARGETING_TYPE_PARENTAL_STATUS',
+          'TARGETING_TYPE_CONTENT_INSTREAM_POSITION',
+          'TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION',
+          'TARGETING_TYPE_DEVICE_TYPE',
+          'TARGETING_TYPE_AUDIENCE_GROUP',
+          'TARGETING_TYPE_BROWSER',
+          'TARGETING_TYPE_HOUSEHOLD_INCOME',
+          'TARGETING_TYPE_ON_SCREEN_POSITION',
+          'TARGETING_TYPE_THIRD_PARTY_VERIFIER',
+          'TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION',
+          'TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION',
+          'TARGETING_TYPE_ENVIRONMENT',
+          'TARGETING_TYPE_CARRIER_AND_ISP',
+          'TARGETING_TYPE_OPERATING_SYSTEM',
+          'TARGETING_TYPE_DEVICE_MAKE_MODEL',
+          'TARGETING_TYPE_KEYWORD',
+          'TARGETING_TYPE_NEGATIVE_KEYWORD_LIST',
+          'TARGETING_TYPE_VIEWABILITY',
+          'TARGETING_TYPE_CATEGORY',
+          'TARGETING_TYPE_INVENTORY_SOURCE',
+          'TARGETING_TYPE_LANGUAGE',
+          'TARGETING_TYPE_AUTHORIZED_SELLER_STATUS',
+          'TARGETING_TYPE_GEO_REGION',
+          'TARGETING_TYPE_INVENTORY_SOURCE_GROUP',
+          'TARGETING_TYPE_EXCHANGE',
+          'TARGETING_TYPE_SUB_EXCHANGE',
+          'TARGETING_TYPE_POI',
+          'TARGETING_TYPE_BUSINESS_CHAIN',
+          'TARGETING_TYPE_CONTENT_DURATION',
+          'TARGETING_TYPE_CONTENT_STREAM_TYPE',
+          'TARGETING_TYPE_NATIVE_CONTENT_POSITION',
+          'TARGETING_TYPE_OMID',
+          'TARGETING_TYPE_AUDIO_CONTENT_TYPE',
+          'TARGETING_TYPE_CONTENT_GENRE',
+          'TARGETING_TYPE_YOUTUBE_VIDEO',
+          'TARGETING_TYPE_YOUTUBE_CHANNEL',
+          'TARGETING_TYPE_SESSION_POSITION',
+        ])
+        .exactOptional()
+        .openapi({
+          description: 'Required. Identifies the type of this assigned targeting option.',
+        }),
+    })
+    .openapi({
+      description:
+        'A request listing which assigned targeting options of a given targeting type should be created and added.',
+      required: [],
+    })
+    .openapi('CreateAssignedTargetingOptionsRequest')
+
+const DeleteAssignedTargetingOptionsRequestSchema = z
+  .object({
+    assignedTargetingOptionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. The assigned targeting option IDs to delete.' }),
+    targetingType: z
+      .enum([
+        'TARGETING_TYPE_UNSPECIFIED',
+        'TARGETING_TYPE_CHANNEL',
+        'TARGETING_TYPE_APP_CATEGORY',
+        'TARGETING_TYPE_APP',
+        'TARGETING_TYPE_URL',
+        'TARGETING_TYPE_DAY_AND_TIME',
+        'TARGETING_TYPE_AGE_RANGE',
+        'TARGETING_TYPE_REGIONAL_LOCATION_LIST',
+        'TARGETING_TYPE_PROXIMITY_LOCATION_LIST',
+        'TARGETING_TYPE_GENDER',
+        'TARGETING_TYPE_VIDEO_PLAYER_SIZE',
+        'TARGETING_TYPE_USER_REWARDED_CONTENT',
+        'TARGETING_TYPE_PARENTAL_STATUS',
+        'TARGETING_TYPE_CONTENT_INSTREAM_POSITION',
+        'TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION',
+        'TARGETING_TYPE_DEVICE_TYPE',
+        'TARGETING_TYPE_AUDIENCE_GROUP',
+        'TARGETING_TYPE_BROWSER',
+        'TARGETING_TYPE_HOUSEHOLD_INCOME',
+        'TARGETING_TYPE_ON_SCREEN_POSITION',
+        'TARGETING_TYPE_THIRD_PARTY_VERIFIER',
+        'TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION',
+        'TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION',
+        'TARGETING_TYPE_ENVIRONMENT',
+        'TARGETING_TYPE_CARRIER_AND_ISP',
+        'TARGETING_TYPE_OPERATING_SYSTEM',
+        'TARGETING_TYPE_DEVICE_MAKE_MODEL',
+        'TARGETING_TYPE_KEYWORD',
+        'TARGETING_TYPE_NEGATIVE_KEYWORD_LIST',
+        'TARGETING_TYPE_VIEWABILITY',
+        'TARGETING_TYPE_CATEGORY',
+        'TARGETING_TYPE_INVENTORY_SOURCE',
+        'TARGETING_TYPE_LANGUAGE',
+        'TARGETING_TYPE_AUTHORIZED_SELLER_STATUS',
+        'TARGETING_TYPE_GEO_REGION',
+        'TARGETING_TYPE_INVENTORY_SOURCE_GROUP',
+        'TARGETING_TYPE_EXCHANGE',
+        'TARGETING_TYPE_SUB_EXCHANGE',
+        'TARGETING_TYPE_POI',
+        'TARGETING_TYPE_BUSINESS_CHAIN',
+        'TARGETING_TYPE_CONTENT_DURATION',
+        'TARGETING_TYPE_CONTENT_STREAM_TYPE',
+        'TARGETING_TYPE_NATIVE_CONTENT_POSITION',
+        'TARGETING_TYPE_OMID',
+        'TARGETING_TYPE_AUDIO_CONTENT_TYPE',
+        'TARGETING_TYPE_CONTENT_GENRE',
+        'TARGETING_TYPE_YOUTUBE_VIDEO',
+        'TARGETING_TYPE_YOUTUBE_CHANNEL',
+        'TARGETING_TYPE_SESSION_POSITION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. Identifies the type of this assigned targeting option.' }),
+  })
+  .openapi({
+    description:
+      'A request listing which assigned targeting options of a given targeting type should be deleted.',
+    required: [],
+  })
+  .openapi('DeleteAssignedTargetingOptionsRequest')
+
+type BulkEditAdvertiserAssignedTargetingOptionsRequestType = {
+  createRequests?: z.infer<typeof CreateAssignedTargetingOptionsRequestSchema>[]
+  deleteRequests?: z.infer<typeof DeleteAssignedTargetingOptionsRequestSchema>[]
+}
+
+type BulkEditAdvertiserAssignedTargetingOptionsResponseType = {
+  createdAssignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+}
+
+type BulkEditAssignedTargetingOptionsRequestType = {
+  createRequests?: z.infer<typeof CreateAssignedTargetingOptionsRequestSchema>[]
+  deleteRequests?: z.infer<typeof DeleteAssignedTargetingOptionsRequestSchema>[]
+  lineItemIds?: string[]
+}
+
+type BulkEditPartnerAssignedTargetingOptionsRequestType = {
+  createRequests?: z.infer<typeof CreateAssignedTargetingOptionsRequestSchema>[]
+  deleteRequests?: z.infer<typeof DeleteAssignedTargetingOptionsRequestSchema>[]
+}
+
+type BulkEditPartnerAssignedTargetingOptionsResponseType = {
+  createdAssignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+}
+
+const YoutubeAdGroupAssignedTargetingOptionSchema = z
+  .object({
+    assignedTargetingOption: AssignedTargetingOptionSchema.exactOptional().openapi({
+      description: 'The assigned targeting option resource.',
+    }),
+    youtubeAdGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the youtube ad group the assigned targeting option is assigned to.',
+      }),
+  })
+  .openapi({
+    description:
+      'Wrapper object associating an assigned_targeting_option resource and the youtube ad group it is assigned to.',
+    required: [],
+  })
+  .openapi('YoutubeAdGroupAssignedTargetingOption')
+
+type BulkListAdGroupAssignedTargetingOptionsResponseType = {
+  nextPageToken?: string
+  youtubeAdGroupAssignedTargetingOptions?: z.infer<
+    typeof YoutubeAdGroupAssignedTargetingOptionSchema
+  >[]
+}
+
+type BulkListAdvertiserAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+const LineItemAssignedTargetingOptionSchema = z
+  .object({
+    assignedTargetingOption: AssignedTargetingOptionSchema.exactOptional().openapi({
+      description: 'The assigned targeting option resource.',
+    }),
+    lineItemId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the line item the assigned targeting option is assigned to.',
+      }),
+  })
+  .openapi({
+    description:
+      'Wrapper object associating an assigned_targeting_option resource and the line item it is assigned to.',
+    required: [],
+  })
+  .openapi('LineItemAssignedTargetingOption')
+
+type BulkListAssignedTargetingOptionsResponseType = {
+  lineItemAssignedTargetingOptions?: z.infer<typeof LineItemAssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type BulkListCampaignAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type BulkListInsertionOrderAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type ListAdvertiserAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type ListCampaignAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type ListInsertionOrderAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+const FixedBidStrategySchema = z
+  .object({
+    bidAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The fixed bid amount, in micros of the advertiser's currency. For insertion order entity, bid_amount_micros should be set as 0. For line item entity, bid_amount_micros must be greater than or equal to billable unit of the given currency and smaller than or equal to the upper limit 1000000000. For example, 1500000 represents 1.5 standard units of the currency.",
+      }),
+  })
+  .openapi({ description: 'A strategy that uses a fixed bidding price.', required: [] })
+  .openapi('FixedBidStrategy')
+
+const MaximizeSpendBidStrategySchema = z
+  .object({
+    customBiddingAlgorithmId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Custom Bidding Algorithm used by this strategy. Only applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
+      }),
+    maxAverageCpmBidAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum average CPM that may be bid, in micros of the advertiser's currency. Must be greater than or equal to a billable unit of the given currency. For example, 1500000 represents 1.5 standard units of the currency.",
+      }),
+    performanceGoalType: z
+      .enum([
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of the performance goal that the bidding strategy tries to minimize while spending the full budget. `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` is not supported for this strategy.',
+      }),
+    raiseBidForDeals: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the strategy takes deal floor prices into account.' }),
+  })
+  .openapi({
+    description:
+      'A strategy that automatically adjusts the bid to optimize a specified performance goal while spending the full budget.',
+    required: [],
+  })
+  .openapi('MaximizeSpendBidStrategy')
+
+const PerformanceGoalBidStrategySchema = z
+  .object({
+    customBiddingAlgorithmId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Custom Bidding Algorithm used by this strategy. Only applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
+      }),
+    maxAverageCpmBidAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The maximum average CPM that may be bid, in micros of the advertiser's currency. Must be greater than or equal to a billable unit of the given currency. Not applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`. For example, 1500000 represents 1.5 standard units of the currency.",
+      }),
+    performanceGoalAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The performance goal the bidding strategy will attempt to meet or beat, in micros of the advertiser's currency or in micro of the ROAS (Return On Advertising Spend) value which is also based on advertiser's currency. Must be greater than or equal to a billable unit of the given currency and smaller or equal to upper bounds. Each performance_goal_type has its upper bound: * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA`, upper bound is 10000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC`, upper bound is 1000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`, upper bound is 1000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`, upper bound is 1000.00 and lower bound is 0.01. Example: If set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`, the bid price will be based on the probability that each available impression will be viewable. For example, if viewable CPM target is $2 and an impression is 40% likely to be viewable, the bid price will be $0.80 CPM (40% of $2). For example, 1500000 represents 1.5 standard units of the currency or ROAS value.",
+      }),
+    performanceGoalType: z
+      .enum([
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN',
+        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of the performance goal that the bidding strategy will try to meet or beat. For line item level usage, the value must be one of: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
+      }),
+  })
+  .openapi({
+    description:
+      'A strategy that automatically adjusts the bid to meet or beat a specified performance goal.',
+    required: [],
+  })
+  .openapi('PerformanceGoalBidStrategy')
+
+const BiddingStrategySchema = z
+  .object({
+    fixedBid: FixedBidStrategySchema.exactOptional().openapi({
+      description: 'A strategy that uses a fixed bid price.',
+    }),
+    maximizeSpendAutoBid: MaximizeSpendBidStrategySchema.exactOptional().openapi({
+      description:
+        'A strategy that automatically adjusts the bid to optimize to your performance goal while spending the full budget. At insertion order level, the markup_type of line items cannot be set to `PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM`. In addition, when performance_goal_type is one of: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED` , the line_item_type of the insertion order line items must be either: * `LINE_ITEM_TYPE_DISPLAY_DEFAULT` * `LINE_ITEM_TYPE_VIDEO_DEFAULT` , and when performance_goal_type is either: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN` the line_item_type of the insertion order line items must be `LINE_ITEM_TYPE_VIDEO_DEFAULT`.',
+    }),
+    performanceGoalAutoBid: PerformanceGoalBidStrategySchema.exactOptional().openapi({
+      description:
+        'A strategy that automatically adjusts the bid to meet or beat a specified performance goal. It is to be used only for a line item entity.',
+    }),
+  })
+  .openapi({
+    description: 'Settings that control the bid strategy. Bid strategy determines the bid price.',
+    required: [],
+  })
+  .openapi('BiddingStrategy')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const DateRangeSchema = z
+  .object({
+    endDate: DateSchema.exactOptional().openapi({
+      description:
+        'The upper bound of the date range, inclusive. Must specify a positive value for `year`, `month`, and `day`.',
+    }),
+    startDate: DateSchema.exactOptional().openapi({
+      description:
+        'The lower bound of the date range, inclusive. Must specify a positive value for `year`, `month`, and `day`.',
+    }),
+  })
+  .openapi({ description: 'A date range.', required: [] })
+  .openapi('DateRange')
+
+const InsertionOrderBudgetSegmentSchema = z
+  .object({
+    budgetAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The budget amount the insertion order will spend for the given date_range. The amount is in micros. Must be greater than 0. For example, 500000000 represents 500 standard units of the currency.',
+      }),
+    campaignBudgetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The budget_id of the campaign budget that this insertion order budget segment is a part of.',
+      }),
+    dateRange: DateRangeSchema.exactOptional().openapi({
+      description:
+        "Required. The start and end date settings of the budget segment. They are resolved relative to the parent advertiser's time zone. * When creating a new budget segment, both `start_date` and `end_date` must be in the future. * An existing budget segment with a `start_date` in the past has a mutable `end_date` but an immutable `start_date`. * `end_date` must be the `start_date` or later, both before the year 2037.",
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The budget segment description. It can be used to enter Purchase Order information for each budget segment and have that information printed on the invoices. Must be UTF-8 encoded.',
+      }),
+  })
+  .openapi({
+    description: 'Settings that control the budget of a single budget segment.',
+    required: [],
+  })
+  .openapi('InsertionOrderBudgetSegment')
+
+const InsertionOrderBudgetSchema = z
+  .object({
+    automationType: z
+      .enum([
+        'INSERTION_ORDER_AUTOMATION_TYPE_UNSPECIFIED',
+        'INSERTION_ORDER_AUTOMATION_TYPE_BUDGET',
+        'INSERTION_ORDER_AUTOMATION_TYPE_NONE',
+        'INSERTION_ORDER_AUTOMATION_TYPE_BID_BUDGET',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of automation used to manage bid and budget for the insertion order. If this field is unspecified in creation, the value defaults to `INSERTION_ORDER_AUTOMATION_TYPE_NONE`.',
+      }),
+    budgetSegments: z
+      .array(InsertionOrderBudgetSegmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The list of budget segments. Use a budget segment to specify a specific budget for a given period of time an insertion order is running.',
+      }),
+    budgetUnit: z
+      .enum(['BUDGET_UNIT_UNSPECIFIED', 'BUDGET_UNIT_CURRENCY', 'BUDGET_UNIT_IMPRESSIONS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The budget unit specifies whether the budget is currency based or impression based.',
+      }),
+  })
+  .openapi({
+    description: 'Settings that control how insertion order budget is allocated.',
+    required: [],
+  })
+  .openapi('InsertionOrderBudget')
+
+const FrequencyCapSchema = z
+  .object({
+    maxImpressions: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of times a user may be shown the same ad during this period. Must be greater than 0. Required when unlimited is `false` and max_views is not set.',
+      }),
+    maxViews: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of times a user may click-through or fully view an ad during this period until it is no longer served to them. Must be greater than 0. Only applicable to YouTube and Partners resources. Required when unlimited is `false` and max_impressions is not set.',
+      }),
+    timeUnit: z
+      .enum([
+        'TIME_UNIT_UNSPECIFIED',
+        'TIME_UNIT_LIFETIME',
+        'TIME_UNIT_MONTHS',
+        'TIME_UNIT_WEEKS',
+        'TIME_UNIT_DAYS',
+        'TIME_UNIT_HOURS',
+        'TIME_UNIT_MINUTES',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The time unit in which the frequency cap will be applied. Required when unlimited is `false`.',
+      }),
+    timeUnitCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of time_unit the frequency cap will last. Required when unlimited is `false`. The following restrictions apply based on the value of time_unit: * `TIME_UNIT_LIFETIME` - this field is output only and will default to 1 * `TIME_UNIT_MONTHS` - must be between 1 and 2 * `TIME_UNIT_WEEKS` - must be between 1 and 4 * `TIME_UNIT_DAYS` - must be between 1 and 6 * `TIME_UNIT_HOURS` - must be between 1 and 23 * `TIME_UNIT_MINUTES` - must be between 1 and 59',
+      }),
+    unlimited: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether unlimited frequency capping is applied. When this field is set to `true`, the remaining frequency cap fields are not applicable.',
+      }),
+  })
+  .openapi({
+    description:
+      'Settings that control the number of times a user may be shown with the same ad during a given time period.',
+    required: [],
+  })
+  .openapi('FrequencyCap')
+
+const IntegrationDetailsSchema = z
+  .object({
+    details: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional details of the entry in string format. Must be UTF-8 encoded with a length of no more than 1000 characters.',
+      }),
+    integrationCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An external identifier to be associated with the entry. The integration code will show up together with the entry in many places in the system, for example, reporting. Must be UTF-8 encoded with a length of no more than 500 characters.',
+      }),
+  })
+  .openapi({ description: 'Integration details of an entry.', required: [] })
+  .openapi('IntegrationDetails')
+
+const PacingSchema = z
+  .object({
+    dailyMaxImpressions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of impressions to serve every day. Applicable when the budget is impression based. Must be greater than 0.',
+      }),
+    dailyMaxMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum currency amount to spend every day in micros of advertiser's currency. Applicable when the budget is currency based. Must be greater than 0. For example, for 1.5 standard unit of the currency, set this field to 1500000. The value assigned will be rounded to whole billable units for the relevant currency by the following rules: any positive value less than a single billable unit will be rounded up to one billable unit and any value larger than a single billable unit will be rounded down to the nearest billable value. For example, if the currency's billable unit is 0.01, and this field is set to 10257770, it will round down to 10250000, a value of 10.25. If set to 505, it will round up to 10000, a value of 0.01.",
+      }),
+    pacingPeriod: z
+      .enum(['PACING_PERIOD_UNSPECIFIED', 'PACING_PERIOD_DAILY', 'PACING_PERIOD_FLIGHT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The time period in which the pacing budget will be spent. When automatic budget allocation is enabled at the insertion order via auto_budget_allocation, this field is output only and defaults to `PACING_PERIOD_FLIGHT`.',
+      }),
+    pacingType: z
+      .enum([
+        'PACING_TYPE_UNSPECIFIED',
+        'PACING_TYPE_AHEAD',
+        'PACING_TYPE_ASAP',
+        'PACING_TYPE_EVEN',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of pacing that defines how the budget amount will be spent across the pacing_period.',
+      }),
+  })
+  .openapi({
+    description: 'Settings that control the rate at which a budget is spent.',
+    required: [],
+  })
+  .openapi('Pacing')
+
+const PartnerCostSchema = z
+  .object({
+    costType: z
+      .enum([
+        'PARTNER_COST_TYPE_UNSPECIFIED',
+        'PARTNER_COST_TYPE_ADLOOX',
+        'PARTNER_COST_TYPE_ADLOOX_PREBID',
+        'PARTNER_COST_TYPE_ADSAFE',
+        'PARTNER_COST_TYPE_ADXPOSE',
+        'PARTNER_COST_TYPE_AGGREGATE_KNOWLEDGE',
+        'PARTNER_COST_TYPE_AGENCY_TRADING_DESK',
+        'PARTNER_COST_TYPE_DV360_FEE',
+        'PARTNER_COST_TYPE_COMSCORE_VCE',
+        'PARTNER_COST_TYPE_DATA_MANAGEMENT_PLATFORM',
+        'PARTNER_COST_TYPE_DEFAULT',
+        'PARTNER_COST_TYPE_DOUBLE_VERIFY',
+        'PARTNER_COST_TYPE_DOUBLE_VERIFY_PREBID',
+        'PARTNER_COST_TYPE_EVIDON',
+        'PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE_VIDEO',
+        'PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE_PREBID',
+        'PARTNER_COST_TYPE_MEDIA_COST_DATA',
+        'PARTNER_COST_TYPE_MOAT_VIDEO',
+        'PARTNER_COST_TYPE_NIELSEN_DAR',
+        'PARTNER_COST_TYPE_SHOP_LOCAL',
+        'PARTNER_COST_TYPE_TERACENT',
+        'PARTNER_COST_TYPE_THIRD_PARTY_AD_SERVER',
+        'PARTNER_COST_TYPE_TRUST_METRICS',
+        'PARTNER_COST_TYPE_VIZU',
+        'PARTNER_COST_TYPE_ADLINGO_FEE',
+        'PARTNER_COST_TYPE_CUSTOM_FEE_1',
+        'PARTNER_COST_TYPE_CUSTOM_FEE_2',
+        'PARTNER_COST_TYPE_CUSTOM_FEE_3',
+        'PARTNER_COST_TYPE_CUSTOM_FEE_4',
+        'PARTNER_COST_TYPE_CUSTOM_FEE_5',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The type of the partner cost.' }),
+    feeAmount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The CPM fee amount in micros of advertiser's currency. Applicable when the fee_type is `PARTNER_FEE_TYPE_CPM_FEE`. Must be greater than or equal to 0. For example, for 1.5 standard unit of the advertiser's currency, set this field to 1500000.",
+      }),
+    feePercentageMillis: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The media fee percentage in millis (1/1000 of a percent). Applicable when the fee_type is `PARTNER_FEE_TYPE_MEDIA_FEE`. Must be greater than or equal to 0. For example: 100 represents 0.1%.',
+      }),
+    feeType: z
+      .enum([
+        'PARTNER_COST_FEE_TYPE_UNSPECIFIED',
+        'PARTNER_COST_FEE_TYPE_CPM_FEE',
+        'PARTNER_COST_FEE_TYPE_MEDIA_FEE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The fee type for this partner cost.' }),
+    invoiceType: z
+      .enum([
+        'PARTNER_COST_INVOICE_TYPE_UNSPECIFIED',
+        'PARTNER_COST_INVOICE_TYPE_DV360',
+        'PARTNER_COST_INVOICE_TYPE_PARTNER',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The invoice type for this partner cost. * Required when cost_type is one of: - `PARTNER_COST_TYPE_ADLOOX` - `PARTNER_COST_TYPE_DOUBLE_VERIFY` - `PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE`. * Output only for other types.',
+      }),
+  })
+  .openapi({
+    description:
+      'Settings that control a partner cost. A partner cost is any type of expense involved in running a campaign, other than the costs of purchasing impressions (which is called the media cost) and using third-party audience segment data (data fee). Some examples of partner costs include the fees for using DV360, a third-party ad server, or a third-party ad serving verification service.',
+    required: [],
+  })
+  .openapi('PartnerCost')
+
+const PerformanceGoalSchema = z
+  .object({
+    performanceGoalAmountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The goal amount, in micros of the advertiser's currency. Applicable when performance_goal_type is one of: * `PERFORMANCE_GOAL_TYPE_CPM` * `PERFORMANCE_GOAL_TYPE_CPC` * `PERFORMANCE_GOAL_TYPE_CPA` * `PERFORMANCE_GOAL_TYPE_CPIAVC` * `PERFORMANCE_GOAL_TYPE_VCPM` For example 1500000 represents 1.5 standard units of the currency.",
+      }),
+    performanceGoalPercentageMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The decimal representation of the goal percentage in micros. Applicable when performance_goal_type is one of: * `PERFORMANCE_GOAL_TYPE_CTR` * `PERFORMANCE_GOAL_TYPE_VIEWABILITY` * `PERFORMANCE_GOAL_TYPE_CLICK_CVR` * `PERFORMANCE_GOAL_TYPE_IMPRESSION_CVR` * `PERFORMANCE_GOAL_TYPE_VTR` * `PERFORMANCE_GOAL_TYPE_AUDIO_COMPLETION_RATE` * `PERFORMANCE_GOAL_TYPE_VIDEO_COMPLETION_RATE` For example, 70000 represents 7% (decimal 0.07).',
+      }),
+    performanceGoalString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A key performance indicator (KPI) string, which can be empty. Must be UTF-8 encoded with a length of no more than 100 characters. Applicable when performance_goal_type is set to `PERFORMANCE_GOAL_TYPE_OTHER`.',
+      }),
+    performanceGoalType: z
+      .enum([
+        'PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
+        'PERFORMANCE_GOAL_TYPE_CPM',
+        'PERFORMANCE_GOAL_TYPE_CPC',
+        'PERFORMANCE_GOAL_TYPE_CPA',
+        'PERFORMANCE_GOAL_TYPE_CTR',
+        'PERFORMANCE_GOAL_TYPE_VIEWABILITY',
+        'PERFORMANCE_GOAL_TYPE_CPIAVC',
+        'PERFORMANCE_GOAL_TYPE_CPE',
+        'PERFORMANCE_GOAL_TYPE_CLICK_CVR',
+        'PERFORMANCE_GOAL_TYPE_IMPRESSION_CVR',
+        'PERFORMANCE_GOAL_TYPE_VCPM',
+        'PERFORMANCE_GOAL_TYPE_VTR',
+        'PERFORMANCE_GOAL_TYPE_AUDIO_COMPLETION_RATE',
+        'PERFORMANCE_GOAL_TYPE_VIDEO_COMPLETION_RATE',
+        'PERFORMANCE_GOAL_TYPE_OTHER',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The type of the performance goal.' }),
+  })
+  .openapi({
+    description: 'Settings that control the performance goal of a campaign or insertion order.',
+    required: [],
+  })
+  .openapi('PerformanceGoal')
+
+const InsertionOrderSchema = z
+  .object({
+    advertiserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The unique ID of the advertiser the insertion order belongs to.',
+        readOnly: true,
+      }),
+    bidStrategy: BiddingStrategySchema.exactOptional().openapi({
+      description: 'The bidding strategy of the insertion order. By default, fixed_bid is set.',
+    }),
+    billableOutcome: z
+      .enum([
+        'BILLABLE_OUTCOME_UNSPECIFIED',
+        'BILLABLE_OUTCOME_PAY_PER_IMPRESSION',
+        'BILLABLE_OUTCOME_PAY_PER_CLICK',
+        'BILLABLE_OUTCOME_PAY_PER_VIEWABLE_IMPRESSION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Immutable. The billable outcome of the insertion order.' }),
+    budget: InsertionOrderBudgetSchema.exactOptional().openapi({
+      description: 'Required. The budget allocation settings of the insertion order.',
+    }),
+    campaignId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The unique ID of the campaign that the insertion order belongs to.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The display name of the insertion order. Must be UTF-8 encoded with a maximum size of 240 bytes.',
+      }),
+    entityStatus: z
+      .enum([
+        'ENTITY_STATUS_UNSPECIFIED',
+        'ENTITY_STATUS_ACTIVE',
+        'ENTITY_STATUS_ARCHIVED',
+        'ENTITY_STATUS_DRAFT',
+        'ENTITY_STATUS_PAUSED',
+        'ENTITY_STATUS_SCHEDULED_FOR_DELETION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Controls whether or not the insertion order can spend its budget and bid on inventory. * For CreateInsertionOrder method, only `ENTITY_STATUS_DRAFT` is allowed. To activate an insertion order, use UpdateInsertionOrder method and update the status to `ENTITY_STATUS_ACTIVE` after creation. * An insertion order cannot be changed back to `ENTITY_STATUS_DRAFT` status from any other status. * An insertion order cannot be set to `ENTITY_STATUS_ACTIVE` if its parent campaign is not active.',
+      }),
+    frequencyCap: FrequencyCapSchema.exactOptional().openapi({
+      description: 'Required. The frequency capping setting of the insertion order.',
+    }),
+    insertionOrderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The unique ID of the insertion order. Assigned by the system.',
+        readOnly: true,
+      }),
+    insertionOrderType: z
+      .enum(['INSERTION_ORDER_TYPE_UNSPECIFIED', 'RTB', 'OVER_THE_TOP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of insertion order. If this field is unspecified in creation, the value defaults to `RTB`.',
+      }),
+    integrationDetails: IntegrationDetailsSchema.exactOptional().openapi({
+      description: 'Additional integration details of the insertion order.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The resource name of the insertion order.',
+        readOnly: true,
+      }),
+    pacing: PacingSchema.exactOptional().openapi({
+      description: 'Required. The budget spending speed setting of the insertion order.',
+    }),
+    partnerCosts: z
+      .array(PartnerCostSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The partner costs associated with the insertion order. If absent or empty in CreateInsertionOrder method, the newly created insertion order will inherit partner costs from the partner settings.',
+      }),
+    performanceGoal: PerformanceGoalSchema.exactOptional().openapi({
+      description: 'Required. Performance goal of the insertion order.',
+    }),
+    reservationType: z
+      .enum([
+        'RESERVATION_TYPE_UNSPECIFIED',
+        'RESERVATION_TYPE_NOT_GUARANTEED',
+        'RESERVATION_TYPE_PROGRAMMATIC_GUARANTEED',
+        'RESERVATION_TYPE_TAG_GUARANTEED',
+        'RESERVATION_TYPE_PETRA_VIRAL',
+        'RESERVATION_TYPE_INSTANT_RESERVE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The reservation type of the insertion order.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp when the insertion order was last updated. Assigned by the system.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A single insertion order.', required: [] })
+  .openapi('InsertionOrder')
+
+type ListInsertionOrdersResponseType = {
+  insertionOrders?: z.infer<typeof InsertionOrderSchema>[]
+  nextPageToken?: string
+}
+
+type ListLineItemAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type ListPartnerAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+type ListYoutubeAdGroupAssignedTargetingOptionsResponseType = {
+  assignedTargetingOptions?: z.infer<typeof AssignedTargetingOptionSchema>[]
+  nextPageToken?: string
+}
+
+const ActivateManualTriggerRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for ManualTriggerService.ActivateManualTrigger.' })
+  .openapi('ActivateManualTriggerRequest')
+
+const ActiveViewVideoViewabilityMetricConfigSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The display name of the custom metric.' }),
+    minimumDuration: z
+      .enum([
+        'VIDEO_DURATION_UNSPECIFIED',
+        'VIDEO_DURATION_SECONDS_NONE',
+        'VIDEO_DURATION_SECONDS_0',
+        'VIDEO_DURATION_SECONDS_1',
+        'VIDEO_DURATION_SECONDS_2',
+        'VIDEO_DURATION_SECONDS_3',
+        'VIDEO_DURATION_SECONDS_4',
+        'VIDEO_DURATION_SECONDS_5',
+        'VIDEO_DURATION_SECONDS_6',
+        'VIDEO_DURATION_SECONDS_7',
+        'VIDEO_DURATION_SECONDS_8',
+        'VIDEO_DURATION_SECONDS_9',
+        'VIDEO_DURATION_SECONDS_10',
+        'VIDEO_DURATION_SECONDS_11',
+        'VIDEO_DURATION_SECONDS_12',
+        'VIDEO_DURATION_SECONDS_13',
+        'VIDEO_DURATION_SECONDS_14',
+        'VIDEO_DURATION_SECONDS_15',
+        'VIDEO_DURATION_SECONDS_30',
+        'VIDEO_DURATION_SECONDS_45',
+        'VIDEO_DURATION_SECONDS_60',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum visible video duration required (in seconds) in order for an impression to be recorded. You must specify minimum_duration, minimum_quartile or both. If both are specified, an impression meets the metric criteria if either requirement is met (whichever happens first).',
+      }),
+    minimumQuartile: z
+      .enum([
+        'VIDEO_DURATION_QUARTILE_UNSPECIFIED',
+        'VIDEO_DURATION_QUARTILE_NONE',
+        'VIDEO_DURATION_QUARTILE_FIRST',
+        'VIDEO_DURATION_QUARTILE_SECOND',
+        'VIDEO_DURATION_QUARTILE_THIRD',
+        'VIDEO_DURATION_QUARTILE_FOURTH',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum visible video duration required, based on the video quartiles, in order for an impression to be recorded. You must specify minimum_duration, minimum_quartile or both. If both are specified, an impression meets the metric criteria if either requirement is met (whichever happens first).',
+      }),
+    minimumViewability: z
+      .enum([
+        'VIEWABILITY_PERCENT_UNSPECIFIED',
+        'VIEWABILITY_PERCENT_0',
+        'VIEWABILITY_PERCENT_25',
+        'VIEWABILITY_PERCENT_50',
+        'VIEWABILITY_PERCENT_75',
+        'VIEWABILITY_PERCENT_100',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The minimum percentage of the video ad's pixels visible on the screen in order for an impression to be recorded.",
+      }),
+    minimumVolume: z
+      .enum([
+        'VIDEO_VOLUME_PERCENT_UNSPECIFIED',
+        'VIDEO_VOLUME_PERCENT_0',
+        'VIDEO_VOLUME_PERCENT_10',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The minimum percentage of the video ad's volume required in order for an impression to be recorded.",
+      }),
+  })
+  .openapi({
+    description: 'Configuration for custom Active View video viewability metrics.',
+    required: [],
+  })
+  .openapi('ActiveViewVideoViewabilityMetricConfig')
+
+const AdUrlSchema = z
+  .object({
+    type: z
+      .enum([
+        'AD_URL_TYPE_UNSPECIFIED',
+        'AD_URL_TYPE_BEACON_IMPRESSION',
+        'AD_URL_TYPE_BEACON_EXPANDABLE_DCM_IMPRESSION',
+        'AD_URL_TYPE_BEACON_CLICK',
+        'AD_URL_TYPE_BEACON_SKIP',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the Ad URL.' }),
+    url: z.string().exactOptional().openapi({ description: 'The URL string value.' }),
+  })
+  .openapi({ description: 'Additional URLs related to the ad, including beacons.', required: [] })
+  .openapi('AdUrl')
+
+const CmHybridConfigSchema = z
+  .object({
+    cmAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. Account ID of the CM360 Floodlight configuration linked with the DV360 advertiser.',
+      }),
+    cmFloodlightConfigId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. ID of the CM360 Floodlight configuration linked with the DV360 advertiser.',
+      }),
+    cmFloodlightLinkingAuthorized: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. By setting this field to `true`, you, on behalf of your company, authorize the sharing of information from the given Floodlight configuration to this Display & Video 360 advertiser.',
+      }),
+    cmSyncableSiteIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of CM360 sites whose placements will be synced to DV360 as creatives. If absent or empty in CreateAdvertiser method, the system will automatically create a CM360 site. Removing sites from this list may cause DV360 creatives synced from CM360 to be deleted. At least one site must be specified.',
+      }),
+    dv360ToCmCostReportingEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not to report DV360 cost to CM360.' }),
+    dv360ToCmDataSharingEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not to include DV360 data in CM360 data transfer reports.',
+      }),
+  })
+  .openapi({
+    description:
+      'Settings for advertisers that use both Campaign Manager 360 (CM360) and third-party ad servers.',
+    required: [],
+  })
+  .openapi('CmHybridConfig')
+
+const ThirdPartyOnlyConfigSchema = z
+  .object({
+    pixelOrderIdReportingEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not order ID reporting for pixels is enabled. This value cannot be changed once set to `true`.',
+      }),
+  })
+  .openapi({
+    description: 'Settings for advertisers that use third-party ad servers only.',
+    required: [],
+  })
+  .openapi('ThirdPartyOnlyConfig')
+
+const AdvertiserAdServerConfigSchema = z
+  .object({
+    cmHybridConfig: CmHybridConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration for advertisers that use both Campaign Manager 360 (CM360) and third-party ad servers.',
+    }),
+    thirdPartyOnlyConfig: ThirdPartyOnlyConfigSchema.exactOptional().openapi({
+      description: 'The configuration for advertisers that use third-party ad servers only.',
+    }),
+  })
+  .openapi({ description: 'Ad server related settings of an advertiser.', required: [] })
+  .openapi('AdvertiserAdServerConfig')
+
+const AdvertiserBillingConfigSchema = z
+  .object({
+    billingProfileId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of a billing profile assigned to the advertiser. This field will default to the default billing profile ID of the advertiser's parent partner if a value is not provided.",
+      }),
+  })
+  .openapi({ description: 'Billing related settings of an advertiser.', required: [] })
+  .openapi('AdvertiserBillingConfig')
+
+const AdvertiserCreativeConfigSchema = z
+  .object({
+    dynamicCreativeEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the advertiser is enabled for dynamic creatives.' }),
+    iasClientId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An ID for configuring campaign monitoring provided by Integral Ad Service (IAS). The DV360 system will append an IAS "Campaign Monitor" tag containing this ID to the creative tag.',
+      }),
+    obaComplianceDisabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether or not to use DV360's Online Behavioral Advertising (OBA) compliance. Warning: Changing OBA settings may cause the audit status of your creatives to be reset by some ad exchanges, making them ineligible to serve until they are re-approved.",
+      }),
+    videoCreativeDataSharingAuthorized: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "By setting this field to `true`, you, on behalf of your company, authorize Google to use video creatives associated with this Display & Video 360 advertiser to provide reporting and features related to the advertiser's television campaigns. Applicable only when the advertiser has a CM360 hybrid ad server configuration.",
+      }),
+  })
+  .openapi({ description: 'Creatives related settings of an advertiser.', required: [] })
+  .openapi('AdvertiserCreativeConfig')
+
+const SdfConfigSchema = z
+  .object({
+    adminEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An administrator email address to which the SDF processing status reports will be sent.',
+      }),
+    version: z
+      .enum([
+        'SDF_VERSION_UNSPECIFIED',
+        'SDF_VERSION_3_1',
+        'SDF_VERSION_4',
+        'SDF_VERSION_4_1',
+        'SDF_VERSION_4_2',
+        'SDF_VERSION_5',
+        'SDF_VERSION_5_1',
+        'SDF_VERSION_5_2',
+        'SDF_VERSION_5_3',
+        'SDF_VERSION_5_4',
+        'SDF_VERSION_5_5',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The version of SDF being used.' }),
+  })
+  .openapi({ description: 'Structured Data File (SDF) related settings.', required: [] })
+  .openapi('SdfConfig')
+
+const AdvertiserSdfConfigSchema = z
+  .object({
+    overridePartnerSdfConfig: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not this advertiser overrides the SDF configuration of its parent partner. By default, an advertiser inherits the SDF configuration from the parent partner. To override the partner configuration, set this field to `true` and provide the new configuration in sdfConfig.',
+      }),
+    sdfConfig: SdfConfigSchema.exactOptional().openapi({
+      description:
+        'The SDF configuration for the advertiser. * Required when overridePartnerSdfConfig is `true`. * Output only when overridePartnerSdfConfig is `false`.',
+    }),
+  })
+  .openapi({ description: 'Structured Data Files (SDF) settings of an advertiser.', required: [] })
+  .openapi('AdvertiserSdfConfig')
+
+const AdvertiserDataAccessConfigSchema = z
+  .object({
+    sdfConfig: AdvertiserSdfConfigSchema.exactOptional().openapi({
+      description:
+        'Structured Data Files (SDF) settings for the advertiser. If not specified, the SDF settings of the parent partner are used.',
+    }),
+  })
+  .openapi({
+    description: 'Settings that control how advertiser related data may be accessed.',
+    required: [],
+  })
+  .openapi('AdvertiserDataAccessConfig')
+
+const AdvertiserGeneralConfigSchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Immutable. Advertiser's currency in ISO 4217 format. Accepted codes and the currencies they represent are: Currency Code : Currency Name * `ARS` : Argentine Peso * `AUD` : Australian Dollar * `BRL` : Brazilian Real * `CAD` : Canadian Dollar * `CHF` : Swiss Franc * `CLP` : Chilean Peso * `CNY` : Chinese Yuan * `COP` : Colombian Peso * `CZK` : Czech Koruna * `DKK` : Danish Krone * `EGP` : Egyption Pound * `EUR` : Euro * `GBP` : British Pound * `HKD` : Hong Kong Dollar * `HUF` : Hungarian Forint * `IDR` : Indonesian Rupiah * `ILS` : Israeli Shekel * `INR` : Indian Rupee * `JPY` : Japanese Yen * `KRW` : South Korean Won * `MXN` : Mexican Pesos * `MYR` : Malaysian Ringgit * `NGN` : Nigerian Naira * `NOK` : Norwegian Krone * `NZD` : New Zealand Dollar * `PEN` : Peruvian Nuevo Sol * `PLN` : Polish Zloty * `RON` : New Romanian Leu * `RUB` : Russian Ruble * `SEK` : Swedish Krona * `TRY` : Turkish Lira * `TWD` : New Taiwan Dollar * `USD` : US Dollar * `ZAR` : South African Rand",
+      }),
+    domainUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The domain URL of the advertiser's primary website. The system will send this information to publishers that require website URL to associate a campaign with an advertiser. Provide a URL with no path or query string, beginning with `http:` or `https:`. For example, http://www.example.com",
+      }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The standard TZ database name of the advertiser's time zone. For example, `America/New_York`. See more at: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones For CM360 hybrid advertisers, the time zone is the same as that of the associated CM360 account; for third-party only advertisers, the time zone is the same as that of the parent partner.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'General settings of an advertiser.', required: [] })
+  .openapi('AdvertiserGeneralConfig')
+
+const AdvertiserTargetingConfigSchema = z
+  .object({
+    exemptTvFromViewabilityTargeting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not connected TV devices are exempt from viewability targeting for all video line items under the advertiser.',
+      }),
+  })
+  .openapi({
+    description: 'Targeting settings related to ad serving of an advertiser.',
+    required: [],
+  })
+  .openapi('AdvertiserTargetingConfig')
+
+const AdvertiserSchema = z
+  .object({
+    adServerConfig: AdvertiserAdServerConfigSchema.exactOptional().openapi({
+      description: 'Required. Immutable. Ad server related settings of the advertiser.',
+    }),
+    advertiserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The unique ID of the advertiser. Assigned by the system.',
+        readOnly: true,
+      }),
+    billingConfig: AdvertiserBillingConfigSchema.exactOptional().openapi({
+      description: 'Billing related settings of the advertiser.',
+    }),
+    creativeConfig: AdvertiserCreativeConfigSchema.exactOptional().openapi({
+      description: 'Required. Creative related settings of the advertiser.',
+    }),
+    dataAccessConfig: AdvertiserDataAccessConfigSchema.exactOptional().openapi({
+      description: 'Settings that control how advertiser data may be accessed.',
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The display name of the advertiser. Must be UTF-8 encoded with a maximum size of 240 bytes.',
+      }),
+    entityStatus: z
+      .enum([
+        'ENTITY_STATUS_UNSPECIFIED',
+        'ENTITY_STATUS_ACTIVE',
+        'ENTITY_STATUS_ARCHIVED',
+        'ENTITY_STATUS_DRAFT',
+        'ENTITY_STATUS_PAUSED',
+        'ENTITY_STATUS_SCHEDULED_FOR_DELETION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Controls whether or not insertion orders and line items of the advertiser can spend their budgets and bid on inventory. * Accepted values are `ENTITY_STATUS_ACTIVE`, `ENTITY_STATUS_PAUSED` and `ENTITY_STATUS_SCHEDULED_FOR_DELETION`. * If set to `ENTITY_STATUS_SCHEDULED_FOR_DELETION`, the advertiser will be deleted 30 days from when it was first scheduled for deletion.',
+      }),
+    generalConfig: AdvertiserGeneralConfigSchema.exactOptional().openapi({
+      description: 'Required. General settings of the advertiser.',
+    }),
+    integrationDetails: IntegrationDetailsSchema.exactOptional().openapi({
+      description:
+        'Integration details of the advertiser. Only integrationCode is currently applicable to advertiser. Other fields of IntegrationDetails are not supported and will be ignored if provided.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The resource name of the advertiser.',
+        readOnly: true,
+      }),
+    partnerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The unique ID of the partner that the advertiser belongs to.',
+      }),
+    prismaEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether integration with Mediaocean (Prisma) is enabled. By enabling this, you agree to the following: On behalf of my company, I authorize Mediaocean (Prisma) to send budget segment plans to Google, and I authorize Google to send corresponding reporting and invoices from DV360 to Mediaocean for the purposes of budget planning, billing, and reconciliation for this advertiser.',
+      }),
+    servingConfig: AdvertiserTargetingConfigSchema.exactOptional().openapi({
+      description: 'Targeting settings related to ad serving of the advertiser.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp when the advertiser was last updated. Assigned by the system.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A single advertiser in Display & Video 360 (DV360).', required: [] })
+  .openapi('Advertiser')
+
+const AgeRangeTargetingOptionDetailsSchema = z
+  .object({
+    ageRange: z
+      .enum([
+        'AGE_RANGE_UNSPECIFIED',
+        'AGE_RANGE_18_24',
+        'AGE_RANGE_25_34',
+        'AGE_RANGE_35_44',
+        'AGE_RANGE_45_54',
+        'AGE_RANGE_55_64',
+        'AGE_RANGE_65_PLUS',
+        'AGE_RANGE_UNKNOWN',
+        'AGE_RANGE_18_20',
+        'AGE_RANGE_21_24',
+        'AGE_RANGE_25_29',
+        'AGE_RANGE_30_34',
+        'AGE_RANGE_35_39',
+        'AGE_RANGE_40_44',
+        'AGE_RANGE_45_49',
+        'AGE_RANGE_50_54',
+        'AGE_RANGE_55_59',
+        'AGE_RANGE_60_64',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The age range of an audience.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Represents a targetable age range. This will be populated in the age_range_details field when targeting_type is `TARGETING_TYPE_AGE_RANGE`.',
+    required: [],
+  })
+  .openapi('AgeRangeTargetingOptionDetails')
+
+const AppCategoryTargetingOptionDetailsSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the app collection.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Represents a targetable collection of apps. A collection lets you target dynamic groups of related apps that are maintained by the platform, for example `All Apps/Google Play/Games`. This will be populated in the app_category_details field when targeting_type is `TARGETING_TYPE_APP_CATEGORY`.',
+    required: [],
+  })
+  .openapi('AppCategoryTargetingOptionDetails')
+
+const AssetSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The asset content. For uploaded assets, the content is the serving path.',
+      }),
+    mediaId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Media ID of the uploaded asset. This is a unique identifier for the asset. This ID can be passed to other API calls, e.g. CreateCreative to associate the asset with a creative. The Media ID space updated on **April 5, 2023**. Update media IDs cached before **April 5, 2023** by retrieving the new media ID from associated creative resources or re-uploading the asset.',
+      }),
+  })
+  .openapi({ description: 'A single asset.', required: [] })
+  .openapi('Asset')
+
+const AssetAssociationSchema = z
+  .object({
+    asset: AssetSchema.exactOptional().openapi({ description: 'The associated asset.' }),
+    role: z
+      .enum([
+        'ASSET_ROLE_UNSPECIFIED',
+        'ASSET_ROLE_MAIN',
+        'ASSET_ROLE_BACKUP',
+        'ASSET_ROLE_POLITE_LOAD',
+        'ASSET_ROLE_HEADLINE',
+        'ASSET_ROLE_LONG_HEADLINE',
+        'ASSET_ROLE_BODY',
+        'ASSET_ROLE_LONG_BODY',
+        'ASSET_ROLE_CAPTION_URL',
+        'ASSET_ROLE_CALL_TO_ACTION',
+        'ASSET_ROLE_ADVERTISER_NAME',
+        'ASSET_ROLE_PRICE',
+        'ASSET_ROLE_ANDROID_APP_ID',
+        'ASSET_ROLE_IOS_APP_ID',
+        'ASSET_ROLE_RATING',
+        'ASSET_ROLE_ICON',
+        'ASSET_ROLE_COVER_IMAGE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The role of this asset for the creative.' }),
+  })
+  .openapi({ description: 'Asset association for the creative.', required: [] })
+  .openapi('AssetAssociation')
+
+const AssignedInventorySourceSchema = z
+  .object({
+    assignedInventorySourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The unique ID of the assigned inventory source. The ID is only unique within a given inventory source group. It may be reused in other contexts.',
+        readOnly: true,
+      }),
+    inventorySourceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of the inventory source entity being targeted.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The resource name of the assigned inventory source.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'An assignment between a targetable inventory source and an inventory source group.',
+    required: [],
+  })
+  .openapi('AssignedInventorySource')
+
+const AssignedLocationSchema = z
+  .object({
+    assignedLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The unique ID of the assigned location. The ID is only unique within a location list. It may be reused in other contexts.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The resource name of the assigned location.',
+        readOnly: true,
+      }),
+    targetingOptionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The ID of the targeting option assigned to the location list. Must be of type TARGETING_TYPE_GEO_REGION.',
+      }),
+  })
+  .openapi({
+    description:
+      'An assignment between a location list and a relevant targeting option. Currently, geo region targeting options are the only supported option for assignment.',
+    required: [],
+  })
+  .openapi('AssignedLocation')
+
 const AssignedUserRoleSchema = z
   .object({
     advertiserId: z
@@ -3031,130 +3875,6 @@ const AuthorizedSellerStatusTargetingOptionDetailsSchema = z
   })
   .openapi('AuthorizedSellerStatusTargetingOptionDetails')
 
-const FixedBidStrategySchema = z
-  .object({
-    bidAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The fixed bid amount, in micros of the advertiser's currency. For insertion order entity, bid_amount_micros should be set as 0. For line item entity, bid_amount_micros must be greater than or equal to billable unit of the given currency and smaller than or equal to the upper limit 1000000000. For example, 1500000 represents 1.5 standard units of the currency.",
-      }),
-  })
-  .openapi({ description: 'A strategy that uses a fixed bidding price.', required: [] })
-  .openapi('FixedBidStrategy')
-
-const MaximizeSpendBidStrategySchema = z
-  .object({
-    customBiddingAlgorithmId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Custom Bidding Algorithm used by this strategy. Only applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
-      }),
-    maxAverageCpmBidAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The maximum average CPM that may be bid, in micros of the advertiser's currency. Must be greater than or equal to a billable unit of the given currency. For example, 1500000 represents 1.5 standard units of the currency.",
-      }),
-    performanceGoalType: z
-      .enum([
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of the performance goal that the bidding strategy tries to minimize while spending the full budget. `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` is not supported for this strategy.',
-      }),
-    raiseBidForDeals: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the strategy takes deal floor prices into account.' }),
-  })
-  .openapi({
-    description:
-      'A strategy that automatically adjusts the bid to optimize a specified performance goal while spending the full budget.',
-    required: [],
-  })
-  .openapi('MaximizeSpendBidStrategy')
-
-const PerformanceGoalBidStrategySchema = z
-  .object({
-    customBiddingAlgorithmId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Custom Bidding Algorithm used by this strategy. Only applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
-      }),
-    maxAverageCpmBidAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The maximum average CPM that may be bid, in micros of the advertiser's currency. Must be greater than or equal to a billable unit of the given currency. Not applicable when performance_goal_type is set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`. For example, 1500000 represents 1.5 standard units of the currency.",
-      }),
-    performanceGoalAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The performance goal the bidding strategy will attempt to meet or beat, in micros of the advertiser's currency or in micro of the ROAS (Return On Advertising Spend) value which is also based on advertiser's currency. Must be greater than or equal to a billable unit of the given currency and smaller or equal to upper bounds. Each performance_goal_type has its upper bound: * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA`, upper bound is 10000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC`, upper bound is 1000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`, upper bound is 1000.00 USD. * when performance_goal_type is `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`, upper bound is 1000.00 and lower bound is 0.01. Example: If set to `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM`, the bid price will be based on the probability that each available impression will be viewable. For example, if viewable CPM target is $2 and an impression is 40% likely to be viewable, the bid price will be $0.80 CPM (40% of $2). For example, 1500000 represents 1.5 standard units of the currency or ROAS value.",
-      }),
-    performanceGoalType: z
-      .enum([
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN',
-        'BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of the performance goal that the bidding strategy will try to meet or beat. For line item level usage, the value must be one of: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CUSTOM_ALGO`.',
-      }),
-  })
-  .openapi({
-    description:
-      'A strategy that automatically adjusts the bid to meet or beat a specified performance goal.',
-    required: [],
-  })
-  .openapi('PerformanceGoalBidStrategy')
-
-const BiddingStrategySchema = z
-  .object({
-    fixedBid: FixedBidStrategySchema.exactOptional().openapi({
-      description: 'A strategy that uses a fixed bid price.',
-    }),
-    maximizeSpendAutoBid: MaximizeSpendBidStrategySchema.exactOptional().openapi({
-      description:
-        'A strategy that automatically adjusts the bid to optimize to your performance goal while spending the full budget. At insertion order level, the markup_type of line items cannot be set to `PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM`. In addition, when performance_goal_type is one of: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CPC` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED` , the line_item_type of the insertion order line items must be either: * `LINE_ITEM_TYPE_DISPLAY_DEFAULT` * `LINE_ITEM_TYPE_VIDEO_DEFAULT` , and when performance_goal_type is either: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN` the line_item_type of the insertion order line items must be `LINE_ITEM_TYPE_VIDEO_DEFAULT`.',
-    }),
-    performanceGoalAutoBid: PerformanceGoalBidStrategySchema.exactOptional().openapi({
-      description:
-        'A strategy that automatically adjusts the bid to meet or beat a specified performance goal. It is to be used only for a line item entity.',
-    }),
-  })
-  .openapi({
-    description: 'Settings that control the bid strategy. Bid strategy determines the bid price.',
-    required: [],
-  })
-  .openapi('BiddingStrategy')
-
 const BrowserTargetingOptionDetailsSchema = z
   .object({
     displayName: z
@@ -3232,177 +3952,43 @@ const BudgetSummarySchema = z
   })
   .openapi('BudgetSummary')
 
-const CreateAssignedTargetingOptionsRequestSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. The assigned targeting options to create and add.' }),
-    targetingType: z
-      .enum([
-        'TARGETING_TYPE_UNSPECIFIED',
-        'TARGETING_TYPE_CHANNEL',
-        'TARGETING_TYPE_APP_CATEGORY',
-        'TARGETING_TYPE_APP',
-        'TARGETING_TYPE_URL',
-        'TARGETING_TYPE_DAY_AND_TIME',
-        'TARGETING_TYPE_AGE_RANGE',
-        'TARGETING_TYPE_REGIONAL_LOCATION_LIST',
-        'TARGETING_TYPE_PROXIMITY_LOCATION_LIST',
-        'TARGETING_TYPE_GENDER',
-        'TARGETING_TYPE_VIDEO_PLAYER_SIZE',
-        'TARGETING_TYPE_USER_REWARDED_CONTENT',
-        'TARGETING_TYPE_PARENTAL_STATUS',
-        'TARGETING_TYPE_CONTENT_INSTREAM_POSITION',
-        'TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION',
-        'TARGETING_TYPE_DEVICE_TYPE',
-        'TARGETING_TYPE_AUDIENCE_GROUP',
-        'TARGETING_TYPE_BROWSER',
-        'TARGETING_TYPE_HOUSEHOLD_INCOME',
-        'TARGETING_TYPE_ON_SCREEN_POSITION',
-        'TARGETING_TYPE_THIRD_PARTY_VERIFIER',
-        'TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION',
-        'TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION',
-        'TARGETING_TYPE_ENVIRONMENT',
-        'TARGETING_TYPE_CARRIER_AND_ISP',
-        'TARGETING_TYPE_OPERATING_SYSTEM',
-        'TARGETING_TYPE_DEVICE_MAKE_MODEL',
-        'TARGETING_TYPE_KEYWORD',
-        'TARGETING_TYPE_NEGATIVE_KEYWORD_LIST',
-        'TARGETING_TYPE_VIEWABILITY',
-        'TARGETING_TYPE_CATEGORY',
-        'TARGETING_TYPE_INVENTORY_SOURCE',
-        'TARGETING_TYPE_LANGUAGE',
-        'TARGETING_TYPE_AUTHORIZED_SELLER_STATUS',
-        'TARGETING_TYPE_GEO_REGION',
-        'TARGETING_TYPE_INVENTORY_SOURCE_GROUP',
-        'TARGETING_TYPE_EXCHANGE',
-        'TARGETING_TYPE_SUB_EXCHANGE',
-        'TARGETING_TYPE_POI',
-        'TARGETING_TYPE_BUSINESS_CHAIN',
-        'TARGETING_TYPE_CONTENT_DURATION',
-        'TARGETING_TYPE_CONTENT_STREAM_TYPE',
-        'TARGETING_TYPE_NATIVE_CONTENT_POSITION',
-        'TARGETING_TYPE_OMID',
-        'TARGETING_TYPE_AUDIO_CONTENT_TYPE',
-        'TARGETING_TYPE_CONTENT_GENRE',
-        'TARGETING_TYPE_YOUTUBE_VIDEO',
-        'TARGETING_TYPE_YOUTUBE_CHANNEL',
-        'TARGETING_TYPE_SESSION_POSITION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. Identifies the type of this assigned targeting option.' }),
-  })
-  .openapi({
-    description:
-      'A request listing which assigned targeting options of a given targeting type should be created and added.',
-    required: [],
-  })
-  .openapi('CreateAssignedTargetingOptionsRequest')
+const BulkEditAdvertiserAssignedTargetingOptionsRequestSchema: z.ZodType<BulkEditAdvertiserAssignedTargetingOptionsRequestType> =
+  z
+    .object({
+      createRequests: z
+        .array(CreateAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to create in batch, specified as a list of `CreateAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION`',
+        }),
+      deleteRequests: z
+        .array(DeleteAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to delete in batch, specified as a list of `DeleteAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION`',
+        }),
+    })
+    .openapi({
+      description: 'Request message for BulkEditAdvertiserAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('BulkEditAdvertiserAssignedTargetingOptionsRequest')
 
-const DeleteAssignedTargetingOptionsRequestSchema = z
-  .object({
-    assignedTargetingOptionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. The assigned targeting option IDs to delete.' }),
-    targetingType: z
-      .enum([
-        'TARGETING_TYPE_UNSPECIFIED',
-        'TARGETING_TYPE_CHANNEL',
-        'TARGETING_TYPE_APP_CATEGORY',
-        'TARGETING_TYPE_APP',
-        'TARGETING_TYPE_URL',
-        'TARGETING_TYPE_DAY_AND_TIME',
-        'TARGETING_TYPE_AGE_RANGE',
-        'TARGETING_TYPE_REGIONAL_LOCATION_LIST',
-        'TARGETING_TYPE_PROXIMITY_LOCATION_LIST',
-        'TARGETING_TYPE_GENDER',
-        'TARGETING_TYPE_VIDEO_PLAYER_SIZE',
-        'TARGETING_TYPE_USER_REWARDED_CONTENT',
-        'TARGETING_TYPE_PARENTAL_STATUS',
-        'TARGETING_TYPE_CONTENT_INSTREAM_POSITION',
-        'TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION',
-        'TARGETING_TYPE_DEVICE_TYPE',
-        'TARGETING_TYPE_AUDIENCE_GROUP',
-        'TARGETING_TYPE_BROWSER',
-        'TARGETING_TYPE_HOUSEHOLD_INCOME',
-        'TARGETING_TYPE_ON_SCREEN_POSITION',
-        'TARGETING_TYPE_THIRD_PARTY_VERIFIER',
-        'TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION',
-        'TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION',
-        'TARGETING_TYPE_ENVIRONMENT',
-        'TARGETING_TYPE_CARRIER_AND_ISP',
-        'TARGETING_TYPE_OPERATING_SYSTEM',
-        'TARGETING_TYPE_DEVICE_MAKE_MODEL',
-        'TARGETING_TYPE_KEYWORD',
-        'TARGETING_TYPE_NEGATIVE_KEYWORD_LIST',
-        'TARGETING_TYPE_VIEWABILITY',
-        'TARGETING_TYPE_CATEGORY',
-        'TARGETING_TYPE_INVENTORY_SOURCE',
-        'TARGETING_TYPE_LANGUAGE',
-        'TARGETING_TYPE_AUTHORIZED_SELLER_STATUS',
-        'TARGETING_TYPE_GEO_REGION',
-        'TARGETING_TYPE_INVENTORY_SOURCE_GROUP',
-        'TARGETING_TYPE_EXCHANGE',
-        'TARGETING_TYPE_SUB_EXCHANGE',
-        'TARGETING_TYPE_POI',
-        'TARGETING_TYPE_BUSINESS_CHAIN',
-        'TARGETING_TYPE_CONTENT_DURATION',
-        'TARGETING_TYPE_CONTENT_STREAM_TYPE',
-        'TARGETING_TYPE_NATIVE_CONTENT_POSITION',
-        'TARGETING_TYPE_OMID',
-        'TARGETING_TYPE_AUDIO_CONTENT_TYPE',
-        'TARGETING_TYPE_CONTENT_GENRE',
-        'TARGETING_TYPE_YOUTUBE_VIDEO',
-        'TARGETING_TYPE_YOUTUBE_CHANNEL',
-        'TARGETING_TYPE_SESSION_POSITION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. Identifies the type of this assigned targeting option.' }),
-  })
-  .openapi({
-    description:
-      'A request listing which assigned targeting options of a given targeting type should be deleted.',
-    required: [],
-  })
-  .openapi('DeleteAssignedTargetingOptionsRequest')
-
-const BulkEditAdvertiserAssignedTargetingOptionsRequestSchema = z
-  .object({
-    createRequests: z
-      .array(CreateAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to create in batch, specified as a list of `CreateAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION`',
-      }),
-    deleteRequests: z
-      .array(DeleteAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to delete in batch, specified as a list of `DeleteAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION`',
-      }),
-  })
-  .openapi({
-    description: 'Request message for BulkEditAdvertiserAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('BulkEditAdvertiserAssignedTargetingOptionsRequest')
-
-const BulkEditAdvertiserAssignedTargetingOptionsResponseSchema = z
-  .object({
-    createdAssignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of assigned targeting options that have been successfully created. This list will be absent if empty.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkEditAdvertiserAssignedTargetingOptionsResponse')
+const BulkEditAdvertiserAssignedTargetingOptionsResponseSchema: z.ZodType<BulkEditAdvertiserAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      createdAssignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of assigned targeting options that have been successfully created. This list will be absent if empty.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('BulkEditAdvertiserAssignedTargetingOptionsResponse')
 
 const BulkEditAssignedInventorySourcesRequestSchema = z
   .object({
@@ -3496,34 +4082,35 @@ const BulkEditAssignedLocationsResponseSchema = z
   })
   .openapi('BulkEditAssignedLocationsResponse')
 
-const BulkEditAssignedTargetingOptionsRequestSchema = z
-  .object({
-    createRequests: z
-      .array(CreateAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to create in batch, specified as a list of CreateAssignedTargetingOptionsRequest. Supported targeting types include: * `TARGETING_TYPE_AGE_RANGE` * `TARGETING_TYPE_APP` * `TARGETING_TYPE_APP_CATEGORY` * `TARGETING_TYPE_AUDIENCE_GROUP` * `TARGETING_TYPE_AUDIO_CONTENT_TYPE` * `TARGETING_TYPE_AUTHORIZED_SELLER_STATUS` * `TARGETING_TYPE_BROWSER` * `TARGETING_TYPE_BUSINESS_CHAIN` * `TARGETING_TYPE_CARRIER_AND_ISP` * `TARGETING_TYPE_CATEGORY` * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_CONTENT_DURATION` * `TARGETING_TYPE_CONTENT_GENRE` * `TARGETING_TYPE_CONTENT_INSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_STREAM_TYPE` * `TARGETING_TYPE_DAY_AND_TIME` * `TARGETING_TYPE_DEVICE_MAKE_MODEL` * `TARGETING_TYPE_DEVICE_TYPE` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_ENVIRONMENT` * `TARGETING_TYPE_EXCHANGE` * `TARGETING_TYPE_GENDER` * `TARGETING_TYPE_GEO_REGION` * `TARGETING_TYPE_HOUSEHOLD_INCOME` * `TARGETING_TYPE_INVENTORY_SOURCE` * `TARGETING_TYPE_INVENTORY_SOURCE_GROUP` * `TARGETING_TYPE_KEYWORD` * `TARGETING_TYPE_LANGUAGE` * `TARGETING_TYPE_NATIVE_CONTENT_POSITION` * `TARGETING_TYPE_NEGATIVE_KEYWORD_LIST` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_ON_SCREEN_POSITION` * `TARGETING_TYPE_OPERATING_SYSTEM` * `TARGETING_TYPE_PARENTAL_STATUS` * `TARGETING_TYPE_POI` * `TARGETING_TYPE_PROXIMITY_LOCATION_LIST` * `TARGETING_TYPE_REGIONAL_LOCATION_LIST` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION` * `TARGETING_TYPE_SUB_EXCHANGE` * `TARGETING_TYPE_THIRD_PARTY_VERIFIER` * `TARGETING_TYPE_URL` * `TARGETING_TYPE_USER_REWARDED_CONTENT` * `TARGETING_TYPE_VIDEO_PLAYER_SIZE` * `TARGETING_TYPE_VIEWABILITY`',
-      }),
-    deleteRequests: z
-      .array(DeleteAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to delete in batch, specified as a list of DeleteAssignedTargetingOptionsRequest. Supported targeting types include: * `TARGETING_TYPE_AGE_RANGE` * `TARGETING_TYPE_APP` * `TARGETING_TYPE_APP_CATEGORY` * `TARGETING_TYPE_AUDIENCE_GROUP` * `TARGETING_TYPE_AUDIO_CONTENT_TYPE` * `TARGETING_TYPE_AUTHORIZED_SELLER_STATUS` * `TARGETING_TYPE_BROWSER` * `TARGETING_TYPE_BUSINESS_CHAIN` * `TARGETING_TYPE_CARRIER_AND_ISP` * `TARGETING_TYPE_CATEGORY` * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_CONTENT_DURATION` * `TARGETING_TYPE_CONTENT_GENRE` * `TARGETING_TYPE_CONTENT_INSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_STREAM_TYPE` * `TARGETING_TYPE_DAY_AND_TIME` * `TARGETING_TYPE_DEVICE_MAKE_MODEL` * `TARGETING_TYPE_DEVICE_TYPE` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_ENVIRONMENT` * `TARGETING_TYPE_EXCHANGE` * `TARGETING_TYPE_GENDER` * `TARGETING_TYPE_GEO_REGION` * `TARGETING_TYPE_HOUSEHOLD_INCOME` * `TARGETING_TYPE_INVENTORY_SOURCE` * `TARGETING_TYPE_INVENTORY_SOURCE_GROUP` * `TARGETING_TYPE_KEYWORD` * `TARGETING_TYPE_LANGUAGE` * `TARGETING_TYPE_NATIVE_CONTENT_POSITION` * `TARGETING_TYPE_NEGATIVE_KEYWORD_LIST` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_ON_SCREEN_POSITION` * `TARGETING_TYPE_OPERATING_SYSTEM` * `TARGETING_TYPE_PARENTAL_STATUS` * `TARGETING_TYPE_POI` * `TARGETING_TYPE_PROXIMITY_LOCATION_LIST` * `TARGETING_TYPE_REGIONAL_LOCATION_LIST` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION` * `TARGETING_TYPE_SUB_EXCHANGE` * `TARGETING_TYPE_THIRD_PARTY_VERIFIER` * `TARGETING_TYPE_URL` * `TARGETING_TYPE_USER_REWARDED_CONTENT` * `TARGETING_TYPE_VIDEO_PLAYER_SIZE` * `TARGETING_TYPE_VIEWABILITY`',
-      }),
-    lineItemIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Required. The ID of the line items whose targeting is being updated.',
-      }),
-  })
-  .openapi({
-    description: 'Request message for BulkEditLineItemsAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('BulkEditAssignedTargetingOptionsRequest')
+const BulkEditAssignedTargetingOptionsRequestSchema: z.ZodType<BulkEditAssignedTargetingOptionsRequestType> =
+  z
+    .object({
+      createRequests: z
+        .array(CreateAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to create in batch, specified as a list of CreateAssignedTargetingOptionsRequest. Supported targeting types include: * `TARGETING_TYPE_AGE_RANGE` * `TARGETING_TYPE_APP` * `TARGETING_TYPE_APP_CATEGORY` * `TARGETING_TYPE_AUDIENCE_GROUP` * `TARGETING_TYPE_AUDIO_CONTENT_TYPE` * `TARGETING_TYPE_AUTHORIZED_SELLER_STATUS` * `TARGETING_TYPE_BROWSER` * `TARGETING_TYPE_BUSINESS_CHAIN` * `TARGETING_TYPE_CARRIER_AND_ISP` * `TARGETING_TYPE_CATEGORY` * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_CONTENT_DURATION` * `TARGETING_TYPE_CONTENT_GENRE` * `TARGETING_TYPE_CONTENT_INSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_STREAM_TYPE` * `TARGETING_TYPE_DAY_AND_TIME` * `TARGETING_TYPE_DEVICE_MAKE_MODEL` * `TARGETING_TYPE_DEVICE_TYPE` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_ENVIRONMENT` * `TARGETING_TYPE_EXCHANGE` * `TARGETING_TYPE_GENDER` * `TARGETING_TYPE_GEO_REGION` * `TARGETING_TYPE_HOUSEHOLD_INCOME` * `TARGETING_TYPE_INVENTORY_SOURCE` * `TARGETING_TYPE_INVENTORY_SOURCE_GROUP` * `TARGETING_TYPE_KEYWORD` * `TARGETING_TYPE_LANGUAGE` * `TARGETING_TYPE_NATIVE_CONTENT_POSITION` * `TARGETING_TYPE_NEGATIVE_KEYWORD_LIST` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_ON_SCREEN_POSITION` * `TARGETING_TYPE_OPERATING_SYSTEM` * `TARGETING_TYPE_PARENTAL_STATUS` * `TARGETING_TYPE_POI` * `TARGETING_TYPE_PROXIMITY_LOCATION_LIST` * `TARGETING_TYPE_REGIONAL_LOCATION_LIST` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION` * `TARGETING_TYPE_SUB_EXCHANGE` * `TARGETING_TYPE_THIRD_PARTY_VERIFIER` * `TARGETING_TYPE_URL` * `TARGETING_TYPE_USER_REWARDED_CONTENT` * `TARGETING_TYPE_VIDEO_PLAYER_SIZE` * `TARGETING_TYPE_VIEWABILITY`',
+        }),
+      deleteRequests: z
+        .array(DeleteAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to delete in batch, specified as a list of DeleteAssignedTargetingOptionsRequest. Supported targeting types include: * `TARGETING_TYPE_AGE_RANGE` * `TARGETING_TYPE_APP` * `TARGETING_TYPE_APP_CATEGORY` * `TARGETING_TYPE_AUDIENCE_GROUP` * `TARGETING_TYPE_AUDIO_CONTENT_TYPE` * `TARGETING_TYPE_AUTHORIZED_SELLER_STATUS` * `TARGETING_TYPE_BROWSER` * `TARGETING_TYPE_BUSINESS_CHAIN` * `TARGETING_TYPE_CARRIER_AND_ISP` * `TARGETING_TYPE_CATEGORY` * `TARGETING_TYPE_CHANNEL` * `TARGETING_TYPE_CONTENT_DURATION` * `TARGETING_TYPE_CONTENT_GENRE` * `TARGETING_TYPE_CONTENT_INSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_OUTSTREAM_POSITION` * `TARGETING_TYPE_CONTENT_STREAM_TYPE` * `TARGETING_TYPE_DAY_AND_TIME` * `TARGETING_TYPE_DEVICE_MAKE_MODEL` * `TARGETING_TYPE_DEVICE_TYPE` * `TARGETING_TYPE_DIGITAL_CONTENT_LABEL_EXCLUSION` * `TARGETING_TYPE_ENVIRONMENT` * `TARGETING_TYPE_EXCHANGE` * `TARGETING_TYPE_GENDER` * `TARGETING_TYPE_GEO_REGION` * `TARGETING_TYPE_HOUSEHOLD_INCOME` * `TARGETING_TYPE_INVENTORY_SOURCE` * `TARGETING_TYPE_INVENTORY_SOURCE_GROUP` * `TARGETING_TYPE_KEYWORD` * `TARGETING_TYPE_LANGUAGE` * `TARGETING_TYPE_NATIVE_CONTENT_POSITION` * `TARGETING_TYPE_NEGATIVE_KEYWORD_LIST` * `TARGETING_TYPE_OMID` * `TARGETING_TYPE_ON_SCREEN_POSITION` * `TARGETING_TYPE_OPERATING_SYSTEM` * `TARGETING_TYPE_PARENTAL_STATUS` * `TARGETING_TYPE_POI` * `TARGETING_TYPE_PROXIMITY_LOCATION_LIST` * `TARGETING_TYPE_REGIONAL_LOCATION_LIST` * `TARGETING_TYPE_SENSITIVE_CATEGORY_EXCLUSION` * `TARGETING_TYPE_SUB_EXCHANGE` * `TARGETING_TYPE_THIRD_PARTY_VERIFIER` * `TARGETING_TYPE_URL` * `TARGETING_TYPE_USER_REWARDED_CONTENT` * `TARGETING_TYPE_VIDEO_PLAYER_SIZE` * `TARGETING_TYPE_VIEWABILITY`',
+        }),
+      lineItemIds: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description: 'Required. The ID of the line items whose targeting is being updated.',
+        }),
+    })
+    .openapi({
+      description: 'Request message for BulkEditLineItemsAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('BulkEditAssignedTargetingOptionsRequest')
 
 const StatusSchema = z
   .object({
@@ -3683,41 +4270,43 @@ const BulkEditNegativeKeywordsResponseSchema = z
   })
   .openapi('BulkEditNegativeKeywordsResponse')
 
-const BulkEditPartnerAssignedTargetingOptionsRequestSchema = z
-  .object({
-    createRequests: z
-      .array(CreateAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to create in batch, specified as a list of `CreateAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL`',
-      }),
-    deleteRequests: z
-      .array(DeleteAssignedTargetingOptionsRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The assigned targeting options to delete in batch, specified as a list of `DeleteAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL`',
-      }),
-  })
-  .openapi({
-    description: 'Request message for BulkEditPartnerAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('BulkEditPartnerAssignedTargetingOptionsRequest')
+const BulkEditPartnerAssignedTargetingOptionsRequestSchema: z.ZodType<BulkEditPartnerAssignedTargetingOptionsRequestType> =
+  z
+    .object({
+      createRequests: z
+        .array(CreateAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to create in batch, specified as a list of `CreateAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL`',
+        }),
+      deleteRequests: z
+        .array(DeleteAssignedTargetingOptionsRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The assigned targeting options to delete in batch, specified as a list of `DeleteAssignedTargetingOptionsRequest`. Supported targeting types: * `TARGETING_TYPE_CHANNEL`',
+        }),
+    })
+    .openapi({
+      description: 'Request message for BulkEditPartnerAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('BulkEditPartnerAssignedTargetingOptionsRequest')
 
-const BulkEditPartnerAssignedTargetingOptionsResponseSchema = z
-  .object({
-    createdAssignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of assigned targeting options that have been successfully created. This list will be absent if empty.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkEditPartnerAssignedTargetingOptionsResponse')
+const BulkEditPartnerAssignedTargetingOptionsResponseSchema: z.ZodType<BulkEditPartnerAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      createdAssignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of assigned targeting options that have been successfully created. This list will be absent if empty.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('BulkEditPartnerAssignedTargetingOptionsResponse')
 
 const SiteSchema = z
   .object({
@@ -3776,146 +4365,113 @@ const BulkEditSitesResponseSchema = z
   .openapi({ description: 'Response message for SiteService.BulkEditSites.', required: [] })
   .openapi('BulkEditSitesResponse')
 
-const YoutubeAdGroupAssignedTargetingOptionSchema = z
-  .object({
-    assignedTargetingOption: AssignedTargetingOptionSchema.exactOptional().openapi({
-      description: 'The assigned targeting option resource.',
-    }),
-    youtubeAdGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the youtube ad group the assigned targeting option is assigned to.',
-      }),
-  })
-  .openapi({
-    description:
-      'Wrapper object associating an assigned_targeting_option resource and the youtube ad group it is assigned to.',
-    required: [],
-  })
-  .openapi('YoutubeAdGroupAssignedTargetingOption')
+const BulkListAdGroupAssignedTargetingOptionsResponseSchema: z.ZodType<BulkListAdGroupAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent call to `BulkListAdGroupAssignedTargetingOptions` to fetch the next page of results. This token will be absent if there are no more youtube_ad_group_assigned_targeting_options to return.',
+        }),
+      youtubeAdGroupAssignedTargetingOptions: z
+        .array(YoutubeAdGroupAssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of wrapper objects, each providing an assigned targeting option and the youtube ad group it is assigned to. This list will be absent if empty.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('BulkListAdGroupAssignedTargetingOptionsResponse')
 
-const BulkListAdGroupAssignedTargetingOptionsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent call to `BulkListAdGroupAssignedTargetingOptions` to fetch the next page of results. This token will be absent if there are no more youtube_ad_group_assigned_targeting_options to return.',
-      }),
-    youtubeAdGroupAssignedTargetingOptions: z
-      .array(YoutubeAdGroupAssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of wrapper objects, each providing an assigned targeting option and the youtube ad group it is assigned to. This list will be absent if empty.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkListAdGroupAssignedTargetingOptionsResponse')
+const BulkListAdvertiserAssignedTargetingOptionsResponseSchema: z.ZodType<BulkListAdvertiserAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListAdvertiserAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('BulkListAdvertiserAssignedTargetingOptionsResponse')
 
-const BulkListAdvertiserAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListAdvertiserAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkListAdvertiserAssignedTargetingOptionsResponse')
+const BulkListAssignedTargetingOptionsResponseSchema: z.ZodType<BulkListAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      lineItemAssignedTargetingOptions: z
+        .array(LineItemAssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of wrapper objects, each providing an assigned targeting option and the line item it is assigned to. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent call to `BulkListAssignedTargetingOptions` to fetch the next page of results. This token will be absent if there are no more line_item_assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('BulkListAssignedTargetingOptionsResponse')
 
-const LineItemAssignedTargetingOptionSchema = z
-  .object({
-    assignedTargetingOption: AssignedTargetingOptionSchema.exactOptional().openapi({
-      description: 'The assigned targeting option resource.',
-    }),
-    lineItemId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the line item the assigned targeting option is assigned to.',
-      }),
-  })
-  .openapi({
-    description:
-      'Wrapper object associating an assigned_targeting_option resource and the line item it is assigned to.',
-    required: [],
-  })
-  .openapi('LineItemAssignedTargetingOption')
+const BulkListCampaignAssignedTargetingOptionsResponseSchema: z.ZodType<BulkListCampaignAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListCampaignAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for BulkListCampaignAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('BulkListCampaignAssignedTargetingOptionsResponse')
 
-const BulkListAssignedTargetingOptionsResponseSchema = z
-  .object({
-    lineItemAssignedTargetingOptions: z
-      .array(LineItemAssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of wrapper objects, each providing an assigned targeting option and the line item it is assigned to. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent call to `BulkListAssignedTargetingOptions` to fetch the next page of results. This token will be absent if there are no more line_item_assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BulkListAssignedTargetingOptionsResponse')
-
-const BulkListCampaignAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListCampaignAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for BulkListCampaignAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('BulkListCampaignAssignedTargetingOptionsResponse')
-
-const BulkListInsertionOrderAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListInsertionOrderAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for BulkListInsertionOrderAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('BulkListInsertionOrderAssignedTargetingOptionsResponse')
+const BulkListInsertionOrderAssignedTargetingOptionsResponseSchema: z.ZodType<BulkListInsertionOrderAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent BulkListInsertionOrderAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for BulkListInsertionOrderAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('BulkListInsertionOrderAssignedTargetingOptionsResponse')
 
 const LineItemBudgetSchema = z
   .object({
@@ -4001,51 +4557,6 @@ const ConversionCountingConfigSchema = z
   })
   .openapi('ConversionCountingConfig')
 
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const DateRangeSchema = z
-  .object({
-    endDate: DateSchema.exactOptional().openapi({
-      description:
-        'The upper bound of the date range, inclusive. Must specify a positive value for `year`, `month`, and `day`.',
-    }),
-    startDate: DateSchema.exactOptional().openapi({
-      description:
-        'The lower bound of the date range, inclusive. Must specify a positive value for `year`, `month`, and `day`.',
-    }),
-  })
-  .openapi({ description: 'A date range.', required: [] })
-  .openapi('DateRange')
-
 const LineItemFlightSchema = z
   .object({
     dateRange: DateRangeSchema.exactOptional().openapi({
@@ -4066,59 +4577,6 @@ const LineItemFlightSchema = z
     required: [],
   })
   .openapi('LineItemFlight')
-
-const FrequencyCapSchema = z
-  .object({
-    maxImpressions: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of times a user may be shown the same ad during this period. Must be greater than 0. Required when unlimited is `false` and max_views is not set.',
-      }),
-    maxViews: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of times a user may click-through or fully view an ad during this period until it is no longer served to them. Must be greater than 0. Only applicable to YouTube and Partners resources. Required when unlimited is `false` and max_impressions is not set.',
-      }),
-    timeUnit: z
-      .enum([
-        'TIME_UNIT_UNSPECIFIED',
-        'TIME_UNIT_LIFETIME',
-        'TIME_UNIT_MONTHS',
-        'TIME_UNIT_WEEKS',
-        'TIME_UNIT_DAYS',
-        'TIME_UNIT_HOURS',
-        'TIME_UNIT_MINUTES',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The time unit in which the frequency cap will be applied. Required when unlimited is `false`.',
-      }),
-    timeUnitCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of time_unit the frequency cap will last. Required when unlimited is `false`. The following restrictions apply based on the value of time_unit: * `TIME_UNIT_LIFETIME` - this field is output only and will default to 1 * `TIME_UNIT_MONTHS` - must be between 1 and 2 * `TIME_UNIT_WEEKS` - must be between 1 and 4 * `TIME_UNIT_DAYS` - must be between 1 and 6 * `TIME_UNIT_HOURS` - must be between 1 and 23 * `TIME_UNIT_MINUTES` - must be between 1 and 59',
-      }),
-    unlimited: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether unlimited frequency capping is applied. When this field is set to `true`, the remaining frequency cap fields are not applicable.',
-      }),
-  })
-  .openapi({
-    description:
-      'Settings that control the number of times a user may be shown with the same ad during a given time period.',
-    required: [],
-  })
-  .openapi('FrequencyCap')
 
 const MobileAppSchema = z
   .object({
@@ -4147,126 +4605,6 @@ const MobileAppSchema = z
     required: [],
   })
   .openapi('MobileApp')
-
-const PacingSchema = z
-  .object({
-    dailyMaxImpressions: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of impressions to serve every day. Applicable when the budget is impression based. Must be greater than 0.',
-      }),
-    dailyMaxMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum currency amount to spend every day in micros of advertiser's currency. Applicable when the budget is currency based. Must be greater than 0. For example, for 1.5 standard unit of the currency, set this field to 1500000. The value assigned will be rounded to whole billable units for the relevant currency by the following rules: any positive value less than a single billable unit will be rounded up to one billable unit and any value larger than a single billable unit will be rounded down to the nearest billable value. For example, if the currency's billable unit is 0.01, and this field is set to 10257770, it will round down to 10250000, a value of 10.25. If set to 505, it will round up to 10000, a value of 0.01.",
-      }),
-    pacingPeriod: z
-      .enum(['PACING_PERIOD_UNSPECIFIED', 'PACING_PERIOD_DAILY', 'PACING_PERIOD_FLIGHT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The time period in which the pacing budget will be spent. When automatic budget allocation is enabled at the insertion order via auto_budget_allocation, this field is output only and defaults to `PACING_PERIOD_FLIGHT`.',
-      }),
-    pacingType: z
-      .enum([
-        'PACING_TYPE_UNSPECIFIED',
-        'PACING_TYPE_AHEAD',
-        'PACING_TYPE_ASAP',
-        'PACING_TYPE_EVEN',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of pacing that defines how the budget amount will be spent across the pacing_period.',
-      }),
-  })
-  .openapi({
-    description: 'Settings that control the rate at which a budget is spent.',
-    required: [],
-  })
-  .openapi('Pacing')
-
-const PartnerCostSchema = z
-  .object({
-    costType: z
-      .enum([
-        'PARTNER_COST_TYPE_UNSPECIFIED',
-        'PARTNER_COST_TYPE_ADLOOX',
-        'PARTNER_COST_TYPE_ADLOOX_PREBID',
-        'PARTNER_COST_TYPE_ADSAFE',
-        'PARTNER_COST_TYPE_ADXPOSE',
-        'PARTNER_COST_TYPE_AGGREGATE_KNOWLEDGE',
-        'PARTNER_COST_TYPE_AGENCY_TRADING_DESK',
-        'PARTNER_COST_TYPE_DV360_FEE',
-        'PARTNER_COST_TYPE_COMSCORE_VCE',
-        'PARTNER_COST_TYPE_DATA_MANAGEMENT_PLATFORM',
-        'PARTNER_COST_TYPE_DEFAULT',
-        'PARTNER_COST_TYPE_DOUBLE_VERIFY',
-        'PARTNER_COST_TYPE_DOUBLE_VERIFY_PREBID',
-        'PARTNER_COST_TYPE_EVIDON',
-        'PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE_VIDEO',
-        'PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE_PREBID',
-        'PARTNER_COST_TYPE_MEDIA_COST_DATA',
-        'PARTNER_COST_TYPE_MOAT_VIDEO',
-        'PARTNER_COST_TYPE_NIELSEN_DAR',
-        'PARTNER_COST_TYPE_SHOP_LOCAL',
-        'PARTNER_COST_TYPE_TERACENT',
-        'PARTNER_COST_TYPE_THIRD_PARTY_AD_SERVER',
-        'PARTNER_COST_TYPE_TRUST_METRICS',
-        'PARTNER_COST_TYPE_VIZU',
-        'PARTNER_COST_TYPE_ADLINGO_FEE',
-        'PARTNER_COST_TYPE_CUSTOM_FEE_1',
-        'PARTNER_COST_TYPE_CUSTOM_FEE_2',
-        'PARTNER_COST_TYPE_CUSTOM_FEE_3',
-        'PARTNER_COST_TYPE_CUSTOM_FEE_4',
-        'PARTNER_COST_TYPE_CUSTOM_FEE_5',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. The type of the partner cost.' }),
-    feeAmount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The CPM fee amount in micros of advertiser's currency. Applicable when the fee_type is `PARTNER_FEE_TYPE_CPM_FEE`. Must be greater than or equal to 0. For example, for 1.5 standard unit of the advertiser's currency, set this field to 1500000.",
-      }),
-    feePercentageMillis: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The media fee percentage in millis (1/1000 of a percent). Applicable when the fee_type is `PARTNER_FEE_TYPE_MEDIA_FEE`. Must be greater than or equal to 0. For example: 100 represents 0.1%.',
-      }),
-    feeType: z
-      .enum([
-        'PARTNER_COST_FEE_TYPE_UNSPECIFIED',
-        'PARTNER_COST_FEE_TYPE_CPM_FEE',
-        'PARTNER_COST_FEE_TYPE_MEDIA_FEE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. The fee type for this partner cost.' }),
-    invoiceType: z
-      .enum([
-        'PARTNER_COST_INVOICE_TYPE_UNSPECIFIED',
-        'PARTNER_COST_INVOICE_TYPE_DV360',
-        'PARTNER_COST_INVOICE_TYPE_PARTNER',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The invoice type for this partner cost. * Required when cost_type is one of: - `PARTNER_COST_TYPE_ADLOOX` - `PARTNER_COST_TYPE_DOUBLE_VERIFY` - `PARTNER_COST_TYPE_INTEGRAL_AD_SCIENCE`. * Output only for other types.',
-      }),
-  })
-  .openapi({
-    description:
-      'Settings that control a partner cost. A partner cost is any type of expense involved in running a campaign, other than the costs of purchasing impressions (which is called the media cost) and using third-party audience segment data (data fee). Some examples of partner costs include the fees for using DV360, a third-party ad server, or a third-party ad serving verification service.',
-    required: [],
-  })
-  .openapi('PartnerCost')
 
 const PartnerRevenueModelSchema = z
   .object({
@@ -4846,6 +5184,14 @@ const BulkUpdateLineItemsResponseSchema = z
   })
   .openapi('BulkUpdateLineItemsResponse')
 
+const DimensionsSchema = z
+  .object({
+    heightPixels: z.int32().exactOptional().openapi({ description: 'The height in pixels.' }),
+    widthPixels: z.int32().exactOptional().openapi({ description: 'The width in pixels.' }),
+  })
+  .openapi({ description: 'Dimensions.', required: [] })
+  .openapi('Dimensions')
+
 const ImageAssetSchema = z
   .object({
     fileSize: z
@@ -5101,56 +5447,6 @@ const CampaignFlightSchema = z
     required: [],
   })
   .openapi('CampaignFlight')
-
-const PerformanceGoalSchema = z
-  .object({
-    performanceGoalAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The goal amount, in micros of the advertiser's currency. Applicable when performance_goal_type is one of: * `PERFORMANCE_GOAL_TYPE_CPM` * `PERFORMANCE_GOAL_TYPE_CPC` * `PERFORMANCE_GOAL_TYPE_CPA` * `PERFORMANCE_GOAL_TYPE_CPIAVC` * `PERFORMANCE_GOAL_TYPE_VCPM` For example 1500000 represents 1.5 standard units of the currency.",
-      }),
-    performanceGoalPercentageMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The decimal representation of the goal percentage in micros. Applicable when performance_goal_type is one of: * `PERFORMANCE_GOAL_TYPE_CTR` * `PERFORMANCE_GOAL_TYPE_VIEWABILITY` * `PERFORMANCE_GOAL_TYPE_CLICK_CVR` * `PERFORMANCE_GOAL_TYPE_IMPRESSION_CVR` * `PERFORMANCE_GOAL_TYPE_VTR` * `PERFORMANCE_GOAL_TYPE_AUDIO_COMPLETION_RATE` * `PERFORMANCE_GOAL_TYPE_VIDEO_COMPLETION_RATE` For example, 70000 represents 7% (decimal 0.07).',
-      }),
-    performanceGoalString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A key performance indicator (KPI) string, which can be empty. Must be UTF-8 encoded with a length of no more than 100 characters. Applicable when performance_goal_type is set to `PERFORMANCE_GOAL_TYPE_OTHER`.',
-      }),
-    performanceGoalType: z
-      .enum([
-        'PERFORMANCE_GOAL_TYPE_UNSPECIFIED',
-        'PERFORMANCE_GOAL_TYPE_CPM',
-        'PERFORMANCE_GOAL_TYPE_CPC',
-        'PERFORMANCE_GOAL_TYPE_CPA',
-        'PERFORMANCE_GOAL_TYPE_CTR',
-        'PERFORMANCE_GOAL_TYPE_VIEWABILITY',
-        'PERFORMANCE_GOAL_TYPE_CPIAVC',
-        'PERFORMANCE_GOAL_TYPE_CPE',
-        'PERFORMANCE_GOAL_TYPE_CLICK_CVR',
-        'PERFORMANCE_GOAL_TYPE_IMPRESSION_CVR',
-        'PERFORMANCE_GOAL_TYPE_VCPM',
-        'PERFORMANCE_GOAL_TYPE_VTR',
-        'PERFORMANCE_GOAL_TYPE_AUDIO_COMPLETION_RATE',
-        'PERFORMANCE_GOAL_TYPE_VIDEO_COMPLETION_RATE',
-        'PERFORMANCE_GOAL_TYPE_OTHER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. The type of the performance goal.' }),
-  })
-  .openapi({
-    description: 'Settings that control the performance goal of a campaign or insertion order.',
-    required: [],
-  })
-  .openapi('PerformanceGoal')
 
 const CampaignGoalSchema = z
   .object({
@@ -6463,47 +6759,67 @@ const CreativeSchema = z
   .openapi({ description: 'A single Creative.', required: [] })
   .openapi('Creative')
 
-const CreativeConfigSchema: z.ZodType<CreativeConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        creativeType: z
-          .enum([
-            'CREATIVE_TYPE_UNSPECIFIED',
-            'CREATIVE_TYPE_STANDARD',
-            'CREATIVE_TYPE_EXPANDABLE',
-            'CREATIVE_TYPE_VIDEO',
-            'CREATIVE_TYPE_NATIVE',
-            'CREATIVE_TYPE_TEMPLATED_APP_INSTALL',
-            'CREATIVE_TYPE_NATIVE_SITE_SQUARE',
-            'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_INTERSTITIAL',
-            'CREATIVE_TYPE_LIGHTBOX',
-            'CREATIVE_TYPE_NATIVE_APP_INSTALL',
-            'CREATIVE_TYPE_NATIVE_APP_INSTALL_SQUARE',
-            'CREATIVE_TYPE_AUDIO',
-            'CREATIVE_TYPE_PUBLISHER_HOSTED',
-            'CREATIVE_TYPE_NATIVE_VIDEO',
-            'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_VIDEO',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of creative that can be assigned to the inventory source. Only the following types are supported: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_VIDEO`',
-          }),
-        displayCreativeConfig: InventorySourceDisplayCreativeConfigSchema.exactOptional().openapi({
-          description:
-            'The configuration for display creatives. Applicable when creative_type is `CREATIVE_TYPE_STANDARD`.',
-        }),
-        videoCreativeConfig: InventorySourceVideoCreativeConfigSchema.exactOptional().openapi({
-          description:
-            'The configuration for video creatives. Applicable when creative_type is `CREATIVE_TYPE_VIDEO`.',
-        }),
-      })
+const InventorySourceDisplayCreativeConfigSchema = z
+  .object({
+    creativeSize: DimensionsSchema.exactOptional().openapi({
+      description:
+        'The size requirements for display creatives that can be assigned to the inventory source.',
+    }),
+  })
+  .openapi({ description: 'The configuration for display creatives.', required: [] })
+  .openapi('InventorySourceDisplayCreativeConfig')
+
+const InventorySourceVideoCreativeConfigSchema = z
+  .object({
+    duration: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Creative requirements configuration for the inventory source.',
-        required: [],
+        description:
+          'The duration requirements for the video creatives that can be assigned to the inventory source.',
       }),
-  )
+  })
+  .openapi({ description: 'The configuration for video creatives.', required: [] })
+  .openapi('InventorySourceVideoCreativeConfig')
+
+const CreativeConfigSchema = z
+  .object({
+    creativeType: z
+      .enum([
+        'CREATIVE_TYPE_UNSPECIFIED',
+        'CREATIVE_TYPE_STANDARD',
+        'CREATIVE_TYPE_EXPANDABLE',
+        'CREATIVE_TYPE_VIDEO',
+        'CREATIVE_TYPE_NATIVE',
+        'CREATIVE_TYPE_TEMPLATED_APP_INSTALL',
+        'CREATIVE_TYPE_NATIVE_SITE_SQUARE',
+        'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_INTERSTITIAL',
+        'CREATIVE_TYPE_LIGHTBOX',
+        'CREATIVE_TYPE_NATIVE_APP_INSTALL',
+        'CREATIVE_TYPE_NATIVE_APP_INSTALL_SQUARE',
+        'CREATIVE_TYPE_AUDIO',
+        'CREATIVE_TYPE_PUBLISHER_HOSTED',
+        'CREATIVE_TYPE_NATIVE_VIDEO',
+        'CREATIVE_TYPE_TEMPLATED_APP_INSTALL_VIDEO',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of creative that can be assigned to the inventory source. Only the following types are supported: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_VIDEO`',
+      }),
+    displayCreativeConfig: InventorySourceDisplayCreativeConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration for display creatives. Applicable when creative_type is `CREATIVE_TYPE_STANDARD`.',
+    }),
+    videoCreativeConfig: InventorySourceVideoCreativeConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration for video creatives. Applicable when creative_type is `CREATIVE_TYPE_VIDEO`.',
+    }),
+  })
+  .openapi({
+    description: 'Creative requirements configuration for the inventory source.',
+    required: [],
+  })
   .openapi('CreativeConfig')
 
 const CustomBiddingModelDetailsSchema = z
@@ -6770,7 +7086,7 @@ const CustomListSchema = z
   .openapi('CustomList')
 
 const DeactivateManualTriggerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for ManualTriggerService.DeactivateManualTrigger.' })
   .openapi('DeactivateManualTriggerRequest')
 
@@ -7022,7 +7338,7 @@ const EditInventorySourceReadWriteAccessorsRequestSchema = z
   .openapi('EditInventorySourceReadWriteAccessorsRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -7921,193 +8237,6 @@ const InStreamAdSchema = z
   .openapi({ description: 'Details for an in-stream ad.', required: [] })
   .openapi('InStreamAd')
 
-const InsertionOrderBudgetSegmentSchema = z
-  .object({
-    budgetAmountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The budget amount the insertion order will spend for the given date_range. The amount is in micros. Must be greater than 0. For example, 500000000 represents 500 standard units of the currency.',
-      }),
-    campaignBudgetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The budget_id of the campaign budget that this insertion order budget segment is a part of.',
-      }),
-    dateRange: DateRangeSchema.exactOptional().openapi({
-      description:
-        "Required. The start and end date settings of the budget segment. They are resolved relative to the parent advertiser's time zone. * When creating a new budget segment, both `start_date` and `end_date` must be in the future. * An existing budget segment with a `start_date` in the past has a mutable `end_date` but an immutable `start_date`. * `end_date` must be the `start_date` or later, both before the year 2037.",
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The budget segment description. It can be used to enter Purchase Order information for each budget segment and have that information printed on the invoices. Must be UTF-8 encoded.',
-      }),
-  })
-  .openapi({
-    description: 'Settings that control the budget of a single budget segment.',
-    required: [],
-  })
-  .openapi('InsertionOrderBudgetSegment')
-
-const InsertionOrderBudgetSchema = z
-  .object({
-    automationType: z
-      .enum([
-        'INSERTION_ORDER_AUTOMATION_TYPE_UNSPECIFIED',
-        'INSERTION_ORDER_AUTOMATION_TYPE_BUDGET',
-        'INSERTION_ORDER_AUTOMATION_TYPE_NONE',
-        'INSERTION_ORDER_AUTOMATION_TYPE_BID_BUDGET',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of automation used to manage bid and budget for the insertion order. If this field is unspecified in creation, the value defaults to `INSERTION_ORDER_AUTOMATION_TYPE_NONE`.',
-      }),
-    budgetSegments: z
-      .array(InsertionOrderBudgetSegmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The list of budget segments. Use a budget segment to specify a specific budget for a given period of time an insertion order is running.',
-      }),
-    budgetUnit: z
-      .enum(['BUDGET_UNIT_UNSPECIFIED', 'BUDGET_UNIT_CURRENCY', 'BUDGET_UNIT_IMPRESSIONS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The budget unit specifies whether the budget is currency based or impression based.',
-      }),
-  })
-  .openapi({
-    description: 'Settings that control how insertion order budget is allocated.',
-    required: [],
-  })
-  .openapi('InsertionOrderBudget')
-
-const InsertionOrderSchema = z
-  .object({
-    advertiserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique ID of the advertiser the insertion order belongs to.',
-        readOnly: true,
-      }),
-    bidStrategy: BiddingStrategySchema.exactOptional().openapi({
-      description: 'The bidding strategy of the insertion order. By default, fixed_bid is set.',
-    }),
-    billableOutcome: z
-      .enum([
-        'BILLABLE_OUTCOME_UNSPECIFIED',
-        'BILLABLE_OUTCOME_PAY_PER_IMPRESSION',
-        'BILLABLE_OUTCOME_PAY_PER_CLICK',
-        'BILLABLE_OUTCOME_PAY_PER_VIEWABLE_IMPRESSION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Immutable. The billable outcome of the insertion order.' }),
-    budget: InsertionOrderBudgetSchema.exactOptional().openapi({
-      description: 'Required. The budget allocation settings of the insertion order.',
-    }),
-    campaignId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The unique ID of the campaign that the insertion order belongs to.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The display name of the insertion order. Must be UTF-8 encoded with a maximum size of 240 bytes.',
-      }),
-    entityStatus: z
-      .enum([
-        'ENTITY_STATUS_UNSPECIFIED',
-        'ENTITY_STATUS_ACTIVE',
-        'ENTITY_STATUS_ARCHIVED',
-        'ENTITY_STATUS_DRAFT',
-        'ENTITY_STATUS_PAUSED',
-        'ENTITY_STATUS_SCHEDULED_FOR_DELETION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Controls whether or not the insertion order can spend its budget and bid on inventory. * For CreateInsertionOrder method, only `ENTITY_STATUS_DRAFT` is allowed. To activate an insertion order, use UpdateInsertionOrder method and update the status to `ENTITY_STATUS_ACTIVE` after creation. * An insertion order cannot be changed back to `ENTITY_STATUS_DRAFT` status from any other status. * An insertion order cannot be set to `ENTITY_STATUS_ACTIVE` if its parent campaign is not active.',
-      }),
-    frequencyCap: FrequencyCapSchema.exactOptional().openapi({
-      description: 'Required. The frequency capping setting of the insertion order.',
-    }),
-    insertionOrderId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The unique ID of the insertion order. Assigned by the system.',
-        readOnly: true,
-      }),
-    insertionOrderType: z
-      .enum(['INSERTION_ORDER_TYPE_UNSPECIFIED', 'RTB', 'OVER_THE_TOP'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of insertion order. If this field is unspecified in creation, the value defaults to `RTB`.',
-      }),
-    integrationDetails: IntegrationDetailsSchema.exactOptional().openapi({
-      description: 'Additional integration details of the insertion order.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The resource name of the insertion order.',
-        readOnly: true,
-      }),
-    pacing: PacingSchema.exactOptional().openapi({
-      description: 'Required. The budget spending speed setting of the insertion order.',
-    }),
-    partnerCosts: z
-      .array(PartnerCostSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The partner costs associated with the insertion order. If absent or empty in CreateInsertionOrder method, the newly created insertion order will inherit partner costs from the partner settings.',
-      }),
-    performanceGoal: PerformanceGoalSchema.exactOptional().openapi({
-      description: 'Required. Performance goal of the insertion order.',
-    }),
-    reservationType: z
-      .enum([
-        'RESERVATION_TYPE_UNSPECIFIED',
-        'RESERVATION_TYPE_NOT_GUARANTEED',
-        'RESERVATION_TYPE_PROGRAMMATIC_GUARANTEED',
-        'RESERVATION_TYPE_TAG_GUARANTEED',
-        'RESERVATION_TYPE_PETRA_VIRAL',
-        'RESERVATION_TYPE_INSTANT_RESERVE',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The reservation type of the insertion order.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The timestamp when the insertion order was last updated. Assigned by the system.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A single insertion order.', required: [] })
-  .openapi('InsertionOrder')
-
 const MoneySchema = z
   .object({
     currencyCode: z
@@ -8654,27 +8783,28 @@ const LanguageTargetingOptionDetailsSchema = z
   })
   .openapi('LanguageTargetingOptionDetails')
 
-const ListAdvertiserAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListAdvertiserAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for ListAdvertiserAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('ListAdvertiserAssignedTargetingOptionsResponse')
+const ListAdvertiserAssignedTargetingOptionsResponseSchema: z.ZodType<ListAdvertiserAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListAdvertiserAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for ListAdvertiserAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('ListAdvertiserAssignedTargetingOptionsResponse')
 
 const ListAdvertisersResponseSchema = z
   .object({
@@ -8738,27 +8868,28 @@ const ListAssignedLocationsResponseSchema = z
   })
   .openapi('ListAssignedLocationsResponse')
 
-const ListCampaignAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListCampaignAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for ListCampaignAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('ListCampaignAssignedTargetingOptionsResponse')
+const ListCampaignAssignedTargetingOptionsResponseSchema: z.ZodType<ListCampaignAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListCampaignAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for ListCampaignAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('ListCampaignAssignedTargetingOptionsResponse')
 
 const ListCampaignsResponseSchema = z
   .object({
@@ -8941,29 +9072,30 @@ const ListGuaranteedOrdersResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListGuaranteedOrdersResponse')
 
-const ListInsertionOrderAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListInsertionOrderAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for ListInsertionOrderAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('ListInsertionOrderAssignedTargetingOptionsResponse')
+const ListInsertionOrderAssignedTargetingOptionsResponseSchema: z.ZodType<ListInsertionOrderAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListInsertionOrderAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for ListInsertionOrderAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('ListInsertionOrderAssignedTargetingOptionsResponse')
 
-const ListInsertionOrdersResponseSchema = z
+const ListInsertionOrdersResponseSchema: z.ZodType<ListInsertionOrdersResponseType> = z
   .object({
     insertionOrders: z
       .array(InsertionOrderSchema)
@@ -9038,27 +9170,28 @@ const ListInvoicesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListInvoicesResponse')
 
-const ListLineItemAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListLineItemAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for ListLineItemAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('ListLineItemAssignedTargetingOptionsResponse')
+const ListLineItemAssignedTargetingOptionsResponseSchema: z.ZodType<ListLineItemAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListLineItemAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for ListLineItemAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('ListLineItemAssignedTargetingOptionsResponse')
 
 const ListLineItemsResponseSchema = z
   .object({
@@ -9300,24 +9433,25 @@ const ListNegativeKeywordsResponseSchema = z
   })
   .openapi('ListNegativeKeywordsResponse')
 
-const ListPartnerAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListPartnerAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ListPartnerAssignedTargetingOptionsResponse')
+const ListPartnerAssignedTargetingOptionsResponseSchema: z.ZodType<ListPartnerAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListPartnerAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('ListPartnerAssignedTargetingOptionsResponse')
 
 const MeasurementConfigSchema = z
   .object({
@@ -10212,27 +10346,28 @@ const ListYoutubeAdGroupAdsResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListYoutubeAdGroupAdsResponse')
 
-const ListYoutubeAdGroupAssignedTargetingOptionsResponseSchema = z
-  .object({
-    assignedTargetingOptions: z
-      .array(AssignedTargetingOptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of assigned targeting options. This list will be absent if empty.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListYoutubeAdGroupAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for ListYoutubeAdGroupAssignedTargetingOptions.',
-    required: [],
-  })
-  .openapi('ListYoutubeAdGroupAssignedTargetingOptionsResponse')
+const ListYoutubeAdGroupAssignedTargetingOptionsResponseSchema: z.ZodType<ListYoutubeAdGroupAssignedTargetingOptionsResponseType> =
+  z
+    .object({
+      assignedTargetingOptions: z
+        .array(AssignedTargetingOptionSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of assigned targeting options. This list will be absent if empty.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token identifying the next page of results. This value should be specified as the pageToken in a subsequent ListYoutubeAdGroupAssignedTargetingOptionsRequest to fetch the next page of results. This token will be absent if there are no more assigned_targeting_options to return.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for ListYoutubeAdGroupAssignedTargetingOptions.',
+      required: [],
+    })
+    .openapi('ListYoutubeAdGroupAssignedTargetingOptionsResponse')
 
 const ProductMatchDimensionSchema = z
   .object({

@@ -1,4 +1,4 @@
-<h1 id="medusa-storefront-api">Medusa Storefront API v2.21.2</h1>
+<h1 id="medusa-storefront-api">Medusa Storefront API v2.23.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -3083,7 +3083,8 @@ Create a cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -3131,7 +3132,8 @@ Create a cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -3943,7 +3945,8 @@ Retrieve a cart by its ID. You can expand the cart's relations or select the fie
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -3991,7 +3994,8 @@ Retrieve a cart by its ID. You can expand the cart's relations or select the fie
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -4904,7 +4908,8 @@ Update a cart's details. This unsets the payment methods chosen before, and the 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -4952,7 +4957,8 @@ Update a cart's details. This unsets the payment methods chosen before, and the 
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -5793,7 +5799,8 @@ Complete a cart and place an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -5841,7 +5848,8 @@ Complete a cart and place an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -6760,7 +6768,8 @@ Change the cart's customer to the currently logged-in customer. This is useful w
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -6808,7 +6817,8 @@ Change the cart's customer to the currently logged-in customer. This is useful w
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -7635,7 +7645,8 @@ Add a Gift Card to a cart
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -7683,7 +7694,8 @@ Add a Gift Card to a cart
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -8509,7 +8521,8 @@ Remove a Gift Card from a cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -8557,7 +8570,8 @@ Remove a Gift Card from a cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -9395,7 +9409,8 @@ Add a product variant as a line item in the cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -9443,7 +9458,8 @@ Add a product variant as a line item in the cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -10279,7 +10295,8 @@ Update a line item's details in the cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -10327,7 +10344,8 @@ Update a line item's details in the cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -11146,7 +11164,8 @@ Remove a line item from a cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -11194,7 +11213,8 @@ Remove a line item from a cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -12038,7 +12058,8 @@ Add a list of promotions to a cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -12086,7 +12107,8 @@ Add a list of promotions to a cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -12919,7 +12941,8 @@ Remove a list of promotions from a cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -12967,7 +12990,8 @@ Remove a list of promotions from a cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -13816,7 +13840,8 @@ If the chosen shipping option's `price_type` is `calculated`, its price is compu
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -13864,7 +13889,8 @@ If the chosen shipping option's `price_type` is `calculated`, its price is compu
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -14690,7 +14716,8 @@ Add a Store Credit to a cart
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -14738,7 +14765,8 @@ Add a Store Credit to a cart
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -15553,7 +15581,8 @@ Medusa recalculates a cart's tax lines automatically on cart changes when the ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -15601,7 +15630,8 @@ Medusa recalculates a cart's tax lines automatically on cart changes when the ca
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -19092,7 +19122,8 @@ Retrieve the orders of the logged-in customer. The orders can be filtered by fie
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -19140,7 +19171,8 @@ Retrieve the orders of the logged-in customer. The orders can be filtered by fie
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -20054,7 +20086,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -20102,7 +20135,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -21018,7 +21052,8 @@ Accept an order to be transfered to a customer's account, which was specified wh
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -21066,7 +21101,8 @@ Accept an order to be transfered to a customer's account, which was specified wh
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -21969,7 +22005,8 @@ Cancel an order transfer that the logged-in customer previously requested using 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -22017,7 +22054,8 @@ Cancel an order transfer that the logged-in customer previously requested using 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -22934,7 +22972,8 @@ Decline an order transfer previously requested, typically by the admin user usin
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -22982,7 +23021,8 @@ Decline an order transfer previously requested, typically by the admin user usin
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -23902,7 +23942,8 @@ Request an order to be transfered to the logged-in customer's account. The trans
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -23950,7 +23991,8 @@ Request an order to be transfered to the logged-in customer's account. The trans
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -24265,7 +24307,8 @@ Create a payment collection for a cart. This is used during checkout, where the 
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -24313,7 +24356,8 @@ Create a payment collection for a cart. This is used during checkout, where the 
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -24515,7 +24559,8 @@ Make sure to configure the Manual System Payment Provider in your store's region
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -24563,7 +24608,8 @@ Make sure to configure the Manual System Payment Provider in your store's region
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -24623,6 +24669,250 @@ Make sure to configure the Manual System Payment Provider in your store's region
 ```
 
 <h3 id="initialize-payment-session-of-a-payment-collection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[StorePaymentCollectionResponse](#schemastorepaymentcollectionresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update Payment Session
+
+<a id="opIdPostPaymentCollectionsIdPaymentSessionsSession_id"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/store/payment-collections/string/payment-sessions/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'x-publishable-api-key: string' \
+  -d '{
+    "client_data": {}
+  }'
+```
+
+`POST /store/payment-collections/{id}/payment-sessions/{session_id}`
+
+Update a payment session's client data, such as payment details collected by the payment provider's checkout component. The data is merged into the session's `data.client`.
+
+> Body parameter
+
+```json
+{
+  "client_data": {}
+}
+```
+
+<h3 id="update-payment-session-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The payment collection's ID.|
+|session_id|path|string|true|The payment session's ID.|
+|x-publishable-api-key|header|string|true|Publishable API Key created in the Medusa Admin.|
+|x-medusa-locale|header|string|false|The locale in BCP 47 format to retrieve localized content.|
+|locale|query|string|false|The locale in BCP 47 format to retrieve localized content.|
+|fields|query|string|false|Comma-separated fields that should be included in the returned data. If a field is prefixed with `+` it will be added to the default fields, using `-` will remove it from the default fields. Without prefix it will replace the entire default fields.|
+|body|body|[StoreUpdatePaymentSession](#schemastoreupdatepaymentsession)|false|none|
+|» client_data|body|object|true|Data to merge into the session's `data.client`, such as payment details<br>collected by the provider's checkout component. Set a property to `null` to remove it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "payment_collection": {
+    "id": "string",
+    "currency_code": "string",
+    "amount": 0,
+    "authorized_amount": 0,
+    "captured_amount": 0,
+    "refunded_amount": 0,
+    "completed_at": "1970-01-01T00:00:00Z",
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "metadata": {},
+    "status": "canceled",
+    "payment_providers": [
+      {
+        "id": "string"
+      }
+    ],
+    "payment_sessions": [
+      {
+        "id": "string",
+        "amount": 0,
+        "currency_code": "usd",
+        "provider_id": "string",
+        "data": {},
+        "context": {
+          "customer": {
+            "id": "cus_123"
+          }
+        },
+        "status": "authorized",
+        "authorized_at": "1970-01-01T00:00:00Z",
+        "payment_collection": {},
+        "payment": {
+          "id": "string",
+          "amount": 0,
+          "authorized_amount": 0,
+          "currency_code": "string",
+          "provider_id": "string",
+          "data": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z",
+          "captured_at": "1970-01-01T00:00:00Z",
+          "canceled_at": "1970-01-01T00:00:00Z",
+          "captured_amount": 0,
+          "refunded_amount": 0,
+          "captures": [
+            {
+              "id": "string",
+              "amount": 0,
+              "created_at": "1970-01-01T00:00:00Z",
+              "created_by": "string",
+              "payment": {}
+            }
+          ],
+          "refunds": [
+            {
+              "id": "string",
+              "amount": 0,
+              "refund_reason_id": "string",
+              "note": "string",
+              "created_at": "1970-01-01T00:00:00Z",
+              "created_by": "string",
+              "payment": {},
+              "refund_reason": {
+                "id": "string",
+                "label": "string",
+                "description": "string",
+                "metadata": {},
+                "created_at": "1970-01-01T00:00:00Z",
+                "updated_at": "1970-01-01T00:00:00Z",
+                "code": "string"
+              },
+              "idempotency_key": "string"
+            }
+          ],
+          "payment_collection": {},
+          "payment_session": {}
+        }
+      }
+    ],
+    "payments": [
+      {
+        "id": "string",
+        "amount": 0,
+        "authorized_amount": 0,
+        "currency_code": "string",
+        "provider_id": "string",
+        "data": {},
+        "created_at": "1970-01-01T00:00:00Z",
+        "updated_at": "1970-01-01T00:00:00Z",
+        "captured_at": "1970-01-01T00:00:00Z",
+        "canceled_at": "1970-01-01T00:00:00Z",
+        "captured_amount": 0,
+        "refunded_amount": 0,
+        "captures": [
+          {
+            "id": "string",
+            "amount": 0,
+            "created_at": "1970-01-01T00:00:00Z",
+            "created_by": "string",
+            "payment": {}
+          }
+        ],
+        "refunds": [
+          {
+            "id": "string",
+            "amount": 0,
+            "refund_reason_id": "string",
+            "note": "string",
+            "created_at": "1970-01-01T00:00:00Z",
+            "created_by": "string",
+            "payment": {},
+            "refund_reason": {
+              "id": "string",
+              "label": "string",
+              "description": "string",
+              "metadata": {},
+              "created_at": "1970-01-01T00:00:00Z",
+              "updated_at": "1970-01-01T00:00:00Z",
+              "code": "string"
+            },
+            "idempotency_key": "string"
+          }
+        ],
+        "payment_collection": {},
+        "payment_session": {}
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="update-payment-session-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -30287,7 +30577,8 @@ The API key's details.
   "currency_code": "usd",
   "max_quantity": 0,
   "buy_rules_min_quantity": 0,
-  "apply_to_quantity": 0
+  "apply_to_quantity": 0,
+  "target_selection_strategy": "most_expensive_first"
 }
 ```
 
@@ -30309,6 +30600,7 @@ The application method's details.
 |max_quantity|number|false|none|The max quantity allowed in the cart for the associated promotion to be applied.|
 |buy_rules_min_quantity|number|false|none|The minimum quantity required for a `buyget` promotion to be applied. For example, if the promotion is a "Buy 2 shirts get 1 free", the value of this attribute is `2`.|
 |apply_to_quantity|number|false|none|The quantity that results from matching the `buyget` promotion's condition. For example, if the promotion is a "Buy 2 shirts get 1 free", the value of this attribute is `1`.|
+|target_selection_strategy|string|false|none|The application method's target selection strategy.|
 
 #### Enumerated Values
 
@@ -30321,6 +30613,35 @@ The application method's details.
 |target_type|order|
 |allocation|each|
 |allocation|across|
+|target_selection_strategy|most_expensive_first|
+|target_selection_strategy|cheapest_first|
+
+<h2 id="tocS_AdminAssignUserRoles">AdminAssignUserRoles</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminassignuserroles"></a>
+<a id="schema_AdminAssignUserRoles"></a>
+<a id="tocSadminassignuserroles"></a>
+<a id="tocsadminassignuserroles"></a>
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+The RBAC roles to assign to a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assignments|[object]|false|none|The roles to assign to the user.|
 
 <h2 id="tocS_AdminAuthorizeOrderPaymentSession">AdminAuthorizeOrderPaymentSession</h2>
 <!-- backwards compatibility -->
@@ -30426,7 +30747,8 @@ The details for authorizing a payment session for an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -30504,7 +30826,8 @@ The details for authorizing a payment session for an order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -30518,7 +30841,8 @@ The details for authorizing a payment session for an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -30575,7 +30899,8 @@ The details for authorizing a payment session for an order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -34055,7 +34380,7 @@ The product's details.
 |collection_id|string|false|none|The ID of the product's collection.|
 |categories|[object]|false|none|The product's categories.|
 |tags|[object]|false|none|The product's tags.|
-|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. You can add new variants or update existing ones, passing their IDs in the object.|
+|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. This replaces the product's full variant list, so existing variants that aren't included are deleted. Pass a variant's `id` to update it, or omit the `id` to create a new variant.|
 |sales_channels|[object]|false|none|The sales channels that the product is available in.|
 |weight|number|false|none|The product's weight.|
 |length|number|false|none|The product's length.|
@@ -36105,7 +36430,8 @@ The payment's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -36183,7 +36509,8 @@ The payment's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -36197,7 +36524,8 @@ The payment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -36254,7 +36582,8 @@ The payment's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -39131,7 +39460,8 @@ The details of the deleted claim.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -39209,7 +39539,8 @@ The details of the deleted claim.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -39223,7 +39554,8 @@ The details of the deleted claim.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -39280,7 +39612,8 @@ The details of the deleted claim.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -40354,7 +40687,7 @@ The paginated list of claims.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |claims|[[AdminClaim](#schemaadminclaim)]|true|none|The list of claims.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminClaimOrderResponse">AdminClaimOrderResponse</h2>
 <!-- backwards compatibility -->
@@ -40503,7 +40836,8 @@ The paginated list of claims.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -42361,7 +42695,8 @@ The paginated list of claims.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -42439,7 +42774,8 @@ The paginated list of claims.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -42453,7 +42789,8 @@ The paginated list of claims.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -42510,7 +42847,8 @@ The paginated list of claims.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -43674,7 +44012,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -43752,7 +44091,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -43766,7 +44106,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -43823,7 +44164,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -45871,7 +46213,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -45919,7 +46262,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -48309,7 +48653,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -48387,7 +48732,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -48401,7 +48747,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -48458,7 +48805,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -49600,7 +49948,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -49678,7 +50027,8 @@ The created claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -49692,7 +50042,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -49749,7 +50100,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -50918,7 +51270,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -50996,7 +51349,8 @@ The created claim's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -51010,7 +51364,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -51067,7 +51422,8 @@ The created claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -53093,7 +53449,8 @@ The created claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -53171,7 +53528,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -53185,7 +53543,8 @@ The created claim's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -53242,7 +53601,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -55140,7 +55500,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -55218,7 +55579,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -55232,7 +55594,8 @@ The created claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -55289,7 +55652,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -56483,7 +56847,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -56561,7 +56926,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -56575,7 +56941,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -56632,7 +56999,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -58680,7 +59048,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -58728,7 +59097,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -61118,7 +61488,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -61196,7 +61567,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -61210,7 +61582,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -61267,7 +61640,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -62409,7 +62783,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -62487,7 +62862,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -62501,7 +62877,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -62558,7 +62935,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -63727,7 +64105,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -63805,7 +64184,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -63819,7 +64199,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -63876,7 +64257,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -65902,7 +66284,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -65980,7 +66363,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -65994,7 +66378,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -66051,7 +66436,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -67949,7 +68335,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -68027,7 +68414,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -68041,7 +68429,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -68098,7 +68487,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -70894,7 +71284,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -70972,7 +71363,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -70986,7 +71378,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -71043,7 +71436,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -72206,7 +72600,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -72284,7 +72679,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -72298,7 +72694,8 @@ The claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -72355,7 +72752,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -74403,7 +74801,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -74451,7 +74850,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -76841,7 +77241,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -76919,7 +77320,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -76933,7 +77335,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -76990,7 +77393,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -78132,7 +78536,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -78210,7 +78615,8 @@ The claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -78224,7 +78630,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -78281,7 +78688,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -79450,7 +79858,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -79528,7 +79937,8 @@ The claim's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -79542,7 +79952,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -79599,7 +80010,8 @@ The claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -81625,7 +82037,8 @@ The claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -81703,7 +82116,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -81717,7 +82131,8 @@ The claim's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -81774,7 +82189,8 @@ The claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -82509,7 +82925,7 @@ The paginated list of product collections.
 |offset|number|true|none|The number of items skipped before retrieving the returned results.|
 |count|number|true|none|The total number of items.|
 |collections|[[AdminCollection](#schemaadmincollection)]|true|none|The list of product collections.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminCollectionResponse">AdminCollectionResponse</h2>
 <!-- backwards compatibility -->
@@ -84727,7 +85143,7 @@ The paginated list of currencies.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |currencies|[[AdminCurrency](#schemaadmincurrency)]|true|none|The list of currencies.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminCurrencyResponse">AdminCurrencyResponse</h2>
 <!-- backwards compatibility -->
@@ -85371,7 +85787,8 @@ The items details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -85449,7 +85866,8 @@ The items details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -85463,7 +85881,8 @@ The items details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -85520,7 +85939,8 @@ The items details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -86744,7 +87164,8 @@ The draft order's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -86822,7 +87243,8 @@ The draft order's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -86836,7 +87258,8 @@ The draft order's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -86893,7 +87316,8 @@ The draft order's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -87961,7 +88385,7 @@ The list of draft orders with pagination fields.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items available.|
 |draft_orders|[[AdminDraftOrder](#schemaadmindraftorder)]|true|none|The list of draft orders.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminDraftOrderParams">AdminDraftOrderParams</h2>
 <!-- backwards compatibility -->
@@ -88076,7 +88500,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -88154,7 +88579,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -88168,7 +88594,8 @@ The parameters for retrieving draft orders.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -88225,7 +88652,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -90273,7 +90701,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -90321,7 +90750,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -92711,7 +93141,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -92789,7 +93220,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -92803,7 +93235,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -92860,7 +93293,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -94002,7 +94436,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -94080,7 +94515,8 @@ The parameters for retrieving draft orders.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -94094,7 +94530,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -94151,7 +94588,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -95320,7 +95758,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -95398,7 +95837,8 @@ The parameters for retrieving draft orders.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -95412,7 +95852,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -95469,7 +95910,8 @@ The parameters for retrieving draft orders.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -97495,7 +97937,8 @@ The parameters for retrieving draft orders.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -97573,7 +98016,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -97587,7 +98031,8 @@ The parameters for retrieving draft orders.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -97644,7 +98089,8 @@ The parameters for retrieving draft orders.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -98006,7 +98452,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -98084,7 +98531,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -98098,7 +98546,8 @@ The draft order preview's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -98155,7 +98604,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -100203,7 +100653,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -100251,7 +100702,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -102641,7 +103093,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -102719,7 +103172,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -102733,7 +103187,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -102790,7 +103245,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -103932,7 +104388,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -104010,7 +104467,8 @@ The draft order preview's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -104024,7 +104482,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -104081,7 +104540,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -105250,7 +105710,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -105328,7 +105789,8 @@ The draft order preview's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -105342,7 +105804,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -105399,7 +105862,8 @@ The draft order preview's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -107425,7 +107889,8 @@ The draft order preview's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -107503,7 +107968,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -107517,7 +107983,8 @@ The draft order preview's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -107574,7 +108041,8 @@ The draft order preview's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -107851,7 +108319,8 @@ The details of the preview on the draft order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -107929,7 +108398,8 @@ The details of the preview on the draft order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -107943,7 +108413,8 @@ The details of the preview on the draft order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -108000,7 +108471,8 @@ The details of the preview on the draft order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -110095,7 +110567,8 @@ The list of entities in the view.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -110143,7 +110616,8 @@ The list of entities in the view.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -111048,7 +111522,8 @@ The details of deleting an exchange.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -112156,7 +112631,8 @@ The details of deleting an exchange.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -112204,7 +112680,8 @@ The details of deleting an exchange.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -112984,7 +113461,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -113062,7 +113540,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -113076,7 +113555,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -113133,7 +113613,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -115181,7 +115662,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -115229,7 +115711,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -117619,7 +118102,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -117697,7 +118181,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -117711,7 +118196,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -117768,7 +118254,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -118910,7 +119397,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -118988,7 +119476,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -119002,7 +119491,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -119059,7 +119549,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -120228,7 +120719,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -120306,7 +120798,8 @@ The exchange's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -120320,7 +120813,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -120377,7 +120871,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -122403,7 +122898,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -122481,7 +122977,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -122495,7 +122992,8 @@ The exchange's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -122552,7 +123050,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -123700,7 +124199,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -123748,7 +124248,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -124558,7 +125059,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -124636,7 +125138,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -124650,7 +125153,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -124707,7 +125211,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -126755,7 +127260,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -126803,7 +127309,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -129193,7 +129700,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -129271,7 +129779,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -129285,7 +129794,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -129342,7 +129852,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -130484,7 +130995,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -130562,7 +131074,8 @@ A preview of the order once the exchange is applied.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -130576,7 +131089,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -130633,7 +131147,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -131802,7 +132317,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -131880,7 +132396,8 @@ A preview of the order once the exchange is applied.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -131894,7 +132411,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -131951,7 +132469,8 @@ A preview of the order once the exchange is applied.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -133977,7 +134496,8 @@ A preview of the order once the exchange is applied.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -134055,7 +134575,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -134069,7 +134590,8 @@ A preview of the order once the exchange is applied.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -134126,7 +134648,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -135274,7 +135797,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -135322,7 +135846,8 @@ A preview of the order once the exchange is applied.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -136984,7 +137509,8 @@ The details of a requested exchange.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -137032,7 +137558,8 @@ The details of a requested exchange.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -137811,7 +138338,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -137889,7 +138417,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -137903,7 +138432,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -137960,7 +138490,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -140008,7 +140539,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -140056,7 +140588,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -142446,7 +142979,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -142524,7 +143058,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -142538,7 +143073,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -142595,7 +143131,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -143737,7 +144274,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -143815,7 +144353,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -143829,7 +144368,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -143886,7 +144426,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -145055,7 +145596,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -145133,7 +145675,8 @@ The exchange's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -145147,7 +145690,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -145204,7 +145748,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -147230,7 +147775,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -147308,7 +147854,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -147322,7 +147869,8 @@ The exchange's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -147379,7 +147927,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -147653,6 +148202,57 @@ The details of the shipping method to update.
 |custom_amount|number|false|none|The shipping method's custom amount.|
 |internal_note|string|false|none|A note viewed by admin users only.|
 |metadata|object|false|none|The exchange's metadata, can hold custom key-value pairs.|
+
+<h2 id="tocS_AdminExportCustomerRequest">AdminExportCustomerRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminexportcustomerrequest"></a>
+<a id="schema_AdminExportCustomerRequest"></a>
+<a id="tocSadminexportcustomerrequest"></a>
+<a id="tocsadminexportcustomerrequest"></a>
+
+```json
+{
+  "format": "csv",
+  "batch_size": "string"
+}
+```
+
+The details of the customer export.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|format|string|false|none|The format of the exported file. Defaults to `json`.|
+|batch_size|string \| number|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|format|csv|
+|format|json|
+
+<h2 id="tocS_AdminExportCustomerResponse">AdminExportCustomerResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminexportcustomerresponse"></a>
+<a id="schema_AdminExportCustomerResponse"></a>
+<a id="tocSadminexportcustomerresponse"></a>
+<a id="tocsadminexportcustomerresponse"></a>
+
+```json
+{
+  "transaction_id": "string"
+}
+```
+
+The details of the customer export's workflow execution.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transaction_id|string|true|none|The ID of the export customer workflow's transaction.|
 
 <h2 id="tocS_AdminExportInventoryItemResponse">AdminExportInventoryItemResponse</h2>
 <!-- backwards compatibility -->
@@ -148111,7 +148711,7 @@ The paginated list of fulfillment providers.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |fulfillment_providers|[[AdminFulfillmentProvider](#schemaadminfulfillmentprovider)]|true|none|The list of fulfillment providers.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminFulfillmentProviderOption">AdminFulfillmentProviderOption</h2>
 <!-- backwards compatibility -->
@@ -148168,7 +148768,7 @@ The paginated list of fulfillment options.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |fulfillment_options|[[AdminFulfillmentProviderOption](#schemaadminfulfillmentprovideroption)]|true|none|The list of fulfillment options.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminFulfillmentResponse">AdminFulfillmentResponse</h2>
 <!-- backwards compatibility -->
@@ -151215,7 +151815,7 @@ The paginated list of gift cards.
 |offset|number|true|none|The number of gift cards to skip before retrieving the results.|
 |count|number|true|none|The total number of gift cards available.|
 |gift_cards|[[AdminGiftCard](#schemaadmingiftcard)]|true|none|The list of gift cards.|
-|estimate_count|number|false|none|The gift card's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The gift card's estimate count.|
 
 <h2 id="tocS_AdminImportProductRequest">AdminImportProductRequest</h2>
 <!-- backwards compatibility -->
@@ -151625,7 +152225,6 @@ The location level's location levels.
       "id": "string",
       "name": "string",
       "description": "string",
-      "parent_id": "string",
       "metadata": {},
       "policies": [
         {
@@ -151636,7 +152235,6 @@ The location level's location levels.
           "name": "string",
           "description": "string",
           "metadata": {},
-          "inherited_from_role_id": "string",
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "deleted_at": "1970-01-01T00:00:00Z"
@@ -151644,7 +152242,11 @@ The location level's location levels.
       ],
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
-      "deleted_at": "1970-01-01T00:00:00Z"
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "scope": {
+        "type": "string",
+        "id": "string"
+      }
     }
   ]
 }
@@ -151659,7 +152261,7 @@ The invite's details.
 |id|string|true|none|The invite's ID.|
 |email|string(email)|true|none|The invite's email.|
 |accepted|boolean|true|none|Whether the invite has been accepted.|
-|token|string|true|none|The invite's token.|
+|token|string|false|none|The invite's token.|
 |expires_at|string(date-time)|true|none|The invite's expiry date.|
 |metadata|object|false|none|The invite's metadata, can hold custom key-value pairs.|
 |created_at|string(date-time)|true|none|The date the invite was created.|
@@ -151689,7 +152291,6 @@ The invite's details.
         "id": "string",
         "name": "string",
         "description": "string",
-        "parent_id": "string",
         "metadata": {},
         "policies": [
           {
@@ -151700,7 +152301,6 @@ The invite's details.
             "name": "string",
             "description": "string",
             "metadata": {},
-            "inherited_from_role_id": "string",
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "deleted_at": "1970-01-01T00:00:00Z"
@@ -151708,7 +152308,11 @@ The invite's details.
         ],
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
-        "deleted_at": "1970-01-01T00:00:00Z"
+        "deleted_at": "1970-01-01T00:00:00Z",
+        "scope": {
+          "type": "string",
+          "id": "string"
+        }
       }
     ]
   }
@@ -151993,7 +152597,7 @@ The list of locales with pagination details.
 |limit|number|true|none|The maximum number of locales returned.|
 |offset|number|true|none|The number of locales skipped before retrieving the returned locales.|
 |count|number|true|none|The total number of locales matching the query.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |locales|[[AdminLocale](#schemaadminlocale)]|true|none|The list of locales.|
 
 <h2 id="tocS_AdminLocaleResponse">AdminLocaleResponse</h2>
@@ -152066,6 +152670,52 @@ The payment details.
 |---|---|---|---|---|
 |order_id|string|true|none|The ID of the order associated with the payment collection.|
 |provider_id|string|false|none|The ID of the payment provider to use for marking the payment collection as paid. If not provided, the `system` provider will be used.|
+
+<h2 id="tocS_AdminModule">AdminModule</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminmodule"></a>
+<a id="schema_AdminModule"></a>
+<a id="tocSadminmodule"></a>
+<a id="tocsadminmodule"></a>
+
+```json
+{
+  "key": "string"
+}
+```
+
+A module installed in the Medusa application.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The module's key, such as `rbac` or a custom module's name.|
+
+<h2 id="tocS_AdminModulesListResponse">AdminModulesListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminmoduleslistresponse"></a>
+<a id="schema_AdminModulesListResponse"></a>
+<a id="tocSadminmoduleslistresponse"></a>
+<a id="tocsadminmoduleslistresponse"></a>
+
+```json
+{
+  "modules": [
+    {
+      "key": "string"
+    }
+  ]
+}
+```
+
+The list of installed modules.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|modules|[[AdminModule](#schemaadminmodule)]|true|none|The modules installed in the Medusa application.|
 
 <h2 id="tocS_AdminNotification">AdminNotification</h2>
 <!-- backwards compatibility -->
@@ -152155,7 +152805,7 @@ The paginated list of notifications.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |notifications|[[AdminNotification](#schemaadminnotification)]|true|none|The list of notifications.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminNotificationResponse">AdminNotificationResponse</h2>
 <!-- backwards compatibility -->
@@ -152274,7 +152924,8 @@ The notification's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -152352,7 +153003,8 @@ The notification's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -152366,7 +153018,8 @@ The notification's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -152423,7 +153076,8 @@ The notification's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -153708,7 +154362,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -153786,7 +154441,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -153800,7 +154456,8 @@ An order address.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -153857,7 +154514,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -155905,7 +156563,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -155953,7 +156612,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -158343,7 +159003,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -158421,7 +159082,8 @@ An order address.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -158435,7 +159097,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -158492,7 +159155,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -159634,7 +160298,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -159712,7 +160377,8 @@ An order address.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -159726,7 +160392,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -159783,7 +160450,8 @@ An order address.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -161009,7 +161677,8 @@ The order change's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -161087,7 +161756,8 @@ The order change's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -161101,7 +161771,8 @@ The order change's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -161158,7 +161829,8 @@ The order change's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -162363,7 +163035,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -162441,7 +163114,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -162455,7 +163129,8 @@ The order change action's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -162512,7 +163187,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -164560,7 +165236,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -164608,7 +165285,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -166998,7 +167676,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -167076,7 +167755,8 @@ The order change action's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -167090,7 +167770,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -167147,7 +167828,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -168289,7 +168971,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -168367,7 +169050,8 @@ The order change action's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -168381,7 +169065,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -168438,7 +169123,8 @@ The order change action's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -169625,7 +170311,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -169703,7 +170390,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -169717,7 +170405,8 @@ The details of the order change.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -169774,7 +170463,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -171822,7 +172512,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -171870,7 +172561,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -174260,7 +174952,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -174338,7 +175031,8 @@ The details of the order change.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -174352,7 +175046,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -174409,7 +175104,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -175551,7 +176247,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -175629,7 +176326,8 @@ The details of the order change.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -175643,7 +176341,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -175700,7 +176399,8 @@ The details of the order change.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -176889,7 +177589,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -176967,7 +177668,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -176981,7 +177683,8 @@ The details of an order's changes.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -177038,7 +177741,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -179086,7 +179790,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -179134,7 +179839,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -181524,7 +182230,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -181602,7 +182309,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -181616,7 +182324,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -181673,7 +182382,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -182815,7 +183525,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -182893,7 +183604,8 @@ The details of an order's changes.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -182907,7 +183619,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -182964,7 +183677,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -184133,7 +184847,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -184211,7 +184926,8 @@ The details of an order's changes.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -184225,7 +184941,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -184282,7 +184999,8 @@ The details of an order's changes.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -186308,7 +187026,8 @@ The details of an order's changes.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -186386,7 +187105,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -186400,7 +187120,8 @@ The details of an order's changes.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -186457,7 +187178,8 @@ The details of an order's changes.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -186742,7 +187464,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -186820,7 +187543,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -186834,7 +187558,8 @@ The preview of an order edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -186891,7 +187616,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -188939,7 +189665,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -188987,7 +189714,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -191377,7 +192105,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -191455,7 +192184,8 @@ The preview of an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -191469,7 +192199,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -191526,7 +192257,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -192668,7 +193400,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -192746,7 +193479,8 @@ The preview of an order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -192760,7 +193494,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -192817,7 +193552,8 @@ The preview of an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -195639,7 +196375,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -195717,7 +196454,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -195731,7 +196469,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -195788,7 +196527,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -197760,7 +198500,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -197838,7 +198579,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -197852,7 +198594,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -197909,7 +198652,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -199957,7 +200701,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -200005,7 +200750,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -202395,7 +203141,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -202473,7 +203220,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -202487,7 +203235,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -202544,7 +203293,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -203686,7 +204436,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -203764,7 +204515,8 @@ The item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -203778,7 +204530,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -203835,7 +204588,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -205004,7 +205758,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -205082,7 +205837,8 @@ The item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -205096,7 +205852,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -205153,7 +205910,8 @@ The item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -207179,7 +207937,8 @@ The item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -207257,7 +208016,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -207271,7 +208031,8 @@ The item's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -207328,7 +208089,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -207690,7 +208452,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -207768,7 +208531,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -207782,7 +208546,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -207839,7 +208604,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -209887,7 +210653,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -209935,7 +210702,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -212325,7 +213093,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -212403,7 +213172,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -212417,7 +213187,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -212474,7 +213245,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -213616,7 +214388,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -213694,7 +214467,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -213708,7 +214482,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -213765,7 +214540,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -214934,7 +215710,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -215012,7 +215789,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -215026,7 +215804,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -215083,7 +215862,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -217109,7 +217889,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -217187,7 +217968,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -217201,7 +217983,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -217258,7 +218041,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -217535,7 +218319,8 @@ The preview of an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -217613,7 +218398,8 @@ The preview of an order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -217627,7 +218413,8 @@ The preview of an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -217684,7 +218471,8 @@ The preview of an order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -218895,7 +219683,8 @@ An order's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -219258,7 +220047,8 @@ The shipping method's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -219272,7 +220062,8 @@ The shipping method's details.
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
         "code": "string"
-      }
+      },
+      "idempotency_key": "string"
     }
   ],
   "payment_collection": {},
@@ -219329,7 +220120,8 @@ The shipping method's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -219442,7 +220234,8 @@ The payment's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -219520,7 +220313,8 @@ The payment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -219534,7 +220328,8 @@ The payment's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -219591,7 +220386,8 @@ The payment's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -219715,7 +220511,8 @@ The payment collection's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -219793,7 +220590,8 @@ The payment collection's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -219807,7 +220605,8 @@ The payment collection's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -219864,7 +220663,8 @@ The payment collection's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -219986,7 +220786,8 @@ The payment provider's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -220000,7 +220801,8 @@ The payment provider's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -220057,7 +220859,8 @@ The payment provider's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -220137,7 +220940,8 @@ The payment's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -220864,7 +221668,7 @@ The paginated list of price lists.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |price_lists|[[AdminPriceList](#schemaadminpricelist)]|true|none|The list of price lists.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminPriceListPrice">AdminPriceListPrice</h2>
 <!-- backwards compatibility -->
@@ -220951,7 +221755,7 @@ The list of prices associated with a price list.
 |limit|number|true|none|The maximum number of prices to return.|
 |offset|number|true|none|The number of items skipped before retrieving the prices.|
 |count|number|true|none|The maximum number of prices available.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |prices|[[AdminPrice](#schemaadminprice)]|true|none|The list of prices associated with the price list.|
 
 <h2 id="tocS_AdminPriceListResponse">AdminPriceListResponse</h2>
@@ -221100,7 +221904,7 @@ The paginated list of price preferences.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |price_preferences|[[AdminPricePreference](#schemaadminpricepreference)]|true|none|The list of price preferences.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminPricePreferenceResponse">AdminPricePreferenceResponse</h2>
 <!-- backwards compatibility -->
@@ -221833,7 +222637,7 @@ The paginated list of product categories.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_categories|[[AdminProductCategory](#schemaadminproductcategory)]|true|none|The list of product categories.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductCategoryResponse">AdminProductCategoryResponse</h2>
 <!-- backwards compatibility -->
@@ -223355,7 +224159,7 @@ The paginated list of product tags.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_tags|[[AdminProductTag](#schemaadminproducttag)]|true|none|The list of product tags.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductTagResponse">AdminProductTagResponse</h2>
 <!-- backwards compatibility -->
@@ -223527,7 +224331,7 @@ The paginated list of product types.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_types|[[AdminProductType](#schemaadminproducttype)]|true|none|The list of product types.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductTypeResponse">AdminProductTypeResponse</h2>
 <!-- backwards compatibility -->
@@ -224863,7 +225667,8 @@ The product variant's details.
     "currency_code": "usd",
     "max_quantity": 0,
     "buy_rules_min_quantity": 0,
-    "apply_to_quantity": 0
+    "apply_to_quantity": 0,
+    "target_selection_strategy": "most_expensive_first"
   },
   "rules": [
     {
@@ -224987,7 +225792,8 @@ The promotion's details.
       "currency_code": "usd",
       "max_quantity": 0,
       "buy_rules_min_quantity": 0,
-      "apply_to_quantity": 0
+      "apply_to_quantity": 0,
+      "target_selection_strategy": "most_expensive_first"
     },
     "rules": [
       {
@@ -225228,7 +226034,6 @@ The details of a property label.
   "name": "string",
   "description": "string",
   "metadata": {},
-  "inherited_from_role_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
   "deleted_at": "1970-01-01T00:00:00Z"
@@ -225248,7 +226053,6 @@ The details of an RBAC policy.
 |name|string|true|none|The policy's name. Used for display purposes.|
 |description|string|true|none|The policy's description.|
 |metadata|object|true|none|Key-value pairs that hold additional information about the policy.|
-|inherited_from_role_id|string|false|none|The ID of the role from which the policy is inherited.|
 |created_at|string(date-time)|true|none|The date the policy was created.|
 |updated_at|string(date-time)|true|none|The date the policy was last updated.|
 |deleted_at|string(date-time)|true|none|The date the policy was deleted.|
@@ -225265,7 +226069,6 @@ The details of an RBAC policy.
   "id": "string",
   "name": "string",
   "description": "string",
-  "parent_id": "string",
   "metadata": {},
   "policies": [
     {
@@ -225276,7 +226079,6 @@ The details of an RBAC policy.
       "name": "string",
       "description": "string",
       "metadata": {},
-      "inherited_from_role_id": "string",
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
       "deleted_at": "1970-01-01T00:00:00Z"
@@ -225284,7 +226086,11 @@ The details of an RBAC policy.
   ],
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
-  "deleted_at": "1970-01-01T00:00:00Z"
+  "deleted_at": "1970-01-01T00:00:00Z",
+  "scope": {
+    "type": "string",
+    "id": "string"
+  }
 }
 ```
 
@@ -225297,12 +226103,51 @@ The details of an RBAC role.
 |id|string|true|none|The ID of the RBAC role.|
 |name|string|true|none|The name of the RBAC role.|
 |description|string|true|none|The description of the RBAC role.|
-|parent_id|string|true|none|The ID of the parent RBAC role.|
 |metadata|object|true|none|Key-value pairs that hold additional information about the RBAC role.|
 |policies|[[AdminRbacPolicy](#schemaadminrbacpolicy)]|false|none|The RBAC role's policies.|
 |created_at|string(date-time)|true|none|The date the RBAC role was created.|
 |updated_at|string(date-time)|true|none|The date the RBAC role was last updated.|
 |deleted_at|string(date-time)|true|none|The date the RBAC role was deleted.|
+|scope|object|false|none|The scope the role is constrained to, if any.|
+
+<h2 id="tocS_AdminRbacRoleAssignment">AdminRbacRoleAssignment</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminrbacroleassignment"></a>
+<a id="schema_AdminRbacRoleAssignment"></a>
+<a id="tocSadminrbacroleassignment"></a>
+<a id="tocsadminrbacroleassignment"></a>
+
+```json
+{
+  "id": "string",
+  "role_id": "string",
+  "reference": "string",
+  "reference_id": "string",
+  "scope": "string",
+  "scope_id": "string",
+  "metadata": {},
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "deleted_at": "1970-01-01T00:00:00Z"
+}
+```
+
+The assignment of an RBAC role to an entity, such as a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The assignment's ID.|
+|role_id|string|true|none|The ID of the role the assignment is for.|
+|reference|string|true|none|The type of entity the role is assigned to (e.g. `user`, `invite`).|
+|reference_id|string|true|none|The ID of the entity the role is assigned to.|
+|scope|string|true|none|The type of the scope's entity that the assignment is constrained to, such as `organization`.|
+|scope_id|string|true|none|The ID of the scope's entity that the assignment is constrained to, such as `org_123`.|
+|metadata|object|true|none|The assignment's metadata.|
+|created_at|string(date-time)|true|none|The date the assignment was created.|
+|updated_at|string(date-time)|true|none|The date the assignment was updated.|
+|deleted_at|string(date-time)|true|none|The date the assignment was deleted.|
 
 <h2 id="tocS_AdminReceiveItems">AdminReceiveItems</h2>
 <!-- backwards compatibility -->
@@ -225386,7 +226231,8 @@ The items details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -225400,7 +226246,8 @@ The items details.
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
     "code": "string"
-  }
+  },
+  "idempotency_key": "string"
 }
 ```
 
@@ -225418,6 +226265,7 @@ The refund's details.
 |created_by|string|false|none|The ID of the user that created the refund.|
 |payment|[BasePayment](#schemabasepayment)|true|none|The payment's details.|
 |refund_reason|[BaseRefundReason](#schemabaserefundreason)|false|none|The refund reason's details.|
+|idempotency_key|string|false|none|The refund's idempotency key.|
 
 <h2 id="tocS_AdminRefundPayment">AdminRefundPayment</h2>
 <!-- backwards compatibility -->
@@ -225430,7 +226278,8 @@ The refund's details.
 {
   "amount": 0,
   "refund_reason_id": "string",
-  "note": "string"
+  "note": "string",
+  "idempotency_key": "string"
 }
 ```
 
@@ -225443,6 +226292,7 @@ The refund's details.
 |amount|number|false|none|The amount to refund.|
 |refund_reason_id|string|false|none|The ID of a refund reason.|
 |note|string|false|none|A note to attach to the refund.|
+|idempotency_key|string|false|none|The payment's idempotency key.|
 
 <h2 id="tocS_AdminRefundReason">AdminRefundReason</h2>
 <!-- backwards compatibility -->
@@ -226084,7 +226934,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -226162,7 +227013,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -226176,7 +227028,8 @@ The return item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -226233,7 +227086,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -228281,7 +229135,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -228329,7 +229184,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -230719,7 +231575,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -230797,7 +231654,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -230811,7 +231669,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -230868,7 +231727,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -232010,7 +232870,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -232088,7 +232949,8 @@ The return item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -232102,7 +232964,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -232159,7 +233022,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -233328,7 +234192,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -233406,7 +234271,8 @@ The return item's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -233420,7 +234286,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -233477,7 +234344,8 @@ The return item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -235503,7 +236371,8 @@ The return item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -235581,7 +236450,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -235595,7 +236465,8 @@ The return item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -235652,7 +236523,8 @@ The return item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -235972,7 +236844,7 @@ The paginated list of return reasons.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |return_reasons|[[AdminReturnReason](#schemaadminreturnreason)]|true|none|The list of return reasons.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminReturnReasonResponse">AdminReturnReasonResponse</h2>
 <!-- backwards compatibility -->
@@ -237374,7 +238246,7 @@ The paginated list of shipping option types.
 |limit|number|true|none|The maximum number of items returned.|
 |offset|number|true|none|The number of items skipped before returning the results.|
 |count|number|true|none|The total number of items.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |shipping_option_types|[[AdminShippingOptionType](#schemaadminshippingoptiontype)]|true|none|The list of shipping option types.|
 
 <h2 id="tocS_AdminShippingOptionTypeResponse">AdminShippingOptionTypeResponse</h2>
@@ -237689,7 +238561,7 @@ The paginated list of stock locations.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |stock_locations|[[AdminStockLocation](#schemaadminstocklocation)]|true|none|The list of stock locations.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminStockLocationResponse">AdminStockLocationResponse</h2>
 <!-- backwards compatibility -->
@@ -238088,7 +238960,7 @@ The paginated list of store credit accounts.
 |offset|number|true|none|The number of store credit accounts to skip before retrieving the results.|
 |count|number|true|none|The total number of store credit accounts available.|
 |store_credit_accounts|[[AdminStoreCreditAccount](#schemaadminstorecreditaccount)]|true|none|The list of store credit accounts.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_AdminStoreCurrency">AdminStoreCurrency</h2>
 <!-- backwards compatibility -->
@@ -238212,7 +239084,7 @@ The paginated list of stores.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |stores|[[AdminStore](#schemaadminstore)]|true|none|The list of stores.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminStoreLocale">AdminStoreLocale</h2>
 <!-- backwards compatibility -->
@@ -238845,7 +239717,7 @@ The paginated list of transactions.
 |offset|number|true|none|The number of transactions to skip before retrieving the results.|
 |count|number|true|none|The total number of transactions available.|
 |transactions|[[AdminTransaction](#schemaadmintransaction)]|true|none|The list of transactions.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_AdminTransferOrderToGuest">AdminTransferOrderToGuest</h2>
 <!-- backwards compatibility -->
@@ -239104,6 +239976,56 @@ The batch response for managing translations.
 |created|[[AdminTranslation](#schemaadmintranslation)]|true|none|The created translations.|
 |updated|[[AdminTranslation](#schemaadmintranslation)]|true|none|The updated translations.|
 |deleted|object|true|none|Summary of the deleted translations.|
+
+<h2 id="tocS_AdminUnassignUserRole">AdminUnassignUserRole</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminunassignuserrole"></a>
+<a id="schema_AdminUnassignUserRole"></a>
+<a id="tocSadminunassignuserrole"></a>
+<a id="tocsadminunassignuserrole"></a>
+
+```json
+{
+  "scope": "string",
+  "scope_id": "string"
+}
+```
+
+The scope to unassign the role from the user in.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|scope|string|false|none|The type of the scope's entity, such as `organization`. Must be passed with `scope_id`.|
+|scope_id|string|false|none|The ID of the scope's entity, such as `org_123`. Must be passed with `scope`.|
+
+<h2 id="tocS_AdminUnassignUserRoles">AdminUnassignUserRoles</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminunassignuserroles"></a>
+<a id="schema_AdminUnassignUserRoles"></a>
+<a id="tocSadminunassignuserroles"></a>
+<a id="tocsadminunassignuserroles"></a>
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+The RBAC roles to unassign from a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assignments|[object]|false|none|The roles to unassign from the user.|
 
 <h2 id="tocS_AdminUpdateApiKey">AdminUpdateApiKey</h2>
 <!-- backwards compatibility -->
@@ -239821,7 +240743,7 @@ The product's details.
 |categories|[object]|false|none|The product's categories.|
 |tags|[object]|false|none|The product's tags.|
 |options|[[AdminUpdateProductOption](#schemaadminupdateproductoption)]|false|none|The product's options.|
-|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. You can add new variants or update existing ones, passing their IDs in the object.|
+|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. This replaces the product's full variant list, so existing variants that aren't included are deleted. Pass a variant's `id` to update it, or omit the `id` to create a new variant.|
 |sales_channels|[object]|false|none|The sales channels that the product is available in.|
 |weight|number|false|none|The product's weight.|
 |length|number|false|none|The product's length.|
@@ -241082,7 +242004,10 @@ The details of the stock location address to create.
   "metadata": {},
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
-  "deleted_at": "1970-01-01T00:00:00Z"
+  "deleted_at": "1970-01-01T00:00:00Z",
+  "roles": [
+    "string"
+  ]
 }
 ```
 
@@ -241101,6 +242026,7 @@ The user's details.
 |created_at|string(date-time)|true|none|The date the user was created.|
 |updated_at|string(date-time)|true|none|The date the user was updated.|
 |deleted_at|string(date-time)|true|none|The date the user was deleted.|
+|roles|[string]|false|none|The user's roles.|
 
 <h2 id="tocS_AdminUserAuthProvidersResponse">AdminUserAuthProvidersResponse</h2>
 <!-- backwards compatibility -->
@@ -241172,7 +242098,10 @@ The details of the deleted user.
       "metadata": {},
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
-      "deleted_at": "1970-01-01T00:00:00Z"
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "roles": [
+        "string"
+      ]
     }
   ],
   "estimate_count": 0
@@ -241189,7 +242118,7 @@ The paginated list of users.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |users|[[AdminUser](#schemaadminuser)]|true|none|The list of users.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminUserResetPasswordTokenResponse">AdminUserResetPasswordTokenResponse</h2>
 <!-- backwards compatibility -->
@@ -241230,7 +242159,10 @@ The response for the reset password token generation for a user. This response c
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -241242,6 +242174,63 @@ The user's details.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |user|[AdminUser](#schemaadminuser)|true|none|The user's details.|
+
+<h2 id="tocS_AdminUserRoleListResponse">AdminUserRoleListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminuserrolelistresponse"></a>
+<a id="schema_AdminUserRoleListResponse"></a>
+<a id="tocSadminuserrolelistresponse"></a>
+<a id="tocsadminuserrolelistresponse"></a>
+
+```json
+{
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "estimate_count": 0,
+  "roles": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "metadata": {},
+      "policies": [
+        {
+          "id": "string",
+          "key": "string",
+          "resource": "product",
+          "operation": "create",
+          "name": "string",
+          "description": "string",
+          "metadata": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z",
+          "deleted_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "scope": {
+        "type": "string",
+        "id": "string"
+      }
+    }
+  ]
+}
+```
+
+The paginated list of roles assigned to the user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|limit|number|true|none|The maximum number of items retrieved.|
+|offset|number|true|none|The number of items to skip before retrieving the returned items.|
+|count|number|true|none|The total number of items.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|roles|[[AdminRbacRole](#schemaadminrbacrole)]|true|none|The list of roles.|
 
 <h2 id="tocS_AdminViewConfiguration">AdminViewConfiguration</h2>
 <!-- backwards compatibility -->
@@ -241802,7 +242791,10 @@ The API key's details.
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -242223,7 +243215,8 @@ The details of a captured payment.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -242271,7 +243264,8 @@ The details of a captured payment.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -242969,7 +243963,8 @@ The cart's shipping address.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -243017,7 +244012,8 @@ The cart's shipping address.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -245497,7 +246493,8 @@ The adjustment's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -245545,7 +246542,8 @@ The adjustment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -245711,7 +246709,8 @@ The tax line's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -245759,7 +246758,8 @@ The tax line's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -247641,7 +248641,8 @@ An order transaction's details.
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
         "code": "string"
-      }
+      },
+      "idempotency_key": "string"
     }
   ],
   "payment_collection": {},
@@ -247751,7 +248752,8 @@ The payment's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -247799,7 +248801,8 @@ The payment's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -247924,7 +248927,8 @@ The payment provider's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -248782,7 +249786,8 @@ The rule value's details.
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
     "code": "string"
-  }
+  },
+  "idempotency_key": "string"
 }
 ```
 
@@ -248800,6 +249805,7 @@ The refund's details.
 |created_by|string|false|none|The ID of the user that created the refund.|
 |payment|object|true|none|none|
 |refund_reason|[BaseRefundReason](#schemabaserefundreason)|false|none|The refund reason's details.|
+|idempotency_key|string|false|none|The refund's idempotency key.|
 
 <h2 id="tocS_BaseRefundReason">BaseRefundReason</h2>
 <!-- backwards compatibility -->
@@ -249509,7 +250515,8 @@ The inventory level's details
       "refundable_total_per_unit": 0,
       "product_type_id": "string",
       "is_giftcard": true,
-      "line_item_metadata": {}
+      "line_item_metadata": {},
+      "is_custom_price": true
     }
   ],
   "shipping_methods": [
@@ -250788,7 +251795,8 @@ The address's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -252681,7 +253689,8 @@ The address's details.
               "refundable_total_per_unit": 0,
               "product_type_id": "string",
               "is_giftcard": true,
-              "line_item_metadata": {}
+              "line_item_metadata": {},
+              "is_custom_price": true
             }
           ],
           "shipping_methods": [
@@ -253055,7 +254064,8 @@ The address's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -254952,7 +255962,8 @@ The address's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -255248,7 +256259,8 @@ The address's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -255624,7 +256636,8 @@ The order change's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -257583,7 +258596,8 @@ The order change action's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -258812,7 +259826,8 @@ The credit line's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -260705,7 +261720,8 @@ The credit line's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -261079,7 +262095,8 @@ The credit line's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -261406,7 +262423,8 @@ The order item's detail.
   "refundable_total_per_unit": 0,
   "product_type_id": "string",
   "is_giftcard": true,
-  "line_item_metadata": {}
+  "line_item_metadata": {},
+  "is_custom_price": true
 }
 ```
 
@@ -261460,6 +262478,7 @@ The order line item's details.
 |product_type_id|string|false|none|The ID of the associated product's type.|
 |is_giftcard|boolean|true|none|Whether the item is a gift card.|
 |line_item_metadata|object|false|none|Custom key-value pairs on the order's line items.|
+|is_custom_price|boolean|true|none|Indicates whether the line item's unit price is a custom price.|
 
 <h2 id="tocS_OrderLineItemAdjustment">OrderLineItemAdjustment</h2>
 <!-- backwards compatibility -->
@@ -262164,7 +263183,8 @@ The filter's relationship details. Only available if the filter is a relationshi
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -264057,7 +265077,8 @@ The filter's relationship details. Only available if the filter is a relationshi
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -265258,7 +266279,8 @@ The shipping option's calculated price.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -265306,7 +266328,8 @@ The shipping option's calculated price.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -266735,7 +267758,8 @@ The promotion code to remove from the cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -266783,7 +267807,8 @@ The promotion code to remove from the cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -268002,7 +269027,7 @@ The paginated list of currencies.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |currencies|[[StoreCurrency](#schemastorecurrency)]|true|none|The list of currencies.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreCurrencyResponse">StoreCurrencyResponse</h2>
 <!-- backwards compatibility -->
@@ -268204,7 +269229,7 @@ The paginated list of customer addresses.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |addresses|[[StoreCustomerAddress](#schemastorecustomeraddress)]|true|none|The list of addresses.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreCustomerAddressResponse">StoreCustomerAddressResponse</h2>
 <!-- backwards compatibility -->
@@ -269706,7 +270731,8 @@ The list of supported locales in the store.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -269754,7 +270780,8 @@ The list of supported locales in the store.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -271300,7 +272327,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -271348,7 +272376,8 @@ The item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -271658,7 +272687,8 @@ The shipping method's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -271706,7 +272736,8 @@ The shipping method's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -271827,7 +272858,8 @@ The payment collection's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -271875,7 +272907,8 @@ The payment collection's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -271976,7 +273009,8 @@ The payment provider's details
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -273235,7 +274269,7 @@ The paginated list of product categories.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_categories|[[StoreProductCategory](#schemastoreproductcategory)]|true|none|The list of product categories.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductCategoryResponse">StoreProductCategoryResponse</h2>
 <!-- backwards compatibility -->
@@ -274884,7 +275918,7 @@ The paginated list of product tags.
 |offset|number|true|none|The number of items to skip before retrieving the returned items.|
 |count|number|true|none|The total number of items available.|
 |product_tags|[[StoreProductTag](#schemastoreproducttag)]|true|none|The list of product tags.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductTagResponse">StoreProductTagResponse</h2>
 <!-- backwards compatibility -->
@@ -274985,7 +276019,7 @@ The paginated list of product types.
 |offset|number|true|none|The number of items to skip before retrieving the returned items.|
 |count|number|true|none|The total number of items available.|
 |product_types|[[StoreProductType](#schemastoreproducttype)]|true|none|The list of product types.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductTypeResponse">StoreProductTypeResponse</h2>
 <!-- backwards compatibility -->
@@ -275989,7 +277023,7 @@ The paginated list of store credit accounts.
 |offset|number|true|none|The number of store credit accounts to skip before retrieving the results.|
 |count|number|true|none|The total number of store credit accounts available.|
 |store_credit_accounts|[[StoreStoreCreditAccount](#schemastorestorecreditaccount)]|true|none|The list of store credit accounts.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_StoreUpdateCustomer">StoreUpdateCustomer</h2>
 <!-- backwards compatibility -->
@@ -276066,6 +277100,27 @@ The properties to update in the address.
 |is_default_shipping|boolean|false|none|Whether the address is used by default for shipping during checkout.|
 |is_default_billing|boolean|false|none|Whether the address is used by default for billing during checkout.|
 |metadata|object|false|none|Holds custom key-value pairs.|
+
+<h2 id="tocS_StoreUpdatePaymentSession">StoreUpdatePaymentSession</h2>
+<!-- backwards compatibility -->
+<a id="schemastoreupdatepaymentsession"></a>
+<a id="schema_StoreUpdatePaymentSession"></a>
+<a id="tocSstoreupdatepaymentsession"></a>
+<a id="tocsstoreupdatepaymentsession"></a>
+
+```json
+{
+  "client_data": {}
+}
+```
+
+The client data to merge into the payment session.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|client_data|object|true|none|Data to merge into the session's `data.client`, such as payment details<br>collected by the provider's checkout component. Set a property to `null` to remove it.|
 
 <h2 id="tocS_UpdateAddress">UpdateAddress</h2>
 <!-- backwards compatibility -->

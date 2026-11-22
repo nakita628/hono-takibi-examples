@@ -1,5 +1,1160 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const WebhookPublicSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    name: z.string().exactOptional(),
+    url: z.string().min(1),
+    secret_token: z.string().min(0).max(250).exactOptional(),
+    headers: z.record(z.string(), z.string()).exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['url'] })
+  .openapi('WebhookPublic')
+
+const AlertTriggerConfigPublicSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    alert_trigger_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    type: z.enum([
+      'scope:project',
+      'threshold:feedback_score',
+      'threshold:cost',
+      'threshold:latency',
+      'threshold:errors',
+      'filter:guardrail_type',
+    ]),
+    config_value: z.record(z.string(), z.string()).exactOptional(),
+    group_index: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Groups configs within a trigger: same group_index means AND between configs, different group_index means OR between groups. Null means a legacy/singleton group of one config. Always null for scope:project configs.',
+      }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('AlertTriggerConfigPublic')
+
+const AlertTriggerPublicSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    alert_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    event_type: z.enum([
+      'trace:errors',
+      'trace:feedback_score',
+      'trace_thread:feedback_score',
+      'prompt:created',
+      'prompt:committed',
+      'trace:guardrails_triggered',
+      'prompt:deleted',
+      'experiment:finished',
+      'trace:cost',
+      'trace:latency',
+    ]),
+    trigger_configs: z.array(AlertTriggerConfigPublicSchema).exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['event_type'] })
+  .openapi('AlertTriggerPublic')
+
+const AlertPublicSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    name: z.string().min(0).max(255).exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    alert_type: z.enum(['general', 'slack', 'pagerduty']).exactOptional(),
+    metadata: z.record(z.string(), z.string()).exactOptional(),
+    custom_fields: z
+      .record(
+        z.string(),
+        z
+          .string()
+          .openapi({
+            description:
+              "Optional user-defined key/value pairs, added as top-level keys of the alert's EventBridge event detail. Keys must not collide with the event's own keys.",
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional user-defined key/value pairs, added as top-level keys of the alert's EventBridge event detail. Keys must not collide with the event's own keys.",
+      }),
+    webhook: WebhookPublicSchema,
+    triggers: z.array(AlertTriggerPublicSchema).exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    project_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional project scope for this alert. When set, the alert is scoped to the specified project. Do NOT also provide a 'scope:project' trigger config — the system will create it automatically from this field. Sending both project_id and a scope:project trigger config will result in an error.",
+      }),
+  })
+  .openapi({ required: ['webhook'] })
+  .openapi('AlertPublic')
+
+type AlertPagePublicType = {
+  page?: number
+  size?: number
+  total?: bigint
+  content?: z.infer<typeof AlertPublicSchema>[]
+  sortable_by?: string[]
+}
+
+const ScoreConditionSchema = z
+  .object({
+    score_name: z.string().min(0).max(255),
+    operator: z.enum(['>', '<', '=']),
+    value: z.float64(),
+  })
+  .openapi({ required: ['operator', 'score_name', 'value'] })
+  .openapi('ScoreCondition')
+
+const ConditionGroupSchema = z
+  .object({ conditions: z.array(ScoreConditionSchema).min(0).max(5) })
+  .openapi({ required: ['conditions'] })
+  .openapi('ConditionGroup')
+
+const ConditionsSchema = z
+  .object({ groups: z.array(ConditionGroupSchema).min(0).max(5) })
+  .openapi({ required: ['groups'] })
+  .openapi('Conditions')
+
+const AnnotationQueueAutomationSchema = z
+  .object({
+    enabled: z.boolean().exactOptional(),
+    conditions: ConditionsSchema.exactOptional(),
+    max_items_in_queue: z.int32().exactOptional(),
+    clear_max_items_in_queue: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'When true, removes the item ceiling so automation adds without bound',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAutomation')
+
+const AnnotationQueueAnnotatorViewSchema = z
+  .object({
+    html: z
+      .string()
+      .min(0)
+      .max(200000)
+      .exactOptional()
+      .openapi({
+        description:
+          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
+      }),
+    kit_version: z
+      .int32()
+      .min(1)
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Version of the view kit the html was written for' }),
+    summary: z
+      .string()
+      .min(0)
+      .max(1000)
+      .exactOptional()
+      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAnnotatorView')
+
+const AnnotationQueueReviewerSchema = z
+  .object({
+    username: z.string().exactOptional(),
+    status: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('AnnotationQueueReviewer')
+
+const FeedbackScoreAverageSchema = z
+  .object({ name: z.string().min(1), value: z.number() })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('FeedbackScoreAverage')
+
+const AnnotationQueueSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    project_id: z.uuid(),
+    project_name: z.string().exactOptional().openapi({ readOnly: true }),
+    name: z.string().min(1),
+    description: z.string().exactOptional(),
+    instructions: z.string().exactOptional(),
+    scope: z.enum(['trace', 'thread']),
+    comments_enabled: z.boolean().exactOptional(),
+    feedback_definition_names: z.array(z.string()).exactOptional(),
+    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
+    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
+    automation: AnnotationQueueAutomationSchema.exactOptional(),
+    annotator_view: AnnotationQueueAnnotatorViewSchema.exactOptional(),
+    reviewers: z.array(AnnotationQueueReviewerSchema).exactOptional().openapi({ readOnly: true }),
+    feedback_scores: z
+      .array(FeedbackScoreAverageSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    items_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({
+    required: ['name', 'project_id', 'scope'],
+    description: 'List of annotation queues to create',
+  })
+  .openapi('AnnotationQueue')
+
+type AnnotationQueueBatchType = { annotation_queues: z.infer<typeof AnnotationQueueSchema>[] }
+
+const ScoreConditionWriteSchema = z
+  .object({
+    score_name: z.string().min(0).max(255),
+    operator: z.enum(['>', '<', '=']),
+    value: z.float64(),
+  })
+  .openapi({ required: ['operator', 'score_name', 'value'] })
+  .openapi('ScoreConditionWrite')
+
+const ConditionGroupWriteSchema = z
+  .object({ conditions: z.array(ScoreConditionWriteSchema).min(0).max(5) })
+  .openapi({ required: ['conditions'] })
+  .openapi('ConditionGroupWrite')
+
+const ConditionsWriteSchema = z
+  .object({ groups: z.array(ConditionGroupWriteSchema).min(0).max(5) })
+  .openapi({ required: ['groups'] })
+  .openapi('ConditionsWrite')
+
+const AnnotationQueueAutomationWriteSchema = z
+  .object({
+    enabled: z.boolean().exactOptional(),
+    conditions: ConditionsWriteSchema.exactOptional(),
+    max_items_in_queue: z.int32().exactOptional(),
+    clear_max_items_in_queue: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'When true, removes the item ceiling so automation adds without bound',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAutomationWrite')
+
+const AnnotationQueueAnnotatorViewWriteSchema = z
+  .object({
+    html: z
+      .string()
+      .min(0)
+      .max(200000)
+      .exactOptional()
+      .openapi({
+        description:
+          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
+      }),
+    kit_version: z
+      .int32()
+      .min(1)
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Version of the view kit the html was written for' }),
+    summary: z
+      .string()
+      .min(0)
+      .max(1000)
+      .exactOptional()
+      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAnnotatorViewWrite')
+
+const AnnotationQueueWriteSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    project_id: z.uuid(),
+    name: z.string().min(1),
+    description: z.string().exactOptional(),
+    instructions: z.string().exactOptional(),
+    scope: z.enum(['trace', 'thread']),
+    comments_enabled: z.boolean().exactOptional(),
+    feedback_definition_names: z.array(z.string()).exactOptional(),
+    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
+    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
+    automation: AnnotationQueueAutomationWriteSchema.exactOptional(),
+    annotator_view: AnnotationQueueAnnotatorViewWriteSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['name', 'project_id', 'scope'],
+    description: 'List of annotation queues to create',
+  })
+  .openapi('AnnotationQueueWrite')
+
+type AnnotationQueueBatchWriteType = {
+  annotation_queues: z.infer<typeof AnnotationQueueWriteSchema>[]
+}
+
+const ScoreConditionPublicSchema = z
+  .object({
+    score_name: z.string().min(0).max(255),
+    operator: z.enum(['>', '<', '=']),
+    value: z.float64(),
+  })
+  .openapi({ required: ['operator', 'score_name', 'value'] })
+  .openapi('ScoreConditionPublic')
+
+const ConditionGroupPublicSchema = z
+  .object({ conditions: z.array(ScoreConditionPublicSchema).min(0).max(5) })
+  .openapi({ required: ['conditions'] })
+  .openapi('ConditionGroupPublic')
+
+const ConditionsPublicSchema = z
+  .object({ groups: z.array(ConditionGroupPublicSchema).min(0).max(5) })
+  .openapi({ required: ['groups'] })
+  .openapi('ConditionsPublic')
+
+const AnnotationQueueAutomationPublicSchema = z
+  .object({
+    enabled: z.boolean().exactOptional(),
+    conditions: ConditionsPublicSchema.exactOptional(),
+    max_items_in_queue: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAutomationPublic')
+
+const AnnotationQueueAnnotatorViewPublicSchema = z
+  .object({
+    html: z
+      .string()
+      .min(0)
+      .max(200000)
+      .exactOptional()
+      .openapi({
+        description:
+          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
+      }),
+    kit_version: z
+      .int32()
+      .min(1)
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Version of the view kit the html was written for' }),
+    summary: z
+      .string()
+      .min(0)
+      .max(1000)
+      .exactOptional()
+      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationQueueAnnotatorViewPublic')
+
+const AnnotationQueueReviewerPublicSchema = z
+  .object({
+    username: z.string().exactOptional(),
+    status: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('AnnotationQueueReviewerPublic')
+
+const FeedbackScoreAveragePublicSchema = z
+  .object({ name: z.string().min(1), value: z.number() })
+  .openapi({ required: ['name', 'value'], readOnly: true })
+  .openapi('FeedbackScoreAveragePublic')
+
+const AnnotationQueuePublicSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    project_id: z.uuid(),
+    project_name: z.string().exactOptional().openapi({ readOnly: true }),
+    name: z.string().min(1),
+    description: z.string().exactOptional(),
+    instructions: z.string().exactOptional(),
+    scope: z.enum(['trace', 'thread']),
+    comments_enabled: z.boolean().exactOptional(),
+    feedback_definition_names: z.array(z.string()).exactOptional(),
+    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
+    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
+    automation: AnnotationQueueAutomationPublicSchema.exactOptional(),
+    annotator_view: AnnotationQueueAnnotatorViewPublicSchema.exactOptional(),
+    reviewers: z
+      .array(AnnotationQueueReviewerPublicSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    feedback_scores: z
+      .array(FeedbackScoreAveragePublicSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    items_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name', 'project_id', 'scope'] })
+  .openapi('AnnotationQueuePublic')
+
+type AnnotationQueuePagePublicType = {
+  page?: number
+  size?: number
+  total?: bigint
+  content?: z.infer<typeof AnnotationQueuePublicSchema>[]
+  sortableBy?: string[]
+}
+
+const JsonNodeSchema = z.looseObject({}).openapi('JsonNode')
+
+const EvaluatorItemSchema = z
+  .object({
+    name: z.string().min(1),
+    type: z.enum(['llm_judge', 'code_metric']),
+    config: JsonNodeSchema,
+  })
+  .openapi({ required: ['config', 'name', 'type'] })
+  .openapi('EvaluatorItem')
+
+const ExecutionPolicySchema = z
+  .object({
+    runs_per_item: z.int32().min(1).max(100).exactOptional(),
+    pass_threshold: z.int32().min(1).max(100).exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ExecutionPolicy')
+
+const JsonListStringSchema = z
+  .union([
+    z.looseObject({}),
+    z.looseObject({}).and(z.array(z.looseObject({}))),
+    z.looseObject({}).and(z.string()),
+  ])
+  .openapi('JsonListString')
+
+const ValueEntrySchema = z
+  .object({
+    value: z.number().exactOptional(),
+    reason: z.string().exactOptional(),
+    category_name: z.string().exactOptional(),
+    source: z.enum(['ui', 'sdk', 'online_scoring']).exactOptional(),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+    span_type: z.string().exactOptional(),
+    span_id: z.string().exactOptional(),
+    source_queue_id: z.string().exactOptional(),
+    author: z.string().exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ValueEntry')
+
+const FeedbackScoreSchema = z
+  .object({
+    name: z.string().min(1),
+    category_name: z.string().exactOptional(),
+    value: z.number().min(-1000000000).max(1000000000),
+    reason: z.string().exactOptional(),
+    source: z.enum(['ui', 'sdk', 'online_scoring']),
+    source_queue_id: z.uuid().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    value_by_author: z
+      .record(z.string(), ValueEntrySchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name', 'source', 'value'] })
+  .openapi('FeedbackScore')
+
+const CommentSchema = z
+  .object({
+    id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    text: z.string().min(1),
+    source_queue_id: z.uuid().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['text'] })
+  .openapi('Comment')
+
+const AssertionResultSchema = z
+  .object({
+    value: z.string().exactOptional(),
+    passed: z.boolean().exactOptional(),
+    reason: z.string().exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('AssertionResult')
+
+const ExperimentItemSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    experiment_id: z.uuid(),
+    dataset_item_id: z.uuid(),
+    trace_id: z.uuid(),
+    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    project_name: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
+      .exactOptional(),
+    input: JsonListStringSchema.exactOptional(),
+    output: JsonListStringSchema.exactOptional(),
+    trace_metadata: JsonListStringSchema.exactOptional(),
+    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
+    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
+    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
+    duration: z.float64().exactOptional().openapi({ readOnly: true }),
+    usage: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+      )
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    trace_visibility_mode: z
+      .enum(['default', 'hidden'])
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    description: z.string().exactOptional().openapi({ readOnly: true }),
+    execution_policy: ExecutionPolicySchema.exactOptional(),
+    assertion_results: z.array(AssertionResultSchema).exactOptional().openapi({ readOnly: true }),
+    status: z.enum(['passed', 'failed']).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['dataset_item_id', 'experiment_id', 'trace_id'] })
+  .openapi('ExperimentItem')
+
+const ExperimentRunSummarySchema = z
+  .object({
+    passed_runs: z.int32().exactOptional(),
+    total_runs: z.int32().exactOptional(),
+    status: z.enum(['passed', 'failed']).exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ExperimentRunSummary')
+
+const DatasetItemSchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Stable item identifier.\nOn write, used as the upsert key.\nIf omitted, a new ID is generated.\nRemains the same across dataset versions\n',
+      }),
+    dataset_item_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          "Deprecated.\nAlways equals 'id'.\nRetained for backward compatibility and will be removed in a future version\n",
+        readOnly: true,
+      }),
+    trace_id: z.uuid().exactOptional(),
+    span_id: z.uuid().exactOptional(),
+    source: z.enum(['manual', 'trace', 'span', 'sdk']),
+    data: JsonNodeSchema,
+    description: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .exactOptional(),
+    tags: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    evaluators: z.array(EvaluatorItemSchema).exactOptional(),
+    execution_policy: ExecutionPolicySchema.exactOptional(),
+    experiment_items: z.array(ExperimentItemSchema).exactOptional().openapi({ readOnly: true }),
+    run_summaries_by_experiment: z
+      .record(z.string(), ExperimentRunSummarySchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    dataset_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['data', 'source'] })
+  .openapi('DatasetItem')
+
+type DatasetItemBatchType = {
+  dataset_name?: string
+  dataset_id?: string
+  project_name?: string
+  project_id?: string
+  items: z.infer<typeof DatasetItemSchema>[]
+  batch_group_id?: string
+  copy_from_dataset_id?: string
+  copy_from_version_id?: string
+}
+
+type DatasetExpansionResponseType = {
+  generated_samples?: z.infer<typeof DatasetItemSchema>[]
+  model?: string
+  total_generated?: number
+  generation_time?: string
+}
+
+const JsonNodeCompareSchema = z.looseObject({}).openapi('JsonNodeCompare')
+
+const EvaluatorItemCompareSchema = z
+  .object({
+    name: z.string().min(1),
+    type: z.enum(['llm_judge', 'code_metric']),
+    config: JsonNodeCompareSchema,
+  })
+  .openapi({ required: ['config', 'name', 'type'] })
+  .openapi('EvaluatorItemCompare')
+
+const ExecutionPolicyCompareSchema = z
+  .object({
+    runs_per_item: z.int32().min(1).max(100).exactOptional(),
+    pass_threshold: z.int32().min(1).max(100).exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ExecutionPolicyCompare')
+
+const JsonListStringCompareSchema = z
+  .union([
+    z.looseObject({}),
+    z.looseObject({}).and(z.array(z.looseObject({}))),
+    z.looseObject({}).and(z.string()),
+  ])
+  .openapi({ readOnly: true })
+  .openapi('JsonListStringCompare')
+
+const ValueEntryCompareSchema = z
+  .object({
+    value: z.number().exactOptional(),
+    reason: z.string().exactOptional(),
+    category_name: z.string().exactOptional(),
+    source: z.enum(['ui', 'sdk', 'online_scoring']).exactOptional(),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+    span_type: z.string().exactOptional(),
+    span_id: z.string().exactOptional(),
+    source_queue_id: z.string().exactOptional(),
+    author: z.string().exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ValueEntryCompare')
+
+const FeedbackScoreCompareSchema = z
+  .object({
+    name: z.string().min(1),
+    category_name: z.string().exactOptional(),
+    value: z.number().min(-1000000000).max(1000000000),
+    reason: z.string().exactOptional(),
+    source: z.enum(['ui', 'sdk', 'online_scoring']),
+    source_queue_id: z.uuid().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    value_by_author: z
+      .record(z.string(), ValueEntryCompareSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name', 'source', 'value'], readOnly: true })
+  .openapi('FeedbackScoreCompare')
+
+const CommentCompareSchema = z
+  .object({
+    id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    text: z.string().min(1),
+    source_queue_id: z.uuid().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['text'], readOnly: true })
+  .openapi('CommentCompare')
+
+const AssertionResultCompareSchema = z
+  .object({
+    value: z.string().exactOptional(),
+    passed: z.boolean().exactOptional(),
+    reason: z.string().exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('AssertionResultCompare')
+
+const ExperimentItemCompareSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    experiment_id: z.uuid(),
+    dataset_item_id: z.uuid(),
+    trace_id: z.uuid(),
+    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    input: JsonListStringCompareSchema.exactOptional(),
+    output: JsonListStringCompareSchema.exactOptional(),
+    trace_metadata: JsonListStringCompareSchema.exactOptional(),
+    feedback_scores: z
+      .array(FeedbackScoreCompareSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    comments: z.array(CommentCompareSchema).exactOptional().openapi({ readOnly: true }),
+    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
+    duration: z.float64().exactOptional().openapi({ readOnly: true }),
+    usage: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+      )
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    trace_visibility_mode: z
+      .enum(['default', 'hidden'])
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    description: z.string().exactOptional().openapi({ readOnly: true }),
+    execution_policy: ExecutionPolicyCompareSchema.exactOptional(),
+    assertion_results: z
+      .array(AssertionResultCompareSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    status: z.enum(['passed', 'failed']).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['dataset_item_id', 'experiment_id', 'trace_id'], readOnly: true })
+  .openapi('ExperimentItemCompare')
+
+const ExperimentRunSummaryCompareSchema = z
+  .object({
+    passed_runs: z.int32().exactOptional(),
+    total_runs: z.int32().exactOptional(),
+    status: z.enum(['passed', 'failed']).exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('ExperimentRunSummaryCompare')
+
+const DatasetItemCompareSchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Stable item identifier.\nOn write, used as the upsert key.\nIf omitted, a new ID is generated.\nRemains the same across dataset versions\n',
+      }),
+    dataset_item_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          "Deprecated.\nAlways equals 'id'.\nRetained for backward compatibility and will be removed in a future version\n",
+        readOnly: true,
+      }),
+    trace_id: z.uuid().exactOptional(),
+    span_id: z.uuid().exactOptional(),
+    source: z.enum(['manual', 'trace', 'span', 'sdk']),
+    data: JsonNodeSchema,
+    description: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .exactOptional(),
+    tags: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    evaluators: z.array(EvaluatorItemCompareSchema).exactOptional(),
+    execution_policy: ExecutionPolicyCompareSchema.exactOptional(),
+    experiment_items: z
+      .array(ExperimentItemCompareSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    run_summaries_by_experiment: z
+      .record(z.string(), ExperimentRunSummaryCompareSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    dataset_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['data', 'source'] })
+  .openapi('DatasetItemCompare')
+
+const ColumnCompareSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    types: z
+      .array(z.enum(['string', 'number', 'object', 'boolean', 'array', 'null']))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    filter_field_prefix: z.string().exactOptional(),
+    filterField: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The field to use for filtering', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('ColumnCompare')
+
+type DatasetItemPageCompareType = {
+  content?: z.infer<typeof DatasetItemCompareSchema>[]
+  page?: number
+  size?: number
+  total?: bigint
+  columns?: z.infer<typeof ColumnCompareSchema>[]
+  sortableBy?: string[]
+}
+
+const ErrorInfoSchema = z
+  .object({
+    exception_type: z.string().min(1),
+    message: z.string().exactOptional(),
+    traceback: z.string().min(1),
+  })
+  .openapi({ required: ['exception_type', 'traceback'] })
+  .openapi('ErrorInfo')
+
+const CheckSchema = z
+  .object({
+    name: z
+      .enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER'])
+      .exactOptional(),
+    result: z.enum(['passed', 'failed']).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Check')
+
+const GuardrailsValidationSchema = z
+  .object({ span_id: z.uuid().exactOptional(), checks: z.array(CheckSchema).exactOptional() })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('GuardrailsValidation')
+
+const ExperimentItemReferenceSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Experiment ID' }),
+    name: z.string().openapi({ description: 'Experiment name' }),
+    dataset_id: z.uuid().openapi({ description: 'Dataset ID' }),
+    dataset_item_id: z.uuid().openapi({ description: 'Dataset Item ID' }),
+  })
+  .openapi({
+    required: ['dataset_id', 'dataset_item_id', 'id', 'name'],
+    description: 'Experiment reference with ID, name, dataset ID, and dataset item ID',
+    readOnly: true,
+  })
+  .openapi('ExperimentItemReference')
+
+const AnnotationQueueReferenceSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Annotation queue ID' }),
+    name: z.string().openapi({ description: 'Annotation queue name' }),
+  })
+  .openapi({
+    required: ['id', 'name'],
+    description: 'Annotation queue reference with ID and name',
+    readOnly: true,
+  })
+  .openapi('AnnotationQueueReference')
+
+const TraceSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    project_name: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
+      .exactOptional()
+      .openapi({ description: 'If null, the default project is used' }),
+    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    name: z.string().exactOptional(),
+    start_time: z.iso.datetime({ offset: true }),
+    end_time: z.iso.datetime({ offset: true }).exactOptional(),
+    input: JsonListStringSchema.exactOptional(),
+    output: JsonListStringSchema.exactOptional(),
+    metadata: JsonListStringSchema.exactOptional(),
+    tags: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    error_info: ErrorInfoSchema.exactOptional(),
+    usage: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+      )
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
+    span_feedback_scores: z
+      .array(FeedbackScoreSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Aggregated feedback scores from all spans in this trace, averaged by score name',
+        readOnly: true,
+      }),
+    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
+    guardrails_validations: z
+      .array(GuardrailsValidationSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
+    span_count: z.int32().exactOptional().openapi({ readOnly: true }),
+    duration: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Duration in milliseconds as a decimal number to support sub-millisecond precision',
+        readOnly: true,
+      }),
+    ttft: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Time to first token in milliseconds' }),
+    thread_id: z.string().exactOptional(),
+    visibility_mode: z.enum(['default', 'hidden']).exactOptional().openapi({ readOnly: true }),
+    llm_span_count: z.int32().exactOptional().openapi({ readOnly: true }),
+    has_tool_spans: z.boolean().exactOptional().openapi({ readOnly: true }),
+    providers: z
+      .array(
+        z
+          .string()
+          .openapi({
+            description:
+              'List of unique provider names from all spans in this trace, sorted alphabetically',
+            readOnly: true,
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'List of unique provider names from all spans in this trace, sorted alphabetically',
+        readOnly: true,
+      }),
+    experiment: ExperimentItemReferenceSchema.exactOptional(),
+    annotation_queues: z
+      .array(AnnotationQueueReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Annotation queues this trace is currently an item of',
+        readOnly: true,
+      }),
+    source: z
+      .enum(['sdk', 'experiment', 'playground', 'optimization', 'evaluator'])
+      .exactOptional(),
+    environment: z.string().min(0).max(150).exactOptional(),
+  })
+  .openapi({ required: ['start_time'] })
+  .openapi('Trace')
+
+const SpanSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    project_name: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
+      .exactOptional()
+      .openapi({ description: 'If null, the default project is used' }),
+    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    trace_id: z.uuid().exactOptional(),
+    parent_span_id: z.uuid().exactOptional(),
+    name: z.string().exactOptional(),
+    type: z.enum(['general', 'tool', 'llm', 'guardrail']).exactOptional(),
+    start_time: z.iso.datetime({ offset: true }),
+    end_time: z.iso.datetime({ offset: true }).exactOptional(),
+    input: JsonListStringSchema.exactOptional(),
+    output: JsonListStringSchema.exactOptional(),
+    metadata: JsonListStringSchema.exactOptional(),
+    model: z.string().exactOptional(),
+    provider: z.string().exactOptional(),
+    tags: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    usage: z.record(z.string(), z.int32()).exactOptional(),
+    error_info: ErrorInfoSchema.exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
+    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
+    total_estimated_cost: z.number().nonnegative().exactOptional(),
+    total_estimated_cost_version: z.string().exactOptional(),
+    duration: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Duration in milliseconds as a decimal number to support sub-millisecond precision',
+        readOnly: true,
+      }),
+    ttft: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Time to first token in milliseconds' }),
+    source: z
+      .enum(['sdk', 'experiment', 'playground', 'optimization', 'evaluator'])
+      .exactOptional(),
+    environment: z.string().min(0).max(150).exactOptional(),
+  })
+  .openapi({ required: ['start_time'] })
+  .openapi('Span')
+
+const ExperimentItemBulkRecordSchema = z
+  .object({
+    dataset_item_id: z.uuid(),
+    evaluate_task_result: JsonListStringSchema.exactOptional(),
+    trace: TraceSchema.exactOptional(),
+    spans: z.array(SpanSchema).min(0).max(100).exactOptional(),
+    feedback_scores: z.array(FeedbackScoreSchema).min(0).max(100).exactOptional(),
+  })
+  .openapi({ required: ['dataset_item_id'] })
+  .openapi('ExperimentItemBulkRecord')
+
+type ExperimentItemBulkUploadType = {
+  experiment_name: string
+  dataset_name: string
+  experiment_id?: string
+  project_name?: string
+  items: z.infer<typeof ExperimentItemBulkRecordSchema>[]
+}
+
 const NumberParamSchema = z
   .object({
     accepted: z.boolean().exactOptional(),
@@ -45,6 +1200,7 @@ type ModelParamsType = {
   tools?: z.infer<typeof ToolsParamSchema>
   samplingExclusive?: boolean
   thinksByDefault?: boolean
+  onlyRoute?: string
   routes?: { [key: string]: ModelParamsType }
 }
 
@@ -276,8 +1432,6 @@ const RequestSchema = z
   .openapi({ required: ['enrolled', 'project_ids'] })
   .openapi('Request')
 
-const JsonNodeSchema = z.object({}).openapi('JsonNode')
-
 const AnalyticsQueryResponseSchema = z
   .object({ results: z.array(JsonNodeSchema).exactOptional() })
   .openapi({ required: [] })
@@ -493,6 +1647,8 @@ const AgentConfigCreateWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'Project name. Either project_id or project_name must be provided' }),
     id: z
@@ -624,6 +1780,8 @@ const AgentConfigRemoveValuesSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'Project name. Either project_id or project_name must be provided' }),
     keys: z
@@ -1268,112 +2426,7 @@ const BatchDeleteSchema = z
   .openapi({ required: ['ids'] })
   .openapi('BatchDelete')
 
-const WebhookPublicSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    name: z.string().exactOptional(),
-    url: z.string().min(1),
-    secret_token: z.string().min(0).max(250).exactOptional(),
-    headers: z.record(z.string(), z.string()).exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['url'] })
-  .openapi('WebhookPublic')
-
-const AlertTriggerConfigPublicSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    alert_trigger_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    type: z.enum([
-      'scope:project',
-      'threshold:feedback_score',
-      'threshold:cost',
-      'threshold:latency',
-      'threshold:errors',
-      'filter:guardrail_type',
-    ]),
-    config_value: z.record(z.string(), z.string()).exactOptional(),
-    group_index: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Groups configs within a trigger: same group_index means AND between configs, different group_index means OR between groups. Null means a legacy/singleton group of one config. Always null for scope:project configs.',
-      }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('AlertTriggerConfigPublic')
-
-const AlertTriggerPublicSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    alert_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    event_type: z.enum([
-      'trace:errors',
-      'trace:feedback_score',
-      'trace_thread:feedback_score',
-      'prompt:created',
-      'prompt:committed',
-      'trace:guardrails_triggered',
-      'prompt:deleted',
-      'experiment:finished',
-      'trace:cost',
-      'trace:latency',
-    ]),
-    trigger_configs: z.array(AlertTriggerConfigPublicSchema).exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['event_type'] })
-  .openapi('AlertTriggerPublic')
-
-const AlertPublicSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    name: z.string().min(0).max(255).exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    alert_type: z.enum(['general', 'slack', 'pagerduty']).exactOptional(),
-    metadata: z.record(z.string(), z.string()).exactOptional(),
-    custom_fields: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .openapi({
-            description:
-              "Optional user-defined key/value pairs, added as top-level keys of the alert's EventBridge event detail. Keys must not collide with the event's own keys.",
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional user-defined key/value pairs, added as top-level keys of the alert's EventBridge event detail. Keys must not collide with the event's own keys.",
-      }),
-    webhook: WebhookPublicSchema,
-    triggers: z.array(AlertTriggerPublicSchema).exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    project_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional project scope for this alert. When set, the alert is scoped to the specified project. Do NOT also provide a 'scope:project' trigger config — the system will create it automatically from this field. Sending both project_id and a scope:project trigger config will result in an error.",
-      }),
-  })
-  .openapi({ required: ['webhook'] })
-  .openapi('AlertPublic')
-
-const AlertPagePublicSchema = z
+const AlertPagePublicSchema: z.ZodType<AlertPagePublicType> = z
   .object({
     page: z.int32().exactOptional(),
     size: z.int32().exactOptional(),
@@ -1396,7 +2449,7 @@ const AlertPagePublicSchema = z
   .openapi('AlertPagePublic')
 
 const WebhookExamplesSchema = z
-  .object({ response_examples: z.record(z.string(), z.object({})).exactOptional() })
+  .object({ response_examples: z.record(z.string(), z.looseObject({})).exactOptional() })
   .openapi({ required: [] })
   .openapi('WebhookExamples')
 
@@ -1428,217 +2481,7 @@ const AnnotationQueueItemIdsSchema = z
   .openapi({ required: ['ids'] })
   .openapi('AnnotationQueueItemIds')
 
-const ScoreConditionSchema = z
-  .object({
-    score_name: z.string().min(0).max(255),
-    operator: z.enum(['>', '<', '=']),
-    value: z.float64(),
-  })
-  .openapi({ required: ['operator', 'score_name', 'value'] })
-  .openapi('ScoreCondition')
-
-const ConditionGroupSchema = z
-  .object({ conditions: z.array(ScoreConditionSchema).min(0).max(5) })
-  .openapi({ required: ['conditions'] })
-  .openapi('ConditionGroup')
-
-const ConditionsSchema = z
-  .object({ groups: z.array(ConditionGroupSchema).min(0).max(5) })
-  .openapi({ required: ['groups'] })
-  .openapi('Conditions')
-
-const AnnotationQueueAutomationSchema = z
-  .object({
-    enabled: z.boolean().exactOptional(),
-    conditions: ConditionsSchema.exactOptional(),
-    max_items_in_queue: z.int32().exactOptional(),
-    clear_max_items_in_queue: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'When true, removes the item ceiling so automation adds without bound',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAutomation')
-
-const AnnotationQueueAnnotatorViewSchema = z
-  .object({
-    html: z
-      .string()
-      .min(0)
-      .max(200000)
-      .exactOptional()
-      .openapi({
-        description:
-          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
-      }),
-    kit_version: z
-      .int32()
-      .min(1)
-      .max(1)
-      .exactOptional()
-      .openapi({ description: 'Version of the view kit the html was written for' }),
-    summary: z
-      .string()
-      .min(0)
-      .max(1000)
-      .exactOptional()
-      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAnnotatorView')
-
-const AnnotationQueueReviewerSchema = z
-  .object({
-    username: z.string().exactOptional(),
-    status: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('AnnotationQueueReviewer')
-
-const FeedbackScoreAverageSchema = z
-  .object({ name: z.string().min(1), value: z.number() })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('FeedbackScoreAverage')
-
-const AnnotationQueueSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    project_id: z.uuid(),
-    project_name: z.string().exactOptional().openapi({ readOnly: true }),
-    name: z.string().min(1),
-    description: z.string().exactOptional(),
-    instructions: z.string().exactOptional(),
-    scope: z.enum(['trace', 'thread']),
-    comments_enabled: z.boolean().exactOptional(),
-    feedback_definition_names: z.array(z.string()).exactOptional(),
-    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
-    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
-    automation: AnnotationQueueAutomationSchema.exactOptional(),
-    annotator_view: AnnotationQueueAnnotatorViewSchema.exactOptional(),
-    reviewers: z.array(AnnotationQueueReviewerSchema).exactOptional().openapi({ readOnly: true }),
-    feedback_scores: z
-      .array(FeedbackScoreAverageSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    items_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({
-    required: ['name', 'project_id', 'scope'],
-    description: 'List of annotation queues to create',
-  })
-  .openapi('AnnotationQueue')
-
-const AnnotationQueueAnnotatorViewWriteSchema = z
-  .object({
-    html: z
-      .string()
-      .min(0)
-      .max(200000)
-      .exactOptional()
-      .openapi({
-        description:
-          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
-      }),
-    kit_version: z
-      .int32()
-      .min(1)
-      .max(1)
-      .exactOptional()
-      .openapi({ description: 'Version of the view kit the html was written for' }),
-    summary: z
-      .string()
-      .min(0)
-      .max(1000)
-      .exactOptional()
-      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAnnotatorViewWrite')
-
-const ScoreConditionWriteSchema = z
-  .object({
-    score_name: z.string().min(0).max(255),
-    operator: z.enum(['>', '<', '=']),
-    value: z.float64(),
-  })
-  .openapi({ required: ['operator', 'score_name', 'value'] })
-  .openapi('ScoreConditionWrite')
-
-const ConditionGroupWriteSchema = z
-  .object({ conditions: z.array(ScoreConditionWriteSchema).min(0).max(5) })
-  .openapi({ required: ['conditions'] })
-  .openapi('ConditionGroupWrite')
-
-const ConditionsWriteSchema = z
-  .object({ groups: z.array(ConditionGroupWriteSchema).min(0).max(5) })
-  .openapi({ required: ['groups'] })
-  .openapi('ConditionsWrite')
-
-const AnnotationQueueAutomationWriteSchema = z
-  .object({
-    enabled: z.boolean().exactOptional(),
-    conditions: ConditionsWriteSchema.exactOptional(),
-    max_items_in_queue: z.int32().exactOptional(),
-    clear_max_items_in_queue: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'When true, removes the item ceiling so automation adds without bound',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAutomationWrite')
-
-const AnnotationQueueWriteSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    project_id: z.uuid(),
-    name: z.string().min(1),
-    description: z.string().exactOptional(),
-    instructions: z.string().exactOptional(),
-    scope: z.enum(['trace', 'thread']),
-    comments_enabled: z.boolean().exactOptional(),
-    feedback_definition_names: z.array(z.string()).exactOptional(),
-    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
-    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
-    automation: AnnotationQueueAutomationWriteSchema.exactOptional(),
-    annotator_view: AnnotationQueueAnnotatorViewWriteSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['name', 'project_id', 'scope'],
-    description: 'List of annotation queues to create',
-  })
-  .openapi('AnnotationQueueWrite')
-
-const AnnotationQueueBatchSchema = z
+const AnnotationQueueBatchSchema: z.ZodType<AnnotationQueueBatchType> = z
   .object({
     annotation_queues: z
       .array(AnnotationQueueSchema)
@@ -1657,7 +2500,7 @@ const AnnotationQueueBatchSchema = z
   .openapi({ required: ['annotation_queues'], description: 'Batch of annotation queues to create' })
   .openapi('AnnotationQueueBatch')
 
-const AnnotationQueueBatchWriteSchema = z
+const AnnotationQueueBatchWriteSchema: z.ZodType<AnnotationQueueBatchWriteType> = z
   .object({
     annotation_queues: z
       .array(AnnotationQueueWriteSchema)
@@ -1676,129 +2519,7 @@ const AnnotationQueueBatchWriteSchema = z
   .openapi({ required: ['annotation_queues'], description: 'Batch of annotation queues to create' })
   .openapi('AnnotationQueueBatchWrite')
 
-const AnnotationQueueAnnotatorViewPublicSchema = z
-  .object({
-    html: z
-      .string()
-      .min(0)
-      .max(200000)
-      .exactOptional()
-      .openapi({
-        description:
-          'A custom HTML view rendered in a sandboxed iframe instead of the default trace blocks or conversation',
-      }),
-    kit_version: z
-      .int32()
-      .min(1)
-      .max(1)
-      .exactOptional()
-      .openapi({ description: 'Version of the view kit the html was written for' }),
-    summary: z
-      .string()
-      .min(0)
-      .max(1000)
-      .exactOptional()
-      .openapi({ description: 'What annotators see in the view, in one or two sentences' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAnnotatorViewPublic')
-
-const ScoreConditionPublicSchema = z
-  .object({
-    score_name: z.string().min(0).max(255),
-    operator: z.enum(['>', '<', '=']),
-    value: z.float64(),
-  })
-  .openapi({ required: ['operator', 'score_name', 'value'] })
-  .openapi('ScoreConditionPublic')
-
-const ConditionGroupPublicSchema = z
-  .object({ conditions: z.array(ScoreConditionPublicSchema).min(0).max(5) })
-  .openapi({ required: ['conditions'] })
-  .openapi('ConditionGroupPublic')
-
-const ConditionsPublicSchema = z
-  .object({ groups: z.array(ConditionGroupPublicSchema).min(0).max(5) })
-  .openapi({ required: ['groups'] })
-  .openapi('ConditionsPublic')
-
-const AnnotationQueueAutomationPublicSchema = z
-  .object({
-    enabled: z.boolean().exactOptional(),
-    conditions: ConditionsPublicSchema.exactOptional(),
-    max_items_in_queue: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationQueueAutomationPublic')
-
-const AnnotationQueueReviewerPublicSchema = z
-  .object({
-    username: z.string().exactOptional(),
-    status: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('AnnotationQueueReviewerPublic')
-
-const FeedbackScoreAveragePublicSchema = z
-  .object({ name: z.string().min(1), value: z.number() })
-  .openapi({ required: ['name', 'value'], readOnly: true })
-  .openapi('FeedbackScoreAveragePublic')
-
-const AnnotationQueuePublicSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    project_id: z.uuid(),
-    project_name: z.string().exactOptional().openapi({ readOnly: true }),
-    name: z.string().min(1),
-    description: z.string().exactOptional(),
-    instructions: z.string().exactOptional(),
-    scope: z.enum(['trace', 'thread']),
-    comments_enabled: z.boolean().exactOptional(),
-    feedback_definition_names: z.array(z.string()).exactOptional(),
-    annotators_per_item: z.int32().min(1).max(1000).exactOptional(),
-    lock_timeout_seconds: z.int32().min(1).max(3600).exactOptional(),
-    automation: AnnotationQueueAutomationPublicSchema.exactOptional(),
-    annotator_view: AnnotationQueueAnnotatorViewPublicSchema.exactOptional(),
-    reviewers: z
-      .array(AnnotationQueueReviewerPublicSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    feedback_scores: z
-      .array(FeedbackScoreAveragePublicSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    items_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['name', 'project_id', 'scope'] })
-  .openapi('AnnotationQueuePublic')
-
-const AnnotationQueuePagePublicSchema = z
+const AnnotationQueuePagePublicSchema: z.ZodType<AnnotationQueuePagePublicType> = z
   .object({
     page: z.int32().exactOptional(),
     size: z.int32().exactOptional(),
@@ -1895,6 +2616,8 @@ const AssertionResultBatchItemSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional(),
@@ -1967,6 +2690,8 @@ const CompleteMultipartUploadRequestSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     entity_type: z.enum(['trace', 'span']),
@@ -2029,6 +2754,8 @@ const StartMultipartUploadRequestSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     entity_type: z.enum(['trace', 'span']),
@@ -2039,7 +2766,7 @@ const StartMultipartUploadRequestSchema = z
   .openapi({ required: ['entity_id', 'entity_type', 'file_name', 'num_of_file_parts', 'path'] })
   .openapi('StartMultipartUploadRequest')
 
-const AuthDetailsHolderSchema = z.object({}).openapi('AuthDetailsHolder')
+const AuthDetailsHolderSchema = z.looseObject({}).openapi('AuthDetailsHolder')
 
 const WorkspaceNameHolderSchema = z
   .object({ workspace_name: z.string().exactOptional() })
@@ -2197,6 +2924,7 @@ const LlmAsJudgeModelParametersSchema = z
     temperature: z.float64().exactOptional(),
     seed: z.int32().exactOptional(),
     custom_parameters: JsonNodeSchema.exactOptional(),
+    api: z.literal('decisions').exactOptional(),
   })
   .openapi({ required: ['name'] })
   .openapi('LlmAsJudgeModelParameters')
@@ -2254,13 +2982,32 @@ const LlmAsJudgeCodeSchema = z
   .openapi('LlmAsJudgeCode')
 
 const AutomationRuleEvaluatorLlmAsJudgeSchema = AutomationRuleEvaluatorSchema.and(
-  z
-    .object({
-      filters: z.array(TraceFilterSchema).exactOptional(),
-      code: LlmAsJudgeCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceFilterSchema).exactOptional(),
+        code: LlmAsJudgeCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorLlmAsJudge')
 
@@ -2302,13 +3049,32 @@ const SpanLlmAsJudgeCodeSchema = z
   .openapi('SpanLlmAsJudgeCode')
 
 const AutomationRuleEvaluatorSpanLlmAsJudgeSchema = AutomationRuleEvaluatorSchema.and(
-  z
-    .object({
-      filters: z.array(SpanFilterSchema).exactOptional(),
-      code: SpanLlmAsJudgeCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(SpanFilterSchema).exactOptional(),
+        code: SpanLlmAsJudgeCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorSpanLlmAsJudge')
 
@@ -2321,13 +3087,32 @@ const SpanUserDefinedMetricPythonCodeSchema = z
   .openapi('SpanUserDefinedMetricPythonCode')
 
 const AutomationRuleEvaluatorSpanUserDefinedMetricPythonSchema = AutomationRuleEvaluatorSchema.and(
-  z
-    .object({
-      filters: z.array(SpanFilterSchema).exactOptional(),
-      code: SpanUserDefinedMetricPythonCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(SpanFilterSchema).exactOptional(),
+        code: SpanUserDefinedMetricPythonCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorSpanUserDefinedMetricPython')
 
@@ -2369,13 +3154,32 @@ const TraceThreadLlmAsJudgeCodeSchema = z
   .openapi('TraceThreadLlmAsJudgeCode')
 
 const AutomationRuleEvaluatorTraceThreadLlmAsJudgeSchema = AutomationRuleEvaluatorSchema.and(
-  z
-    .object({
-      filters: z.array(TraceThreadFilterSchema).exactOptional(),
-      code: TraceThreadLlmAsJudgeCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceThreadFilterSchema).exactOptional(),
+        code: TraceThreadLlmAsJudgeCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorTraceThreadLlmAsJudge')
 
@@ -2386,13 +3190,32 @@ const TraceThreadUserDefinedMetricPythonCodeSchema = z
 
 const AutomationRuleEvaluatorTraceThreadUserDefinedMetricPythonSchema =
   AutomationRuleEvaluatorSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterSchema).exactOptional(),
-        code: TraceThreadUserDefinedMetricPythonCodeSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterSchema).exactOptional(),
+          code: TraceThreadUserDefinedMetricPythonCodeSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorTraceThreadUserDefinedMetricPython')
 
@@ -2405,13 +3228,32 @@ const UserDefinedMetricPythonCodeSchema = z
   .openapi('UserDefinedMetricPythonCode')
 
 const AutomationRuleEvaluatorUserDefinedMetricPythonSchema = AutomationRuleEvaluatorSchema.and(
-  z
-    .object({
-      filters: z.array(TraceFilterSchema).exactOptional(),
-      code: UserDefinedMetricPythonCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceFilterSchema).exactOptional(),
+        code: UserDefinedMetricPythonCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorUserDefinedMetricPython')
 
@@ -2521,7 +3363,7 @@ const TraceFilterWriteSchema = z
   .openapi({ required: [] })
   .openapi('TraceFilterWrite')
 
-const JsonNodeWriteSchema = z.object({}).openapi('JsonNodeWrite')
+const JsonNodeWriteSchema = z.looseObject({}).openapi('JsonNodeWrite')
 
 const LlmAsJudgeModelParametersWriteSchema = z
   .object({
@@ -2529,6 +3371,7 @@ const LlmAsJudgeModelParametersWriteSchema = z
     temperature: z.float64().exactOptional(),
     seed: z.int32().exactOptional(),
     custom_parameters: JsonNodeWriteSchema.exactOptional(),
+    api: z.literal('decisions').exactOptional(),
   })
   .openapi({ required: ['name'] })
   .openapi('LlmAsJudgeModelParametersWrite')
@@ -2586,13 +3429,32 @@ const LlmAsJudgeCodeWriteSchema = z
   .openapi('LlmAsJudgeCodeWrite')
 
 const AutomationRuleEvaluatorLlmAsJudgeWriteSchema = AutomationRuleEvaluatorWriteSchema.and(
-  z
-    .object({
-      filters: z.array(TraceFilterWriteSchema).exactOptional(),
-      code: LlmAsJudgeCodeWriteSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceFilterWriteSchema).exactOptional(),
+        code: LlmAsJudgeCodeWriteSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorLlmAsJudgeWrite')
 
@@ -2634,13 +3496,32 @@ const SpanLlmAsJudgeCodeWriteSchema = z
   .openapi('SpanLlmAsJudgeCodeWrite')
 
 const AutomationRuleEvaluatorSpanLlmAsJudgeWriteSchema = AutomationRuleEvaluatorWriteSchema.and(
-  z
-    .object({
-      filters: z.array(SpanFilterWriteSchema).exactOptional(),
-      code: SpanLlmAsJudgeCodeWriteSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(SpanFilterWriteSchema).exactOptional(),
+        code: SpanLlmAsJudgeCodeWriteSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorSpanLlmAsJudgeWrite')
 
@@ -2654,13 +3535,32 @@ const SpanUserDefinedMetricPythonCodeWriteSchema = z
 
 const AutomationRuleEvaluatorSpanUserDefinedMetricPythonWriteSchema =
   AutomationRuleEvaluatorWriteSchema.and(
-    z
-      .object({
-        filters: z.array(SpanFilterWriteSchema).exactOptional(),
-        code: SpanUserDefinedMetricPythonCodeWriteSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(SpanFilterWriteSchema).exactOptional(),
+          code: SpanUserDefinedMetricPythonCodeWriteSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorSpanUserDefinedMetricPythonWrite')
 
@@ -2703,13 +3603,32 @@ const TraceThreadLlmAsJudgeCodeWriteSchema = z
 
 const AutomationRuleEvaluatorTraceThreadLlmAsJudgeWriteSchema =
   AutomationRuleEvaluatorWriteSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterWriteSchema).exactOptional(),
-        code: TraceThreadLlmAsJudgeCodeWriteSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterWriteSchema).exactOptional(),
+          code: TraceThreadLlmAsJudgeCodeWriteSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorTraceThreadLlmAsJudgeWrite')
 
@@ -2720,13 +3639,32 @@ const TraceThreadUserDefinedMetricPythonCodeWriteSchema = z
 
 const AutomationRuleEvaluatorTraceThreadUserDefinedMetricPythonWriteSchema =
   AutomationRuleEvaluatorWriteSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterWriteSchema).exactOptional(),
-        code: TraceThreadUserDefinedMetricPythonCodeWriteSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterWriteSchema).exactOptional(),
+          code: TraceThreadUserDefinedMetricPythonCodeWriteSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorTraceThreadUserDefinedMetricPythonWrite')
 
@@ -2740,13 +3678,32 @@ const UserDefinedMetricPythonCodeWriteSchema = z
 
 const AutomationRuleEvaluatorUserDefinedMetricPythonWriteSchema =
   AutomationRuleEvaluatorWriteSchema.and(
-    z
-      .object({
-        filters: z.array(TraceFilterWriteSchema).exactOptional(),
-        code: UserDefinedMetricPythonCodeWriteSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceFilterWriteSchema).exactOptional(),
+          code: UserDefinedMetricPythonCodeWriteSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorUserDefinedMetricPythonWrite')
 
@@ -2875,7 +3832,7 @@ const TraceFilterPublicSchema = z
   .openapi({ required: [] })
   .openapi('TraceFilterPublic')
 
-const JsonNodePublicSchema = z.object({}).openapi('JsonNodePublic')
+const JsonNodePublicSchema = z.looseObject({}).openapi('JsonNodePublic')
 
 const LlmAsJudgeModelParametersPublicSchema = z
   .object({
@@ -2883,6 +3840,7 @@ const LlmAsJudgeModelParametersPublicSchema = z
     temperature: z.float64().exactOptional(),
     seed: z.int32().exactOptional(),
     custom_parameters: JsonNodePublicSchema.exactOptional(),
+    api: z.literal('decisions').exactOptional(),
   })
   .openapi({ required: ['name'] })
   .openapi('LlmAsJudgeModelParametersPublic')
@@ -2940,13 +3898,32 @@ const LlmAsJudgeCodePublicSchema = z
   .openapi('LlmAsJudgeCodePublic')
 
 const AutomationRuleEvaluatorLlmAsJudgePublicSchema = AutomationRuleEvaluatorPublicSchema.and(
-  z
-    .object({
-      filters: z.array(TraceFilterPublicSchema).exactOptional(),
-      code: LlmAsJudgeCodePublicSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceFilterPublicSchema).exactOptional(),
+        code: LlmAsJudgeCodePublicSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorLlmAsJudgePublic')
 
@@ -3091,13 +4068,32 @@ const SpanLlmAsJudgeCodePublicSchema = z
   .openapi('SpanLlmAsJudgeCodePublic')
 
 const AutomationRuleEvaluatorSpanLlmAsJudgePublicSchema = AutomationRuleEvaluatorPublicSchema.and(
-  z
-    .object({
-      filters: z.array(SpanFilterPublicSchema).exactOptional(),
-      code: SpanLlmAsJudgeCodePublicSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(SpanFilterPublicSchema).exactOptional(),
+        code: SpanLlmAsJudgeCodePublicSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name', 'type'] })
   .openapi('AutomationRuleEvaluatorSpanLlmAsJudgePublic')
 
@@ -3111,13 +4107,32 @@ const SpanUserDefinedMetricPythonCodePublicSchema = z
 
 const AutomationRuleEvaluatorSpanUserDefinedMetricPythonPublicSchema =
   AutomationRuleEvaluatorPublicSchema.and(
-    z
-      .object({
-        filters: z.array(SpanFilterPublicSchema).exactOptional(),
-        code: SpanUserDefinedMetricPythonCodePublicSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(SpanFilterPublicSchema).exactOptional(),
+          code: SpanUserDefinedMetricPythonCodePublicSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorSpanUserDefinedMetricPythonPublic')
 
@@ -3160,13 +4175,32 @@ const TraceThreadLlmAsJudgeCodePublicSchema = z
 
 const AutomationRuleEvaluatorTraceThreadLlmAsJudgePublicSchema =
   AutomationRuleEvaluatorPublicSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterPublicSchema).exactOptional(),
-        code: TraceThreadLlmAsJudgeCodePublicSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterPublicSchema).exactOptional(),
+          code: TraceThreadLlmAsJudgeCodePublicSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorTraceThreadLlmAsJudgePublic')
 
@@ -3177,13 +4211,32 @@ const TraceThreadUserDefinedMetricPythonCodePublicSchema = z
 
 const AutomationRuleEvaluatorTraceThreadUserDefinedMetricPythonPublicSchema =
   AutomationRuleEvaluatorPublicSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterPublicSchema).exactOptional(),
-        code: TraceThreadUserDefinedMetricPythonCodePublicSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterPublicSchema).exactOptional(),
+          code: TraceThreadUserDefinedMetricPythonCodePublicSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorTraceThreadUserDefinedMetricPythonPublic')
 
@@ -3197,13 +4250,32 @@ const UserDefinedMetricPythonCodePublicSchema = z
 
 const AutomationRuleEvaluatorUserDefinedMetricPythonPublicSchema =
   AutomationRuleEvaluatorPublicSchema.and(
-    z
-      .object({
-        filters: z.array(TraceFilterPublicSchema).exactOptional(),
-        code: UserDefinedMetricPythonCodePublicSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceFilterPublicSchema).exactOptional(),
+          code: UserDefinedMetricPythonCodePublicSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name', 'type'] })
     .openapi('AutomationRuleEvaluatorUserDefinedMetricPythonPublic')
 
@@ -3314,72 +4386,168 @@ const AutomationRuleEvaluatorUpdateSchema = z
   .openapi('AutomationRuleEvaluatorUpdate')
 
 const AutomationRuleEvaluatorUpdateLlmAsJudgeSchema = AutomationRuleEvaluatorUpdateSchema.and(
-  z
-    .object({
-      filters: z.array(TraceFilterSchema).exactOptional(),
-      code: LlmAsJudgeCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(TraceFilterSchema).exactOptional(),
+        code: LlmAsJudgeCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name'] })
   .openapi('AutomationRuleEvaluatorUpdateLlmAsJudge')
 
 const AutomationRuleEvaluatorUpdateSpanLlmAsJudgeSchema = AutomationRuleEvaluatorUpdateSchema.and(
-  z
-    .object({
-      filters: z.array(SpanFilterSchema).exactOptional(),
-      code: SpanLlmAsJudgeCodeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        filters: z.array(SpanFilterSchema).exactOptional(),
+        code: SpanLlmAsJudgeCodeSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action', 'code', 'name'] })
   .openapi('AutomationRuleEvaluatorUpdateSpanLlmAsJudge')
 
 const AutomationRuleEvaluatorUpdateSpanUserDefinedMetricPythonSchema =
   AutomationRuleEvaluatorUpdateSchema.and(
-    z
-      .object({
-        filters: z.array(SpanFilterSchema).exactOptional(),
-        code: SpanUserDefinedMetricPythonCodeSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(SpanFilterSchema).exactOptional(),
+          code: SpanUserDefinedMetricPythonCodeSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name'] })
     .openapi('AutomationRuleEvaluatorUpdateSpanUserDefinedMetricPython')
 
 const AutomationRuleEvaluatorUpdateTraceThreadLlmAsJudgeSchema =
   AutomationRuleEvaluatorUpdateSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterSchema).exactOptional(),
-        code: TraceThreadLlmAsJudgeCodeSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterSchema).exactOptional(),
+          code: TraceThreadLlmAsJudgeCodeSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name'] })
     .openapi('AutomationRuleEvaluatorUpdateTraceThreadLlmAsJudge')
 
 const AutomationRuleEvaluatorUpdateTraceThreadUserDefinedMetricPythonSchema =
   AutomationRuleEvaluatorUpdateSchema.and(
-    z
-      .object({
-        filters: z.array(TraceThreadFilterSchema).exactOptional(),
-        code: TraceThreadUserDefinedMetricPythonCodeSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceThreadFilterSchema).exactOptional(),
+          code: TraceThreadUserDefinedMetricPythonCodeSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name'] })
     .openapi('AutomationRuleEvaluatorUpdateTraceThreadUserDefinedMetricPython')
 
 const AutomationRuleEvaluatorUpdateUserDefinedMetricPythonSchema =
   AutomationRuleEvaluatorUpdateSchema.and(
-    z
-      .object({
-        filters: z.array(TraceFilterSchema).exactOptional(),
-        code: UserDefinedMetricPythonCodeSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['action', 'code', 'name'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'action')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'code')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'name')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          filters: z.array(TraceFilterSchema).exactOptional(),
+          code: UserDefinedMetricPythonCodeSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['action', 'code', 'name'] })
     .openapi('AutomationRuleEvaluatorUpdateUserDefinedMetricPython')
 
@@ -3506,7 +4674,7 @@ const JsonSchemaSchema = z
   .object({
     name: z.string().exactOptional(),
     strict: z.boolean().exactOptional(),
-    schema: z.record(z.string(), z.object({})).exactOptional(),
+    schema: z.record(z.string(), z.looseObject({})).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('JsonSchema')
@@ -3524,7 +4692,7 @@ const FunctionSchema = z
     name: z.string().exactOptional(),
     description: z.string().exactOptional(),
     strict: z.boolean().exactOptional(),
-    parameters: z.record(z.string(), z.object({})).exactOptional(),
+    parameters: z.record(z.string(), z.looseObject({})).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Function')
@@ -3558,7 +4726,7 @@ const ChatCompletionRequestSchema = z
     responseFormat: ResponseFormatSchema.exactOptional(),
     seed: z.int32().exactOptional(),
     tools: z.array(ToolSchema).exactOptional(),
-    toolChoice: z.object({}).exactOptional(),
+    toolChoice: z.looseObject({}).exactOptional(),
     parallelToolCalls: z.boolean().exactOptional(),
     store: z.boolean().exactOptional(),
     metadata: z.record(z.string(), z.string()).exactOptional(),
@@ -3585,7 +4753,6 @@ const DashboardPublicSchema = z
         description: 'Project ID. Takes precedence over project_name when both are provided.',
       }),
     name: z.string().min(1).max(120),
-    slug: z.string().exactOptional().openapi({ readOnly: true }),
     type: z.enum(['multi_project', 'experiments']).exactOptional(),
     scope: z.enum(['workspace', 'insights']).exactOptional().openapi({ readOnly: true }),
     description: z.string().min(0).max(1000).exactOptional(),
@@ -3609,6 +4776,8 @@ const DashboardWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -3769,7 +4938,7 @@ const DatasetVersionPublicSchema = z
   .openapi({ required: [] })
   .openapi('DatasetVersionPublic')
 
-const DatasetItemChangesPublicSchema = z.object({}).openapi('DatasetItemChangesPublic')
+const DatasetItemChangesPublicSchema = z.looseObject({}).openapi('DatasetItemChangesPublic')
 
 const DatasetItemFilterSchema = z
   .object({
@@ -3801,23 +4970,6 @@ const DatasetItemFilterSchema = z
     required: [],
   })
   .openapi('DatasetItemFilter')
-
-const EvaluatorItemSchema = z
-  .object({
-    name: z.string().min(1),
-    type: z.enum(['llm_judge', 'code_metric']),
-    config: JsonNodeSchema,
-  })
-  .openapi({ required: ['config', 'name', 'type'] })
-  .openapi('EvaluatorItem')
-
-const ExecutionPolicySchema = z
-  .object({
-    runs_per_item: z.int32().min(1).max(100).exactOptional(),
-    pass_threshold: z.int32().min(1).max(100).exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ExecutionPolicy')
 
 const DatasetItemUpdateSchema = z
   .object({
@@ -3978,6 +5130,8 @@ const DatasetSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -4080,6 +5234,8 @@ const DatasetWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -4108,180 +5264,7 @@ const DatasetWriteSchema = z
   .openapi({ required: ['name'] })
   .openapi('DatasetWrite')
 
-const AssertionResultSchema = z
-  .object({
-    value: z.string().exactOptional(),
-    passed: z.boolean().exactOptional(),
-    reason: z.string().exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('AssertionResult')
-
-const CommentSchema = z
-  .object({
-    id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    text: z.string().min(1),
-    source_queue_id: z.uuid().exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['text'] })
-  .openapi('Comment')
-
-const JsonListStringSchema = z
-  .union([z.object({}), z.array(z.object({})), z.string()])
-  .openapi('JsonListString')
-
-const ValueEntrySchema = z
-  .object({
-    value: z.number().exactOptional(),
-    reason: z.string().exactOptional(),
-    category_name: z.string().exactOptional(),
-    source: z.enum(['ui', 'sdk', 'online_scoring']).exactOptional(),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-    span_type: z.string().exactOptional(),
-    span_id: z.string().exactOptional(),
-    source_queue_id: z.string().exactOptional(),
-    author: z.string().exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ValueEntry')
-
-const FeedbackScoreSchema = z
-  .object({
-    name: z.string().min(1),
-    category_name: z.string().exactOptional(),
-    value: z.number().min(-1000000000).max(1000000000),
-    reason: z.string().exactOptional(),
-    source: z.enum(['ui', 'sdk', 'online_scoring']),
-    source_queue_id: z.uuid().exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    value_by_author: z
-      .record(z.string(), ValueEntrySchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['name', 'source', 'value'] })
-  .openapi('FeedbackScore')
-
-const ExperimentItemSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    experiment_id: z.uuid(),
-    dataset_item_id: z.uuid(),
-    trace_id: z.uuid(),
-    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    project_name: z
-      .string()
-      .regex(/^\s*(\S.*\S|\S)\s*$/s)
-      .exactOptional(),
-    input: JsonListStringSchema.exactOptional(),
-    output: JsonListStringSchema.exactOptional(),
-    trace_metadata: JsonListStringSchema.exactOptional(),
-    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
-    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
-    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
-    duration: z.float64().exactOptional().openapi({ readOnly: true }),
-    usage: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-      )
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    trace_visibility_mode: z
-      .enum(['default', 'hidden'])
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    description: z.string().exactOptional().openapi({ readOnly: true }),
-    execution_policy: ExecutionPolicySchema.exactOptional(),
-    assertion_results: z.array(AssertionResultSchema).exactOptional().openapi({ readOnly: true }),
-    status: z.enum(['passed', 'failed']).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['dataset_item_id', 'experiment_id', 'trace_id'] })
-  .openapi('ExperimentItem')
-
-const ExperimentRunSummarySchema = z
-  .object({
-    passed_runs: z.int32().exactOptional(),
-    total_runs: z.int32().exactOptional(),
-    status: z.enum(['passed', 'failed']).exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ExperimentRunSummary')
-
-const DatasetItemSchema = z
-  .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Stable item identifier.\nOn write, used as the upsert key.\nIf omitted, a new ID is generated.\nRemains the same across dataset versions\n',
-      }),
-    dataset_item_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          "Deprecated.\nAlways equals 'id'.\nRetained for backward compatibility and will be removed in a future version\n",
-        readOnly: true,
-      }),
-    trace_id: z.uuid().exactOptional(),
-    span_id: z.uuid().exactOptional(),
-    source: z.enum(['manual', 'trace', 'span', 'sdk']),
-    data: JsonNodeSchema,
-    description: z
-      .string()
-      .regex(/^\s*(\S.*\S|\S)\s*$/s)
-      .exactOptional(),
-    tags: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    evaluators: z.array(EvaluatorItemSchema).exactOptional(),
-    execution_policy: ExecutionPolicySchema.exactOptional(),
-    experiment_items: z.array(ExperimentItemSchema).exactOptional().openapi({ readOnly: true }),
-    run_summaries_by_experiment: z
-      .record(z.string(), ExperimentRunSummarySchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    dataset_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['data', 'source'] })
-  .openapi('DatasetItem')
-
-const DatasetItemBatchSchema = z
+const DatasetItemBatchSchema: z.ZodType<DatasetItemBatchType> = z
   .object({
     dataset_name: z
       .string()
@@ -4295,6 +5278,8 @@ const DatasetItemBatchSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -4398,6 +5383,8 @@ const DatasetItemBatchWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -4593,7 +5580,7 @@ const DatasetItemsDeleteSchema = z
   .openapi({ description: 'Request to delete multiple dataset items', required: [] })
   .openapi('DatasetItemsDelete')
 
-const DatasetExpansionResponseSchema = z
+const DatasetExpansionResponseSchema: z.ZodType<DatasetExpansionResponseType> = z
   .object({
     generated_samples: z
       .array(DatasetItemSchema)
@@ -4717,228 +5704,7 @@ const DatasetExpansionWriteSchema = z
   .openapi({ required: ['model'] })
   .openapi('DatasetExpansionWrite')
 
-const AssertionResultCompareSchema = z
-  .object({
-    value: z.string().exactOptional(),
-    passed: z.boolean().exactOptional(),
-    reason: z.string().exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('AssertionResultCompare')
-
-const ColumnCompareSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    types: z
-      .array(z.enum(['string', 'number', 'object', 'boolean', 'array', 'null']))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    filter_field_prefix: z.string().exactOptional(),
-    filterField: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The field to use for filtering', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('ColumnCompare')
-
-const CommentCompareSchema = z
-  .object({
-    id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    text: z.string().min(1),
-    source_queue_id: z.uuid().exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['text'], readOnly: true })
-  .openapi('CommentCompare')
-
-const JsonNodeCompareSchema = z.object({}).openapi('JsonNodeCompare')
-
-const EvaluatorItemCompareSchema = z
-  .object({
-    name: z.string().min(1),
-    type: z.enum(['llm_judge', 'code_metric']),
-    config: JsonNodeCompareSchema,
-  })
-  .openapi({ required: ['config', 'name', 'type'] })
-  .openapi('EvaluatorItemCompare')
-
-const ExecutionPolicyCompareSchema = z
-  .object({
-    runs_per_item: z.int32().min(1).max(100).exactOptional(),
-    pass_threshold: z.int32().min(1).max(100).exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ExecutionPolicyCompare')
-
-const JsonListStringCompareSchema = z
-  .union([z.object({}), z.array(z.object({})), z.string()])
-  .openapi({ readOnly: true })
-  .openapi('JsonListStringCompare')
-
-const ValueEntryCompareSchema = z
-  .object({
-    value: z.number().exactOptional(),
-    reason: z.string().exactOptional(),
-    category_name: z.string().exactOptional(),
-    source: z.enum(['ui', 'sdk', 'online_scoring']).exactOptional(),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-    span_type: z.string().exactOptional(),
-    span_id: z.string().exactOptional(),
-    source_queue_id: z.string().exactOptional(),
-    author: z.string().exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ValueEntryCompare')
-
-const FeedbackScoreCompareSchema = z
-  .object({
-    name: z.string().min(1),
-    category_name: z.string().exactOptional(),
-    value: z.number().min(-1000000000).max(1000000000),
-    reason: z.string().exactOptional(),
-    source: z.enum(['ui', 'sdk', 'online_scoring']),
-    source_queue_id: z.uuid().exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    value_by_author: z
-      .record(z.string(), ValueEntryCompareSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['name', 'source', 'value'], readOnly: true })
-  .openapi('FeedbackScoreCompare')
-
-const ExperimentItemCompareSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    experiment_id: z.uuid(),
-    dataset_item_id: z.uuid(),
-    trace_id: z.uuid(),
-    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    input: JsonListStringCompareSchema.exactOptional(),
-    output: JsonListStringCompareSchema.exactOptional(),
-    trace_metadata: JsonListStringCompareSchema.exactOptional(),
-    feedback_scores: z
-      .array(FeedbackScoreCompareSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    comments: z.array(CommentCompareSchema).exactOptional().openapi({ readOnly: true }),
-    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
-    duration: z.float64().exactOptional().openapi({ readOnly: true }),
-    usage: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-      )
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    trace_visibility_mode: z
-      .enum(['default', 'hidden'])
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    description: z.string().exactOptional().openapi({ readOnly: true }),
-    execution_policy: ExecutionPolicyCompareSchema.exactOptional(),
-    assertion_results: z
-      .array(AssertionResultCompareSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    status: z.enum(['passed', 'failed']).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['dataset_item_id', 'experiment_id', 'trace_id'], readOnly: true })
-  .openapi('ExperimentItemCompare')
-
-const ExperimentRunSummaryCompareSchema = z
-  .object({
-    passed_runs: z.int32().exactOptional(),
-    total_runs: z.int32().exactOptional(),
-    status: z.enum(['passed', 'failed']).exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('ExperimentRunSummaryCompare')
-
-const DatasetItemCompareSchema = z
-  .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Stable item identifier.\nOn write, used as the upsert key.\nIf omitted, a new ID is generated.\nRemains the same across dataset versions\n',
-      }),
-    dataset_item_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          "Deprecated.\nAlways equals 'id'.\nRetained for backward compatibility and will be removed in a future version\n",
-        readOnly: true,
-      }),
-    trace_id: z.uuid().exactOptional(),
-    span_id: z.uuid().exactOptional(),
-    source: z.enum(['manual', 'trace', 'span', 'sdk']),
-    data: JsonNodeSchema,
-    description: z
-      .string()
-      .regex(/^\s*(\S.*\S|\S)\s*$/s)
-      .exactOptional(),
-    tags: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    evaluators: z.array(EvaluatorItemCompareSchema).exactOptional(),
-    execution_policy: ExecutionPolicyCompareSchema.exactOptional(),
-    experiment_items: z
-      .array(ExperimentItemCompareSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    run_summaries_by_experiment: z
-      .record(z.string(), ExperimentRunSummaryCompareSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    dataset_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['data', 'source'] })
-  .openapi('DatasetItemCompare')
-
-const DatasetItemPageCompareSchema = z
+const DatasetItemPageCompareSchema: z.ZodType<DatasetItemPageCompareType> = z
   .object({
     content: z.array(DatasetItemCompareSchema).exactOptional(),
     page: z.int32().exactOptional(),
@@ -5764,6 +6530,8 @@ const ExperimentSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -5909,7 +6677,11 @@ const ExperimentScoreWriteSchema = z
   .openapi('ExperimentScoreWrite')
 
 const JsonListStringWriteSchema = z
-  .union([z.object({}), z.array(z.object({})), z.string()])
+  .union([
+    z.looseObject({}),
+    z.looseObject({}).and(z.array(z.looseObject({}))),
+    z.looseObject({}).and(z.string()),
+  ])
   .openapi('JsonListStringWrite')
 
 const PromptVersionLinkWriteSchema = z
@@ -5930,6 +6702,8 @@ const ExperimentWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -6058,7 +6832,12 @@ const ExperimentExecutionRequestSchema = z
     dataset_name: z.string().min(1),
     dataset_version_id: z.uuid().exactOptional(),
     prompts: z.array(PromptVariantSchema).min(1),
-    project_name: z.string().exactOptional(),
+    project_name: z
+      .string()
+      .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
+      .exactOptional(),
     project_id: z.uuid().exactOptional(),
     dataset_id: z.uuid(),
     version_hash: z.string().exactOptional(),
@@ -6069,241 +6848,7 @@ const ExperimentExecutionRequestSchema = z
   .openapi({ required: ['dataset_id', 'dataset_name', 'prompts'] })
   .openapi('ExperimentExecutionRequest')
 
-const AnnotationQueueReferenceSchema = z
-  .object({
-    id: z.uuid().openapi({ description: 'Annotation queue ID' }),
-    name: z.string().openapi({ description: 'Annotation queue name' }),
-  })
-  .openapi({
-    required: ['id', 'name'],
-    description: 'Annotation queue reference with ID and name',
-    readOnly: true,
-  })
-  .openapi('AnnotationQueueReference')
-
-const CheckSchema = z
-  .object({
-    name: z
-      .enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER'])
-      .exactOptional(),
-    result: z.enum(['passed', 'failed']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Check')
-
-const ErrorInfoSchema = z
-  .object({
-    exception_type: z.string().min(1),
-    message: z.string().exactOptional(),
-    traceback: z.string().min(1),
-  })
-  .openapi({ required: ['exception_type', 'traceback'] })
-  .openapi('ErrorInfo')
-
-const GuardrailsValidationSchema = z
-  .object({ span_id: z.uuid().exactOptional(), checks: z.array(CheckSchema).exactOptional() })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('GuardrailsValidation')
-
-const ExperimentItemReferenceSchema = z
-  .object({
-    id: z.uuid().openapi({ description: 'Experiment ID' }),
-    name: z.string().openapi({ description: 'Experiment name' }),
-    dataset_id: z.uuid().openapi({ description: 'Dataset ID' }),
-    dataset_item_id: z.uuid().openapi({ description: 'Dataset Item ID' }),
-  })
-  .openapi({
-    required: ['dataset_id', 'dataset_item_id', 'id', 'name'],
-    description: 'Experiment reference with ID, name, dataset ID, and dataset item ID',
-    readOnly: true,
-  })
-  .openapi('ExperimentItemReference')
-
-const TraceSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    project_name: z
-      .string()
-      .regex(/^\s*(\S.*\S|\S)\s*$/s)
-      .exactOptional()
-      .openapi({ description: 'If null, the default project is used' }),
-    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    name: z.string().exactOptional(),
-    start_time: z.iso.datetime({ offset: true }),
-    end_time: z.iso.datetime({ offset: true }).exactOptional(),
-    input: JsonListStringSchema.exactOptional(),
-    output: JsonListStringSchema.exactOptional(),
-    metadata: JsonListStringSchema.exactOptional(),
-    tags: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    error_info: ErrorInfoSchema.exactOptional(),
-    usage: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-      )
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
-    span_feedback_scores: z
-      .array(FeedbackScoreSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Aggregated feedback scores from all spans in this trace, averaged by score name',
-        readOnly: true,
-      }),
-    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
-    guardrails_validations: z
-      .array(GuardrailsValidationSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    total_estimated_cost: z.number().exactOptional().openapi({ readOnly: true }),
-    span_count: z.int32().exactOptional().openapi({ readOnly: true }),
-    duration: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Duration in milliseconds as a decimal number to support sub-millisecond precision',
-        readOnly: true,
-      }),
-    ttft: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Time to first token in milliseconds' }),
-    thread_id: z.string().exactOptional(),
-    visibility_mode: z.enum(['default', 'hidden']).exactOptional().openapi({ readOnly: true }),
-    llm_span_count: z.int32().exactOptional().openapi({ readOnly: true }),
-    has_tool_spans: z.boolean().exactOptional().openapi({ readOnly: true }),
-    providers: z
-      .array(
-        z
-          .string()
-          .openapi({
-            description:
-              'List of unique provider names from all spans in this trace, sorted alphabetically',
-            readOnly: true,
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'List of unique provider names from all spans in this trace, sorted alphabetically',
-        readOnly: true,
-      }),
-    experiment: ExperimentItemReferenceSchema.exactOptional(),
-    annotation_queues: z
-      .array(AnnotationQueueReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotation queues this trace is currently an item of',
-        readOnly: true,
-      }),
-    source: z
-      .enum(['sdk', 'experiment', 'playground', 'optimization', 'evaluator'])
-      .exactOptional(),
-    environment: z.string().min(0).max(150).exactOptional(),
-  })
-  .openapi({ required: ['start_time'] })
-  .openapi('Trace')
-
-const SpanSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    project_name: z
-      .string()
-      .regex(/^\s*(\S.*\S|\S)\s*$/s)
-      .exactOptional()
-      .openapi({ description: 'If null, the default project is used' }),
-    project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    trace_id: z.uuid().exactOptional(),
-    parent_span_id: z.uuid().exactOptional(),
-    name: z.string().exactOptional(),
-    type: z.enum(['general', 'tool', 'llm', 'guardrail']).exactOptional(),
-    start_time: z.iso.datetime({ offset: true }),
-    end_time: z.iso.datetime({ offset: true }).exactOptional(),
-    input: JsonListStringSchema.exactOptional(),
-    output: JsonListStringSchema.exactOptional(),
-    metadata: JsonListStringSchema.exactOptional(),
-    model: z.string().exactOptional(),
-    provider: z.string().exactOptional(),
-    tags: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    usage: z.record(z.string(), z.int32()).exactOptional(),
-    error_info: ErrorInfoSchema.exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    last_updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-    created_by: z.string().exactOptional().openapi({ readOnly: true }),
-    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    feedback_scores: z.array(FeedbackScoreSchema).exactOptional().openapi({ readOnly: true }),
-    comments: z.array(CommentSchema).exactOptional().openapi({ readOnly: true }),
-    total_estimated_cost: z.number().nonnegative().exactOptional(),
-    total_estimated_cost_version: z.string().exactOptional(),
-    duration: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Duration in milliseconds as a decimal number to support sub-millisecond precision',
-        readOnly: true,
-      }),
-    ttft: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Time to first token in milliseconds' }),
-    source: z
-      .enum(['sdk', 'experiment', 'playground', 'optimization', 'evaluator'])
-      .exactOptional(),
-    environment: z.string().min(0).max(150).exactOptional(),
-  })
-  .openapi({ required: ['start_time'] })
-  .openapi('Span')
-
-const ExperimentItemBulkRecordSchema = z
-  .object({
-    dataset_item_id: z.uuid(),
-    evaluate_task_result: JsonListStringSchema.exactOptional(),
-    trace: TraceSchema.exactOptional(),
-    spans: z.array(SpanSchema).min(0).max(100).exactOptional(),
-    feedback_scores: z.array(FeedbackScoreSchema).min(0).max(100).exactOptional(),
-  })
-  .openapi({ required: ['dataset_item_id'] })
-  .openapi('ExperimentItemBulkRecord')
-
-const ExperimentItemBulkUploadSchema = z
+const ExperimentItemBulkUploadSchema: z.ZodType<ExperimentItemBulkUploadType> = z
   .object({
     experiment_name: z.string().min(1),
     dataset_name: z.string().min(1),
@@ -6317,6 +6862,8 @@ const ExperimentItemBulkUploadSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -6337,7 +6884,11 @@ const ErrorInfoExperimentItemBulkWriteViewSchema = z
   .openapi('ErrorInfoExperimentItemBulkWriteView')
 
 const JsonListStringExperimentItemBulkWriteViewSchema = z
-  .union([z.object({}), z.array(z.object({})), z.string()])
+  .union([
+    z.looseObject({}),
+    z.looseObject({}).and(z.array(z.looseObject({}))),
+    z.looseObject({}).and(z.string()),
+  ])
   .openapi('JsonListStringExperimentItemBulkWriteView')
 
 const TraceExperimentItemBulkWriteViewSchema = z
@@ -6346,6 +6897,8 @@ const TraceExperimentItemBulkWriteViewSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     name: z.string().exactOptional(),
@@ -6489,6 +7042,8 @@ const ExperimentItemBulkUploadExperimentItemBulkWriteViewSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -6523,7 +7078,11 @@ const CommentPublicSchema = z
   .openapi('CommentPublic')
 
 const JsonListStringPublicSchema = z
-  .union([z.object({}), z.array(z.object({})), z.string()])
+  .union([
+    z.looseObject({}),
+    z.looseObject({}).and(z.array(z.looseObject({}))),
+    z.looseObject({}).and(z.string()),
+  ])
   .openapi('JsonListStringPublic')
 
 const ExperimentScorePublicSchema = z
@@ -6555,6 +7114,8 @@ const ExperimentPublicSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -6835,6 +7396,8 @@ const ExperimentItemStreamRequestSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional(),
   })
   .openapi({ required: ['experiment_name'] })
@@ -6859,6 +7422,8 @@ const ExperimentStreamRequestPublicSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional(),
   })
   .openapi({ required: ['name'] })
@@ -6911,16 +7476,35 @@ const BooleanFeedbackDetailSchema = z
   .openapi('BooleanFeedbackDetail')
 
 const BooleanFeedbackDefinitionSchema = FeedbackSchema.and(
-  z
-    .object({
-      details: BooleanFeedbackDetailSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: BooleanFeedbackDetailSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('BooleanFeedbackDefinition')
 
@@ -6930,16 +7514,35 @@ const CategoricalFeedbackDetailSchema = z
   .openapi('CategoricalFeedbackDetail')
 
 const CategoricalFeedbackDefinitionSchema = FeedbackSchema.and(
-  z
-    .object({
-      details: CategoricalFeedbackDetailSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: CategoricalFeedbackDetailSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('CategoricalFeedbackDefinition')
 
@@ -6949,16 +7552,35 @@ const NumericalFeedbackDetailSchema = z
   .openapi('NumericalFeedbackDetail')
 
 const NumericalFeedbackDefinitionSchema = FeedbackSchema.and(
-  z
-    .object({
-      details: NumericalFeedbackDetailSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: NumericalFeedbackDetailSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('NumericalFeedbackDefinition')
 
@@ -7005,10 +7627,26 @@ const BooleanFeedbackDetailCreateSchema = z
   .openapi('BooleanFeedbackDetailCreate')
 
 const BooleanFeedbackDefinitionCreateSchema = FeedbackCreateSchema.and(
-  z
-    .object({ details: BooleanFeedbackDetailCreateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: BooleanFeedbackDetailCreateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('BooleanFeedbackDefinitionCreate')
 
@@ -7018,10 +7656,26 @@ const CategoricalFeedbackDetailCreateSchema = z
   .openapi('CategoricalFeedbackDetailCreate')
 
 const CategoricalFeedbackDefinitionCreateSchema = FeedbackCreateSchema.and(
-  z
-    .object({ details: CategoricalFeedbackDetailCreateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: CategoricalFeedbackDetailCreateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('CategoricalFeedbackDefinitionCreate')
 
@@ -7031,10 +7685,26 @@ const NumericalFeedbackDetailCreateSchema = z
   .openapi('NumericalFeedbackDetailCreate')
 
 const NumericalFeedbackDefinitionCreateSchema = FeedbackCreateSchema.and(
-  z
-    .object({ details: NumericalFeedbackDetailCreateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: NumericalFeedbackDetailCreateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('NumericalFeedbackDefinitionCreate')
 
@@ -7085,16 +7755,35 @@ const BooleanFeedbackDetailPublicSchema = z
   .openapi('BooleanFeedbackDetailPublic')
 
 const BooleanFeedbackDefinitionPublicSchema = FeedbackPublicSchema.and(
-  z
-    .object({
-      details: BooleanFeedbackDetailPublicSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: BooleanFeedbackDetailPublicSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('BooleanFeedbackDefinitionPublic')
 
@@ -7104,16 +7793,35 @@ const CategoricalFeedbackDetailPublicSchema = z
   .openapi('CategoricalFeedbackDetailPublic')
 
 const CategoricalFeedbackDefinitionPublicSchema = FeedbackPublicSchema.and(
-  z
-    .object({
-      details: CategoricalFeedbackDetailPublicSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: CategoricalFeedbackDetailPublicSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('CategoricalFeedbackDefinitionPublic')
 
@@ -7176,16 +7884,35 @@ const NumericalFeedbackDetailPublicSchema = z
   .openapi('NumericalFeedbackDetailPublic')
 
 const NumericalFeedbackDefinitionPublicSchema = FeedbackPublicSchema.and(
-  z
-    .object({
-      details: NumericalFeedbackDetailPublicSchema.exactOptional(),
-      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      created_by: z.string().exactOptional().openapi({ readOnly: true }),
-      last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        details: NumericalFeedbackDetailPublicSchema.exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        created_by: z.string().exactOptional().openapi({ readOnly: true }),
+        last_updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true }),
+        last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('NumericalFeedbackDefinitionPublic')
 
@@ -7232,10 +7959,26 @@ const BooleanFeedbackDetailUpdateSchema = z
   .openapi('BooleanFeedbackDetailUpdate')
 
 const BooleanFeedbackDefinitionUpdateSchema = FeedbackUpdateSchema.and(
-  z
-    .object({ details: BooleanFeedbackDetailUpdateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: BooleanFeedbackDetailUpdateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('BooleanFeedbackDefinitionUpdate')
 
@@ -7245,10 +7988,26 @@ const CategoricalFeedbackDetailUpdateSchema = z
   .openapi('CategoricalFeedbackDetailUpdate')
 
 const CategoricalFeedbackDefinitionUpdateSchema = FeedbackUpdateSchema.and(
-  z
-    .object({ details: CategoricalFeedbackDetailUpdateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: CategoricalFeedbackDetailUpdateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('CategoricalFeedbackDefinitionUpdate')
 
@@ -7258,12 +8017,184 @@ const NumericalFeedbackDetailUpdateSchema = z
   .openapi('NumericalFeedbackDetailUpdate')
 
 const NumericalFeedbackDefinitionUpdateSchema = FeedbackUpdateSchema.and(
-  z
-    .object({ details: NumericalFeedbackDetailUpdateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['details', 'name', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'details')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ details: NumericalFeedbackDetailUpdateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['details', 'name', 'type'] })
   .openapi('NumericalFeedbackDefinitionUpdate')
+
+const GuardrailPolicyRuleSchema = z
+  .object({
+    type: z.enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER']),
+    config: JsonNodeSchema,
+  })
+  .openapi({ required: ['config', 'type'], description: 'At most one rule per type' })
+  .openapi('GuardrailPolicyRule')
+
+const GuardrailPolicySchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy',
+      }),
+    name: z
+      .string()
+      .min(0)
+      .max(255)
+      .openapi({
+        description:
+          'The SDK names policies by name, so it is unique in the workspace, ignoring case',
+      }),
+    description: z.string().min(0).max(1000).exactOptional(),
+    execution_scope: z
+      .enum(['on_request', 'global'])
+      .default('on_request')
+      .exactOptional()
+      .openapi({
+        description:
+          'on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request',
+      }),
+    rules: z
+      .array(GuardrailPolicyRuleSchema)
+      .min(1)
+      .openapi({ description: 'At most one rule per type' }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name', 'rules'] })
+  .openapi('GuardrailPolicy')
+
+const GuardrailPolicyRuleWriteSchema = z
+  .object({
+    type: z.enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER']),
+    config: JsonNodeSchema,
+  })
+  .openapi({ required: ['config', 'type'], description: 'At most one rule per type' })
+  .openapi('GuardrailPolicyRuleWrite')
+
+const GuardrailPolicyWriteSchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy',
+      }),
+    name: z
+      .string()
+      .min(0)
+      .max(255)
+      .openapi({
+        description:
+          'The SDK names policies by name, so it is unique in the workspace, ignoring case',
+      }),
+    description: z.string().min(0).max(1000).exactOptional(),
+    execution_scope: z
+      .enum(['on_request', 'global'])
+      .default('on_request')
+      .exactOptional()
+      .openapi({
+        description:
+          'on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request',
+      }),
+    rules: z
+      .array(GuardrailPolicyRuleWriteSchema)
+      .min(1)
+      .openapi({ description: 'At most one rule per type' }),
+  })
+  .openapi({ required: ['name', 'rules'] })
+  .openapi('GuardrailPolicyWrite')
+
+const GuardrailPolicyRulePublicSchema = z
+  .object({
+    type: z.enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER']),
+    config: JsonNodeSchema,
+  })
+  .openapi({ required: ['config', 'type'], description: 'At most one rule per type' })
+  .openapi('GuardrailPolicyRulePublic')
+
+const GuardrailPolicyPublicSchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional on create, generated when missing, as for prompts and datasets. Ignored on update, where the path names the policy',
+      }),
+    name: z
+      .string()
+      .min(0)
+      .max(255)
+      .openapi({
+        description:
+          'The SDK names policies by name, so it is unique in the workspace, ignoring case',
+      }),
+    description: z.string().min(0).max(1000).exactOptional(),
+    execution_scope: z
+      .enum(['on_request', 'global'])
+      .default('on_request')
+      .exactOptional()
+      .openapi({
+        description:
+          'on_request applies the policy when the SDK names it, global applies it to every guardrail built from stored policies in the workspace. Missing or null means on_request',
+      }),
+    rules: z
+      .array(GuardrailPolicyRulePublicSchema)
+      .min(1)
+      .openapi({ description: 'At most one rule per type' }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    created_by: z.string().exactOptional().openapi({ readOnly: true }),
+    last_updated_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    last_updated_by: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['name', 'rules'] })
+  .openapi('GuardrailPolicyPublic')
+
+const GuardrailPolicyPagePublicSchema = z
+  .object({
+    content: z.array(GuardrailPolicyPublicSchema).exactOptional(),
+    page: z.int32().exactOptional(),
+    size: z.int32().exactOptional(),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    sortable_by: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GuardrailPolicyPagePublic')
 
 const GuardrailSchema = z
   .object({
@@ -7273,6 +8204,8 @@ const GuardrailSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional(),
@@ -7296,6 +8229,8 @@ const GuardrailWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional(),
@@ -7311,6 +8246,61 @@ const GuardrailBatchWriteSchema = z
   .object({ guardrails: z.array(GuardrailWriteSchema).min(1).max(1000) })
   .openapi({ required: ['guardrails'] })
   .openapi('GuardrailBatchWrite')
+
+const ValidationResultSchema = z
+  .object({
+    validation_passed: z.boolean().exactOptional(),
+    type: z.enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER']),
+    validation_config: JsonNodeSchema,
+    validation_details: JsonNodeSchema,
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Set when the check could not run; the entry then passes' }),
+  })
+  .openapi({ required: ['type', 'validation_config', 'validation_details'] })
+  .openapi('ValidationResult')
+
+const GuardrailsValidationResponseSchema = z
+  .object({
+    validation_passed: z.boolean().exactOptional(),
+    validations: z.array(ValidationResultSchema),
+  })
+  .openapi({ required: ['validations'] })
+  .openapi('GuardrailsValidationResponse')
+
+const ValidationDescriptorSchema = z
+  .object({
+    type: z.enum(['TOPIC', 'PII', 'LLM_JUDGE', 'PROMPT_INJECTION', 'CUSTOM_CLASSIFIER']),
+    config: JsonNodeSchema,
+  })
+  .openapi({
+    required: ['config', 'type'],
+    description:
+      'The checks to run. Together they must fit in 64 questions to the decision service, asked in up to two calls of 32: each PII class and each topic list is one question, prompt injection is one',
+  })
+  .openapi('ValidationDescriptor')
+
+const GuardrailsValidationRequestSchema = z
+  .object({
+    text: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          "The text to check, at most 16384 characters as the decision service counts them: on the text's JSON encoding, so the two quotes count, a quote, backslash or line break counts as 2, and any other control or non-ASCII character as 6 (an emoji as 12). In practice about 16,380 characters of English text fit, about 2,730 of text in Cyrillic, Greek, Hebrew, Arabic, Chinese or Japanese, and about 1,365 emoji. A longer text is rejected rather than cut.",
+      }),
+    validations: z
+      .array(ValidationDescriptorSchema)
+      .min(1)
+      .max(32)
+      .openapi({
+        description:
+          'The checks to run. Together they must fit in 64 questions to the decision service, asked in up to two calls of 32: each PII class and each topic list is one question, prompt injection is one',
+      }),
+  })
+  .openapi({ required: ['text', 'validations'] })
+  .openapi('GuardrailsValidationRequest')
 
 const ModelParamsSchema: z.ZodType<ModelParamsType> = z
   .lazy(() =>
@@ -7328,6 +8318,7 @@ const ModelParamsSchema: z.ZodType<ModelParamsType> = z
         tools: ToolsParamSchema.exactOptional(),
         samplingExclusive: z.boolean().exactOptional(),
         thinksByDefault: z.boolean().exactOptional(),
+        onlyRoute: z.string().exactOptional(),
         routes: z.record(z.string(), ModelParamsSchema).exactOptional(),
       })
       .openapi({ required: [] }),
@@ -7367,7 +8358,7 @@ const ProviderAuthConfigPublicSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)',
+          'How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)',
       }),
     credentials: z
       .array(CredentialPublicSchema)
@@ -7384,7 +8375,8 @@ const ProviderAuthConfigPublicSchema = z
       .max(250)
       .exactOptional()
       .openapi({
-        description: 'Field holding the token in the reply; dot-path for nested replies',
+        description:
+          'Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds',
         example: 'access_token',
       }),
     expires_field: z
@@ -7526,7 +8518,7 @@ const ProviderAuthConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)',
+          'How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)',
       }),
     credentials: z
       .array(CredentialSchema)
@@ -7543,7 +8535,8 @@ const ProviderAuthConfigSchema = z
       .max(250)
       .exactOptional()
       .openapi({
-        description: 'Field holding the token in the reply; dot-path for nested replies',
+        description:
+          'Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds',
         example: 'access_token',
       }),
     expires_field: z
@@ -7664,7 +8657,7 @@ const ProviderAuthConfigWriteSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How credentials are sent: form body (default), JSON body, or basic auth (id/secret in an HTTP Basic header, remaining fields in the form body)',
+          'How credentials are sent: form body (default), JSON body, or basic auth (client_id/client_secret, or username/password, in an HTTP Basic header; remaining fields in the form body)',
       }),
     credentials: z
       .array(CredentialWriteSchema)
@@ -7681,7 +8674,8 @@ const ProviderAuthConfigWriteSchema = z
       .max(250)
       .exactOptional()
       .openapi({
-        description: 'Field holding the token in the reply; dot-path for nested replies',
+        description:
+          'Field holding the token in the reply; dot-path for nested replies. A reply that is the bare token itself (plain text or a JSON string) is used as-is and needs fallback_ttl_seconds',
         example: 'access_token',
       }),
     expires_field: z
@@ -8249,6 +9243,8 @@ const OptimizationSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -8359,6 +9355,8 @@ const OptimizationWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -8664,7 +9662,7 @@ const ErrorCountWithDeviationSchema = z
 const ProjectSchema = z
   .object({
     id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    name: z.string().min(1),
+    name: z.string().min(0).max(150),
     visibility: z.enum(['private', 'public']).exactOptional(),
     description: z.string().min(0).max(255).exactOptional(),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -8729,7 +9727,7 @@ const ProjectSchema = z
 
 const ProjectWriteSchema = z
   .object({
-    name: z.string().min(1),
+    name: z.string().min(0).max(150),
     visibility: z.enum(['private', 'public']).exactOptional(),
     description: z.string().min(0).max(255).exactOptional(),
   })
@@ -8739,7 +9737,7 @@ const ProjectWriteSchema = z
 const ProjectPublicSchema = z
   .object({
     id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    name: z.string().min(1),
+    name: z.string().min(0).max(150),
     visibility: z.enum(['private', 'public']).exactOptional(),
     description: z.string().min(0).max(255).exactOptional(),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -8888,7 +9886,11 @@ const BreakdownConfigPublicSchema = z
         'type',
         'guardrail_name',
       ])
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'Field to group by. Tags are overlapping groups: each tag receives the full metric value. For cost, adding tag groups can exceed actual spend; use provider or model for additive span cost totals.',
+      }),
     metadata_key: z.string().exactOptional(),
     sub_metric: z.string().exactOptional(),
   })
@@ -9045,7 +10047,7 @@ const PercentageValuesDetailedSchema = z
 const ProjectDetailedSchema = z
   .object({
     id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    name: z.string().min(1),
+    name: z.string().min(0).max(150),
     visibility: z.enum(['private', 'public']).exactOptional(),
     description: z.string().min(0).max(255).exactOptional(),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -9123,6 +10125,8 @@ const ProjectUpdateSchema = z
     name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional(),
     description: z.string().min(0).max(255).exactOptional(),
     visibility: z.enum(['private', 'public']).exactOptional(),
@@ -9229,6 +10233,8 @@ const PromptSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -9300,6 +10306,8 @@ const PromptWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -9340,7 +10348,7 @@ const PromptWriteSchema = z
   .openapi({ required: ['name'] })
   .openapi('PromptWrite')
 
-const JsonNodeDetailSchema = z.object({}).openapi('JsonNodeDetail')
+const JsonNodeDetailSchema = z.looseObject({}).openapi('JsonNodeDetail')
 
 const PromptVersionDetailSchema = z
   .object({
@@ -9454,6 +10462,8 @@ const CreatePromptVersionDetailSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -9647,6 +10657,8 @@ const PromptVersionRetrieveDetailSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({
         description:
@@ -10007,6 +11019,7 @@ const ServiceTogglesConfigSchema = z
     spanLlmAsJudgeEnabled: z.boolean(),
     spanUserDefinedMetricPythonEnabled: z.boolean(),
     guardrailsEnabled: z.boolean(),
+    guardrailsValidationsEnabled: z.boolean(),
     opikAIEnabled: z.boolean(),
     alertsEnabled: z.boolean(),
     welcomeWizardEnabled: z.boolean(),
@@ -10027,7 +11040,6 @@ const ServiceTogglesConfigSchema = z
     agentInsightsEnabled: z.boolean(),
     agentInsightsGuidanceEnabled: z.boolean(),
     projectHomepageEnabled: z.boolean(),
-    onlineScoringTracingEnabled: z.boolean(),
     annotationQueueAutomationEnabled: z.boolean(),
     eventBridgeAlertsEnabled: z.boolean(),
     defaultPageSize: z.int32().min(5).max(100).exactOptional(),
@@ -10050,9 +11062,9 @@ const ServiceTogglesConfigSchema = z
       'exportEnabled',
       'geminiProviderEnabled',
       'guardrailsEnabled',
+      'guardrailsValidationsEnabled',
       'ollamaProviderEnabled',
       'ollieEnabled',
-      'onlineScoringTracingEnabled',
       'openaiProviderEnabled',
       'openrouterProviderEnabled',
       'opikAIEnabled',
@@ -10072,6 +11084,8 @@ const SpanUpdateSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null and project_id not specified, Default Project is assumed' }),
     project_id: z
@@ -10177,6 +11191,8 @@ const SpanWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     trace_id: z.uuid().exactOptional(),
@@ -10282,6 +11298,8 @@ const SpanPublicSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional().openapi({ readOnly: true }),
@@ -10364,6 +11382,8 @@ const FeedbackScoreBatchItemSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional(),
@@ -10476,6 +11496,8 @@ const TraceUpdateSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null and project_id not specified, Default Project is assumed' }),
     project_id: z
@@ -10672,6 +11694,8 @@ const TraceWriteSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     name: z.string().exactOptional(),
@@ -10743,6 +11767,8 @@ const DeleteTraceThreadsSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, project_id must be provided' }),
     project_id: z
@@ -11056,6 +12082,8 @@ const FeedbackScoreBatchItemThreadSchema = z
     project_name: z
       .string()
       .regex(/^\s*(\S.*\S|\S)\s*$/s)
+      .min(0)
+      .max(150)
       .exactOptional()
       .openapi({ description: 'If null, the default project is used' }),
     project_id: z.uuid().exactOptional(),
@@ -11354,7 +12382,11 @@ const BreakdownConfigSchema = z
         'type',
         'guardrail_name',
       ])
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'Field to group by. Tags are overlapping groups: each tag receives the full metric value. For cost, adding tag groups can exceed actual spend; use provider or model for additive span cost totals.',
+      }),
     metadata_key: z.string().exactOptional(),
     sub_metric: z.string().exactOptional(),
   })
@@ -11804,14 +12836,9 @@ export const postV1InternalDashboardSavedQueriesRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: DashboardSavedQuerySchema } },
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/internal/dashboard-saved-queries/{id}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/internal/dashboard-saved-queries/{id}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/internal/dashboard-saved-queries/{id}' }),
       }),
     },
     422: {
@@ -11992,14 +13019,9 @@ export const postV1PrivateAgentConfigsBlueprintsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
       }),
     },
     400: {
@@ -12030,14 +13052,9 @@ export const patchV1PrivateAgentConfigsBlueprintsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
       }),
     },
     401: {
@@ -12087,14 +13104,9 @@ export const postV1PrivateAgentConfigsBlueprintsProjectsProjectIdMasksMaskIdRout
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
       }),
     },
     401: {
@@ -12546,14 +13558,9 @@ export const postV1PrivateAgentConfigsBlueprintsRemoveKeysRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/agent-configs/blueprints/{blueprint_id}' }),
       }),
     },
     204: { description: 'No changes needed (no config or keys already removed)' },
@@ -12622,14 +13629,10 @@ export const postV1PrivateAgentInsightsJobsProjectIdRoute = createRoute({
       description: 'Job created',
       content: { 'application/json': { schema: AgentInsightsJobSchema } },
       headers: z.object({
-        Location: {
-          description: 'URI of the created job',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'URI of the created job', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'URI of the created job', param: { required: false } }),
       }),
     },
     404: { description: 'Project not found' },
@@ -13101,12 +14104,7 @@ export const postV1PrivateAlertsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/alerts/{alertId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/alerts/{alertId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/alerts/{alertId}' }),
       }),
     },
     400: {
@@ -13393,12 +14391,7 @@ export const postV1PrivateAnnotationQueuesRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/traces/{annotationId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/traces/{annotationId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/traces/{annotationId}' }),
       }),
     },
     400: {
@@ -13946,12 +14939,16 @@ export const putV1PrivateAttachmentUploadRoute = createRoute({
       project_name: z
         .string()
         .regex(/^\s*(\S.*\S|\S)\s*$/s)
+        .min(0)
+        .max(150)
         .exactOptional()
         .openapi({
           param: {
             name: 'project_name',
             in: 'query',
             schema: {
+              maxLength: 150,
+              minLength: 0,
               pattern: '(?s)^\\s*(\\S.*\\S|\\S)\\s*$',
               type: 'string',
               description: 'If null, the default project is used',
@@ -13987,7 +14984,7 @@ export const putV1PrivateAttachmentUploadRoute = createRoute({
           },
         }),
     }),
-    body: { content: { '*/*': { schema: z.object({}) } } },
+    body: { content: { '*/*': { schema: z.looseObject({}) } } },
   },
   responses: {
     204: { description: 'No content' },
@@ -14176,14 +15173,9 @@ export const postV1PrivateAutomationsEvaluatorsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/automations/evaluators/{evaluatorId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/automations/evaluators/{evaluatorId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/automations/evaluators/{evaluatorId}' }),
       }),
     },
   },
@@ -14464,14 +15456,9 @@ export const postV1PrivateDashboardsRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: DashboardPublicSchema } },
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/dashboards/{dashboardId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/dashboards/{dashboardId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/dashboards/{dashboardId}' }),
       }),
     },
   },
@@ -14560,7 +15547,6 @@ export const patchV1PrivateDashboardsDashboardIdRoute = createRoute({
       content: { 'application/json': { schema: DashboardPublicSchema } },
     },
     404: { description: 'Dashboard not found' },
-    409: { description: 'Conflict - dashboard with this name already exists' },
   },
 })
 
@@ -14841,12 +15827,7 @@ export const postV1PrivateDatasetsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/api/v1/private/datasets/{id}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/api/v1/private/datasets/{id}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/api/v1/private/datasets/{id}' }),
       }),
     },
   },
@@ -14877,7 +15858,7 @@ export const postV1PrivateDatasetsItemsFromCsvRoute = createRoute({
       content: {
         'multipart/form-data': {
           schema: z
-            .object({ file: z.object({}), dataset_id: z.uuid() })
+            .object({ file: z.looseObject({}), dataset_id: z.uuid() })
             .openapi({ required: ['dataset_id', 'file'] }),
         },
       },
@@ -14905,7 +15886,11 @@ export const postV1PrivateDatasetsItemsFromJsonRoute = createRoute({
       content: {
         'multipart/form-data': {
           schema: z
-            .object({ file: z.object({}), dataset_id: z.uuid(), format: z.enum(['json', 'jsonl']) })
+            .object({
+              file: z.looseObject({}),
+              dataset_id: z.uuid(),
+              format: z.enum(['json', 'jsonl']),
+            })
             .openapi({ required: ['dataset_id', 'file', 'format'] }),
         },
       },
@@ -15206,19 +16191,52 @@ export const getV1PrivateDatasetsIdItemsExperimentsItemsRoute = createRoute({
           param: {
             name: 'size',
             in: 'query',
-            schema: { minimum: 1, type: 'integer', format: 'int32', default: 10 },
+            schema: {
+              minimum: 1,
+              type: 'integer',
+              description:
+                'Page size. At most 100 when experiment_ids is omitted, since each item then carries a result per experiment',
+              format: 'int32',
+              default: 10,
+            },
             required: false,
           },
+          description:
+            'Page size. At most 100 when experiment_ids is omitted, since each item then carries a result per experiment',
         }),
       experiment_ids: z
         .string()
+        .exactOptional()
         .openapi({
           param: {
             name: 'experiment_ids',
             in: 'query',
-            required: true,
-            schema: { type: 'string' },
+            schema: {
+              type: 'string',
+              description:
+                'JSON array of experiment IDs. Omit to include every regular experiment on the dataset (optimizer trial, mini-batch and mutation experiments are excluded); item filters are then evaluated against the newest version of each item that those experiments reference',
+            },
+            required: false,
           },
+          description:
+            'JSON array of experiment IDs. Omit to include every regular experiment on the dataset (optimizer trial, mini-batch and mutation experiments are excluded); item filters are then evaluated against the newest version of each item that those experiments reference',
+        }),
+      dataset_version: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'dataset_version',
+            in: 'query',
+            schema: {
+              type: 'string',
+              description:
+                'Dataset version hash or tag. Only experiments run against this version are included. Requires experiment_ids to be omitted. Returns 404 if the version does not exist',
+            },
+            required: false,
+          },
+          description:
+            'Dataset version hash or tag. Only experiments run against this version are included. Requires experiment_ids to be omitted. Returns 404 if the version does not exist',
         }),
       filters: z
         .string()
@@ -15652,7 +16670,9 @@ export const postV1PrivateDatasetsItemsStreamRoute = createRoute({
       description: 'Dataset items stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([DatasetItemSchema, ErrorMessageSchema])).max(2000),
+          schema: z
+            .array(z.union([z.string().and(DatasetItemSchema), z.string().and(ErrorMessageSchema)]))
+            .max(2000),
         },
       },
     },
@@ -16038,14 +17058,9 @@ export const postV1PrivateEnvironmentsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/environments/{environmentId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/environments/{environmentId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/environments/{environmentId}' }),
       }),
     },
     409: {
@@ -16381,12 +17396,7 @@ export const postV1PrivateExperimentsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/experiments/{id}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/experiments/{id}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/experiments/{id}' }),
       }),
     },
   },
@@ -16822,7 +17832,11 @@ export const postV1PrivateExperimentsItemsStreamRoute = createRoute({
       description: 'Experiment items stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([ExperimentItemSchema, ErrorMessageSchema])).max(2000),
+          schema: z
+            .array(
+              z.union([z.string().and(ExperimentItemSchema), z.string().and(ErrorMessageSchema)]),
+            )
+            .max(2000),
         },
       },
     },
@@ -16844,7 +17858,14 @@ export const postV1PrivateExperimentsStreamRoute = createRoute({
       description: 'Experiments stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([ExperimentPublicSchema, ErrorMessagePublicSchema])).max(2000),
+          schema: z
+            .array(
+              z.union([
+                z.string().and(ExperimentPublicSchema),
+                z.string().and(ErrorMessagePublicSchema),
+              ]),
+            )
+            .max(2000),
         },
       },
     },
@@ -16948,14 +17969,9 @@ export const postV1PrivateFeedbackDefinitionsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/feedback-definitions/{feedbackId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/feedback-definitions/{feedbackId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/feedback-definitions/{feedbackId}' }),
       }),
     },
   },
@@ -17062,6 +18078,315 @@ export const postV1PrivateFeedbackDefinitionsDeleteRoute = createRoute({
   },
 })
 
+export const getV1PrivateGuardrailsPoliciesRoute = createRoute({
+  method: 'get',
+  path: '/v1/private/guardrails/policies',
+  tags: ['Guardrail policies'],
+  summary: 'Find guardrail policies',
+  description: 'Find guardrail policies in a workspace',
+  operationId: 'findGuardrailPolicies',
+  request: {
+    query: z.object({
+      page: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1),
+        )
+        .default(1)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'page',
+            in: 'query',
+            schema: { minimum: 1, type: 'integer', format: 'int32', default: 1 },
+            required: false,
+          },
+        }),
+      size: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1),
+        )
+        .default(10)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'size',
+            in: 'query',
+            schema: { minimum: 1, type: 'integer', format: 'int32', default: 10 },
+            required: false,
+          },
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'query',
+            schema: {
+              type: 'string',
+              description: 'Filter policies by name (partial match, case insensitive)',
+            },
+            required: false,
+          },
+          description: 'Filter policies by name (partial match, case insensitive)',
+        }),
+      names: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'names',
+            in: 'query',
+            schema: {
+              type: 'string',
+              description:
+                'Filter policies by exact names, ignoring case, as a JSON array of names',
+            },
+            required: false,
+          },
+          description: 'Filter policies by exact names, ignoring case, as a JSON array of names',
+        }),
+      execution_scope: z
+        .enum(['on_request', 'global'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'execution_scope',
+            in: 'query',
+            schema: {
+              type: 'string',
+              description: 'Filter policies by execution scope',
+              enum: ['on_request', 'global'],
+            },
+            required: false,
+          },
+          description: 'Filter policies by execution scope',
+        }),
+      sorting: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: { name: 'sorting', in: 'query', schema: { type: 'string' }, required: false },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Guardrail policy page',
+      content: { 'application/json': { schema: GuardrailPolicyPagePublicSchema } },
+    },
+    400: {
+      description: 'Bad Request: names is not a JSON array of strings',
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+    403: {
+      description:
+        "Guardrails are not enabled for this deployment, or not enabled for the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+  },
+})
+
+export const postV1PrivateGuardrailsPoliciesRoute = createRoute({
+  method: 'post',
+  path: '/v1/private/guardrails/policies',
+  tags: ['Guardrail policies'],
+  summary: 'Create guardrail policy',
+  description: 'Create a guardrail policy with its rules in a workspace',
+  operationId: 'createGuardrailPolicy',
+  request: { body: { content: { 'application/json': { schema: GuardrailPolicyWriteSchema } } } },
+  responses: {
+    201: {
+      description: 'Created',
+      headers: z.object({
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/guardrails/policies/{id}' }),
+      }),
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    403: {
+      description:
+        "The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    409: {
+      description: 'A policy with this name already exists',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    422: {
+      description: 'Unprocessable Content',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    429: {
+      description: 'Too many requests',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+  },
+})
+
+export const getV1PrivateGuardrailsPoliciesIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/private/guardrails/policies/{id}',
+  tags: ['Guardrail policies'],
+  summary: 'Get guardrail policy by id',
+  description: 'Get guardrail policy by id',
+  operationId: 'getGuardrailPolicyById',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Guardrail policy',
+      content: { 'application/json': { schema: GuardrailPolicyPublicSchema } },
+    },
+    403: {
+      description:
+        "Guardrails are not enabled for this deployment, or not enabled for the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+    404: {
+      description: 'Guardrail policy not found',
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessagePublicSchema } },
+    },
+  },
+})
+
+export const putV1PrivateGuardrailsPoliciesIdRoute = createRoute({
+  method: 'put',
+  path: '/v1/private/guardrails/policies/{id}',
+  tags: ['Guardrail policies'],
+  summary: 'Update guardrail policy',
+  description:
+    'Replace a guardrail policy, rules included: a rule left out of the request is removed',
+  operationId: 'updateGuardrailPolicy',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: GuardrailPolicyWriteSchema } } },
+  },
+  responses: {
+    204: { description: 'No Content' },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    403: {
+      description:
+        "The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    404: {
+      description: 'Guardrail policy not found',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    409: {
+      description: 'A policy with this name already exists',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    422: {
+      description: 'Unprocessable Content',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    429: {
+      description: 'Too many requests',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+  },
+})
+
+export const deleteV1PrivateGuardrailsPoliciesIdRoute = createRoute({
+  method: 'delete',
+  path: '/v1/private/guardrails/policies/{id}',
+  tags: ['Guardrail policies'],
+  summary: 'Delete guardrail policy',
+  description: 'Delete a guardrail policy and its rules',
+  operationId: 'deleteGuardrailPolicy',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    403: {
+      description:
+        "The caller lacks the workspace settings permission, or guardrails are not enabled for this deployment or the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+  },
+})
+
 export const postV1PrivateGuardrailsRoute = createRoute({
   method: 'post',
   path: '/v1/private/guardrails',
@@ -17071,6 +18396,53 @@ export const postV1PrivateGuardrailsRoute = createRoute({
   operationId: 'createGuardrails',
   request: { body: { content: { 'application/json': { schema: GuardrailBatchWriteSchema } } } },
   responses: { 204: { description: 'No Content' } },
+})
+
+export const postV1PrivateGuardrailsValidationsRoute = createRoute({
+  method: 'post',
+  path: '/v1/private/guardrails/validations',
+  tags: ['Guardrails'],
+  summary: 'Run guardrail checks on a text',
+  description:
+    'Runs the requested checks on the text through the Opik inference decision service and returns a verdict per check. Writes nothing: the SDK reports the results to the guardrails batch endpoint, as before.',
+  operationId: 'validateGuardrails',
+  request: {
+    body: { content: { 'application/json': { schema: GuardrailsValidationRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'A verdict per check',
+      content: { 'application/json': { schema: GuardrailsValidationResponseSchema } },
+    },
+    400: {
+      description:
+        'Bad Request: invalid settings for a check, or checks that need more than 64 questions (each PII class and each topic list is one question)',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    401: {
+      description: 'Missing or unknown credentials',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    403: {
+      description:
+        "Guardrail checks are not enabled for this deployment, or not enabled for the workspace's organization",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    422: {
+      description:
+        "Unprocessable Content: blank text, text over the decision service's limit, or a validations list outside 1 to 32 entries",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    429: {
+      description: 'Too many requests',
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+    503: {
+      description:
+        "Could not verify with the platform that guardrails are enabled for the workspace's organization; retry later",
+      content: { 'application/json': { schema: ErrorMessageSchema } },
+    },
+  },
 })
 
 export const getV1PrivateInsightsViewsRoute = createRoute({
@@ -17183,14 +18555,9 @@ export const postV1PrivateInsightsViewsRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: DashboardPublicSchema } },
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/insights-views/{insightsViewId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/insights-views/{insightsViewId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/insights-views/{insightsViewId}' }),
       }),
     },
   },
@@ -17279,7 +18646,6 @@ export const patchV1PrivateInsightsViewsInsightsViewIdRoute = createRoute({
       content: { 'application/json': { schema: DashboardPublicSchema } },
     },
     404: { description: 'Insights view not found' },
-    409: { description: 'Conflict - insights view with this name already exists' },
   },
 })
 
@@ -17412,14 +18778,9 @@ export const postV1PrivateLlmProviderKeyRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/proxy/api_key/{apiKeyId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/proxy/api_key/{apiKeyId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/proxy/api_key/{apiKeyId}' }),
       }),
     },
     401: {
@@ -17687,7 +19048,12 @@ export const postV1PrivateLocalRunnersRunnerIdBridgeCommandsRoute = createRoute(
     201: {
       description: 'Command submitted',
       content: { 'application/json': { schema: BridgeCommandSubmitResponseSchema } },
-      headers: z.object({ Location: { description: 'URI of the command', style: 'simple' } }),
+      headers: z.object({
+        Location: z
+          .any()
+          .exactOptional()
+          .openapi({ description: 'URI of the command', param: { required: false } }),
+      }),
     },
     404: {
       description: 'Runner not found or not connected',
@@ -17717,7 +19083,12 @@ export const postV1PrivateLocalRunnersJobsRoute = createRoute({
   responses: {
     201: {
       description: 'Job created',
-      headers: z.object({ Location: { description: 'URI of the job', style: 'simple' } }),
+      headers: z.object({
+        Location: z
+          .any()
+          .exactOptional()
+          .openapi({ description: 'URI of the job', param: { required: false } }),
+      }),
     },
     404: {
       description: 'Not found',
@@ -18189,7 +19560,7 @@ export const patchV1PrivateLocalRunnersRunnerIdChecklistRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: {
     204: { description: 'No content' },
@@ -18222,7 +19593,7 @@ export const putV1PrivateLocalRunnersRunnerIdAgentsRoute = createRoute({
     }),
     body: {
       description: 'Map of agent name to agent definition',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   responses: {
@@ -18510,7 +19881,7 @@ export const putV1PrivateOllieStateRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/gzip': { schema: z.object({}) } } },
+    body: { content: { 'application/gzip': { schema: z.looseObject({}) } } },
   },
   responses: {
     204: { description: 'No content' },
@@ -18700,12 +20071,7 @@ export const putV1PrivateOptimizationsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/optimizations/{id}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/optimizations/{id}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/optimizations/{id}' }),
       }),
     },
   },
@@ -18723,12 +20089,7 @@ export const postV1PrivateOptimizationsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/optimizations/{id}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/optimizations/{id}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/optimizations/{id}' }),
       }),
     },
   },
@@ -18861,7 +20222,12 @@ export const postV1PrivatePairingSessionsSessionIdActivateRoute = createRoute({
   responses: {
     201: {
       description: 'Session activated',
-      headers: z.object({ Location: { description: 'URI of the runner', style: 'simple' } }),
+      headers: z.object({
+        Location: z
+          .any()
+          .exactOptional()
+          .openapi({ description: 'URI of the runner', param: { required: false } }),
+      }),
     },
     403: {
       description: 'Invalid HMAC',
@@ -19710,12 +21076,7 @@ export const postV1PrivateProjectsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/projects/{projectId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/projects/{projectId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/projects/{projectId}' }),
       }),
     },
     400: {
@@ -20216,12 +21577,7 @@ export const postV1PrivatePromptsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/prompts/{promptId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/prompts/{promptId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/prompts/{promptId}' }),
       }),
     },
     400: {
@@ -20735,19 +22091,14 @@ export const postV1PrivatePromptsVersionsRetrieveRoute = createRoute({
       description: 'OK',
       content: { 'application/json': { schema: PromptVersionDetailSchema } },
       headers: z.object({
-        'X-Opik-Deprecation': {
-          description:
-            'Present only when the prompt was resolved through the deprecated workspace-wide fallback, i.e. it has no project. Absent for project-scoped prompts.',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Present only when the prompt was resolved through the deprecated workspace-wide fallback, i.e. it has no project. Absent for project-scoped prompts.',
-              param: { required: false },
-            }),
-        },
+        'X-Opik-Deprecation': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Present only when the prompt was resolved through the deprecated workspace-wide fallback, i.e. it has no project. Absent for project-scoped prompts.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -21000,13 +22351,10 @@ export const postV1PrivateReportFailuresRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -21309,14 +22657,9 @@ export const postV1PrivateRetentionRulesRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: RetentionRulePublicSchema } },
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/retention/rules/{ruleId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/retention/rules/{ruleId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/retention/rules/{ruleId}' }),
       }),
     },
   },
@@ -21421,14 +22764,9 @@ export const postV1PrivateSpansIdCommentsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/spans/{spanId}/comments/{commentId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/spans/{spanId}/comments/{commentId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/spans/{spanId}/comments/{commentId}' }),
       }),
     },
   },
@@ -21697,12 +23035,7 @@ export const postV1PrivateSpansRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/spans/{spanId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/spans/{spanId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/spans/{spanId}' }),
       }),
     },
     409: {
@@ -22064,7 +23397,11 @@ export const postV1PrivateSpansSearchRoute = createRoute({
       description: 'Spans stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([SpanPublicSchema, ErrorMessagePublicSchema])).max(2000),
+          schema: z
+            .array(
+              z.union([z.string().and(SpanPublicSchema), z.string().and(ErrorMessagePublicSchema)]),
+            )
+            .max(2000),
         },
       },
     },
@@ -22180,16 +23517,11 @@ export const postV1PrivateTracesThreadsIdCommentsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/traces/threads/{threadId}/comments/{commentId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({
-              example: '${basePath}/v1/private/traces/threads/{threadId}/comments/{commentId}',
-            }),
-        },
+        Location: z
+          .string()
+          .openapi({
+            example: '${basePath}/v1/private/traces/threads/{threadId}/comments/{commentId}',
+          }),
       }),
     },
   },
@@ -22221,14 +23553,9 @@ export const postV1PrivateTracesIdCommentsRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/traces/{traceId}/comments/{commentId}',
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({ example: '${basePath}/v1/private/traces/{traceId}/comments/{commentId}' }),
-        },
+        Location: z
+          .string()
+          .openapi({ example: '${basePath}/v1/private/traces/{traceId}/comments/{commentId}' }),
       }),
     },
   },
@@ -22530,12 +23857,7 @@ export const postV1PrivateTracesRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          required: true,
-          example: '${basePath}/v1/private/traces/{traceId}',
-          style: 'simple',
-          schema: z.string().openapi({ example: '${basePath}/v1/private/traces/{traceId}' }),
-        },
+        Location: z.string().openapi({ example: '${basePath}/v1/private/traces/{traceId}' }),
       }),
     },
   },
@@ -23342,7 +24664,9 @@ export const postV1PrivateTracesThreadsSearchRoute = createRoute({
       description: 'Trace threads stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([TraceThreadSchema, ErrorMessageSchema])).max(2000),
+          schema: z
+            .array(z.union([z.string().and(TraceThreadSchema), z.string().and(ErrorMessageSchema)]))
+            .max(2000),
         },
       },
     },
@@ -23368,7 +24692,14 @@ export const postV1PrivateTracesSearchRoute = createRoute({
       description: 'Traces stream or error during process',
       content: {
         'application/octet-stream': {
-          schema: z.array(z.union([TracePublicSchema, ErrorMessagePublicSchema])).max(2000),
+          schema: z
+            .array(
+              z.union([
+                z.string().and(TracePublicSchema),
+                z.string().and(ErrorMessagePublicSchema),
+              ]),
+            )
+            .max(2000),
         },
       },
     },

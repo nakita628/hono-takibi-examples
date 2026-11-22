@@ -21,14 +21,10 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cpq.price_books.read||
+|cpq.price_books.write||
 |crm.objects.products.read||
 |e-commerce||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="commerce-price-books-advanced">Advanced</h1>
 
@@ -40,7 +36,8 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/commerce/price-books/2026-09/price-books \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/price-books/2026-09/price-books`
@@ -76,8 +73,9 @@ null
 |200|OK|successful operation|[CollectionResponsePriceBookResponseForwardPaging](#schemacollectionresponsepricebookresponseforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.read )
 </aside>
 
 <h1 id="commerce-price-books-basic">Basic</h1>
@@ -93,6 +91,7 @@ curl https://api.hubapi.com/commerce/price-books/2026-09/price-books \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -144,8 +143,9 @@ null
 |---|---|---|---|---|
 |201|Location|string||URL of the newly created resource|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Retrieve price book
@@ -156,7 +156,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}' \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/price-books/2026-09/price-books/{priceBookId}`
@@ -191,8 +192,9 @@ null
 |200|OK|successful operation|[PriceBookResponse](#schemapricebookresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.read )
 </aside>
 
 ## Delete price book
@@ -203,7 +205,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}' \
-  -X DELETE
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /commerce/price-books/2026-09/price-books/{priceBookId}`
@@ -231,8 +234,9 @@ null
 |204|No Content|No content|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Update price book
@@ -246,6 +250,7 @@ curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBook
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -292,8 +297,9 @@ null
 |200|OK|successful operation|[PriceBookResponse](#schemapricebookresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Activate price book
@@ -305,7 +311,8 @@ This operation does not require authentication
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/activate' \
   -X POST \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /commerce/price-books/2026-09/price-books/{priceBookId}/activate`
@@ -339,8 +346,9 @@ null
 |200|OK|successful operation|[PriceBookResponse](#schemapricebookresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Deactivate price book
@@ -352,7 +360,8 @@ This operation does not require authentication
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/deactivate' \
   -X POST \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /commerce/price-books/2026-09/price-books/{priceBookId}/deactivate`
@@ -386,8 +395,9 @@ null
 |200|OK|successful operation|[PriceBookResponse](#schemapricebookresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Validate price book
@@ -399,7 +409,8 @@ This operation does not require authentication
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/validate' \
   -X POST \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /commerce/price-books/2026-09/price-books/{priceBookId}/validate`
@@ -433,8 +444,9 @@ null
 |200|OK|successful operation|[PriceBookValidateResponse](#schemapricebookvalidateresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.read )
 </aside>
 
 <h1 id="commerce-price-books-batch">Batch</h1>
@@ -449,6 +461,8 @@ This operation does not require authentication
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/items/batch/archive' \
   -X POST \
   -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -472,6 +486,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -483,10 +503,12 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponseSimplePublicObjectIdWithErrors](#schemabatchresponsesimplepublicobjectidwitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Batch create price book items
@@ -500,6 +522,7 @@ curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBook
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -549,8 +572,9 @@ null
 |207|Multi-Status|multiple statuses|[BatchResponsePriceBookItemResponseWithErrors](#schemabatchresponsepricebookitemresponsewitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Batch update price book items
@@ -564,6 +588,7 @@ curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBook
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -613,8 +638,9 @@ null
 |207|Multi-Status|multiple statuses|[BatchResponsePriceBookItemResponseWithErrors](#schemabatchresponsepricebookitemresponsewitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 <h1 id="commerce-price-books-items">Items</h1>
@@ -627,7 +653,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/items' \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/price-books/2026-09/price-books/{priceBookId}/items`
@@ -664,8 +691,9 @@ null
 |200|OK|successful operation|[CollectionResponsePriceBookItemResponseForwardPaging](#schemacollectionresponsepricebookitemresponseforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.read )
 </aside>
 
 ## Add price book items
@@ -679,6 +707,7 @@ curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBook
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -727,8 +756,9 @@ null
 |---|---|---|---|---|
 |201|Location|string||URL of the newly created resource|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Retrieve price book item
@@ -739,7 +769,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/items/{priceBookItemId}' \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/price-books/2026-09/price-books/{priceBookId}/items/{priceBookItemId}`
@@ -776,8 +807,9 @@ null
 |200|OK|successful operation|[PriceBookItemResponse](#schemapricebookitemresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.read )
 </aside>
 
 ## Delete price book item
@@ -788,7 +820,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBookId}/items/{priceBookItemId}' \
-  -X DELETE
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /commerce/price-books/2026-09/price-books/{priceBookId}/items/{priceBookItemId}`
@@ -817,8 +850,9 @@ null
 |204|No Content|No content|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 ## Update price book item
@@ -832,6 +866,7 @@ curl 'https://api.hubapi.com/commerce/price-books/2026-09/price-books/{priceBook
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -882,8 +917,9 @@ null
 |200|OK|successful operation|[PriceBookItemResponse](#schemapricebookitemresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: cpq.price_books.write )
 </aside>
 
 # Schemas
@@ -995,6 +1031,39 @@ null
 |results|[[PriceBookItemResponse](#schemapricebookitemresponse)]|true|none|An array of results from the batch operation, each represented as a PriceBookItemResponse object.|
 |startedAt|string(date-time)|true|none|The date and time when the batch operation started, in ISO 8601 format.|
 |status|string|true|none|The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|CANCELED|
+|status|COMPLETE|
+|status|PENDING|
+|status|PROCESSING|
+
+<h2 id="tocS_BatchResponseSimplePublicObjectIdWithErrors">BatchResponseSimplePublicObjectIdWithErrors</h2>
+<!-- backwards compatibility -->
+<a id="schemabatchresponsesimplepublicobjectidwitherrors"></a>
+<a id="schema_BatchResponseSimplePublicObjectIdWithErrors"></a>
+<a id="tocSbatchresponsesimplepublicobjectidwitherrors"></a>
+<a id="tocsbatchresponsesimplepublicobjectidwitherrors"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|completedAt|string(date-time)|true|none|none|
+|errors|[[StandardError](#schemastandarderror)]|false|none|none|
+|links|object|false|none|none|
+|numErrors|integer(int32)|false|none|none|
+|requestedAt|string(date-time)|false|none|none|
+|results|[[SimplePublicObjectId](#schemasimplepublicobjectid)]|true|none|none|
+|startedAt|string(date-time)|true|none|none|
+|status|string|true|none|none|
 
 #### Enumerated Values
 

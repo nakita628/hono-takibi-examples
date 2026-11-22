@@ -1,0 +1,215 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  XAmzTargetAWSCognitoIdentityProviderServiceAddCustomAttributesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminAddUserToGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminConfirmSignUpHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminCreateUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminDeleteUserAttributesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminDeleteUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminDisableProviderForUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminDisableUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminEnableUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminForgetDeviceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminGetDeviceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminGetUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminInitiateAuthHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminLinkProviderForUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminListDevicesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminListGroupsForUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminListUserAuthEventsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminRemoveUserFromGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminResetUserPasswordHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminRespondToAuthChallengeHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserPasswordHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserSettingsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateAuthEventFeedbackHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateDeviceStatusHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateUserAttributesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAdminUserGlobalSignOutHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceAssociateSoftwareTokenHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceChangePasswordHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceConfirmDeviceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceConfirmForgotPasswordHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceConfirmSignUpHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateIdentityProviderHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateResourceServerHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateUserImportJobHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolClientHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolDomainHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteResourceServerHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserAttributesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolClientHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolDomainHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeIdentityProviderHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeResourceServerHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeRiskConfigurationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserImportJobHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolClientHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolDomainHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceForgetDeviceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceForgotPasswordHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetCSVHeaderHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetDeviceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetIdentityProviderByIdentifierHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetLogDeliveryConfigurationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetSigningCertificateHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetUICustomizationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetUserAttributeVerificationCodeHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetUserHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGetUserPoolMfaConfigHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceInitiateAuthHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListDevicesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListGroupsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListIdentityProvidersHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListResourceServersHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListTagsForResourceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListUserImportJobsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListUserPoolClientsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListUserPoolsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListUsersHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceListUsersInGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceResendConfirmationCodeHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceRevokeTokenHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetLogDeliveryConfigurationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetRiskConfigurationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetUICustomizationHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetUserMFAPreferenceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetUserPoolMfaConfigHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSetUserSettingsHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceSignUpHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceStartUserImportJobHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceStopUserImportJobHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceTagResourceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUntagResourceHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateAuthEventFeedbackHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateDeviceStatusHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateGroupHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateIdentityProviderHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateResourceServerHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserAttributesHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolClientHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolDomainHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceVerifySoftwareTokenHandler,
+  XAmzTargetAWSCognitoIdentityProviderServiceVerifyUserAttributeHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAddCustomAttributesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminAddUserToGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminConfirmSignUpHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminCreateUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminDeleteUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminDeleteUserAttributesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminDisableProviderForUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminDisableUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminEnableUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminForgetDeviceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminGetDeviceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminGetUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminInitiateAuthHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminLinkProviderForUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminListDevicesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminListGroupsForUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminListUserAuthEventsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminRemoveUserFromGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminResetUserPasswordHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminRespondToAuthChallengeHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserPasswordHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserSettingsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateAuthEventFeedbackHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateDeviceStatusHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminUpdateUserAttributesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAdminUserGlobalSignOutHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceAssociateSoftwareTokenHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceChangePasswordHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceConfirmDeviceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceConfirmForgotPasswordHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceConfirmSignUpHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateIdentityProviderHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateResourceServerHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateUserImportJobHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolClientHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceCreateUserPoolDomainHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteResourceServerHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserAttributesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolClientHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDeleteUserPoolDomainHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeIdentityProviderHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeResourceServerHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeRiskConfigurationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserImportJobHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolClientHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceDescribeUserPoolDomainHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceForgetDeviceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceForgotPasswordHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetCSVHeaderHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetDeviceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetIdentityProviderByIdentifierHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetLogDeliveryConfigurationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetSigningCertificateHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetUICustomizationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetUserHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetUserAttributeVerificationCodeHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGetUserPoolMfaConfigHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceInitiateAuthHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListDevicesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListGroupsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListIdentityProvidersHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListResourceServersHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListTagsForResourceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListUserImportJobsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListUserPoolClientsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListUserPoolsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListUsersHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceListUsersInGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceResendConfirmationCodeHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceRevokeTokenHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetLogDeliveryConfigurationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetRiskConfigurationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetUICustomizationHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetUserMFAPreferenceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetUserPoolMfaConfigHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSetUserSettingsHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceSignUpHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceStartUserImportJobHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceStopUserImportJobHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceTagResourceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUntagResourceHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateAuthEventFeedbackHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateDeviceStatusHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateGroupHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateIdentityProviderHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateResourceServerHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserAttributesHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolClientHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceUpdateUserPoolDomainHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceVerifySoftwareTokenHandler)
+  .route('/', XAmzTargetAWSCognitoIdentityProviderServiceVerifyUserAttributeHandler)
+
+export default app

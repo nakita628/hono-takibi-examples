@@ -1,5 +1,378 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AddressSchema = z
+  .object({
+    addressLine1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first line of the street address.<br><br><span class="tablenote"><strong>Note:</strong> <b>addressLine1</b> will not be returned for any order that is more than 90 days old.</span>',
+      }),
+    addressLine2: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The second line of the street address. This field can be used for additional address information, such as a suite or apartment number. This field will be returned if defined for the shipping address.<br><br><span class="tablenote"><strong>Note:</strong> <b>addressLine2</b> will not be returned for any order that is more than 90 days old.</span><br><span class="tablenote"><b>Note:</b> As of January 31, 2022, <b>addressLine2</b> no longer returns EU VAT tax information. To determine line-item level VAT tax information, refer to <a href="#response.orders.lineItems.ebayCollectAndRemitTaxes.ebayReference">eBayReference</a>.</span>',
+      }),
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city of the shipping destination.' }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The country of the shipping destination, represented as a two-letter ISO 3166-1 alpha-2 country code. For example, <code>US</code> represents the United States, and <code>DE</code> represents Germany. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
+      }),
+    county: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The county of the shipping destination. Counties typically, but not always, contain multiple cities or towns. This field is returned if known/available.',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code of the shipping destination. Usually referred to as Zip codes in the US. Most countries have postal codes, but not all. The postal code will be returned if applicable.',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province of the shipping destination. Most countries have states or provinces, but not all. The state or province will be returned if applicable.',
+      }),
+  })
+  .openapi({
+    description: 'This type contains the details of a geographical address.',
+    required: [],
+  })
+  .openapi('Address')
+
+const PhoneNumberSchema = z
+  .object({
+    phoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The primary telephone number for the shipping recipient.' }),
+  })
+  .openapi({
+    description: 'This type contains a string field representing a telephone number.',
+    required: [],
+  })
+  .openapi('PhoneNumber')
+
+const ExtendedContactSchema = z
+  .object({
+    companyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The company name associated with the buyer or eBay shipping partner. This field is only returned if defined/applicable to the buyer or eBay shipping partner.',
+      }),
+    contactAddress: AddressSchema.exactOptional().openapi({
+      description:
+        'This container shows the shipping address of the buyer or eBay shipping partner.',
+    }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains the email address of the buyer. This address will be returned for up to 14 days from order creation. If an order is more than 14 days old, no address is returned.<br><br><span class="tablenote"> <strong>Note:</strong> If returned, this field contains the email address of the buyer, even for Global Shipping Program shipments.<br><br>The <b>email</b> will not be returned for any order that is more than 90 days old.</span>',
+      }),
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full name of the buyer or eBay shipping partner.<br><br><span class="tablenote"><strong>Note:</strong> The <b>fullName</b> will not be returned for any order that is more than 90 days old.</span>',
+      }),
+    primaryPhone: PhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The primary telephone number of the buyer or eBay shipping partner.<br><br><span class="tablenote"><strong>Note:</strong> The <b>primaryPhone</b> will not be returned for any order that is more than 90 days old.</span>',
+    }),
+  })
+  .openapi({
+    description:
+      'This type contains shipping and contact information for a buyer or an eBay shipping partner.',
+    required: [],
+  })
+  .openapi('ExtendedContact')
+
+const TaxAddressSchema = z
+  .object({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city name that can be used by sellers for tax purpose.' }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The country code that can be used by sellers for tax purpose, represented as a two-letter ISO 3166-1 alpha-2 country code. For example, <strong>US</strong> represents the United States, and <strong>DE</strong> represents Germany. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code that can be used by sellers for tax purpose. Usually referred to as Zip codes in the US.',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The state name that can be used by sellers for tax purpose.' }),
+  })
+  .openapi({
+    description:
+      'This container consists of address information that can be used by sellers for tax purpose.',
+    required: [],
+  })
+  .openapi('TaxAddress')
+
+const TaxIdentifierSchema = z
+  .object({
+    issuingCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This two-letter code indicates the country that issued the buyer's tax ID. The country that the two-letter code represents can be found in the <strong>CountryCodeEnum</strong> type, or in the  <a href=\"https://www.iso.org/iso-3166-country-codes.html \">ISO 3166</a> standard. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
+      }),
+    taxIdentifierType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This enumeration value indicates the type of tax identification being used for the buyer. The different tax types are defined in the <strong>TaxIdentifierTypeEnum</strong> type. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:TaxIdentifierTypeEnum'>eBay API documentation</a>",
+      }),
+    taxpayerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This value is the unique tax ID associated with the buyer. The type of tax identification is shown in the <strong>taxIdentifierType</strong> field.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type is used by the <strong>taxIdentifier</strong> container that is returned in <strong>getOrder</strong>. The <strong>taxIdentifier</strong> container consists of taxpayer identification information for buyers from Italy, Spain, or Guatemala. It is currently only returned for orders occurring on the eBay Italy or eBay Spain marketplaces.<br><br><span class="tablenote"><strong>Note:</strong> Currently, the <strong>taxIdentifier</strong> container is only returned in <strong>getOrder</strong> and not in <strong>getOrders</strong>. So, if a seller wanted to view a buyer\'s tax information for a particular order returned in <strong>getOrders</strong>, that seller would need to use the <strong>orderId</strong> value for that particular order, and then run a <strong>getOrder</strong> call against that order ID. </span>',
+    required: [],
+  })
+  .openapi('TaxIdentifier')
+
+const BuyerSchema = z
+  .object({
+    buyerRegistrationAddress: ExtendedContactSchema.exactOptional().openapi({
+      description:
+        "Buyer's contact information that includes the buyer's name, email, phone number, and address.",
+    }),
+    taxAddress: TaxAddressSchema.exactOptional().openapi({
+      description:
+        'This container consists of address information that can be used by sellers for tax purpose.<br><br><span class="tablenote"><strong>Note:</strong> When using the eBay vault program, if an item is shipped to a vault, the tax address will be the vault address.</span>',
+    }),
+    taxIdentifier: TaxIdentifierSchema.exactOptional().openapi({
+      description:
+        'This container consists of taxpayer identification information for buyers from Italy, Spain, or Guatemala. It is currently only returned for orders occurring on the eBay Italy or eBay Spain marketplaces.<br><br><span class="tablenote"><strong>Note:</strong> Currently, the <strong>taxIdentifier</strong> container is only returned in <strong>getOrder</strong> and not in <strong>getOrders</strong>. So, if a seller wanted to view a buyer\'s tax information for a particular order returned in <strong>getOrders</strong>, that seller would need to use the <strong>orderId</strong> value for that particular order, and then run a <strong>getOrder</strong> call against that order ID. </span>',
+    }),
+    username: z.string().exactOptional().openapi({ description: "The buyer's eBay user ID." }),
+  })
+  .openapi({ description: "This type contains information about the order's buyer.", required: [] })
+  .openapi('Buyer')
+
+const CancelRequestSchema = z
+  .object({
+    cancelCompletedDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the order cancellation was completed, if applicable. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the cancellation request has actually been approved by the seller.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    cancelInitiator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This string value indicates the party who made the initial cancellation request. Typically, either the 'Buyer' or 'Seller'. If a cancellation request has been made, this field should be returned.",
+      }),
+    cancelReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason why the <b>cancelInitiator</b> initiated the cancellation request. Cancellation reasons for a buyer might include 'order placed by mistake' or 'order won't arrive in time'. For a seller, a typical cancellation reason is 'out of stock'. If a cancellation request has been made, this field should be returned.",
+      }),
+    cancelRequestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the order cancellation request. This field is returned for each cancellation request.',
+      }),
+    cancelRequestState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The current stage or condition of the cancellation request. This field is returned for each cancellation request. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:CancelRequestStateEnum'>eBay API documentation</a>",
+      }),
+    cancelRequestedDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the order cancellation was requested. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is returned for each cancellation request.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+  })
+  .openapi({
+    description: 'This type contains information about a buyer request to cancel an order.',
+    required: [],
+  })
+  .openapi('CancelRequest')
+
+const CancelStatusSchema = z
+  .object({
+    cancelRequests: z
+      .array(CancelRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array contains details of one or more buyer requests to cancel the order. <br><br><b>For the getOrders call:</b>  This array is returned but is always empty.<br><b>For the getOrder call:</b> This array is returned fully populated with information about any cancellation requests.',
+      }),
+    cancelState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The state of the order with regard to cancellation. This field is always returned, and if there are no cancellation requests, a value of <code>NONE_REQUESTED</code> is returned.  For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:CancelStateEnum'>eBay API documentation</a>",
+      }),
+    cancelledDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the order was cancelled, if applicable. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+  })
+  .openapi({
+    description:
+      'This type contains information about any requests that have been made to cancel an order.',
+    required: [],
+  })
+  .openapi('CancelStatus')
+
+const PickupStepSchema = z
+  .object({
+    merchantLocationKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A merchant-defined unique identifier of the merchant's store where the buyer will pick up their In-Store Pickup order.<br><br> This field is always returned with the <b>pickupStep</b> container.",
+      }),
+  })
+  .openapi({
+    description:
+      "This type is used to indicate the merchant's store where the buyer will pickup their In-Store Pickup order. The <b>pickupStep</b> container is only returned for In-Store Pickup orders. The In-Store Pickup feature is supported in the US, Canada, UK, Germany, and Australia marketplaces.",
+    required: [],
+  })
+  .openapi('PickupStep')
+
+const ShippingStepSchema = z
+  .object({
+    shipTo: ExtendedContactSchema.exactOptional().openapi({
+      description:
+        'This container consists of shipping and contact information about the individual or organization to whom the fulfillment package will be shipped.<br><span class="tablenote"><strong>Note:</strong> When <b>FulfillmentInstructionsType</b> is <code>FULFILLED_BY_EBAY</code>, there will be no <b>shipTo</b> address displayed.</span><br><span class="tablenote"><strong>Note:</strong> For Digitally Delivered Goods (DDG), this address is the same as the Buyer\'s Registration Address.</span><br><span class="tablenote"><strong>Note:</strong> For a Global Shipping Program shipment, this is the address of the international shipping provider\'s domestic warehouse. The international shipping provider is responsible for delivery to the final destination address. For more information, see <a href="https://developer.ebay.com/devzone/guides/features-guide/default.html#Development/Shipping-APIWork.html#AddressingaGlobalShippingProgramShipment " target="_blank">Addressing a Global Shipping Program Shipment</a>.</span>',
+    }),
+    shipToReferenceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the unique identifer of the Global Shipping Program (GSP) shipment. This field is only returned if the line item is being shipped via GSP (the value of the <b>fulfillmentStartInstructions.ebaySupportedFulfillment</b> field will be <code>true</code>. The international shipping provider uses the <b>shipToReferenceId</b> value as the primary reference number to retrieve the relevant details about the buyer, the order, and the fulfillment, so the shipment can be completed. <br><br>Sellers must include this value on the shipping label immediately above the street address of the international shipping provider. <br><br>Example: "Reference #1234567890123456" <br><br><span class="tablenote"><strong>Note:</strong> This value is the same as the <b>ShipToAddress.ReferenceID</b> value returned by the Trading API\'s GetOrders call.</span>',
+      }),
+    shippingCarrierCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the shipping carrier being used to ship the line item. <br><br><span class="tablenote"><strong>Note:</strong> The Trading API\'s <a href="https://developer.ebay.com/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call can be used to retrieve the latest shipping carrier and shipping service option enumeration values.</span>',
+      }),
+    shippingServiceCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the shipping service option being used to ship the line item.<br><br><span class="tablenote"><strong>Note:</strong> Use the Trading API\'s <a href="/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call to retrieve the latest shipping carrier and shipping service option enumeration values. When making the <a href="/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call, include the <strong>DetailName</strong> field in the request payload and set its value to <code>ShippingServiceDetails</code>. Each valid shipping service option (returned in <strong>ShippingServiceDetails.ShippingService</strong> field) and corresponding shipping carrier (returned in <strong>ShippingServiceDetails.ShippingCarrier</strong> field) is returned in response payload.</span>',
+      }),
+  })
+  .openapi({
+    description:
+      'This type contains shipping information for a fulfillment, including the shipping carrier, the shipping service option, the shipment destination, and the Global Shipping Program reference ID.',
+    required: [],
+  })
+  .openapi('ShippingStep')
+
+const FulfillmentStartInstructionSchema = z
+  .object({
+    ebaySupportedFulfillment: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is only returned if its value is <code>true</code> and indicates that the fulfillment will be shipped via eBay\'s Global Shipping Program, eBay International Shipping, or the Authenticity Guarantee service program. <br><br>For more information, see the <a href="https://www.ebay.com/help/selling/shipping-items/setting-shipping-options/global-shipping-program?id=4646 " target="_blank">Global Shipping Program</a> help topic.',
+      }),
+    finalDestinationAddress: AddressSchema.exactOptional().openapi({
+      description:
+        'This container is only returned if the value of <b>ebaySupportedFulfillment</b> field is <code>true</code>. <br><br>This is the final destination address for a Global Shipping Program shipment or an eBay International Shipping shipment, which is usually the recipient\'s home. Sellers should not ship directly to this address; instead they should ship this package to their international shipping provider\'s domestic warehouse. The international shipping provider is responsible for delivery to the final destination address.<br><br>For more information, see <a href="https://developer.ebay.com/devzone/guides/features-guide/default.html#Development/Shipping-APIWork.html#AddressingaGlobalShippingProgramShipment " target="_blank">Addressing a Global Shipping Program Shipment</a>.<p> <span class="tablenote"><strong>Note:</strong> For Authenticity Guarantee program shipment, this is the address of the authenticator\'s warehouse. The authenticator is responsible for delivery to the buyer shipping address.</span></p>',
+    }),
+    fulfillmentInstructionsType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The enumeration value returned in this field indicates the method of fulfillment that will be used to deliver this set of line items (this package) to the buyer. This field will have a value of <code>SHIP_TO</code> if the <b>ebaySupportedFulfillment</b> field is returned with a value of <code>true</code>. See the <strong>FulfillmentInstructionsType</strong> definition for more information about different fulfillment types. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:FulfillmentInstructionsType'>eBay API documentation</a>",
+      }),
+    maxEstimatedDeliveryDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the estimated latest date that the fulfillment will be completed. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned ifthe value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code> or <code>PREPARE_FOR_PICKUP</code>.  <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    minEstimatedDeliveryDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the estimated earliest date that the fulfillment will be completed. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned if  the value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code> or <code>PREPARE_FOR_PICKUP</code>.  <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    pickupStep: PickupStepSchema.exactOptional().openapi({
+      description:
+        "This container is only returned for In-Store Pickup orders, and it indicates the specific merchant's store where the buyer will pick up the order. The In-Store Pickup feature is supported in the US, Canada, UK, Germany, and Australia marketplaces.",
+    }),
+    shippingStep: ShippingStepSchema.exactOptional().openapi({
+      description:
+        'This container consists of shipping information for this fulfillment, including the shipping carrier, the shipping service option, and the shipment destination. This container is not returned if the value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code>, or for In-Store Pickup orders. <br><br> For Click and Collect orders, the shipping destination will be a brick-and-mortar store where the buyer will pick up the order.',
+    }),
+  })
+  .openapi({
+    description:
+      "This type contains a set of specifications for processing a fulfillment of an order, including the type of fulfillment, shipping carrier and service, addressing details, and estimated delivery window. These instructions are derived from the buyer's and seller's eBay account preferences, the listing parameters, and the buyer's checkout selections. The seller can use them as a starting point for packaging, addressing, and shipping the order.",
+    required: [],
+  })
+  .openapi('FulfillmentStartInstruction')
+
 const AmountSchema = z
   .object({
     convertedFromCurrency: z
@@ -438,33 +811,381 @@ const TaxSchema = z
   })
   .openapi('Tax')
 
-type LineItemType = {
-  appliedPromotions?: z.infer<typeof AppliedPromotionSchema>[]
-  deliveryCost?: z.infer<typeof DeliveryCostSchema>
-  discountedLineItemCost?: z.infer<typeof AmountSchema>
-  ebayCollectAndRemitTaxes?: z.infer<typeof EbayCollectAndRemitTaxSchema>[]
-  ebayCollectedCharges?: z.infer<typeof EbayCollectedChargesSchema>
-  giftDetails?: z.infer<typeof GiftDetailsSchema>
-  itemLocation?: z.infer<typeof ItemLocationSchema>
-  legacyItemId?: string
-  legacyVariationId?: string
-  lineItemCost?: z.infer<typeof AmountSchema>
-  lineItemFulfillmentInstructions?: z.infer<typeof LineItemFulfillmentInstructionsSchema>
-  lineItemFulfillmentStatus?: string
-  lineItemId?: string
-  linkedOrderLineItems?: z.infer<typeof LinkedOrderLineItemSchema>[]
-  listingMarketplaceId?: string
-  properties?: z.infer<typeof LineItemPropertiesSchema>
-  purchaseMarketplaceId?: string
-  quantity?: number
-  refunds?: z.infer<typeof LineItemRefundSchema>[]
-  sku?: string
-  soldFormat?: string
-  taxes?: z.infer<typeof TaxSchema>[]
-  title?: string
-  total?: z.infer<typeof AmountSchema>
-  variationAspects?: z.infer<typeof NameValuePairSchema>[]
-}
+const LineItemSchema = z
+  .object({
+    appliedPromotions: z
+      .array(AppliedPromotionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array contains information about one or more sales promotions or discounts applied to the line item. It is always returned, but will be returned as an empty array if no special sales promotions or discounts apply to the order line item.',
+      }),
+    deliveryCost: DeliveryCostSchema.exactOptional().openapi({
+      description:
+        'This container consists of a breakdown of all costs associated with the fulfillment of the line item.',
+    }),
+    discountedLineItemCost: AmountSchema.exactOptional().openapi({
+      description:
+        'The cost of the line item after applying any discounts. This container is only returned if the order line item was discounted through a promotion.',
+    }),
+    ebayCollectAndRemitTaxes: z
+      .array(EbayCollectAndRemitTaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "This container will be returned if the order line item is subject to a 'Collect and Remit' tax that eBay will collect and remit to the proper taxing authority on the buyer's behalf.<br><br>'Collect and Remit' tax includes:<ul><li>US state-mandated sales tax</li><li>Federal and Provincial Sales Tax in Canada</li><li>'Goods and Services' tax in Canada, Australia, and New Zealand</li><li>VAT collected for the UK and EU countries</li></ul>The amount of this tax is shown in the <strong>amount</strong> field, and the type of tax is shown in the <strong>taxType</strong> field.<br><br>eBay will display the tax type and amount during checkout in accordance with the buyer's address, and handle collection and remittance of the tax without requiring the seller to take any action.",
+      }),
+    ebayCollectedCharges: EbayCollectedChargesSchema.exactOptional().openapi({
+      description:
+        'This container consists of a breakdown of costs that are collected by eBay from the buyer for this order. <br><br><span class="tablenote"><strong>Note:</strong> Currently, this container is returned only if eBay is directly charging the buyer for eBay shipping.</span>',
+    }),
+    giftDetails: GiftDetailsSchema.exactOptional().openapi({
+      description:
+        'This container consists of information that is needed by the seller to send a digital gift card to the buyer, or recipient of the digital gift card. This container is only returned and applicable for digital gift card line items.',
+    }),
+    itemLocation: ItemLocationSchema.exactOptional().openapi({
+      description: 'This container field describes the physical location of the order line item.',
+    }),
+    legacyItemId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The eBay-generated legacy listing item ID of the listing. Note that the unique identifier of a listing in REST-based APIs is called the <strong>listingId</strong> instead.',
+      }),
+    legacyVariationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of a single variation within a multiple-variation listing. This field is only returned if the line item purchased was from a multiple-variation listing.',
+      }),
+    lineItemCost: AmountSchema.exactOptional().openapi({
+      description:
+        'The selling price of the line item before applying any discounts. The value of this field is calculated by multiplying the single unit price by the number of units purchased (value of the <b>quantity</b> field).',
+    }),
+    lineItemFulfillmentInstructions: LineItemFulfillmentInstructionsSchema.exactOptional().openapi({
+      description:
+        "This container consists of information related to shipping dates and expectations, including the 'ship-by date' and expected delivery windows that are based on the seller's stated handling time and the shipping service option that will be used. These fields provide guidance on making sure expected delivery dates are made, whether the order is a <i>eBay Guaranteed Delivery</i> order or a non-guaranteed delivery order.",
+    }),
+    lineItemFulfillmentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This enumeration value indicates the current fulfillment status of the line item. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:LineItemFulfillmentStatusEnum'>eBay API documentation</a>",
+      }),
+    lineItemId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the unique identifier of an eBay order line item. This field is created as soon as there is a commitment to buy from the seller.',
+      }),
+    linkedOrderLineItems: z
+      .array(LinkedOrderLineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of one or more line items related to the corresponding order, but not a part of that order. Details include the order ID, line item ID, and title of the linked line item, the seller of that item, item specifics, estimated delivery times, and shipment tracking (if available).',
+      }),
+    listingMarketplaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier of the eBay marketplace where the line item was listed. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
+      }),
+    properties: LineItemPropertiesSchema.exactOptional().openapi({
+      description:
+        'Contains information about the eBay programs, if any, under which the line item was listed.',
+    }),
+    purchaseMarketplaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier of the eBay marketplace where the line item was listed. Often, the <strong>listingMarketplaceId</strong> and the <strong>purchaseMarketplaceId</strong> identifier are the same, but there are occasions when an item will surface on multiple eBay marketplaces. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
+      }),
+    quantity: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of units of the line item in the order. These are represented as a group by a single <b>lineItemId</b>.',
+      }),
+    refunds: z
+      .array(LineItemRefundSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array is always returned, but is returned as an empty array unless the seller has submitted a partial or full refund to the buyer for the order. If a refund has occurred, the refund amount and refund date will be shown for each refund.',
+      }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Seller-defined Stock-Keeping Unit (SKU). This inventory identifier must be unique within the seller's eBay inventory. SKUs are optional when listing in the legacy/Trading API system, but SKUs are required when listing items through the Inventory API model.",
+      }),
+    soldFormat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The eBay listing type of the line item. The most common listing types are <code>AUCTION</code> and <code>FIXED_PRICE</code>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:SoldFormatEnum'>eBay API documentation</a>",
+      }),
+    taxes: z
+      .array(TaxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains a list of taxes applied to the line item, if any. This array is always returned, but will be returned as empty if no taxes are applicable to the line item.',
+      }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the listing.' }),
+    total: AmountSchema.exactOptional().openapi({
+      description:
+        "This is the total price that the buyer must pay for the line item after all costs (item cost, delivery cost, taxes,) are added, minus any discounts and/or promotions.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>total</strong> value only when the <strong>fieldGroups</strong> query parameter is set to <code>TAX_BREAKDOWN</code>. If the <strong>fieldGroups</strong> query parameter is not set to <code>TAX_BREAKDOWN</code>, 'Collect and Remit' will not be added into this <strong>total</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>total</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is in this amount:<ul><li><code>STATE_SALES_TAX</code>: US state-mandated sales tax</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: 'Goods and Services' tax in Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
+    }),
+    variationAspects: z
+      .array(NameValuePairSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of aspect name-value pairs that identifies the specific variation of a multi-variation listing. This array can contain multiple name-value pairs, such as <code>color:blue</code> and <code>size:large</code>, and will only be returned for orders created from a multiple-variation listing.',
+      }),
+  })
+  .openapi({
+    description: 'This type contains the details of each line item in an order.',
+    required: [],
+  })
+  .openapi('LineItem')
+
+const SellerActionsToReleaseSchema = z
+  .object({
+    sellerActionToRelease: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A possible action that the seller can take to expedite the release of a payment hold. A <strong>sellerActionToRelease</strong> field is returned for each possible action that a seller may take. Possible actions may include providing shipping/tracking information, issuing a refund, providing refund information, contacting customer support, etc.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type is used to state possible action(s) that a seller can take to release a payment hold placed against an order.',
+    required: [],
+  })
+  .openapi('SellerActionsToRelease')
+
+const PaymentHoldSchema = z
+  .object({
+    expectedReleaseDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the payment being held is expected to be released to the seller. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field will be returned if known by eBay. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    holdAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The monetary amount of the payment being held. This field is always returned with the <strong>paymentHolds</strong> array. ',
+    }),
+    holdReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason that the payment is being held. A seller's payment may be held for a number of reasons, including when the seller is new, the seller's level is below standard, or if a return case or 'Significantly not as described' case is pending against the seller. This field is always returned with the <strong>paymentHolds</strong> array.",
+      }),
+    holdState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The current stage or condition of the hold. This field is always returned with the <strong>paymentHolds</strong> array.<br><br><b>Applicable values:</b><ul><li><code>HELD</code></li><li><code>HELD_PENDING</code></li><li><code>NOT_HELD</code></li><li><code>RELEASE_CONFIRMED</code></li><li><code>RELEASE_FAILED</code></li><li><code>RELEASE_PENDING</code></li><li><code>RELEASED</code></li></ul>',
+      }),
+    releaseDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The date and time that the payment being held was actually released to the seller. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the seller's payment is actually released into the seller's account.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>",
+      }),
+    sellerActionsToRelease: z
+      .array(SellerActionsToReleaseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of one or more possible actions that the seller can take to expedite the release of the payment hold.',
+      }),
+  })
+  .openapi({
+    description:
+      "This type contains information about a hold placed on a payment to a seller for an order, including the reason why the buyer's payment for the order is being held, the expected release date of the funds into the seller's account, the current state of the hold, and the actual release date if the payment has been released, and possible actions the seller can take to expedite the payout of funds into their account.",
+    required: [],
+  })
+  .openapi('PaymentHold')
+
+const PaymentSchema = z
+  .object({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount that seller receives for the order via the payment method mentioned in <strong>Payment.paymentMethod</strong>.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, which includes US state-mandated sales tax, Federal and Provincial Sales Tax in Canada, 'Good and Services' tax in Canada, Australia, and New Zealand, and VAT collected for UK or EU, the 'Collect and Remit' tax amount for the order will be included in this <strong>amount.value</strong> field (and in the <strong>amount.convertedFromValue</strong> field if currency conversion is applicable).<br><br> To determine if 'Collect and Remit' taxes were added into this <strong>totalDueSeller</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: Canada, Australia, and New Zealand</li><li><code>VAT</code>: UK and EU countries</li></ul></span>",
+    }),
+    paymentDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the payment was received by the seller. This field will not be returned if buyer has yet to pay for the order. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    paymentHolds: z
+      .array(PaymentHoldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "This container is only returned if eBay is temporarily holding the seller's funds for the order. If a payment hold has been placed on the order, this container includes the reason for the payment hold, the expected release date of the funds into the seller's account, the current state of the hold, and as soon as the payment hold has been released, the actual release date.",
+      }),
+    paymentMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The payment method used to pay for the order. See the <strong>PaymentMethodTypeEnum</strong> type for more information on the payment methods. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:PaymentMethodTypeEnum'>eBay API documentation</a>",
+      }),
+    paymentReferenceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is only returned if payment has been made by the buyer, and the <strong>paymentMethod</strong> is <code>ESCROW</code>. This field contains a special ID for ESCROW.',
+      }),
+    paymentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The enumeration value returned in this field indicates the status of the payment for the order. See the <strong>PaymentStatusEnum</strong> type definition for more information on the possible payment states. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:PaymentStatusEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description: 'This type is used to provide details about the seller payments for an order.',
+    required: [],
+  })
+  .openapi('Payment')
+
+const OrderRefundSchema = z
+  .object({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'This field shows the refund amount for an order. This container is always returned for each refund.<br><br><span class="tablenote"><b>Note:</b> The refund amount shown is the seller\'s <i><b>net amount</b></i> received from the sale/transaction. eBay-collected tax will not be included in this amount, so the actual amount of the buyer\'s refund may be higher than this value.</span>',
+    }),
+    refundDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the refund was issued. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the refund has been issued. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    refundId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of a refund that was initiated for an order through the <b>issueRefund</b> method. If the <b>issueRefund</b> method was used to issue one or more refunds at the line item level, these refund identifiers are returned at the line item level instead (<b>lineItems.refunds.refundId</b> field).<br><br> A <b>refundId</b> value is returned in the response of the <b>issueRefund</b> method, and this same value will be returned in the <b>getOrders</b> and <b>getOrders</b> responses for pending and completed refunds. For other refunds, see the <b>refundReferenceId</b> field.',
+      }),
+    refundReferenceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The eBay-generated unique identifier for the refund. This field is not returned until the refund has been issued.',
+      }),
+    refundStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This enumeration value indicates the current status of the refund to the buyer. This container is always returned for each refund. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:RefundStatusEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description:
+      'This type contains information about a refund issued for an order. This does not include line item level refunds.',
+    required: [],
+  })
+  .openapi('OrderRefund')
+
+const PaymentSummarySchema = z
+  .object({
+    payments: z
+      .array(PaymentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array consists of payment information for the order, including payment status, payment method, payment amount, and payment date. This array is always returned, although some of the fields under this container will not be returned until payment has been made.',
+      }),
+    refunds: z
+      .array(OrderRefundSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array is always returned, but is returned as an empty array unless the seller has submitted a partial or full refund to the buyer for the order. If a refund has occurred, the refund amount and refund date will be shown for each refund.',
+      }),
+    totalDueSeller: AmountSchema.exactOptional().openapi({
+      description:
+        "This is the total price that the seller receives for the entire order after all costs (item cost, delivery cost, taxes) are added for all line items, minus any discounts and/or promotions for any of the line items. Note that this value is subject to change before payment is actually made by the buyer (if the <strong>paymentStatus</strong> value was <code>PENDING</code> or <code>FAILED</code>), or if a partial or full refund occurs with the order.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>totalDueSeller</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>totalDueSeller</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
+    }),
+  })
+  .openapi({
+    description:
+      'This type contains information about the various monetary exchanges that apply to the net balance due for the order.',
+    required: [],
+  })
+  .openapi('PaymentSummary')
+
+const PricingSummarySchema = z
+  .object({
+    adjustment: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total amount of any adjustments that were applied to the cost of the item(s) in the order. This amount does not include shipping, discounts, fixed fees, or taxes.<br><br>This container is only returned if price adjustments were made to the order after the initial transaction/commitment to buy occurred.',
+    }),
+    deliveryCost: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total cost of delivering the order to the buyer, before any shipping/delivery discount is applied.',
+    }),
+    deliveryDiscount: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total amount of delivery discounts (including shipping discounts) that apply to the order. This should be a negative real number.<br><br>This container is only returned if delivery discounts are being applied to the order.',
+    }),
+    fee: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total amount of any special fees applied to the order, such as a tire recycling fee or an electronic waste fee. <br><br>This container is returned if special fees are being applied to the order and if the <b>fieldGroups</b> is set to <code>TAX_BREAKDOWN</code>.',
+    }),
+    priceDiscount: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total amount of all item price discounts (including promotions) that apply to the order and reduce its cost to the buyer. This should be a negative real number. <br><br>This container is only returned if special discounts are being applied to the order.',
+    }),
+    priceSubtotal: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the cumulative costs of of all units of all line items in the order, before any discount is applied.',
+    }),
+    tax: AmountSchema.exactOptional().openapi({
+      description:
+        'This container shows the total amount of tax for the order. To calculate the tax percentage rate, divide this value by the value of the <b>total</b> field. <br><br>This container is only returned if any type of tax (sales tax, tax on shipping, tax on handling, import tax, etc.) is applied to the order.',
+    }),
+    total: AmountSchema.exactOptional().openapi({
+      description:
+        "The total cost of the order after adding all line item costs, delivery costs, sales tax, and special fees, and then subtracting all special discounts and price adjustments.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>total</strong> value only when the <strong>fieldGroups</strong> query parameter is set to <code>TAX_BREAKDOWN</code>. If the <strong>fieldGroups</strong> query parameter is not set to <code>TAX_BREAKDOWN</code>, 'Collect and Remit' will not be added into this <strong>total</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>total</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US state-mandated sales tax</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: 'Good and Services' tax in Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
+    }),
+  })
+  .openapi({
+    description:
+      'This type contains a summary of cumulative costs and charges for all line items of an order, including item price, price adjustments, sales taxes, delivery costs, and order discounts.',
+    required: [],
+  })
+  .openapi('PricingSummary')
 
 const PostSaleAuthenticationProgramSchema = z
   .object({
@@ -554,12 +1275,285 @@ const EbayFulfillmentProgramSchema = z
   })
   .openapi('EbayFulfillmentProgram')
 
-type ProgramType = {
-  authenticityVerification?: z.infer<typeof PostSaleAuthenticationProgramSchema>
-  ebayInternationalShipping?: z.infer<typeof EbayInternationalShippingSchema>
-  ebayShipping?: z.infer<typeof EbayShippingSchema>
-  ebayVault?: z.infer<typeof EbayVaultProgramSchema>
-  fulfillmentProgram?: z.infer<typeof EbayFulfillmentProgramSchema>
+const ProgramSchema = z
+  .object({
+    authenticityVerification: PostSaleAuthenticationProgramSchema.exactOptional().openapi({
+      description:
+        'This field is returned when the third-party authenticator performs the authentication verification inspection on the order line item. Different values will be returned based on whether the item passed or failed the authentication verification inspection.',
+    }),
+    ebayInternationalShipping: EbayInternationalShippingSchema.exactOptional().openapi({
+      description:
+        'This container is returned if the order is being fulfilled through eBay International Shipping.',
+    }),
+    ebayShipping: EbayShippingSchema.exactOptional().openapi({
+      description:
+        'This container is returned only if the order is an eBay shipping order. It consists of a field that indicates the provider of a shipping label for this order.',
+    }),
+    ebayVault: EbayVaultProgramSchema.exactOptional().openapi({
+      description:
+        'This field provides information about the eBay vault program that has been selected for an order. This is returned only for those items that are eligible for the eBay Vault Program.',
+    }),
+    fulfillmentProgram: EbayFulfillmentProgramSchema.exactOptional().openapi({
+      description:
+        'This field provides details about an order line item being handled by eBay fulfillment. It is only returned for paid orders being fulfilled by eBay or an eBay fulfillment partner.',
+    }),
+  })
+  .openapi({
+    description:
+      'This type is returned for order line items eligible for the Authenticity Guarantee service and/or for order line items fulfilled by the eBay Fulfillment program or eBay shipping.',
+    required: [],
+  })
+  .openapi('Program')
+
+type OrderType = {
+  buyer?: z.infer<typeof BuyerSchema>
+  buyerCheckoutNotes?: string
+  cancelStatus?: z.infer<typeof CancelStatusSchema>
+  creationDate?: string
+  ebayCollectAndRemitTax?: boolean
+  fulfillmentHrefs?: string[]
+  fulfillmentStartInstructions?: z.infer<typeof FulfillmentStartInstructionSchema>[]
+  lastModifiedDate?: string
+  legacyOrderId?: string
+  lineItems?: z.infer<typeof LineItemSchema>[]
+  orderFulfillmentStatus?: string
+  orderId?: string
+  orderPaymentStatus?: string
+  paymentSummary?: z.infer<typeof PaymentSummarySchema>
+  pricingSummary?: z.infer<typeof PricingSummarySchema>
+  program?: z.infer<typeof ProgramSchema>
+  salesRecordReference?: string
+  sellerId?: string
+  totalFeeBasisAmount?: z.infer<typeof AmountSchema>
+  totalMarketplaceFee?: z.infer<typeof AmountSchema>
+}
+
+const OrderSchema: z.ZodType<OrderType> = z
+  .object({
+    buyer: BuyerSchema.exactOptional().openapi({
+      description:
+        "This container consists of information about the order's buyer. At this time, only the buyer's eBay user ID is returned, but it's possible that more buyer information can be added to this container in the future.",
+    }),
+    buyerCheckoutNotes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains any comments that the buyer left for the seller about the order during checkout process. This field is only returned if a buyer left comments at checkout time. ',
+      }),
+    cancelStatus: CancelStatusSchema.exactOptional().openapi({
+      description:
+        'This container consists of order cancellation information if a cancel request has been made. This container is always returned, and if no cancel request has been made, the <strong>cancelState</strong> field is returned with a value of <code>NONE_REQUESTED</code>, and an empty <strong>cancelRequests</strong> array is also returned.',
+    }),
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the order was created. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    ebayCollectAndRemitTax: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is only returned if <code>true</code>, and indicates that eBay will collect tax (US state-mandated sales tax, Federal and Provincial Sales Tax in Canada, 'Goods and Services' tax in Canada, Australia, and New Zealand, and VAT collected for UK and EU countries,) for at least one line item in the order, and remit the tax to the taxing authority of the buyer's residence. If this field is returned, the seller should search for one or more <strong>ebayCollectAndRemitTaxes</strong> containers at the line item level to get more information about the type of tax and the amount.",
+      }),
+    fulfillmentHrefs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This array contains a list of one or more <strong>getShippingFulfillment</strong> call URIs that can be used to retrieve shipping fulfillments that have been set up for the order.',
+      }),
+    fulfillmentStartInstructions: z
+      .array(FulfillmentStartInstructionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "This container consists of a set of specifications for fulfilling the order, including the type of fulfillment, shipping carrier and service, shipping address, and estimated delivery window. These instructions are derived from the buyer's and seller's eBay account preferences, the listing parameters, and the buyer's checkout selections. The seller can use them as a starting point for packaging, addressing, and shipping the order.<br><br><span class=\"tablenote\"><strong>Note:</strong> Although this container is presented as an array, it currently returns only one set of fulfillment specifications. Additional array members will be supported in future functionality.</span>",
+      }),
+    lastModifiedDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time that the order was last modified. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
+      }),
+    legacyOrderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the order in legacy format, as traditionally used by the Trading API (and other legacy APIs). Both the <b>orderId</b> field and this field are always returned.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description: 'This array contains the details for all line items that comprise the order.',
+      }),
+    orderFulfillmentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The degree to which fulfillment of the order is complete. See the <strong>OrderFulfillmentStatus</strong> type definition for more information about each possible fulfillment state. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:OrderFulfillmentStatus'>eBay API documentation</a>",
+      }),
+    orderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the order. Both the <b>legacyOrderId</b> field (traditionally used by Trading and other legacy APIS) and this field are always returned.',
+      }),
+    orderPaymentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The enumeration value returned in this field indicates the current payment status of an order, or in case of a refund request, the current status of the refund. See the <strong>OrderPaymentStatusEnum</strong> type definition for more information about each possible payment/refund state. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:OrderPaymentStatusEnum'>eBay API documentation</a>",
+      }),
+    paymentSummary: PaymentSummarySchema.exactOptional().openapi({
+      description:
+        'This container consists of detailed payment information for the order, including buyer payment for the order, refund information (if applicable), and seller payment holds (if applicable).',
+    }),
+    pricingSummary: PricingSummarySchema.exactOptional().openapi({
+      description:
+        'This container consists of a summary of cumulative costs and charges for all line items of an order, including item price, price adjustments, sales taxes, delivery costs, and order discounts.',
+    }),
+    program: ProgramSchema.exactOptional().openapi({
+      description:
+        "This container is returned for orders that are eligible for eBay's Authenticity Guarantee service. The seller ships Authenticity Guarantee service items to the authentication partner instead of the buyer. The authenticator address is found in the <code>fulfillmentStartInstructions.shippingStep.shipTo</code> container. If the item is successfully authenticated, the authenticator will ship the item to the buyer.",
+    }),
+    salesRecordReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An eBay-generated identifier that is used to identify and manage orders through the Selling Manager and Selling Manager Pro tools. This order identifier can also be found on the Orders grid page and in the Sales Record pages in Seller Hub. A <strong>salesRecordReference</strong> number is only generated and returned at the order level, and not at the order line item level.<br><br> In cases where the seller does not have a Selling Manager or Selling Manager Pro subscription nor access to Seller Hub, this field may not be returned.',
+      }),
+    sellerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique eBay user ID of the seller who sold the order.' }),
+    totalFeeBasisAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'This is the cumulative base amount used to calculate the final value fees for each order. The final value fees are deducted from the seller payout associated with the order. Final value fees are calculated as a percentage of order cost (item cost + shipping cost) and the percentage rate can vary by eBay category. ',
+    }),
+    totalMarketplaceFee: AmountSchema.exactOptional().openapi({
+      description:
+        'This is the cumulative fees accrued for the order and deducted from the seller payout.',
+    }),
+  })
+  .openapi({
+    description:
+      'This type contains the details of an order, including information about the buyer, order history, shipping fulfillments, line items, costs, payments, and order fulfillment status.',
+    required: [],
+  })
+  .openapi('Order')
+
+const ErrorParameterSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'This is the name of input field that caused an issue with the call request.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the actual value that was passed in for the element specified in the <strong>name</strong> field.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type contains the name and value of an input parameter that contributed to a specific error or warning condition.',
+    required: [],
+  })
+  .openapi('ErrorParameter')
+
+const ErrorSchema = z
+  .object({
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The context or source of this error or warning.' }),
+    domain: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the domain containing the service or application. For example, <code>sell</code> is a domain.',
+      }),
+    errorId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A positive integer that uniquely identifies the specific error condition that occurred. Your application can use these values as error code identifiers in your customized error-handling algorithms.',
+      }),
+    inputRefIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of one or more specific request elements (if any) associated with the error or warning. The format of these strings depends on the request payload format. For JSON, use JSONPath notation.',
+      }),
+    longMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An expanded version of the <b>message</b> field. <br><br><b>Maximum length:</b> 200 characters',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A message about the error or warning which is device agnostic and readable by end users and application developers. It explains what the error or warning is, and how to fix it (in a general sense). If applicable, the value is localized to the end user's requested locale. <br><br><b>Maximum length:</b> 50 characters",
+      }),
+    outputRefIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of one or more specific response elements (if any) associated with the error or warning. The format of these strings depends on the request payload format. For JSON, use JSONPath notation.',
+      }),
+    parameters: z
+      .array(ErrorParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains a list of name-value pairs that provide additional information concerning this error or warning. Each item in the list is an input parameter that contributed to the error or warning condition.',
+      }),
+    subdomain: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the domain's subsystem or subdivision. For example, <code>fulfillment</code> is a subdomain in the <code>sell</code> domain.",
+      }),
+  })
+  .openapi({
+    description: 'This type contains a error or warning related to a call request. ',
+    required: [],
+  })
+  .openapi('Error')
+
+type OrderSearchPagedCollectionType = {
+  href?: string
+  limit?: number
+  next?: string
+  offset?: number
+  orders?: z.infer<typeof OrderSchema>[]
+  prev?: string
+  total?: number
+  warnings?: z.infer<typeof ErrorSchema>[]
 }
 
 const PhoneSchema = z
@@ -746,277 +1740,6 @@ const AddEvidencePaymentDisputeResponseSchema = z
     required: [],
   })
   .openapi('AddEvidencePaymentDisputeResponse')
-
-const AddressSchema = z
-  .object({
-    addressLine1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The first line of the street address.<br><br><span class="tablenote"><strong>Note:</strong> <b>addressLine1</b> will not be returned for any order that is more than 90 days old.</span>',
-      }),
-    addressLine2: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The second line of the street address. This field can be used for additional address information, such as a suite or apartment number. This field will be returned if defined for the shipping address.<br><br><span class="tablenote"><strong>Note:</strong> <b>addressLine2</b> will not be returned for any order that is more than 90 days old.</span><br><span class="tablenote"><b>Note:</b> As of January 31, 2022, <b>addressLine2</b> no longer returns EU VAT tax information. To determine line-item level VAT tax information, refer to <a href="#response.orders.lineItems.ebayCollectAndRemitTaxes.ebayReference">eBayReference</a>.</span>',
-      }),
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The city of the shipping destination.' }),
-    countryCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The country of the shipping destination, represented as a two-letter ISO 3166-1 alpha-2 country code. For example, <code>US</code> represents the United States, and <code>DE</code> represents Germany. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
-      }),
-    county: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The county of the shipping destination. Counties typically, but not always, contain multiple cities or towns. This field is returned if known/available.',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code of the shipping destination. Usually referred to as Zip codes in the US. Most countries have postal codes, but not all. The postal code will be returned if applicable.',
-      }),
-    stateOrProvince: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The state or province of the shipping destination. Most countries have states or provinces, but not all. The state or province will be returned if applicable.',
-      }),
-  })
-  .openapi({
-    description: 'This type contains the details of a geographical address.',
-    required: [],
-  })
-  .openapi('Address')
-
-const PhoneNumberSchema = z
-  .object({
-    phoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The primary telephone number for the shipping recipient.' }),
-  })
-  .openapi({
-    description: 'This type contains a string field representing a telephone number.',
-    required: [],
-  })
-  .openapi('PhoneNumber')
-
-const ExtendedContactSchema = z
-  .object({
-    companyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The company name associated with the buyer or eBay shipping partner. This field is only returned if defined/applicable to the buyer or eBay shipping partner.',
-      }),
-    contactAddress: AddressSchema.exactOptional().openapi({
-      description:
-        'This container shows the shipping address of the buyer or eBay shipping partner.',
-    }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field contains the email address of the buyer. This address will be returned for up to 14 days from order creation. If an order is more than 14 days old, no address is returned.<br><br><span class="tablenote"> <strong>Note:</strong> If returned, this field contains the email address of the buyer, even for Global Shipping Program shipments.<br><br>The <b>email</b> will not be returned for any order that is more than 90 days old.</span>',
-      }),
-    fullName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full name of the buyer or eBay shipping partner.<br><br><span class="tablenote"><strong>Note:</strong> The <b>fullName</b> will not be returned for any order that is more than 90 days old.</span>',
-      }),
-    primaryPhone: PhoneNumberSchema.exactOptional().openapi({
-      description:
-        'The primary telephone number of the buyer or eBay shipping partner.<br><br><span class="tablenote"><strong>Note:</strong> The <b>primaryPhone</b> will not be returned for any order that is more than 90 days old.</span>',
-    }),
-  })
-  .openapi({
-    description:
-      'This type contains shipping and contact information for a buyer or an eBay shipping partner.',
-    required: [],
-  })
-  .openapi('ExtendedContact')
-
-const TaxAddressSchema = z
-  .object({
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The city name that can be used by sellers for tax purpose.' }),
-    countryCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The country code that can be used by sellers for tax purpose, represented as a two-letter ISO 3166-1 alpha-2 country code. For example, <strong>US</strong> represents the United States, and <strong>DE</strong> represents Germany. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code that can be used by sellers for tax purpose. Usually referred to as Zip codes in the US.',
-      }),
-    stateOrProvince: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The state name that can be used by sellers for tax purpose.' }),
-  })
-  .openapi({
-    description:
-      'This container consists of address information that can be used by sellers for tax purpose.',
-    required: [],
-  })
-  .openapi('TaxAddress')
-
-const TaxIdentifierSchema = z
-  .object({
-    issuingCountry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This two-letter code indicates the country that issued the buyer's tax ID. The country that the two-letter code represents can be found in the <strong>CountryCodeEnum</strong> type, or in the  <a href=\"https://www.iso.org/iso-3166-country-codes.html \">ISO 3166</a> standard. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:CountryCodeEnum'>eBay API documentation</a>",
-      }),
-    taxIdentifierType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This enumeration value indicates the type of tax identification being used for the buyer. The different tax types are defined in the <strong>TaxIdentifierTypeEnum</strong> type. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:TaxIdentifierTypeEnum'>eBay API documentation</a>",
-      }),
-    taxpayerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This value is the unique tax ID associated with the buyer. The type of tax identification is shown in the <strong>taxIdentifierType</strong> field.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type is used by the <strong>taxIdentifier</strong> container that is returned in <strong>getOrder</strong>. The <strong>taxIdentifier</strong> container consists of taxpayer identification information for buyers from Italy, Spain, or Guatemala. It is currently only returned for orders occurring on the eBay Italy or eBay Spain marketplaces.<br><br><span class="tablenote"><strong>Note:</strong> Currently, the <strong>taxIdentifier</strong> container is only returned in <strong>getOrder</strong> and not in <strong>getOrders</strong>. So, if a seller wanted to view a buyer\'s tax information for a particular order returned in <strong>getOrders</strong>, that seller would need to use the <strong>orderId</strong> value for that particular order, and then run a <strong>getOrder</strong> call against that order ID. </span>',
-    required: [],
-  })
-  .openapi('TaxIdentifier')
-
-const BuyerSchema = z
-  .object({
-    buyerRegistrationAddress: ExtendedContactSchema.exactOptional().openapi({
-      description:
-        "Buyer's contact information that includes the buyer's name, email, phone number, and address.",
-    }),
-    taxAddress: TaxAddressSchema.exactOptional().openapi({
-      description:
-        'This container consists of address information that can be used by sellers for tax purpose.<br><br><span class="tablenote"><strong>Note:</strong> When using the eBay vault program, if an item is shipped to a vault, the tax address will be the vault address.</span>',
-    }),
-    taxIdentifier: TaxIdentifierSchema.exactOptional().openapi({
-      description:
-        'This container consists of taxpayer identification information for buyers from Italy, Spain, or Guatemala. It is currently only returned for orders occurring on the eBay Italy or eBay Spain marketplaces.<br><br><span class="tablenote"><strong>Note:</strong> Currently, the <strong>taxIdentifier</strong> container is only returned in <strong>getOrder</strong> and not in <strong>getOrders</strong>. So, if a seller wanted to view a buyer\'s tax information for a particular order returned in <strong>getOrders</strong>, that seller would need to use the <strong>orderId</strong> value for that particular order, and then run a <strong>getOrder</strong> call against that order ID. </span>',
-    }),
-    username: z.string().exactOptional().openapi({ description: "The buyer's eBay user ID." }),
-  })
-  .openapi({ description: "This type contains information about the order's buyer.", required: [] })
-  .openapi('Buyer')
-
-const CancelRequestSchema = z
-  .object({
-    cancelCompletedDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the order cancellation was completed, if applicable. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the cancellation request has actually been approved by the seller.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    cancelInitiator: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This string value indicates the party who made the initial cancellation request. Typically, either the 'Buyer' or 'Seller'. If a cancellation request has been made, this field should be returned.",
-      }),
-    cancelReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason why the <b>cancelInitiator</b> initiated the cancellation request. Cancellation reasons for a buyer might include 'order placed by mistake' or 'order won't arrive in time'. For a seller, a typical cancellation reason is 'out of stock'. If a cancellation request has been made, this field should be returned.",
-      }),
-    cancelRequestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the order cancellation request. This field is returned for each cancellation request.',
-      }),
-    cancelRequestState: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The current stage or condition of the cancellation request. This field is returned for each cancellation request. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:CancelRequestStateEnum'>eBay API documentation</a>",
-      }),
-    cancelRequestedDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the order cancellation was requested. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is returned for each cancellation request.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-  })
-  .openapi({
-    description: 'This type contains information about a buyer request to cancel an order.',
-    required: [],
-  })
-  .openapi('CancelRequest')
-
-const CancelStatusSchema = z
-  .object({
-    cancelRequests: z
-      .array(CancelRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This array contains details of one or more buyer requests to cancel the order. <br><br><b>For the getOrders call:</b>  This array is returned but is always empty.<br><b>For the getOrder call:</b> This array is returned fully populated with information about any cancellation requests.',
-      }),
-    cancelState: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The state of the order with regard to cancellation. This field is always returned, and if there are no cancellation requests, a value of <code>NONE_REQUESTED</code> is returned.  For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:CancelStateEnum'>eBay API documentation</a>",
-      }),
-    cancelledDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time the order was cancelled, if applicable. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-  })
-  .openapi({
-    description:
-      'This type contains information about any requests that have been made to cancel an order.',
-    required: [],
-  })
-  .openapi('CancelStatus')
 
 const ContestPaymentDisputeRequestSchema = z
   .object({
@@ -1341,98 +2064,6 @@ const DisputeSummaryResponseSchema = z
   })
   .openapi('DisputeSummaryResponse')
 
-const ErrorParameterSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'This is the name of input field that caused an issue with the call request.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is the actual value that was passed in for the element specified in the <strong>name</strong> field.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type contains the name and value of an input parameter that contributed to a specific error or warning condition.',
-    required: [],
-  })
-  .openapi('ErrorParameter')
-
-const ErrorSchema = z
-  .object({
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The context or source of this error or warning.' }),
-    domain: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the domain containing the service or application. For example, <code>sell</code> is a domain.',
-      }),
-    errorId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A positive integer that uniquely identifies the specific error condition that occurred. Your application can use these values as error code identifiers in your customized error-handling algorithms.',
-      }),
-    inputRefIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of one or more specific request elements (if any) associated with the error or warning. The format of these strings depends on the request payload format. For JSON, use JSONPath notation.',
-      }),
-    longMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An expanded version of the <b>message</b> field. <br><br><b>Maximum length:</b> 200 characters',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A message about the error or warning which is device agnostic and readable by end users and application developers. It explains what the error or warning is, and how to fix it (in a general sense). If applicable, the value is localized to the end user's requested locale. <br><br><b>Maximum length:</b> 50 characters",
-      }),
-    outputRefIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of one or more specific response elements (if any) associated with the error or warning. The format of these strings depends on the request payload format. For JSON, use JSONPath notation.',
-      }),
-    parameters: z
-      .array(ErrorParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains a list of name-value pairs that provide additional information concerning this error or warning. Each item in the list is an input parameter that contributed to the error or warning condition.',
-      }),
-    subdomain: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The name of the domain's subsystem or subdivision. For example, <code>fulfillment</code> is a subdomain in the <code>sell</code> domain.",
-      }),
-  })
-  .openapi({
-    description: 'This type contains a error or warning related to a call request. ',
-    required: [],
-  })
-  .openapi('Error')
-
 const EvidenceRequestSchema = z
   .object({
     evidenceId: z
@@ -1477,108 +2108,6 @@ const EvidenceRequestSchema = z
     required: [],
   })
   .openapi('EvidenceRequest')
-
-const PickupStepSchema = z
-  .object({
-    merchantLocationKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A merchant-defined unique identifier of the merchant's store where the buyer will pick up their In-Store Pickup order.<br><br> This field is always returned with the <b>pickupStep</b> container.",
-      }),
-  })
-  .openapi({
-    description:
-      "This type is used to indicate the merchant's store where the buyer will pickup their In-Store Pickup order. The <b>pickupStep</b> container is only returned for In-Store Pickup orders. The In-Store Pickup feature is supported in the US, Canada, UK, Germany, and Australia marketplaces.",
-    required: [],
-  })
-  .openapi('PickupStep')
-
-const ShippingStepSchema = z
-  .object({
-    shipTo: ExtendedContactSchema.exactOptional().openapi({
-      description:
-        'This container consists of shipping and contact information about the individual or organization to whom the fulfillment package will be shipped.<br><span class="tablenote"><strong>Note:</strong> When <b>FulfillmentInstructionsType</b> is <code>FULFILLED_BY_EBAY</code>, there will be no <b>shipTo</b> address displayed.</span><br><span class="tablenote"><strong>Note:</strong> For Digitally Delivered Goods (DDG), this address is the same as the Buyer\'s Registration Address.</span><br><span class="tablenote"><strong>Note:</strong> For a Global Shipping Program shipment, this is the address of the international shipping provider\'s domestic warehouse. The international shipping provider is responsible for delivery to the final destination address. For more information, see <a href="https://developer.ebay.com/devzone/guides/features-guide/default.html#Development/Shipping-APIWork.html#AddressingaGlobalShippingProgramShipment " target="_blank">Addressing a Global Shipping Program Shipment</a>.</span>',
-    }),
-    shipToReferenceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is the unique identifer of the Global Shipping Program (GSP) shipment. This field is only returned if the line item is being shipped via GSP (the value of the <b>fulfillmentStartInstructions.ebaySupportedFulfillment</b> field will be <code>true</code>. The international shipping provider uses the <b>shipToReferenceId</b> value as the primary reference number to retrieve the relevant details about the buyer, the order, and the fulfillment, so the shipment can be completed. <br><br>Sellers must include this value on the shipping label immediately above the street address of the international shipping provider. <br><br>Example: "Reference #1234567890123456" <br><br><span class="tablenote"><strong>Note:</strong> This value is the same as the <b>ShipToAddress.ReferenceID</b> value returned by the Trading API\'s GetOrders call.</span>',
-      }),
-    shippingCarrierCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the shipping carrier being used to ship the line item. <br><br><span class="tablenote"><strong>Note:</strong> The Trading API\'s <a href="https://developer.ebay.com/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call can be used to retrieve the latest shipping carrier and shipping service option enumeration values.</span>',
-      }),
-    shippingServiceCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the shipping service option being used to ship the line item.<br><br><span class="tablenote"><strong>Note:</strong> Use the Trading API\'s <a href="/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call to retrieve the latest shipping carrier and shipping service option enumeration values. When making the <a href="/devzone/XML/docs/Reference/eBay/GeteBayDetails.html " target="_blank">GeteBayDetails</a> call, include the <strong>DetailName</strong> field in the request payload and set its value to <code>ShippingServiceDetails</code>. Each valid shipping service option (returned in <strong>ShippingServiceDetails.ShippingService</strong> field) and corresponding shipping carrier (returned in <strong>ShippingServiceDetails.ShippingCarrier</strong> field) is returned in response payload.</span>',
-      }),
-  })
-  .openapi({
-    description:
-      'This type contains shipping information for a fulfillment, including the shipping carrier, the shipping service option, the shipment destination, and the Global Shipping Program reference ID.',
-    required: [],
-  })
-  .openapi('ShippingStep')
-
-const FulfillmentStartInstructionSchema = z
-  .object({
-    ebaySupportedFulfillment: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field is only returned if its value is <code>true</code> and indicates that the fulfillment will be shipped via eBay\'s Global Shipping Program, eBay International Shipping, or the Authenticity Guarantee service program. <br><br>For more information, see the <a href="https://www.ebay.com/help/selling/shipping-items/setting-shipping-options/global-shipping-program?id=4646 " target="_blank">Global Shipping Program</a> help topic.',
-      }),
-    finalDestinationAddress: AddressSchema.exactOptional().openapi({
-      description:
-        'This container is only returned if the value of <b>ebaySupportedFulfillment</b> field is <code>true</code>. <br><br>This is the final destination address for a Global Shipping Program shipment or an eBay International Shipping shipment, which is usually the recipient\'s home. Sellers should not ship directly to this address; instead they should ship this package to their international shipping provider\'s domestic warehouse. The international shipping provider is responsible for delivery to the final destination address.<br><br>For more information, see <a href="https://developer.ebay.com/devzone/guides/features-guide/default.html#Development/Shipping-APIWork.html#AddressingaGlobalShippingProgramShipment " target="_blank">Addressing a Global Shipping Program Shipment</a>.<p> <span class="tablenote"><strong>Note:</strong> For Authenticity Guarantee program shipment, this is the address of the authenticator\'s warehouse. The authenticator is responsible for delivery to the buyer shipping address.</span></p>',
-    }),
-    fulfillmentInstructionsType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The enumeration value returned in this field indicates the method of fulfillment that will be used to deliver this set of line items (this package) to the buyer. This field will have a value of <code>SHIP_TO</code> if the <b>ebaySupportedFulfillment</b> field is returned with a value of <code>true</code>. See the <strong>FulfillmentInstructionsType</strong> definition for more information about different fulfillment types. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:FulfillmentInstructionsType'>eBay API documentation</a>",
-      }),
-    maxEstimatedDeliveryDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is the estimated latest date that the fulfillment will be completed. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned ifthe value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code> or <code>PREPARE_FOR_PICKUP</code>.  <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    minEstimatedDeliveryDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is the estimated earliest date that the fulfillment will be completed. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned if  the value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code> or <code>PREPARE_FOR_PICKUP</code>.  <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    pickupStep: PickupStepSchema.exactOptional().openapi({
-      description:
-        "This container is only returned for In-Store Pickup orders, and it indicates the specific merchant's store where the buyer will pick up the order. The In-Store Pickup feature is supported in the US, Canada, UK, Germany, and Australia marketplaces.",
-    }),
-    shippingStep: ShippingStepSchema.exactOptional().openapi({
-      description:
-        'This container consists of shipping information for this fulfillment, including the shipping carrier, the shipping service option, and the shipment destination. This container is not returned if the value of the <b>fulfillmentInstructionsType</b> field is <code>DIGITAL</code>, or for In-Store Pickup orders. <br><br> For Click and Collect orders, the shipping destination will be a brick-and-mortar store where the buyer will pick up the order.',
-    }),
-  })
-  .openapi({
-    description:
-      "This type contains a set of specifications for processing a fulfillment of an order, including the type of fulfillment, shipping carrier and service, addressing details, and estimated delivery window. These instructions are derived from the buyer's and seller's eBay account preferences, the listing parameters, and the buyer's checkout selections. The seller can use them as a starting point for packaging, addressing, and shipping the order.",
-    required: [],
-  })
-  .openapi('FulfillmentStartInstruction')
 
 const InfoFromBuyerSchema = z
   .object({
@@ -1687,161 +2216,6 @@ const IssueRefundRequestSchema = z
   })
   .openapi('IssueRefundRequest')
 
-const LineItemSchema: z.ZodType<LineItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        appliedPromotions: z
-          .array(AppliedPromotionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'This array contains information about one or more sales promotions or discounts applied to the line item. It is always returned, but will be returned as an empty array if no special sales promotions or discounts apply to the order line item.',
-          }),
-        deliveryCost: DeliveryCostSchema.exactOptional().openapi({
-          description:
-            'This container consists of a breakdown of all costs associated with the fulfillment of the line item.',
-        }),
-        discountedLineItemCost: AmountSchema.exactOptional().openapi({
-          description:
-            'The cost of the line item after applying any discounts. This container is only returned if the order line item was discounted through a promotion.',
-        }),
-        ebayCollectAndRemitTaxes: z
-          .array(EbayCollectAndRemitTaxSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "This container will be returned if the order line item is subject to a 'Collect and Remit' tax that eBay will collect and remit to the proper taxing authority on the buyer's behalf.<br><br>'Collect and Remit' tax includes:<ul><li>US state-mandated sales tax</li><li>Federal and Provincial Sales Tax in Canada</li><li>'Goods and Services' tax in Canada, Australia, and New Zealand</li><li>VAT collected for the UK and EU countries</li></ul>The amount of this tax is shown in the <strong>amount</strong> field, and the type of tax is shown in the <strong>taxType</strong> field.<br><br>eBay will display the tax type and amount during checkout in accordance with the buyer's address, and handle collection and remittance of the tax without requiring the seller to take any action.",
-          }),
-        ebayCollectedCharges: EbayCollectedChargesSchema.exactOptional().openapi({
-          description:
-            'This container consists of a breakdown of costs that are collected by eBay from the buyer for this order. <br><br><span class="tablenote"><strong>Note:</strong> Currently, this container is returned only if eBay is directly charging the buyer for eBay shipping.</span>',
-        }),
-        giftDetails: GiftDetailsSchema.exactOptional().openapi({
-          description:
-            'This container consists of information that is needed by the seller to send a digital gift card to the buyer, or recipient of the digital gift card. This container is only returned and applicable for digital gift card line items.',
-        }),
-        itemLocation: ItemLocationSchema.exactOptional().openapi({
-          description:
-            'This container field describes the physical location of the order line item.',
-        }),
-        legacyItemId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The eBay-generated legacy listing item ID of the listing. Note that the unique identifier of a listing in REST-based APIs is called the <strong>listingId</strong> instead.',
-          }),
-        legacyVariationId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The unique identifier of a single variation within a multiple-variation listing. This field is only returned if the line item purchased was from a multiple-variation listing.',
-          }),
-        lineItemCost: AmountSchema.exactOptional().openapi({
-          description:
-            'The selling price of the line item before applying any discounts. The value of this field is calculated by multiplying the single unit price by the number of units purchased (value of the <b>quantity</b> field).',
-        }),
-        lineItemFulfillmentInstructions:
-          LineItemFulfillmentInstructionsSchema.exactOptional().openapi({
-            description:
-              "This container consists of information related to shipping dates and expectations, including the 'ship-by date' and expected delivery windows that are based on the seller's stated handling time and the shipping service option that will be used. These fields provide guidance on making sure expected delivery dates are made, whether the order is a <i>eBay Guaranteed Delivery</i> order or a non-guaranteed delivery order.",
-          }),
-        lineItemFulfillmentStatus: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "This enumeration value indicates the current fulfillment status of the line item. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:LineItemFulfillmentStatusEnum'>eBay API documentation</a>",
-          }),
-        lineItemId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'This is the unique identifier of an eBay order line item. This field is created as soon as there is a commitment to buy from the seller.',
-          }),
-        linkedOrderLineItems: z
-          .array(LinkedOrderLineItemSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array of one or more line items related to the corresponding order, but not a part of that order. Details include the order ID, line item ID, and title of the linked line item, the seller of that item, item specifics, estimated delivery times, and shipment tracking (if available).',
-          }),
-        listingMarketplaceId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The unique identifier of the eBay marketplace where the line item was listed. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
-          }),
-        properties: LineItemPropertiesSchema.exactOptional().openapi({
-          description:
-            'Contains information about the eBay programs, if any, under which the line item was listed.',
-        }),
-        purchaseMarketplaceId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The unique identifier of the eBay marketplace where the line item was listed. Often, the <strong>listingMarketplaceId</strong> and the <strong>purchaseMarketplaceId</strong> identifier are the same, but there are occasions when an item will surface on multiple eBay marketplaces. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
-          }),
-        quantity: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of units of the line item in the order. These are represented as a group by a single <b>lineItemId</b>.',
-          }),
-        refunds: z
-          .array(LineItemRefundSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'This array is always returned, but is returned as an empty array unless the seller has submitted a partial or full refund to the buyer for the order. If a refund has occurred, the refund amount and refund date will be shown for each refund.',
-          }),
-        sku: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Seller-defined Stock-Keeping Unit (SKU). This inventory identifier must be unique within the seller's eBay inventory. SKUs are optional when listing in the legacy/Trading API system, but SKUs are required when listing items through the Inventory API model.",
-          }),
-        soldFormat: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The eBay listing type of the line item. The most common listing types are <code>AUCTION</code> and <code>FIXED_PRICE</code>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:SoldFormatEnum'>eBay API documentation</a>",
-          }),
-        taxes: z
-          .array(TaxSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Contains a list of taxes applied to the line item, if any. This array is always returned, but will be returned as empty if no taxes are applicable to the line item.',
-          }),
-        title: z.string().exactOptional().openapi({ description: 'The title of the listing.' }),
-        total: AmountSchema.exactOptional().openapi({
-          description:
-            "This is the total price that the buyer must pay for the line item after all costs (item cost, delivery cost, taxes,) are added, minus any discounts and/or promotions.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>total</strong> value only when the <strong>fieldGroups</strong> query parameter is set to <code>TAX_BREAKDOWN</code>. If the <strong>fieldGroups</strong> query parameter is not set to <code>TAX_BREAKDOWN</code>, 'Collect and Remit' will not be added into this <strong>total</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>total</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is in this amount:<ul><li><code>STATE_SALES_TAX</code>: US state-mandated sales tax</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: 'Goods and Services' tax in Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
-        }),
-        variationAspects: z
-          .array(NameValuePairSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array of aspect name-value pairs that identifies the specific variation of a multi-variation listing. This array can contain multiple name-value pairs, such as <code>color:blue</code> and <code>size:large</code>, and will only be returned for orders created from a multiple-variation listing.',
-          }),
-      })
-      .openapi({
-        description: 'This type contains the details of each line item in an order.',
-        required: [],
-      }),
-  )
-  .openapi('LineItem')
-
 const LineItemReferenceSchema = z
   .object({
     lineItemId: z
@@ -1901,391 +2275,7 @@ const MonetaryTransactionSchema = z
   })
   .openapi('MonetaryTransaction')
 
-const SellerActionsToReleaseSchema = z
-  .object({
-    sellerActionToRelease: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A possible action that the seller can take to expedite the release of a payment hold. A <strong>sellerActionToRelease</strong> field is returned for each possible action that a seller may take. Possible actions may include providing shipping/tracking information, issuing a refund, providing refund information, contacting customer support, etc.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type is used to state possible action(s) that a seller can take to release a payment hold placed against an order.',
-    required: [],
-  })
-  .openapi('SellerActionsToRelease')
-
-const PaymentHoldSchema = z
-  .object({
-    expectedReleaseDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the payment being held is expected to be released to the seller. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field will be returned if known by eBay. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    holdAmount: AmountSchema.exactOptional().openapi({
-      description:
-        'The monetary amount of the payment being held. This field is always returned with the <strong>paymentHolds</strong> array. ',
-    }),
-    holdReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason that the payment is being held. A seller's payment may be held for a number of reasons, including when the seller is new, the seller's level is below standard, or if a return case or 'Significantly not as described' case is pending against the seller. This field is always returned with the <strong>paymentHolds</strong> array.",
-      }),
-    holdState: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The current stage or condition of the hold. This field is always returned with the <strong>paymentHolds</strong> array.<br><br><b>Applicable values:</b><ul><li><code>HELD</code></li><li><code>HELD_PENDING</code></li><li><code>NOT_HELD</code></li><li><code>RELEASE_CONFIRMED</code></li><li><code>RELEASE_FAILED</code></li><li><code>RELEASE_PENDING</code></li><li><code>RELEASED</code></li></ul>',
-      }),
-    releaseDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The date and time that the payment being held was actually released to the seller. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the seller's payment is actually released into the seller's account.<br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>",
-      }),
-    sellerActionsToRelease: z
-      .array(SellerActionsToReleaseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of one or more possible actions that the seller can take to expedite the release of the payment hold.',
-      }),
-  })
-  .openapi({
-    description:
-      "This type contains information about a hold placed on a payment to a seller for an order, including the reason why the buyer's payment for the order is being held, the expected release date of the funds into the seller's account, the current state of the hold, and the actual release date if the payment has been released, and possible actions the seller can take to expedite the payout of funds into their account.",
-    required: [],
-  })
-  .openapi('PaymentHold')
-
-const PaymentSchema = z
-  .object({
-    amount: AmountSchema.exactOptional().openapi({
-      description:
-        "The amount that seller receives for the order via the payment method mentioned in <strong>Payment.paymentMethod</strong>.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, which includes US state-mandated sales tax, Federal and Provincial Sales Tax in Canada, 'Good and Services' tax in Canada, Australia, and New Zealand, and VAT collected for UK or EU, the 'Collect and Remit' tax amount for the order will be included in this <strong>amount.value</strong> field (and in the <strong>amount.convertedFromValue</strong> field if currency conversion is applicable).<br><br> To determine if 'Collect and Remit' taxes were added into this <strong>totalDueSeller</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: Canada, Australia, and New Zealand</li><li><code>VAT</code>: UK and EU countries</li></ul></span>",
-    }),
-    paymentDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the payment was received by the seller. This field will not be returned if buyer has yet to pay for the order. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    paymentHolds: z
-      .array(PaymentHoldSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "This container is only returned if eBay is temporarily holding the seller's funds for the order. If a payment hold has been placed on the order, this container includes the reason for the payment hold, the expected release date of the funds into the seller's account, the current state of the hold, and as soon as the payment hold has been released, the actual release date.",
-      }),
-    paymentMethod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The payment method used to pay for the order. See the <strong>PaymentMethodTypeEnum</strong> type for more information on the payment methods. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:PaymentMethodTypeEnum'>eBay API documentation</a>",
-      }),
-    paymentReferenceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field is only returned if payment has been made by the buyer, and the <strong>paymentMethod</strong> is <code>ESCROW</code>. This field contains a special ID for ESCROW.',
-      }),
-    paymentStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The enumeration value returned in this field indicates the status of the payment for the order. See the <strong>PaymentStatusEnum</strong> type definition for more information on the possible payment states. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:PaymentStatusEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description: 'This type is used to provide details about the seller payments for an order.',
-    required: [],
-  })
-  .openapi('Payment')
-
-const OrderRefundSchema = z
-  .object({
-    amount: AmountSchema.exactOptional().openapi({
-      description:
-        'This field shows the refund amount for an order. This container is always returned for each refund.<br><br><span class="tablenote"><b>Note:</b> The refund amount shown is the seller\'s <i><b>net amount</b></i> received from the sale/transaction. eBay-collected tax will not be included in this amount, so the actual amount of the buyer\'s refund may be higher than this value.</span>',
-    }),
-    refundDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the refund was issued. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. This field is not returned until the refund has been issued. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    refundId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier of a refund that was initiated for an order through the <b>issueRefund</b> method. If the <b>issueRefund</b> method was used to issue one or more refunds at the line item level, these refund identifiers are returned at the line item level instead (<b>lineItems.refunds.refundId</b> field).<br><br> A <b>refundId</b> value is returned in the response of the <b>issueRefund</b> method, and this same value will be returned in the <b>getOrders</b> and <b>getOrders</b> responses for pending and completed refunds. For other refunds, see the <b>refundReferenceId</b> field.',
-      }),
-    refundReferenceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The eBay-generated unique identifier for the refund. This field is not returned until the refund has been issued.',
-      }),
-    refundStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This enumeration value indicates the current status of the refund to the buyer. This container is always returned for each refund. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:RefundStatusEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description:
-      'This type contains information about a refund issued for an order. This does not include line item level refunds.',
-    required: [],
-  })
-  .openapi('OrderRefund')
-
-const PaymentSummarySchema = z
-  .object({
-    payments: z
-      .array(PaymentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This array consists of payment information for the order, including payment status, payment method, payment amount, and payment date. This array is always returned, although some of the fields under this container will not be returned until payment has been made.',
-      }),
-    refunds: z
-      .array(OrderRefundSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This array is always returned, but is returned as an empty array unless the seller has submitted a partial or full refund to the buyer for the order. If a refund has occurred, the refund amount and refund date will be shown for each refund.',
-      }),
-    totalDueSeller: AmountSchema.exactOptional().openapi({
-      description:
-        "This is the total price that the seller receives for the entire order after all costs (item cost, delivery cost, taxes) are added for all line items, minus any discounts and/or promotions for any of the line items. Note that this value is subject to change before payment is actually made by the buyer (if the <strong>paymentStatus</strong> value was <code>PENDING</code> or <code>FAILED</code>), or if a partial or full refund occurs with the order.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>totalDueSeller</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>totalDueSeller</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
-    }),
-  })
-  .openapi({
-    description:
-      'This type contains information about the various monetary exchanges that apply to the net balance due for the order.',
-    required: [],
-  })
-  .openapi('PaymentSummary')
-
-const PricingSummarySchema = z
-  .object({
-    adjustment: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total amount of any adjustments that were applied to the cost of the item(s) in the order. This amount does not include shipping, discounts, fixed fees, or taxes.<br><br>This container is only returned if price adjustments were made to the order after the initial transaction/commitment to buy occurred.',
-    }),
-    deliveryCost: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total cost of delivering the order to the buyer, before any shipping/delivery discount is applied.',
-    }),
-    deliveryDiscount: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total amount of delivery discounts (including shipping discounts) that apply to the order. This should be a negative real number.<br><br>This container is only returned if delivery discounts are being applied to the order.',
-    }),
-    fee: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total amount of any special fees applied to the order, such as a tire recycling fee or an electronic waste fee. <br><br>This container is returned if special fees are being applied to the order and if the <b>fieldGroups</b> is set to <code>TAX_BREAKDOWN</code>.',
-    }),
-    priceDiscount: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total amount of all item price discounts (including promotions) that apply to the order and reduce its cost to the buyer. This should be a negative real number. <br><br>This container is only returned if special discounts are being applied to the order.',
-    }),
-    priceSubtotal: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the cumulative costs of of all units of all line items in the order, before any discount is applied.',
-    }),
-    tax: AmountSchema.exactOptional().openapi({
-      description:
-        'This container shows the total amount of tax for the order. To calculate the tax percentage rate, divide this value by the value of the <b>total</b> field. <br><br>This container is only returned if any type of tax (sales tax, tax on shipping, tax on handling, import tax, etc.) is applied to the order.',
-    }),
-    total: AmountSchema.exactOptional().openapi({
-      description:
-        "The total cost of the order after adding all line item costs, delivery costs, sales tax, and special fees, and then subtracting all special discounts and price adjustments.<br><br><span class=\"tablenote\"><strong>Note:</strong> For orders that are subject to 'eBay Collect and Remit' tax, the 'Collect and Remit' tax amount for the order will be included in this <strong>total</strong> value only when the <strong>fieldGroups</strong> query parameter is set to <code>TAX_BREAKDOWN</code>. If the <strong>fieldGroups</strong> query parameter is not set to <code>TAX_BREAKDOWN</code>, 'Collect and Remit' will not be added into this <strong>total</strong> value.<br><br>To determine if 'Collect and Remit' taxes were added into this <strong>total</strong> value, the user can check for the corresponding <strong>lineItems.ebayCollectAndRemitTaxes</strong> and the <strong>lineItems.taxes</strong> containers in the response. If both of these containers appear for one or more line items in the response with the following <strong>taxType</strong> values, the 'Collect and Remit' tax amount that the buyer paid is included in this amount:<ul><li><code>STATE_SALES_TAX</code>: US state-mandated sales tax</li><li><code>PROVINCE_SALES_TAX</code>: Provincial Sales Tax in Canada</li><li><code>GST</code>: 'Good and Services' tax in Canada, Australia, and New Zealand</li><li><code>VAT</code>: VAT collected for UK and EU countries</li></ul></span>",
-    }),
-  })
-  .openapi({
-    description:
-      'This type contains a summary of cumulative costs and charges for all line items of an order, including item price, price adjustments, sales taxes, delivery costs, and order discounts.',
-    required: [],
-  })
-  .openapi('PricingSummary')
-
-const ProgramSchema: z.ZodType<ProgramType> = z
-  .lazy(() =>
-    z
-      .object({
-        authenticityVerification: PostSaleAuthenticationProgramSchema.exactOptional().openapi({
-          description:
-            'This field is returned when the third-party authenticator performs the authentication verification inspection on the order line item. Different values will be returned based on whether the item passed or failed the authentication verification inspection.',
-        }),
-        ebayInternationalShipping: EbayInternationalShippingSchema.exactOptional().openapi({
-          description:
-            'This container is returned if the order is being fulfilled through eBay International Shipping.',
-        }),
-        ebayShipping: EbayShippingSchema.exactOptional().openapi({
-          description:
-            'This container is returned only if the order is an eBay shipping order. It consists of a field that indicates the provider of a shipping label for this order.',
-        }),
-        ebayVault: EbayVaultProgramSchema.exactOptional().openapi({
-          description:
-            'This field provides information about the eBay vault program that has been selected for an order. This is returned only for those items that are eligible for the eBay Vault Program.',
-        }),
-        fulfillmentProgram: EbayFulfillmentProgramSchema.exactOptional().openapi({
-          description:
-            'This field provides details about an order line item being handled by eBay fulfillment. It is only returned for paid orders being fulfilled by eBay or an eBay fulfillment partner.',
-        }),
-      })
-      .openapi({
-        description:
-          'This type is returned for order line items eligible for the Authenticity Guarantee service and/or for order line items fulfilled by the eBay Fulfillment program or eBay shipping.',
-        required: [],
-      }),
-  )
-  .openapi('Program')
-
-const OrderSchema = z
-  .object({
-    buyer: BuyerSchema.exactOptional().openapi({
-      description:
-        "This container consists of information about the order's buyer. At this time, only the buyer's eBay user ID is returned, but it's possible that more buyer information can be added to this container in the future.",
-    }),
-    buyerCheckoutNotes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field contains any comments that the buyer left for the seller about the order during checkout process. This field is only returned if a buyer left comments at checkout time. ',
-      }),
-    cancelStatus: CancelStatusSchema.exactOptional().openapi({
-      description:
-        'This container consists of order cancellation information if a cancel request has been made. This container is always returned, and if no cancel request has been made, the <strong>cancelState</strong> field is returned with a value of <code>NONE_REQUESTED</code>, and an empty <strong>cancelRequests</strong> array is also returned.',
-    }),
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the order was created. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    ebayCollectAndRemitTax: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is only returned if <code>true</code>, and indicates that eBay will collect tax (US state-mandated sales tax, Federal and Provincial Sales Tax in Canada, 'Goods and Services' tax in Canada, Australia, and New Zealand, and VAT collected for UK and EU countries,) for at least one line item in the order, and remit the tax to the taxing authority of the buyer's residence. If this field is returned, the seller should search for one or more <strong>ebayCollectAndRemitTaxes</strong> containers at the line item level to get more information about the type of tax and the amount.",
-      }),
-    fulfillmentHrefs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'This array contains a list of one or more <strong>getShippingFulfillment</strong> call URIs that can be used to retrieve shipping fulfillments that have been set up for the order.',
-      }),
-    fulfillmentStartInstructions: z
-      .array(FulfillmentStartInstructionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "This container consists of a set of specifications for fulfilling the order, including the type of fulfillment, shipping carrier and service, shipping address, and estimated delivery window. These instructions are derived from the buyer's and seller's eBay account preferences, the listing parameters, and the buyer's checkout selections. The seller can use them as a starting point for packaging, addressing, and shipping the order.<br><br><span class=\"tablenote\"><strong>Note:</strong> Although this container is presented as an array, it currently returns only one set of fulfillment specifications. Additional array members will be supported in future functionality.</span>",
-      }),
-    lastModifiedDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time that the order was last modified. This timestamp is in ISO 8601 format, which uses the 24-hour Universal Coordinated Time (UTC) clock. <br><br><b>Format:</b> <code>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z</code> <br><b>Example:</b> <code>2015-08-04T19:09:02.768Z</code>',
-      }),
-    legacyOrderId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the order in legacy format, as traditionally used by the Trading API (and other legacy APIs). Both the <b>orderId</b> field and this field are always returned.',
-      }),
-    lineItems: z
-      .array(LineItemSchema)
-      .exactOptional()
-      .openapi({
-        description: 'This array contains the details for all line items that comprise the order.',
-      }),
-    orderFulfillmentStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The degree to which fulfillment of the order is complete. See the <strong>OrderFulfillmentStatus</strong> type definition for more information about each possible fulfillment state. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:OrderFulfillmentStatus'>eBay API documentation</a>",
-      }),
-    orderId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the order. Both the <b>legacyOrderId</b> field (traditionally used by Trading and other legacy APIS) and this field are always returned.',
-      }),
-    orderPaymentStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The enumeration value returned in this field indicates the current payment status of an order, or in case of a refund request, the current status of the refund. See the <strong>OrderPaymentStatusEnum</strong> type definition for more information about each possible payment/refund state. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/fulfillment/types/sel:OrderPaymentStatusEnum'>eBay API documentation</a>",
-      }),
-    paymentSummary: PaymentSummarySchema.exactOptional().openapi({
-      description:
-        'This container consists of detailed payment information for the order, including buyer payment for the order, refund information (if applicable), and seller payment holds (if applicable).',
-    }),
-    pricingSummary: PricingSummarySchema.exactOptional().openapi({
-      description:
-        'This container consists of a summary of cumulative costs and charges for all line items of an order, including item price, price adjustments, sales taxes, delivery costs, and order discounts.',
-    }),
-    program: ProgramSchema.exactOptional().openapi({
-      description:
-        "This container is returned for orders that are eligible for eBay's Authenticity Guarantee service. The seller ships Authenticity Guarantee service items to the authentication partner instead of the buyer. The authenticator address is found in the <code>fulfillmentStartInstructions.shippingStep.shipTo</code> container. If the item is successfully authenticated, the authenticator will ship the item to the buyer.",
-    }),
-    salesRecordReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An eBay-generated identifier that is used to identify and manage orders through the Selling Manager and Selling Manager Pro tools. This order identifier can also be found on the Orders grid page and in the Sales Record pages in Seller Hub. A <strong>salesRecordReference</strong> number is only generated and returned at the order level, and not at the order line item level.<br><br> In cases where the seller does not have a Selling Manager or Selling Manager Pro subscription nor access to Seller Hub, this field may not be returned.',
-      }),
-    sellerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique eBay user ID of the seller who sold the order.' }),
-    totalFeeBasisAmount: AmountSchema.exactOptional().openapi({
-      description:
-        'This is the cumulative base amount used to calculate the final value fees for each order. The final value fees are deducted from the seller payout associated with the order. Final value fees are calculated as a percentage of order cost (item cost + shipping cost) and the percentage rate can vary by eBay category. ',
-    }),
-    totalMarketplaceFee: AmountSchema.exactOptional().openapi({
-      description:
-        'This is the cumulative fees accrued for the order and deducted from the seller payout.',
-    }),
-  })
-  .openapi({
-    description:
-      'This type contains the details of an order, including information about the buyer, order history, shipping fulfillments, line items, costs, payments, and order fulfillment status.',
-    required: [],
-  })
-  .openapi('Order')
-
-const OrderSearchPagedCollectionSchema = z
+const OrderSearchPagedCollectionSchema: z.ZodType<OrderSearchPagedCollectionType> = z
   .object({
     href: z
       .string()
@@ -3003,18 +2993,16 @@ export const postOrderOrderIdShippingFulfillmentRoute = createRoute({
     201: {
       description:
         'Created. The call also returns the following location code: <br><br><code>{ENV}/sell/fulfillment/v1/order/{ORDERID}/shipping_fulfillment/{FULFILLMENTID}</code> <br><br>The <code>ENV</code> string is the HTTPS path to the same eBay supported environment in which this call was issued. The <code>ORDERID</code> parameter is the unique identifier of the order addressed by this call; for example, <code>01-03955-36441</code>. The <code>FULFILLMENTID</code> parameter identifies the newly created fulfillment; for example, <code>9405509699937003457459</code>. Use this Get Fulfillment URI to retrieve the contents of the new fulfillment.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'A successful call returns the following location code: <br><br><code>{ENV}/sell/fulfillment/v1/order/{ORDERID}/shipping_fulfillment/{FULFILLMENTID}</code> <br><br>The <code>ENV</code> string is the HTTPS path to the same eBay supported environment in which this call was issued. The <code>ORDERID</code> parameter is the unique identifier of the order addressed by this call; for example, <code>01-03955-36441</code>. The <code>FULFILLMENTID</code> parameter identifies the newly created fulfillment; for example, <code>9405509699937003457459</code>. Use this Get Fulfillment URI to retrieve the contents of the new fulfillment.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'A successful call returns the following location code: <br><br><code>{ENV}/sell/fulfillment/v1/order/{ORDERID}/shipping_fulfillment/{FULFILLMENTID}</code> <br><br>The <code>ENV</code> string is the HTTPS path to the same eBay supported environment in which this call was issued. The <code>ORDERID</code> parameter is the unique identifier of the order addressed by this call; for example, <code>01-03955-36441</code>. The <code>FULFILLMENTID</code> parameter identifies the newly created fulfillment; for example, <code>9405509699937003457459</code>. Use this Get Fulfillment URI to retrieve the contents of the new fulfillment.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },

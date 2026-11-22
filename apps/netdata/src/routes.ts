@@ -1,5 +1,14 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const BearerProtectionValueSchema = z
+  .string()
+  .regex(/^(?:[oO][nN]|[oO][fF][fF]|[tT][rR][uU][eE]|[fF][aA][lL][sS][eE]|[yY][eE][sS]|[nN][oO])?$/)
+  .openapi({
+    description:
+      '`on`, `true` or `yes` enable; `off`, `false` or `no` disable; matched case-insensitively. Empty means no change.',
+  })
+  .openapi('BearerProtectionValue')
+
 const InfoSchema = z
   .object({
     version: z
@@ -399,7 +408,7 @@ const ContextSchema = z
       .exactOptional()
       .openapi({ description: 'The UNIX timestamp of the latest entry in the database.' }),
     charts: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -431,7 +440,7 @@ const ContextSummarySchema = z
       .exactOptional()
       .openapi({ description: 'The unique handshake id of this netdata server and the hub.' }),
     host_labels: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The host labels associated with this netdata server.' }),
     context: z
@@ -1328,7 +1337,7 @@ const Jsonwrap2Schema = z
       .exactOptional()
       .openapi({ required: [] }),
     result: DataJsonFormats2Schema.exactOptional(),
-    timings: z.object({}).exactOptional(),
+    timings: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'Data response with `format=json2`\n', required: [] })
   .openapi('Jsonwrap2')
@@ -1920,14 +1929,14 @@ const WeightsSchema = z
 const ConfigSchemaSchema = z
   .object({
     jsonSchema: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'Standard JSON Schema object describing the schema of each configurable entity.',
       }),
     uiSchema: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2102,6 +2111,179 @@ const ConfigDefaultResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('ConfigDefaultResponse')
+
+const ClaimResponseSchema = z
+  .object({
+    success: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Present only for claim action responses (when key is provided).\ntrue = claiming succeeded, false = claiming failed.\nNot present in info responses (when requesting claim status without key).\n',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Result message. Present only for claim action responses.\n- Success: "ok"\n- Failure: Reason the claim failed (e.g., "Failed: token is expired, not found, or invalid", "Failed: Netdata Cloud is unavailable")\n- HTTP 400: "invalid key" or "invalid parameters"\n',
+      }),
+    cloud: z
+      .object({
+        id: z.int().min(0).openapi({ description: 'Cloud connection ID counter.' }),
+        status: z
+          .enum(['available', 'offline', 'indirect', 'online', 'banned'])
+          .openapi({
+            description:
+              'Current cloud connection status of the agent.\n- available: Not claimed yet, can be claimed\n- offline: Claimed but currently disconnected\n- indirect: Connected through parent agent\n- online: Claimed and connected (cannot re-claim)\n- banned: Banned from cloud (cannot claim)\n',
+          }),
+        since: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'Unix timestamp of the latest cloud connection state change.',
+          }),
+        age: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'Signed difference in seconds between response generation time and `since`; may be negative after a backward system-clock adjustment.',
+          }),
+        url: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'Netdata Cloud URL. Emitted for every status and may be null when the active ACLK URL is unavailable.\nFor banned status, the current runtime emits this member twice from two URL sources; OpenAPI represents it as one logical property.\n',
+          }),
+        reason: z
+          .string()
+          .openapi({
+            description: 'Status explanation or connection error; an empty string when online.',
+          }),
+        claim_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Present for banned, offline, online, and indirect statuses.\nContains the canonical claim UUID when one is available; it can be empty when no claim ID is available.\n',
+          }),
+        next_check: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'Unix timestamp of the next connection attempt; present only for offline status when scheduled in the future.',
+          }),
+        next_in: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 1,
+            description: 'Seconds until `next_check`; present only when `next_check` is present.',
+          }),
+      })
+      .openapi({
+        description: 'Current Netdata Cloud connection state.',
+        required: ['id', 'status', 'since', 'age', 'url', 'reason'],
+      }),
+    can_be_claimed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the agent can currently be claimed. Present in info and error responses.\ntrue for available/offline/indirect states, false for online/banned.\n',
+      }),
+    key_filename: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Full path to the file containing the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\nNot present after a successful claim or if no verification key file has ever been published successfully.\nPlatform-specific path (Linux: /var/lib/netdata/..., Windows: C:\\...).\n',
+      }),
+    cmd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'OS-specific command to retrieve the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\n- Linux: "sudo cat /var/lib/netdata/netdata_random_session_id"\n- Docker: "docker exec netdata cat /var/lib/netdata/netdata_random_session_id"\n- Windows: "more C:\\path\\to\\netdata_random_session_id"\n',
+      }),
+    help: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Human-readable instructions for obtaining the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\n',
+      }),
+    agent: z
+      .object({
+        mg: z.string().exactOptional().openapi({ description: 'Machine GUID.' }),
+        nd: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Node ID (UUID); null until the node has one.' }),
+        nm: z.string().exactOptional().openapi({ description: 'Hostname.' }),
+        now: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'Unix timestamp the response was generated.',
+          }),
+      })
+      .openapi({ description: 'Identity of this agent. Present in every response.', required: [] }),
+  })
+  .openapi({ required: ['cloud', 'agent'] })
+  .openapi('ClaimResponse')
 
 const ScopeNodesParamsSchema = z
   .string()
@@ -2765,6 +2947,7 @@ const CardinalityLimitParamsSchema = z
       required: false,
       schema: { type: 'integer', format: 'int64', minimum: 1, default: 10000 },
     },
+    default: 10000,
   })
 
 const WeightsLimitParamsSchema = z
@@ -2894,7 +3077,7 @@ const DataTimeResampling1ParamsSchema = z
       name: 'gtime',
       in: 'query',
       description:
-        'The grouping number of seconds. This is used in conjunction with group=average to change the units of metrics (ie when the data is per-second, setting gtime=60 will turn them to per-minute).\n',
+        'The grouping number of seconds. This is used in conjunction with group=average to change the units of metrics (ie when the data is per-second, setting gtime=60 will turn them to per-minute). Values above 315360000 (10 years) are treated as 315360000.\n',
       required: false,
       allowEmptyValue: false,
       schema: { type: 'number', format: 'integer', default: 0 },
@@ -2918,7 +3101,7 @@ const DataTimeResampling2ParamsSchema = z
       name: 'time_resampling',
       in: 'query',
       description:
-        'For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average.\n',
+        'For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average. Values above 315360000 (10 years) are treated as 315360000.\n',
       required: false,
       schema: { type: 'number', format: 'integer', default: 0 },
     },
@@ -5535,7 +5718,9 @@ export const getApiV3AllmetricsRoute = createRoute({
           schema: z.string().openapi({ description: 'Shell format output (when format=shell)' }),
         },
         'application/json': {
-          schema: z.object({}).openapi({ description: 'JSON format output (when format=json)' }),
+          schema: z
+            .looseObject({})
+            .openapi({ description: 'JSON format output (when format=json)' }),
         },
         'application/openmetrics-text': {
           schema: z
@@ -5686,7 +5871,7 @@ export const getApiV3AlertsRoute = createRoute({
         'Success. Returns current alert status information.\n\n**Response Structure:**\n- Summary counters (when options=summary): counts by status, type, classification\n- Alert instances with their current states\n- Alert values and thresholds (when options=values)\n- Alert configurations (when options=configurations)\n- Node and context associations\n\nThe response is grouped by contexts and includes metadata about each alert including its current status, value, time in current state, and associated chart/dimension.\n\n**Response Characteristics:**\n- JSON format\n- Not cacheable (alerts change frequently)\n- May include partial results if timeout is exceeded\n- Cardinality-limited if specified\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Multi-node alert status information' }),
+          schema: z.looseObject({}).openapi({ description: 'Multi-node alert status information' }),
         },
       },
     },
@@ -6027,7 +6212,7 @@ export const getApiV3AlertTransitionsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Alert transition history with pagination support' }),
         },
       },
@@ -6072,7 +6257,7 @@ export const getApiV3AlertConfigRoute = createRoute({
         'Success. Returns the complete alert configuration.\n\n**Response Format:**\nThe response contains the alert configuration in a structured format, typically including:\n\n**Core Configuration:**\n- `name`: Alert name/identifier\n- `type`: Alert classification type\n- `on`: Metric expression being monitored\n- `class`: Alert classification category\n- `component`: System component being monitored\n- `lookup`: Metric lookup parameters (method, duration, dimensions)\n\n**Thresholds:**\n- `warn`: Warning threshold expression\n- `crit`: Critical threshold expression\n- `units`: Unit of measurement for values\n\n**Evaluation:**\n- `every`: How often the alert is evaluated\n- `green` / `red`: Hysteresis settings (when to clear/trigger)\n- `calc`: Calculation expression (if any)\n\n**Notifications:**\n- `to`: Notification recipients\n- `exec`: Script to execute on alert\n- `delay`: Notification delay settings\n- `repeat`: Repeat notification settings\n\n**Metadata:**\n- `info`: Detailed alert description\n- `summary`: Brief alert summary\n- `host_labels`: Labels for host filtering\n\n**Response Characteristics:**\n- Content-Type: Typically `text/plain` or `application/json` depending on format\n- Not cacheable (configurations may change)\n- Complete configuration as it exists in the system\n\n**Example Response Structure (JSON format):**\n```json\n{\n  "name": "disk_space_usage",\n  "on": "disk.space",\n  "class": "Utilization",\n  "type": "System",\n  "component": "Disk",\n  "lookup": "average -1m percentage of used",\n  "units": "%",\n  "warn": "$this > 80",\n  "crit": "$this > 95",\n  "info": "Disk space utilization is high",\n  "to": "sysadmin"\n}\n```\n\nThe exact format and fields depend on the alert configuration and may vary between different alert types.\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Alert configuration details' }),
+          schema: z.looseObject({}).openapi({ description: 'Alert configuration details' }),
         },
         'text/plain': {
           schema: z.string().openapi({ description: 'Alert configuration in text format' }),
@@ -6144,7 +6329,9 @@ export const getApiV3VariableRoute = createRoute({
         'Success. Returns the variable value and calculation trace.\n\n**Response Structure:**\nThe response is a JSON object containing:\n\n**Variable Lookup Trace:**\nShows the step-by-step process of how the variable value was calculated:\n- Variable name being looked up\n- Source dimensions queried\n- Calculation methods applied\n- Intermediate values\n- Final calculated value\n\n**Example Response:**\n```json\n{\n  "variable": "$used",\n  "chart": "system.ram",\n  "value": 8589934592,\n  "units": "B",\n  "trace": [\n    {\n      "step": "lookup_dimension",\n      "dimension": "used",\n      "raw_value": 8589934592\n    },\n    {\n      "step": "final_value",\n      "value": 8589934592,\n      "units": "B"\n    }\n  ]\n}\n```\n\n**Response Fields:**\n- `variable`: The requested variable name\n- `chart`: The chart ID where variable was found\n- `value`: Current numeric value of the variable\n- `units`: Unit of measurement\n- `trace`: Array of calculation steps showing how value was derived\n\n**Trace Information:**\nThe trace provides transparency into variable evaluation, showing:\n- Dimension lookups performed\n- Data aggregation methods used\n- Time ranges evaluated\n- Transformations applied\n- Why certain values were selected\n\n**Use Cases for Trace:**\n- **Debugging Alerts:** Understand why an alert triggered\n- **Validating Logic:** Verify alert expressions evaluate correctly\n- **Performance Analysis:** See which dimensions contribute to variable\n- **Education:** Learn how alert variables are calculated\n\n**Response Characteristics:**\n- Content-Type: application/json\n- Not cacheable (values change constantly)\n- Real-time evaluation at query time\n- Includes calculation metadata\n\n**Note:** The exact trace format depends on the complexity of the variable lookup. Simple dimension variables have short traces, while complex calculated variables or lookups have detailed multi-step traces.\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Variable value and calculation trace' }),
+          schema: z
+            .looseObject({})
+            .openapi({ description: 'Variable value and calculation trace' }),
         },
       },
     },
@@ -6265,7 +6452,9 @@ export const getApiV3InfoRoute = createRoute({
         'Success. Returns detailed Netdata agent information.\n\n**Response Structure:**\nThe response is a JSON object containing comprehensive agent information grouped by node.\n\n**Top-Level Structure:**\n- `agents`: Array of agent information objects, one per node\n\n**Per-Agent Information Includes:**\n\n**1. Identity:**\n- `machine_guid`: Unique agent identifier (UUID)\n- `hostname`: Node hostname\n- `agent_version`: Netdata version string\n- `agent_commit`: Git commit hash of build\n\n**2. System Information:**\n- `os_name`: Operating system name\n- `os_version`: OS version\n- `kernel_name`: Kernel name\n- `kernel_version`: Kernel version\n- `architecture`: CPU architecture (x86_64, aarch64, etc.)\n- `virtualization`: Virtualization platform (if any)\n- `container`: Container runtime (Docker, LXC, etc.)\n- `container_detection`: How container was detected\n\n**3. Database & Storage:**\n- `database_mode`: Storage mode (dbengine, ram, alloc, none)\n- `database_retention`: Data retention period in seconds\n- `database_size`: Current database size in bytes\n- `page_cache_size`: Page cache size\n- `metrics_stored`: Number of unique metrics\n\n**4. Features & Capabilities:**\n- `ml_enabled`: Machine learning / anomaly detection enabled\n- `ml_models_running`: Number of ML models active\n- `aclk_available`: Cloud connectivity available\n- `aclk_status`: Cloud connection status\n- `stream_compression`: Streaming compression supported\n- `web_enabled`: Web server enabled\n\n**5. Collection Status:**\n- `charts_count`: Number of charts being collected\n- `dimensions_count`: Number of dimensions (time-series)\n- `collectors_count`: Number of active collectors\n- `update_every`: Collection frequency in seconds\n- `history`: Retention in seconds\n- `memory_mode`: Memory storage mode\n\n**6. Host Labels:**\n- `host_labels`: Object containing all host labels\n  - Includes automatic labels (_os_name, _architecture, etc.)\n  - Includes custom labels assigned by user\n  - May include cloud provider labels\n\n**7. Timestamps:**\n- `first_time_t`: Timestamp of oldest data point\n- `last_time_t`: Timestamp of newest data point\n- `now`: Current server time\n\n**8. Streaming Information (if applicable):**\n- `stream_status`: Streaming status (parent/child)\n- `stream_parents`: Parent nodes (if child)\n- `stream_children`: Child nodes (if parent)\n\n**Example Response Structure:**\n```json\n{\n  "agents": [\n    {\n      "machine_guid": "550e8400-e29b-41d4-a716-446655440000",\n      "hostname": "web-server-01",\n      "agent_version": "v1.40.0",\n      "os_name": "ubuntu",\n      "os_version": "22.04",\n      "kernel_version": "5.15.0",\n      "architecture": "x86_64",\n      "database_mode": "dbengine",\n      "database_retention": 86400,\n      "ml_enabled": true,\n      "charts_count": 425,\n      "dimensions_count": 2850,\n      "update_every": 1,\n      "host_labels": {\n        "_os_name": "ubuntu",\n        "_architecture": "x86_64",\n        "environment": "production",\n        "tier": "web"\n      }\n    }\n  ]\n}\n```\n\n**Response Characteristics:**\n- Content-Type: application/json\n- Can be cached (agent info changes infrequently)\n- Complete metadata without time-series data\n- Lightweight and fast to generate\n\n**Filtering:**\nResponse respects scope_nodes/nodes filters and cardinality limits.\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Comprehensive Netdata agent information' }),
+          schema: z
+            .looseObject({})
+            .openapi({ description: 'Comprehensive Netdata agent information' }),
         },
       },
     },
@@ -6381,7 +6570,7 @@ export const getApiV3NodeInstancesRoute = createRoute({
         'Success. Returns chart instances organized by node.\n\n**Response Structure:**\n```json\n{\n  "nodes": [\n    {\n      "machine_guid": "uuid",\n      "hostname": "web-server-01",\n      "agent_version": "v1.40.0",\n      "contexts": [\n        {\n          "context": "disk.space",\n          "instances": [\n            {\n              "id": "disk.sda",\n              "name": "disk sda",\n              "family": "sda",\n              "labels": {...},\n              "dimensions": [...],\n              "status": "active"\n            },\n            {\n              "id": "disk.sdb",\n              "name": "disk sdb",\n              "family": "sdb",\n              "labels": {...},\n              "dimensions": [...],\n              "status": "active"\n            }\n          ]\n        },\n        {\n          "context": "net.net",\n          "instances": [\n            {\n              "id": "net.eth0",\n              "name": "eth0",\n              "family": "eth0",\n              "labels": {...},\n              "dimensions": [...],\n              "status": "active"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n```\n\n**Response Fields:**\n\n**Node Level:**\n- `machine_guid`: Unique node identifier\n- `hostname`: Node hostname\n- `agent_version`: Netdata version on this node\n- `contexts`: Array of contexts with their instances\n\n**Context Level:**\n- `context`: Context name (e.g., "disk.space", "system.cpu")\n- `instances`: Array of chart instances for this context\n\n**Instance Level:**\n- `id`: Chart instance ID (e.g., "disk.sda")\n- `name`: Human-readable instance name\n- `family`: Chart family/grouping\n- `labels`: Instance-specific labels\n- `dimensions`: Array of dimensions (metrics) collected\n- `status`: Collection status (active, stale, offline)\n- `units`: Unit of measurement\n- `chart_type`: Chart visualization type\n- `priority`: Display priority\n\n**Dimension Information (when options=dimensions):**\n- `id`: Dimension identifier\n- `name`: Dimension display name\n- `algorithm`: Aggregation algorithm\n- `multiplier`, `divisor`: Value transformation\n\n**Label Information (when options=labels):**\n- Instance labels provide additional metadata\n- Examples: disk_type=ssd, interface_speed=1000, mount_point=/\n\n**Response Characteristics:**\n- Content-Type: application/json\n- Cacheable (instances change infrequently)\n- Size grows with number of nodes and instances\n- Organized hierarchically for easy navigation\n\n**Filtering:**\nResponse respects scope_nodes/nodes filters and cardinality limits.\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Chart instances organized by node' }),
+          schema: z.looseObject({}).openapi({ description: 'Chart instances organized by node' }),
         },
       },
     },
@@ -6881,7 +7070,7 @@ export const getApiV3FunctionRoute = createRoute({
         'Function executed successfully and returned results.\n\nThe response format depends on the specific function:\n- Most functions return JSON data\n- Some return plain text or formatted output\n- Check Content-Type header\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Function-specific response data' }),
+          schema: z.looseObject({}).openapi({ description: 'Function-specific response data' }),
           examples: {
             processes: {
               value: {
@@ -6999,7 +7188,7 @@ export const postApiV3FunctionRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Function-specific parameters (varies by function)' }),
         },
         'text/plain': {
@@ -7012,7 +7201,7 @@ export const postApiV3FunctionRoute = createRoute({
     200: {
       description: 'Function executed successfully (see GET method for response details)',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'text/plain': { schema: z.string() },
       },
     },
@@ -7362,7 +7551,7 @@ export const getApiV3ConfigRoute = createRoute({
         'Configuration operation completed successfully.\n\nResponse format depends on the action:\n- `tree`: Configuration hierarchy tree\n- `get`: Current configuration JSON\n- `schema`: Configuration schema/template\n- `update`/`add`/`remove`: Success confirmation\n- `test`: Validation results\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Action-specific response data' }),
+          schema: z.looseObject({}).openapi({ description: 'Action-specific response data' }),
         },
       },
     },
@@ -7498,7 +7687,9 @@ export const postApiV3ConfigRoute = createRoute({
         'Configuration data for `update`, `add`, and `test` actions.\n\n**Format:**\n- Content-Type: application/json\n- Structure depends on the specific configuration component\n- Use `action=schema` to get the expected structure\n\n**Example for adding Prometheus job:**\n```json\n{\n  "url": "http://localhost:9090/metrics",\n  "update_every": 10,\n  "autodetection_retry": 0\n}\n```\n\n**Example for updating existing config:**\n```json\n{\n  "update_every": 5,\n  "timeout": 30\n}\n```\n',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Configuration-specific data structure' }),
+          schema: z
+            .looseObject({})
+            .openapi({ description: 'Configuration-specific data structure' }),
         },
       },
     },
@@ -7507,7 +7698,7 @@ export const postApiV3ConfigRoute = createRoute({
     200: {
       description:
         'Configuration operation completed successfully (see GET method for response details)',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Bad request (see GET method for details)' },
     403: { description: 'Forbidden (see GET method for details)' },
@@ -7522,15 +7713,14 @@ export const getApiV3SettingsRoute = createRoute({
   method: 'get',
   path: '/api/v3/settings',
   tags: ['settings'],
-  summary: 'Retrieve user settings/preferences (GET)',
+  summary: 'Retrieve the agent-wide dashboard settings (GET)',
   description:
-    '**V3 SPECIFIC ENDPOINT**\n\nRetrieves stored user settings and preferences from Netdata\'s settings storage.\nThe settings API provides persistent key-value storage for UI preferences, dashboard layouts,\nalert configurations, and other user-specific data.\n\n**Settings System:**\n- **Persistent storage**: Settings survive agent restarts\n- **Version-controlled**: Each update increments version for conflict detection\n- **User-scoped**: Authenticated users can have multiple named settings files\n- **Anonymous access**: Limited to \'default\' file only\n- **JSON format**: All settings stored as JSON with mandatory \'version\' field\n\n**File-Based Storage:**\nSettings are stored as individual files in Netdata\'s var/lib directory:\n- Anonymous users: Only `file=default` allowed\n- Authenticated users: Can create custom files (e.g., `file=my-dashboard`)\n- File names: Alphanumeric, dashes, underscores only\n\n**Version Control:**\nEach settings object has a `version` field:\n- Starts at version 1 for new files\n- Auto-incremented on each PUT operation\n- Used for optimistic locking to prevent conflicts\n\n**Use Cases:**\n- **Dashboard preferences**: Store layout, theme, selected metrics\n- **Alert customization**: Save user-specific alert thresholds\n- **UI state**: Remember filters, time ranges, node selections\n- **Multi-device sync**: Share settings across browsers/devices (for authenticated users)\n\n**Common Usage Patterns:**\n\n1. **Get default settings (anonymous user):**\n   ```\n   GET /api/v3/settings?file=default\n   ```\n\n2. **Get named settings file (authenticated):**\n   ```\n   GET /api/v3/settings?file=production-dashboard\n   ```\n\n**Response Structure:**\n```json\n{\n  "version": 3,\n  "theme": "dark",\n  "defaultTimeRange": "-3600",\n  "favoriteMetrics": ["system.cpu", "system.ram"]\n}\n```\n\n**New Files:**\nIf requested file doesn\'t exist, returns initial version:\n```json\n{\n  "version": 1\n}\n```\n\n**Size Limit:**\nMaximum settings file size: 20 MiB\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n',
+    '**V3 SPECIFIC ENDPOINT**\n\nRetrieves the agent\'s dashboard settings object.\n\n**Settings System:**\n- **One object per agent**: there is a single settings object, `default`. It is shared by every caller\n  admitted to this API, anonymous or authenticated; it is not scoped to a user.\n- **Persistent storage**: stored as `settings/default` in Netdata\'s var/lib directory; survives restarts\n- **Version-controlled**: each update increments `version` for conflict detection\n- **JSON format**: a JSON object with a mandatory integer `version` field\n\nThe dashboard keeps agent-wide preferences here, such as the preferred nodes of the agent\'s local space.\nDo not store per-user or sensitive data in it.\n\n**Version Control:**\n- A missing object reads as version 1\n- Auto-incremented on each PUT operation\n- Used for optimistic locking to prevent conflicts\n\n**Usage:**\n```\nGET /api/v3/settings?file=default\n```\n\n**Response Structure:**\n```json\n{\n  "version": 3,\n  "value": {\n    "preferred_node_ids": ["..."]\n  }\n}\n```\n\n**New Object:**\nIf the object doesn\'t exist (or its stored `version` is not an integer from 1 to 9223372036854775806), returns the initial version:\n```json\n{\n  "version": 1\n}\n```\n\n**Size Limit:**\nMaximum settings file size: 20 MiB\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n',
   operationId: 'settings_get',
   request: {
     query: z.object({
       file: z
-        .string()
-        .regex(/^[a-zA-Z0-9_-]+$/)
+        .enum(['default', ''])
         .default('default')
         .exactOptional()
         .openapi({
@@ -7538,9 +7728,10 @@ export const getApiV3SettingsRoute = createRoute({
             name: 'file',
             in: 'query',
             required: false,
+            allowEmptyValue: true,
             description:
-              'Name of the settings file to retrieve.\n\n**File Naming Rules:**\n- Alphanumeric characters only\n- Dashes (-) and underscores (_) allowed\n- No spaces or special characters\n- Case-sensitive\n\n**Access Control:**\n- **Anonymous users**: Only `file=default` allowed\n- **Authenticated users (bearer token)**: Any valid file name\n\n**Examples:**\n- `default` - Default settings file\n- `my-dashboard` - Custom dashboard settings\n- `prod-alerts` - Production alert preferences\n- `mobile-view` - Mobile UI settings\n\n**Invalid File Names:**\n- Missing or empty: Returns 400 Bad Request\n- Special characters: Returns 400 Bad Request\n- Non-default for anonymous: Returns 400 Bad Request\n',
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9_-]+$', default: 'default' },
+              'Name of the settings object. Only `default` is supported; omitting the parameter (or giving it an empty\nvalue) selects `default`. Any other value returns 400 Bad Request.\n',
+            schema: { type: 'string', enum: ['default', ''], default: 'default' },
             example: 'default',
           },
         }),
@@ -7555,24 +7746,31 @@ export const getApiV3SettingsRoute = createRoute({
           schema: z
             .looseObject({
               version: z
-                .int()
-                .min(1)
-                .openapi({ description: 'Current version number (auto-incremented on updates)' }),
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: 'Current version number (auto-incremented on updates)',
+                }),
             })
             .openapi({ required: ['version'] }),
           examples: {
-            new_file: {
-              summary: 'Newly created settings file with just version',
-              value: { version: 1 },
-            },
-            existing_file: {
-              summary: 'Existing settings with custom fields',
+            new_object: { summary: 'No settings stored yet', value: { version: 1 } },
+            existing_object: {
+              summary: 'Settings stored by the dashboard',
               value: {
                 version: 5,
-                theme: 'dark',
-                language: 'en',
-                dashboard: { layout: 'grid', columns: 3 },
-                notifications: { enabled: true, sound: false },
+                value: { preferred_node_ids: ['11111111-2222-3333-4444-555555555555'] },
               },
             },
           },
@@ -7581,7 +7779,7 @@ export const getApiV3SettingsRoute = createRoute({
     },
     400: {
       description:
-        'Bad request. Common causes:\n- Invalid file name (contains special characters)\n- Anonymous user trying to access non-default file\n- Empty file name\n',
+        'Bad request. Common causes:\n- `file` is not `default`\n- The request is not for the agent node\n',
     },
     500: { description: 'Internal server error during settings retrieval.' },
   },
@@ -7592,15 +7790,14 @@ export const putApiV3SettingsRoute = createRoute({
   method: 'put',
   path: '/api/v3/settings',
   tags: ['settings'],
-  summary: 'Create or update user settings/preferences (PUT)',
+  summary: 'Create or update the agent-wide dashboard settings (PUT)',
   description:
-    "**V3 SPECIFIC ENDPOINT**\n\nCreates or updates user settings with optimistic locking to prevent concurrent modification conflicts.\n\n**Update Process:**\n1. Client GET current settings (to get current version)\n2. Client modifies settings locally\n3. Client PUT updated settings WITH ORIGINAL VERSION\n4. Netdata validates version matches current file\n5. If match: Update succeeds, version auto-incremented\n6. If mismatch: Returns 409 Conflict\n\n**Conflict Resolution (409 Response):**\nWhen you receive 409 Conflict:\n1. Another client updated the file\n2. GET the file again to retrieve latest version\n3. Reapply your changes to the new version\n4. PUT again with the new version number\n\n**Optimistic Locking Flow:**\n```javascript\n// 1. Get current settings\nconst response = await fetch('/api/v3/settings?file=my-dashboard');\nconst settings = await response.json(); // { version: 3, ... }\n\n// 2. Modify settings\nsettings.theme = 'dark';\n\n// 3. PUT with ORIGINAL version (still 3)\nconst result = await fetch('/api/v3/settings?file=my-dashboard', {\n  method: 'PUT',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify(settings) // version: 3\n});\n\nif (result.status === 409) {\n  // Conflict! File was updated by another client\n  // Must GET again and retry\n}\n// If successful, file now has version: 4\n```\n\n**Payload Requirements:**\n- MUST be valid JSON\n- MUST include `version` field with current file version\n- MAY include any additional fields\n- Maximum size: 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large\n\n**Version Management:**\n- Client provides current version in payload\n- Netdata verifies version matches file on disk\n- Netdata increments version before saving\n- Saved file has version + 1\n\n**Use Cases:**\n- Save dashboard configuration changes\n- Update user preferences\n- Store UI state\n- Persist alert customizations\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
+    "**V3 SPECIFIC ENDPOINT**\n\nCreates or updates the agent's single settings object (`default`), with optimistic locking to prevent\nconcurrent modification conflicts. The object is shared by every caller admitted to this API, anonymous\nor authenticated; it is not scoped to a user.\n\n**Update Process:**\n1. Client GET current settings (to get current version)\n2. Client modifies settings locally\n3. Client PUT updated settings WITH ORIGINAL VERSION\n4. Netdata validates version matches current file\n5. If match: Update succeeds, version auto-incremented\n6. If mismatch: Returns 409 Conflict\n\n**Conflict Resolution (409 Response):**\nWhen you receive 409 Conflict:\n1. Another client updated the file\n2. GET the file again to retrieve latest version\n3. Reapply your changes to the new version\n4. PUT again with the new version number\n\n**Optimistic Locking Flow:**\n```javascript\n// 1. Get current settings\nconst response = await fetch('/api/v3/settings?file=default');\nconst settings = await response.json(); // { version: 3, ... }\n\n// 2. Modify settings\nsettings.value = { ...settings.value, preferred_node_ids: nodeIds };\n\n// 3. PUT with ORIGINAL version (still 3)\nconst result = await fetch('/api/v3/settings?file=default', {\n  method: 'PUT',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify(settings) // version: 3\n});\n\nif (result.status === 409) {\n  // Conflict! File was updated by another client\n  // Must GET again and retry\n}\n// If successful, file now has version: 4\n```\n\n**Payload Requirements:**\n- MUST be valid JSON\n- MUST include an integer `version` field with the current version (1 when nothing is stored yet)\n- MAY include any additional fields\n- Maximum size: 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large\n\n**Version Management:**\n- Client provides current version in payload\n- Netdata verifies version matches file on disk\n- Netdata increments version before saving\n- Saved file has version + 1\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
   operationId: 'settings_put',
   request: {
     query: z.object({
       file: z
-        .string()
-        .regex(/^[a-zA-Z0-9_-]+$/)
+        .enum(['default', ''])
         .default('default')
         .exactOptional()
         .openapi({
@@ -7608,31 +7805,51 @@ export const putApiV3SettingsRoute = createRoute({
             name: 'file',
             in: 'query',
             required: false,
+            allowEmptyValue: true,
             description:
-              "Name of the settings file to create or update.\n\n**File Naming Rules:**\n- Alphanumeric characters only\n- Dashes (-) and underscores (_) allowed\n- No spaces or special characters\n- Case-sensitive\n\n**Access Control:**\n- **Anonymous users**: Only `file=default` allowed\n- **Authenticated users (bearer token)**: Any valid file name\n\n**File Creation:**\n- If file doesn't exist: Created with initial payload\n- If file exists: Updated with new payload (version check applies)\n",
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9_-]+$', default: 'default' },
-            example: 'my-dashboard',
+              'Name of the settings object. Only `default` is supported; omitting the parameter (or giving it an empty\nvalue) selects `default`. Any other value returns 400 Bad Request.\n',
+            schema: { type: 'string', enum: ['default', ''], default: 'default' },
+            example: 'default',
           },
         }),
     }),
     body: {
       description:
-        'JSON object containing settings data with mandatory `version` field.\n\n**Required Fields:**\n- `version`: Integer matching current file version (or 0 for non-existent files)\n\n**Optional Fields:**\n- Any user-defined fields\n\n**Size Limit:**\nMaximum 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large\n\n**Version Rules:**\n- New file: version can be 0 or 1\n- Existing file: version MUST match current file version exactly\n- Mismatch causes 409 Conflict\n',
+        'JSON object containing settings data with mandatory `version` field.\n\n**Required Fields:**\n- `version`: Integer matching the current version (1 when nothing is stored yet)\n\n**Optional Fields:**\n- Any user-defined fields\n\n**Size Limit:**\nMaximum 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large\n\n**Version Rules:**\n- MUST be a JSON integer from 1 to 9223372036854775806 (strings, decimals and booleans return 400)\n- A stored version that has reached 9223372036854775806 cannot be incremented; such a PUT returns 400\n- Nothing stored yet: version MUST be 1\n- Existing object: version MUST match the stored version exactly\n- Mismatch causes 409 Conflict\n',
       content: {
         'application/json': {
           schema: z
             .looseObject({
-              version: z.int().min(0).openapi({ description: 'Current version from GET request' }),
+              version: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: 'Current version from GET request',
+                }),
             })
             .openapi({ required: ['version'] }),
           examples: {
             create_new: {
-              summary: 'Creating new settings file',
-              value: { version: 0, theme: 'dark', language: 'en' },
+              summary: 'Creating the settings object (nothing stored yet)',
+              value: { version: 1, value: { preferred_node_ids: [] } },
             },
             update_existing: {
-              summary: 'Updating existing file (version from previous GET)',
-              value: { version: 5, theme: 'light', dashboard: { layout: 'list' } },
+              summary: 'Updating the stored object (version from previous GET)',
+              value: {
+                version: 5,
+                value: { preferred_node_ids: ['11111111-2222-3333-4444-555555555555'] },
+              },
             },
           },
         },
@@ -7646,14 +7863,17 @@ export const putApiV3SettingsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ message: z.string().exactOptional().openapi({ example: 'OK' }) })
+            .object({
+              status: z.int().exactOptional().openapi({ example: 200 }),
+              errorMessage: z.string().exactOptional().openapi({ example: 'OK' }),
+            })
             .openapi({ required: [] }),
         },
       },
     },
     400: {
       description:
-        'Bad request. Common causes:\n- Invalid file name\n- Missing `version` field in payload\n- Invalid JSON payload\n- Empty payload\n- Anonymous user trying to access non-default file\n',
+        'Bad request. Common causes:\n- `file` is not `default`\n- Missing `version` field in payload, `version` is not a valid integer, or it cannot be incremented\n- Invalid JSON payload\n- Empty payload\n',
     },
     409: {
       description:
@@ -7662,7 +7882,8 @@ export const putApiV3SettingsRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              message: z
+              status: z.int().exactOptional().openapi({ example: 409 }),
+              errorMessage: z
                 .string()
                 .exactOptional()
                 .openapi({
@@ -7934,7 +8155,7 @@ export const getApiV3ClaimRoute = createRoute({
   tags: ['claiming'],
   summary: 'Claim agent to Netdata Cloud',
   description:
-    '**Agent Claiming to Netdata Cloud**\n\nThis endpoint initiates the process of claiming (connecting) a Netdata agent to Netdata Cloud. Claiming establishes a secure, authenticated connection between the agent and Netdata Cloud, enabling centralized monitoring, team collaboration, and cloud-based features.\n\n**Claiming Process Flow:**\n1. **Get Claim Info:** Call endpoint without parameters to get claiming status and verification command\n2. **Generate Verification Key:** Server generates random session ID and saves it to `/var/lib/netdata/netdata_random_session_id`\n3. **Verify Server Ownership:** Administrator runs provided OS-specific command to retrieve the verification key\n4. **Submit Claim Request:** Call endpoint with key, token, URL, and optionally rooms to complete claiming\n5. **Establish Connection:** Server connects to Netdata Cloud and registers the agent\n6. **Reload Connection:** Agent reloads cloud connection and waits for online status\n\n**Use Cases:**\n- **Initial Setup:** Claim a new agent to connect it to Netdata Cloud for the first time\n- **Team Onboarding:** Add agents to specific cloud rooms for team organization\n- **Infrastructure Management:** Connect agents across distributed infrastructure to centralized monitoring\n- **Security Verification:** Ensure only authorized users can claim agents through server access verification\n- **Status Checking:** Query current claiming status and cloud connection state\n\n**Claiming States:**\n- **AVAILABLE:** Agent can be claimed (not yet connected to cloud)\n- **OFFLINE:** Agent was claimed but is currently offline from cloud\n- **INDIRECT:** Agent is connected through a parent agent\n- **ONLINE:** Agent is claimed and online (cannot be re-claimed without unclaiming first)\n- **BANNED:** Agent is banned from cloud (cannot be claimed)\n\n**Security Features:**\n- Random session key verification prevents unauthorized claiming\n- Key is regenerated after each claim attempt (successful or failed)\n- Key stored in file system requires server access to retrieve\n- Parameter validation ensures only safe characters (alphanumeric, dots, commas, dashes, colons, slashes, underscores)\n- Different OS-specific commands for key retrieval (Linux/Docker/Windows)\n\n**Platform-Specific Key Retrieval:**\n- **Linux:** `sudo cat /var/lib/netdata/netdata_random_session_id`\n- **Docker:** `docker exec netdata cat /var/lib/netdata/netdata_random_session_id`\n- **Windows:** `more C:\\path\\to\\netdata_random_session_id`\n\n**Response Formats:**\n- **Info Response:** Returns cloud status, can_be_claimed flag, verification command, and agents info\n- **Success Response:** Includes success=true, message="ok", updated cloud status\n- **Error Response:** Includes success=false, error message, can_be_claimed flag, new verification key\n\n**Important Notes:**\n- Agent must be in AVAILABLE, OFFLINE, or INDIRECT state to be claimed\n- Claiming token is obtained from Netdata Cloud UI (Space settings → Nodes tab → Add Nodes)\n- Base URL typically points to Netdata Cloud API (e.g., https://api.netdata.cloud)\n- Rooms parameter is optional - agent will be added to specified war rooms if provided\n- After successful claiming, agent automatically reloads connection and waits for online status\n- Failed claim attempts regenerate the verification key for security\n\n**Example Workflow:**\n```bash\n# 1. Get claiming info and verification command\ncurl http://localhost:19999/api/v3/claim\n\n# 2. Run the command shown in response to get the key\nsudo cat /var/lib/netdata/netdata_random_session_id\n# Output: 12345678-1234-1234-1234-123456789abc\n\n# 3. Submit claim request with key from step 2 and token from Netdata Cloud\ncurl "http://localhost:19999/api/v3/claim?key=12345678-1234-1234-1234-123456789abc&token=YOUR_CLAIM_TOKEN&url=https://api.netdata.cloud&rooms=room1,room2"\n```\n\n**Security & Access Control:**\n- **Route ACL:** `HTTP_ACL_NOCHECK` skips only this endpoint\'s route-table ACL comparison\n- **Bearer Protection:** `HTTP_ACCESS_NONE` means the generic access gate does not require a bearer token\n- **Connection/IP Admission:** Direct HTTP remains subject to `allow connections from`, listener/port ACLs, and coarse API admission\n- **Claim Mutation:** Reading status needs no callback-local credential; changing claim state requires the current rotating random session key and valid claim parameters\n',
+    '**Agent Claiming to Netdata Cloud**\n\nThis endpoint initiates the process of claiming (connecting) a Netdata agent to Netdata Cloud. Claiming establishes a secure, authenticated connection between the agent and Netdata Cloud, enabling centralized monitoring, team collaboration, and cloud-based features.\n\n**Claiming Process Flow:**\n1. **Get Claim Info:** Call endpoint without parameters to get claiming status and verification command\n2. **Generate Verification Key:** Server generates random session ID and saves it to `/var/lib/netdata/netdata_random_session_id`\n3. **Verify Server Ownership:** Administrator runs provided OS-specific command to retrieve the verification key\n4. **Submit Claim Request:** Call endpoint with key, token, URL, and optionally rooms to complete claiming\n5. **Establish Connection:** Server connects to Netdata Cloud and registers the agent\n6. **Reload Connection:** Agent reloads cloud connection and waits for online status\n\n**Use Cases:**\n- **Initial Setup:** Claim a new agent to connect it to Netdata Cloud for the first time\n- **Team Onboarding:** Add agents to specific cloud rooms for team organization\n- **Infrastructure Management:** Connect agents across distributed infrastructure to centralized monitoring\n- **Security Verification:** Ensure only authorized users can claim agents through server access verification\n- **Status Checking:** Query current claiming status and cloud connection state\n\n**Claiming States:**\n- **AVAILABLE:** Agent can be claimed (not yet connected to cloud)\n- **OFFLINE:** Agent was claimed but is currently offline from cloud\n- **INDIRECT:** Agent is connected through a parent agent\n- **ONLINE:** Agent is claimed and online (cannot be re-claimed without unclaiming first)\n- **BANNED:** Agent is banned from cloud (cannot be claimed)\n\n**Security Features:**\n- Random session key verification prevents unauthorized claiming\n- Key is regenerated after a claim attempt that presented the correct key, and on a successful claim (a wrong key does not regenerate it)\n- Key stored in file system requires server access to retrieve\n- Parameter validation ensures only safe characters (alphanumeric, dots, commas, dashes, colons, slashes, underscores)\n- Different OS-specific commands for key retrieval (Linux/Docker/Windows)\n\n**Platform-Specific Key Retrieval:**\n- **Linux:** `sudo cat /var/lib/netdata/netdata_random_session_id`\n- **Docker:** `docker exec netdata cat /var/lib/netdata/netdata_random_session_id`\n- **Windows:** `more C:\\path\\to\\netdata_random_session_id`\n\n**Response Formats:**\n- **Info Response:** Returns cloud status, can_be_claimed flag, verification command, and agent info\n- **Success Response:** Includes success=true, message="ok", updated cloud status, and agent info\n- **Error Response:** Includes success=false, error message, cloud status, can_be_claimed flag, verification command, and agent info. When the agent can be claimed, a wrong key or invalid parameters return HTTP 400; a claim that Netdata Cloud rejects returns HTTP 200\n- The verification command (`key_filename`, `cmd`, `help`) is present only after the verification key file has been published successfully at least once\n\n**Important Notes:**\n- Agent must be in AVAILABLE, OFFLINE, or INDIRECT state to be claimed\n- Claiming token is obtained from Netdata Cloud UI (Space settings → Nodes tab → Add Nodes)\n- Base URL typically points to Netdata Cloud API (e.g., https://api.netdata.cloud)\n- Rooms parameter is optional - agent will be added to specified war rooms if provided\n- After successful claiming, agent automatically reloads connection and waits for online status\n- Claim attempts that present the correct key regenerate the verification key for security; a wrong key does not\n\n**Example Workflow:**\n```bash\n# 1. Get claiming info and verification command\ncurl http://localhost:19999/api/v3/claim\n\n# 2. Run the command shown in response to get the key\nsudo cat /var/lib/netdata/netdata_random_session_id\n# Output: 12345678-1234-1234-1234-123456789abc\n\n# 3. Submit claim request with key from step 2 and token from Netdata Cloud\ncurl "http://localhost:19999/api/v3/claim?key=12345678-1234-1234-1234-123456789abc&token=YOUR_CLAIM_TOKEN&url=https://api.netdata.cloud&rooms=room1,room2"\n```\n\n**Security & Access Control:**\n- **Route ACL:** `HTTP_ACL_NOCHECK` skips only this endpoint\'s route-table ACL comparison\n- **Bearer Protection:** `HTTP_ACCESS_NONE` means the generic access gate does not require a bearer token\n- **Connection/IP Admission:** Direct HTTP remains subject to `allow connections from`, listener/port ACLs, and coarse API admission\n- **Claim Mutation:** Reading status needs no callback-local credential; changing claim state requires the current rotating random session key and valid claim parameters\n',
   operationId: 'claim3',
   request: {
     query: z.object({
@@ -7948,7 +8169,7 @@ export const getApiV3ClaimRoute = createRoute({
             required: false,
             schema: { type: 'string', format: 'uuid' },
             description:
-              "**Verification key (UUID) obtained from the server's file system.**\n\nThis is a randomly generated session ID that proves the requester has access to the server.\nTo obtain this key:\n1. Call the endpoint without parameters to get the OS-specific command\n2. Run the command on the server (requires sudo/admin access)\n3. Copy the UUID from the file content\n4. Use it in the claim request\n\n**Security Notes:**\n- Key is randomly generated on each info request\n- Key is regenerated after each claim attempt (prevents reuse)\n- Mismatched key triggers new key generation (prevents brute force)\n- Validates server ownership through file system access\n\n**When to Include:**\n- Omit when requesting claiming info/status\n- Include when submitting actual claim request\n\nExample: `12345678-1234-1234-1234-123456789abc`\n",
+              "**Verification key (UUID) obtained from the server's file system.**\n\nThis is a randomly generated session ID that proves the requester has access to the server.\nTo obtain this key:\n1. Call the endpoint without parameters to get the OS-specific command\n2. Run the command on the server (requires sudo/admin access)\n3. Copy the UUID from the file content\n4. Use it in the claim request\n\n**Security Notes:**\n- Key is generated at startup (and on an info request if none exists yet)\n- Key is regenerated after a claim attempt that presented the correct key, and on a successful claim (prevents reuse)\n- A mismatched key does NOT regenerate it: the endpoint is unauthenticated, so a wrong key must not be able to reset the challenge\n- Validates server ownership through file system access\n\n**When to Include:**\n- Omit when requesting claiming info/status\n- Include when submitting actual claim request\n\nExample: `12345678-1234-1234-1234-123456789abc`\n",
           },
         }),
       token: z
@@ -7995,159 +8216,10 @@ export const getApiV3ClaimRoute = createRoute({
   responses: {
     200: {
       description:
-        'Claiming request processed successfully. Check the `success` field to determine if claiming succeeded.\n- **Info response** (no key provided): Returns cloud status, verification command, and can_be_claimed flag\n- **Success response** (key provided, claim succeeded): Returns success=true with updated cloud status\n- **Action failed response** (key provided, claim failed): Returns success=false with failure reason\n',
+        'Claiming request processed successfully. When `success` is present, it tells whether claiming succeeded; info responses do not carry it.\n- **Info response** (no key provided, or the agent cannot be claimed): Returns cloud status, verification command, and can_be_claimed flag\n- **Success response** (key provided, claim succeeded): Returns success=true with updated cloud status\n- **Action failed response** (valid key and parameters, claim failed): Returns success=false with failure reason\nWhen the agent can be claimed, a wrong key or invalid parameters return HTTP 400 instead (see below).\n',
       content: {
         'application/json': {
-          schema: z
-            .object({
-              success: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Present only for claim action responses (when key is provided).\ntrue = claiming succeeded, false = claiming failed.\nNot present in info responses (when requesting claim status without key).\n',
-                }),
-              message: z
-                .string()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Result message. Present only for claim action responses.\n- Success: "ok"\n- Failure: Reason for failure (e.g., "invalid key", "invalid parameters", cloud connection error)\n',
-                }),
-              cloud: z
-                .object({
-                  id: z.int().min(0).openapi({ description: 'Cloud connection ID counter.' }),
-                  status: z
-                    .enum(['available', 'offline', 'indirect', 'online', 'banned'])
-                    .openapi({
-                      description:
-                        'Current cloud connection status of the agent.\n- available: Not claimed yet, can be claimed\n- offline: Claimed but currently disconnected\n- indirect: Connected through parent agent\n- online: Claimed and connected (cannot re-claim)\n- banned: Banned from cloud (cannot claim)\n',
-                    }),
-                  since: z
-                    .preprocess(
-                      (val) =>
-                        typeof val === 'number' && Number.isSafeInteger(val)
-                          ? BigInt(val)
-                          : typeof val === 'string' && /^-?\d+$/.test(val)
-                            ? BigInt(val)
-                            : val,
-                      z.int64(),
-                    )
-                    .openapi({
-                      type: 'integer',
-                      format: 'int64',
-                      description: 'Unix timestamp of the latest cloud connection state change.',
-                    }),
-                  age: z
-                    .preprocess(
-                      (val) =>
-                        typeof val === 'number' && Number.isSafeInteger(val)
-                          ? BigInt(val)
-                          : typeof val === 'string' && /^-?\d+$/.test(val)
-                            ? BigInt(val)
-                            : val,
-                      z.int64(),
-                    )
-                    .openapi({
-                      type: 'integer',
-                      format: 'int64',
-                      description:
-                        'Signed difference in seconds between response generation time and `since`; may be negative after a backward system-clock adjustment.',
-                    }),
-                  url: z
-                    .string()
-                    .nullable()
-                    .openapi({
-                      description:
-                        'Netdata Cloud URL. Emitted for every status and may be null when the active ACLK URL is unavailable.\nFor banned status, the current runtime emits this member twice from two URL sources; OpenAPI represents it as one logical property.\n',
-                    }),
-                  reason: z
-                    .string()
-                    .openapi({
-                      description:
-                        'Status explanation or connection error; an empty string when online.',
-                    }),
-                  claim_id: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Present for banned, offline, online, and indirect statuses.\nContains the canonical claim UUID when one is available; it can be empty when no claim ID is available.\n',
-                    }),
-                  next_check: z
-                    .preprocess(
-                      (val) =>
-                        typeof val === 'number' && Number.isSafeInteger(val)
-                          ? BigInt(val)
-                          : typeof val === 'string' && /^-?\d+$/.test(val)
-                            ? BigInt(val)
-                            : val,
-                      z.int64(),
-                    )
-                    .exactOptional()
-                    .openapi({
-                      type: 'integer',
-                      format: 'int64',
-                      description:
-                        'Unix timestamp of the next connection attempt; present only for offline status when scheduled in the future.',
-                    }),
-                  next_in: z
-                    .preprocess(
-                      (val) =>
-                        typeof val === 'number' && Number.isSafeInteger(val)
-                          ? BigInt(val)
-                          : typeof val === 'string' && /^-?\d+$/.test(val)
-                            ? BigInt(val)
-                            : val,
-                      z.int64().min(1n),
-                    )
-                    .exactOptional()
-                    .openapi({
-                      type: 'integer',
-                      format: 'int64',
-                      minimum: 1,
-                      description:
-                        'Seconds until `next_check`; present only when `next_check` is present.',
-                    }),
-                })
-                .openapi({
-                  description: 'Current Netdata Cloud connection state.',
-                  required: ['id', 'status', 'since', 'age', 'url', 'reason'],
-                }),
-              can_be_claimed: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Whether the agent can currently be claimed. Present in info and error responses.\ntrue for available/offline/indirect states, false for online/banned.\n',
-                }),
-              key_filename: z
-                .string()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Full path to the file containing the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\nNot present after a successful claim or if no verification key file has ever been published successfully.\nPlatform-specific path (Linux: /var/lib/netdata/..., Windows: C:\\...).\n',
-                }),
-              cmd: z
-                .string()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'OS-specific command to retrieve the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\n- Linux: "sudo cat /var/lib/netdata/netdata_random_session_id"\n- Docker: "docker exec netdata cat /var/lib/netdata/netdata_random_session_id"\n- Windows: "more C:\\path\\to\\netdata_random_session_id"\n',
-                }),
-              help: z
-                .string()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Human-readable instructions for obtaining the verification key.\nPresent in info and error responses after the verification key file has been published successfully at least once.\n',
-                }),
-              agents: z
-                .array(z.object({}))
-                .exactOptional()
-                .openapi({ description: 'Agent information for the claimed node(s)' }),
-            })
-            .openapi({ required: ['cloud'] }),
+          schema: ClaimResponseSchema,
           examples: {
             info_response: {
               summary: 'Info response (no claim attempt)',
@@ -8164,9 +8236,12 @@ export const getApiV3ClaimRoute = createRoute({
                 key_filename: '/var/lib/netdata/netdata_random_session_id',
                 cmd: 'sudo cat /var/lib/netdata/netdata_random_session_id',
                 help: 'We need to verify this server is yours. SSH to this server and run this command. It will give you a UUID. Copy and paste this UUID to this box:',
-                agents: [
-                  { hostname: 'my-server', machine_guid: '12345678-1234-1234-1234-123456789abc' },
-                ],
+                agent: {
+                  mg: '12345678-1234-1234-1234-123456789abc',
+                  nd: null,
+                  nm: 'my-server',
+                  now: 1720000120,
+                },
               },
             },
             success_response: {
@@ -8177,23 +8252,58 @@ export const getApiV3ClaimRoute = createRoute({
                 cloud: {
                   id: 1,
                   status: 'online',
-                  since: 1720000120,
+                  since: 1720000125,
                   age: 0,
                   url: 'https://app.netdata.cloud',
                   reason: '',
                   claim_id: '12345678-1234-1234-1234-123456789abc',
                 },
-                agents: [
-                  {
-                    hostname: 'my-server',
-                    machine_guid: '12345678-1234-1234-1234-123456789abc',
-                    claimed_id: 'cloud-node-id-123',
-                  },
-                ],
+                agent: {
+                  mg: '12345678-1234-1234-1234-123456789abc',
+                  nd: '87654321-4321-4321-4321-cba987654321',
+                  nm: 'my-server',
+                  now: 1720000125,
+                },
               },
             },
             error_response: {
-              summary: 'Failed claim (invalid key)',
+              summary: 'Failed claim (rejected by Netdata Cloud)',
+              value: {
+                success: false,
+                message: 'Failed: token is expired, not found, or invalid',
+                cloud: {
+                  id: 0,
+                  status: 'available',
+                  since: 1720000000,
+                  age: 120,
+                  url: 'https://app.netdata.cloud',
+                  reason: 'Failed: token is expired, not found, or invalid',
+                },
+                can_be_claimed: true,
+                key_filename: '/var/lib/netdata/netdata_random_session_id',
+                cmd: 'sudo cat /var/lib/netdata/netdata_random_session_id',
+                help: 'We need to verify this server is yours. SSH to this server and run this command. It will give you a UUID. Copy and paste this UUID to this box:',
+                agent: {
+                  mg: '12345678-1234-1234-1234-123456789abc',
+                  nd: null,
+                  nm: 'my-server',
+                  now: 1720000120,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description:
+        'The claim request was rejected before contacting Netdata Cloud (only when the agent can be claimed; otherwise\nany key is ignored and the 200 info response is returned). The body is JSON with the same\nfields as the 200 error response (`success`=false, `message`, `cloud`, `can_be_claimed`, `agent`, and\n`key_filename`, `cmd`, `help` once the verification key file has been published). Reasons:\n- `invalid key`: the key does not match the current verification key\n- `invalid parameters`: missing token/url, or invalid characters in token, url or rooms\n',
+      content: {
+        'application/json': {
+          schema: ClaimResponseSchema,
+          examples: {
+            invalid_key: {
+              summary: 'Wrong verification key',
               value: {
                 success: false,
                 message: 'invalid key',
@@ -8209,18 +8319,17 @@ export const getApiV3ClaimRoute = createRoute({
                 key_filename: '/var/lib/netdata/netdata_random_session_id',
                 cmd: 'sudo cat /var/lib/netdata/netdata_random_session_id',
                 help: 'We need to verify this server is yours. SSH to this server and run this command. It will give you a UUID. Copy and paste this UUID to this box:',
-                agents: [
-                  { hostname: 'my-server', machine_guid: '12345678-1234-1234-1234-123456789abc' },
-                ],
+                agent: {
+                  mg: '12345678-1234-1234-1234-123456789abc',
+                  nd: null,
+                  nm: 'my-server',
+                  now: 1720000120,
+                },
               },
             },
           },
         },
       },
-    },
-    400: {
-      description:
-        "Bad request (only in v2 API or earlier). V3 returns errors as JSON with HTTP 200.\nReasons include:\n- Invalid key (doesn't match generated session ID)\n- Invalid parameters (missing token/url, or invalid characters)\n- Cloud connection failure\n",
     },
   },
 })
@@ -8231,41 +8340,21 @@ export const getApiV3BearerProtectionRoute = createRoute({
   tags: ['authentication'],
   summary: 'Enable or disable bearer token authentication requirement',
   description:
-    "**Bearer Token Authentication Control**\n\nThis endpoint controls whether the Netdata agent requires bearer token authentication for API access. Bearer protection adds an additional security layer by downgrading unauthenticated requests to `HTTP_ACCESS_NONE` when enabled. To reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`, an unauthenticated direct HTTP request must present a valid bearer token in the `Authorization` header. API messages sent over an established WebRTC data channel are not parsed for an `Authorization` header (unlike the initial HTTP `rtc_offer` signaling request, which is), so an unauthenticated call made over the data channel cannot supply a bearer token and is rejected for such routes. Already-authenticated sessions (for example Netdata Cloud/ACLK) keep their permissions and are unaffected. Routes declared with `HTTP_ACCESS_NONE` do not acquire a generic bearer-token requirement; their own ACL, transport, and callback authorization still apply.\n\n**Use Cases:**\n- **Cloud Integration:** Enable bearer protection when agent is claimed to Netdata Cloud\n- **Security Hardening:** Add token-based authentication to prevent unauthorized API access\n- **Multi-Tenant Environments:** Enforce authentication in shared infrastructure\n- **Dynamic Security:** Toggle authentication requirements based on operational needs\n- **Remote Management:** Netdata Cloud can enable protection when claiming agents\n\n**How It Works:**\n1. When bearer protection is enabled, routes requiring `HTTP_ACCESS_ANONYMOUS_DATA` reject unauthenticated requests\n2. Tokens are obtained via `/api/v3/bearer_get_token` endpoint\n3. Tokens have expiration times and must be renewed periodically\n4. Invalid or missing tokens fail routes whose required access is not granted\n5. Routes requiring `HTTP_ACCESS_NONE`, including claim, do not acquire a generic bearer requirement; their other route and callback gates still apply\n\n**Security Verification:**\n- **claim_id:** Must match the agent's current claim ID (prevents requests to wrong agent)\n- **machine_guid:** Must match the agent's machine GUID (hardware fingerprint)\n- **node_id:** Must match the agent's node UUID (persistent identity)\n- All three identifiers must be present and match for the operation to succeed\n\n**Protection States:**\n- **Enabled (true):** An unauthenticated direct HTTP request needs a valid bearer token (in the `Authorization` header) to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and so are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes (such as claim) do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply\n- **Disabled (false):** API requests do not require bearer tokens (default for unclaimed agents)\n\n**Important Notes:**\n- This endpoint itself requires authentication (typically called by Netdata Cloud during claiming)\n- Changing protection state affects all subsequent API requests immediately\n- Netdata Cloud automatically enables bearer protection when an agent is claimed\n- Local access may still work without bearer token depending on configuration\n- The endpoint validates that the request is for the correct agent using claim_id, machine_guid, and node_id\n- Mismatched identifiers return HTTP 400 Bad Request\n\n**Typical Workflow:**\n1. Agent is claimed to Netdata Cloud\n2. Cloud calls this endpoint to enable bearer protection\n3. Unauthenticated direct HTTP calls to routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA` then require a bearer token, while unauthenticated API messages sent over an established WebRTC data channel (which carry no `Authorization` header) are rejected for such routes (already-authenticated sessions keep their permissions)\n4. Cloud obtains tokens via `/api/v3/bearer_get_token` as needed\n5. Tokens are included in Authorization headers for authenticated requests\n\n**Security & Access Control:**\n- ⚠️ **ACLK-Only API** - This endpoint is ONLY accessible via Netdata Cloud (ACLK connection)\n- **NOT accessible via:** Direct HTTP/HTTPS to agent, even with bearer token\n- **Authentication:** Requires Netdata Cloud authentication with elevated permissions\n- **Required Permissions:** `SIGNED_ID` + `SAME_SPACE` + `VIEW_AGENT_CONFIG` + `EDIT_AGENT_CONFIG`\n- **User Roles:** Typically Admin or Manager role required\n- **Development Mode:** Can be enabled for testing with `ACL_DEV_OPEN_ACCESS` flag\n",
+    "**Bearer Token Authentication Control**\n\nThis endpoint controls whether the Netdata Agent requires bearer token authentication for API access. Bearer protection adds an additional security layer by downgrading unauthenticated requests to `HTTP_ACCESS_NONE` when enabled. To reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`, an unauthenticated direct HTTP request must present a valid bearer token in the `Authorization` header. API messages sent over an established WebRTC data channel are not parsed for an `Authorization` header (unlike the initial HTTP `rtc_offer` signaling request, which is), so an unauthenticated call made over the data channel cannot supply a bearer token and is rejected for such routes. Already-authenticated sessions (for example Netdata Cloud/ACLK) keep their permissions and are unaffected. Routes declared with `HTTP_ACCESS_NONE` do not acquire a generic bearer-token requirement; their own ACL, transport, and callback authorization still apply.\n\n**Use Cases:**\n- **Cloud Integration:** Enable bearer protection when agent is claimed to Netdata Cloud\n- **Security Hardening:** Add token-based authentication to prevent unauthorized API access\n- **Multi-Tenant Environments:** Enforce authentication in shared infrastructure\n- **Dynamic Security:** Toggle authentication requirements based on operational needs\n- **Remote Management:** Netdata Cloud can enable protection when claiming agents\n\n**How It Works:**\n1. When bearer protection is enabled, routes requiring `HTTP_ACCESS_ANONYMOUS_DATA` reject unauthenticated requests\n2. Tokens are obtained via `/api/v3/bearer_get_token` endpoint\n3. Tokens have expiration times and must be renewed periodically\n4. Invalid or missing tokens fail routes whose required access is not granted\n5. Routes requiring `HTTP_ACCESS_NONE`, including claim, do not acquire a generic bearer requirement; their other route and callback gates still apply\n\n**Security Verification:**\n- **claim_id:** Must match the agent's current claim ID (prevents requests to wrong agent)\n- **machine_guid:** Must match the agent's machine GUID (hardware fingerprint)\n- **node_id:** Must match the agent's node UUID (persistent identity)\n- All three identifiers must be present and match for the operation to succeed\n\n**Protection States:**\n- **Enabled (true):** An unauthenticated direct HTTP request needs a valid bearer token (in the `Authorization` header) to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and so are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes (such as claim) do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply\n- **Disabled (false):** API requests do not require bearer tokens (default for unclaimed agents)\n\n**Important Notes:**\n- This endpoint itself requires authentication (typically called by Netdata Cloud during claiming)\n- Changing protection state affects all subsequent API requests immediately\n- Netdata Cloud automatically enables bearer protection when an agent is claimed\n- Local access may still work without bearer token depending on configuration\n- The endpoint validates that the request is for the correct agent using claim_id, machine_guid, and node_id\n- Mismatched identifiers return HTTP 400 Bad Request\n\n**Typical Workflow:**\n1. Agent is claimed to Netdata Cloud\n2. Cloud calls this endpoint to enable bearer protection\n3. Unauthenticated direct HTTP calls to routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA` then require a bearer token, while unauthenticated API messages sent over an established WebRTC data channel (which carry no `Authorization` header) are rejected for such routes (already-authenticated sessions keep their permissions)\n4. Cloud obtains tokens via `/api/v3/bearer_get_token` as needed\n5. Tokens are included in Authorization headers for authenticated requests\n\n**Security & Access Control:**\n- ⚠️ **ACLK-Only API** - This endpoint is ONLY accessible via Netdata Cloud (ACLK connection)\n- **NOT accessible via:** Direct HTTP/HTTPS to agent, even with bearer token\n- **Authentication:** Requires Netdata Cloud authentication with elevated permissions\n- **Required Permissions:** `SIGNED_ID` + `SAME_SPACE` + `VIEW_AGENT_CONFIG` + `EDIT_AGENT_CONFIG`\n- **User Roles:** Typically Admin or Manager role required\n- **Development Mode:** Can be enabled for testing with `ACL_DEV_OPEN_ACCESS` flag\n",
   operationId: 'bearerProtection3',
   request: {
     query: z.object({
-      bearer_protection: ((schema) =>
-        z.union([
-          z.preprocess(
-            ((read) => (val: unknown) => {
-              const result = read.safeParse(val)
-              return result.success ? result.data : val
-            })(z.stringbool()),
-            schema,
-          ),
-          schema,
-        ]))(
-        z.union([
-          z.literal('on'),
-          z.literal('off'),
-          z.literal(true),
-          z.literal(false),
-          z.literal('yes'),
-          z.literal('no'),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'bearer_protection',
-            in: 'query',
-            required: false,
-            schema: { type: 'string', enum: ['on', 'off', true, false, 'yes', 'no'] },
-            description:
-              '**Whether to enable or disable bearer token authentication requirement.**\n\n**Valid Values:**\n- Enable: `on`, `true`, `yes`\n- Disable: `off`, `false`, `no`\n\n**Default Behavior:**\n- If omitted, maintains current bearer protection state\n- When agent is unclaimed, defaults to disabled\n- When agent is claimed, typically enabled by Netdata Cloud\n\n**Effect:**\n- When enabled: an unauthenticated direct HTTP request must include a valid bearer token in the `Authorization` header to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply\n- When disabled: API requests work without bearer tokens (less secure)\n\nExample: `bearer_protection=on`\n',
-          },
-        }),
+      bearer_protection: BearerProtectionValueSchema.openapi({
+        param: {
+          name: 'bearer_protection',
+          in: 'query',
+          required: false,
+          allowEmptyValue: true,
+          schema: { $ref: '#/components/schemas/bearerProtectionValue' },
+          description:
+            '**Whether to enable or disable bearer token authentication requirement.**\n\n**Valid Values** (matched case-insensitively, so `ON` and `True` also work):\n- Enable: `on`, `true`, `yes`\n- Disable: `off`, `false`, `no`\n- Any other value is rejected with HTTP 400 and the protection state is not changed\n\n**Default Behavior:**\n- If omitted or empty, the protection state is not changed and the current state is returned\n- When agent is unclaimed, defaults to disabled\n- When agent is claimed, typically enabled by Netdata Cloud\n\n**Effect:**\n- When enabled: an unauthenticated direct HTTP request must include a valid bearer token in the `Authorization` header to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply\n- When disabled: API requests work without bearer tokens (less secure)\n\nExample: `bearer_protection=on`\n',
+        },
+      }).exactOptional(),
       claim_id: z
         .string()
         .openapi({
@@ -8306,7 +8395,8 @@ export const getApiV3BearerProtectionRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'Bearer protection state successfully changed.',
+      description:
+        'Current bearer protection state, after applying the requested change if one was given.',
       content: {
         'application/json': {
           schema: z
@@ -8326,7 +8416,7 @@ export const getApiV3BearerProtectionRoute = createRoute({
     },
     400: {
       description:
-        "Bad request due to one of the following:\n- claim_id doesn't match the agent's claim ID\n- machine_guid doesn't match the agent's machine GUID\n- node_id doesn't match or is missing\n- Invalid parameter values\n",
+        "Bad request due to one of the following:\n- claim_id doesn't match the agent's claim ID\n- machine_guid doesn't match the agent's machine GUID\n- node_id doesn't match or is missing\n- bearer_protection has a value other than on/off, true/false or yes/no (case-insensitive); the\n  protection state is not changed\n",
     },
   },
   security: [{ aclkAuth: [] }],
@@ -9143,36 +9233,17 @@ export const getApiV2BearerProtectionRoute = createRoute({
   operationId: 'bearerProtection2',
   request: {
     query: z.object({
-      bearer_protection: ((schema) =>
-        z.union([
-          z.preprocess(
-            ((read) => (val: unknown) => {
-              const result = read.safeParse(val)
-              return result.success ? result.data : val
-            })(z.stringbool()),
-            schema,
-          ),
-          schema,
-        ]))(
-        z.union([
-          z.literal('on'),
-          z.literal('off'),
-          z.literal(true),
-          z.literal(false),
-          z.literal('yes'),
-          z.literal('no'),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'bearer_protection',
-            in: 'query',
-            required: false,
-            schema: { type: 'string', enum: ['on', 'off', true, false, 'yes', 'no'] },
-            description: 'Enable or disable bearer protection',
-          },
-        }),
+      bearer_protection: BearerProtectionValueSchema.openapi({
+        param: {
+          name: 'bearer_protection',
+          in: 'query',
+          required: false,
+          allowEmptyValue: true,
+          schema: { $ref: '#/components/schemas/bearerProtectionValue' },
+          description:
+            'Enable (`on`, `true`, `yes`) or disable (`off`, `false`, `no`) bearer protection, matched case-insensitively. Any other value returns HTTP 400 without changing the state; if omitted or empty, the state is not changed.',
+        },
+      }).exactOptional(),
       claim_id: z
         .string()
         .openapi({
@@ -9209,8 +9280,30 @@ export const getApiV2BearerProtectionRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Bearer protection state successfully changed' },
-    400: { description: 'Invalid parameters or verification failed' },
+    200: {
+      description:
+        'Current bearer protection state, after applying the requested change if one was given',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              bearer_protection: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Current bearer protection state after the operation (true = enabled, false = disabled)',
+                }),
+            })
+            .openapi({ required: [] }),
+          example: { bearer_protection: true },
+        },
+      },
+    },
+    400: {
+      description:
+        'Identity verification failed, or bearer_protection has a value other than on/off, true/false or yes/no (case-insensitive); the protection state is not changed',
+    },
   },
   deprecated: true,
   security: [{ aclkAuth: [] }],
@@ -9960,7 +10053,7 @@ export const getApiV1RegistryRoute = createRoute({
       description: 'Registry operation successful',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Response varies by action type' }),
+          schema: z.looseObject({}).openapi({ description: 'Response varies by action type' }),
         },
       },
     },
@@ -9975,7 +10068,7 @@ export const getApiV1DbengineStatsRoute = createRoute({
   tags: ['management'],
   summary: '[DEPRECATED] Get DBEngine storage statistics',
   description:
-    "**[DEPRECATED - Use Netdata Cloud or internal metrics for storage monitoring]**\n\n**DBEngine Storage Statistics**\n\nReturns detailed statistics about Netdata's DBEngine storage system for all configured storage tiers. DBEngine is Netdata's high-performance time-series database that stores metrics on disk.\n\n**Statistics Provided (per tier):**\n\n**Datafiles:**\n- Active datafiles count\n- Total datafiles (active + archived)\n- Datafile size limits\n\n**Extents:**\n- Number of extents (storage chunks)\n- Extent compression statistics\n- Extent allocation and fragmentation\n\n**Pages:**\n- Page cache statistics\n- Page types (hot, cold, compressed)\n- Page I/O statistics\n\n**Compression:**\n- Compression ratios achieved\n- Compression algorithm efficiency\n- Space saved by compression\n\n**Retention:**\n- Actual retention achieved\n- Retention limits and targets\n- Disk space usage\n\n**Performance:**\n- Read/write rates\n- Cache hit ratios\n- I/O wait times\n\n**Use Cases:**\n- **Capacity Planning:** Monitor disk space usage trends\n- **Performance Tuning:** Analyze cache efficiency and I/O patterns\n- **Storage Optimization:** Review compression ratios and retention\n- **Troubleshooting:** Diagnose DBEngine performance issues\n\n**Storage Tiers:**\nNetdata supports multiple storage tiers with different retention periods:\n- **Tier 0:** High resolution (1-second), short retention\n- **Tier 1:** Medium resolution, medium retention\n- **Tier 2:** Low resolution, long retention\n\n**Availability:**\nThis endpoint only works if DBEngine is enabled. Returns 404 if DBEngine is disabled.\n\n**Migration:**\nModern Netdata installations should use:\n- Netdata Cloud for storage monitoring across agents\n- Internal metrics: `netdata.dbengine_*` charts\n- System info API for aggregate statistics\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
+    "**[DEPRECATED - Use Netdata Cloud or internal metrics for storage monitoring]**\n\n**DBEngine Storage Statistics**\n\nReturns detailed statistics about Netdata's DBEngine storage system for all configured storage tiers. DBEngine is Netdata's high-performance time-series database that stores metrics on disk.\n\n**Statistics Provided (per tier):**\n\n**Datafiles:**\n- Active datafiles count\n- Total datafiles (active + archived)\n- Datafile size limits\n\n**Extents:**\n- Number of extents (storage chunks)\n- Extent compression statistics\n- Extent allocation and fragmentation\n\n**Pages:**\n- Page cache statistics\n- Page types (hot, cold, compressed)\n- Page I/O statistics\n\n**Compression:**\n- Compression ratios achieved\n- Compression algorithm efficiency\n- Space saved by compression\n\n**Retention:**\n- Actual retention achieved\n- Retention limits and targets\n- Disk space usage\n\n**Performance:**\n- Read/write rates\n- Cache hit ratios\n- I/O wait times\n\n**Use Cases:**\n- **Capacity Planning:** Monitor disk space usage trends\n- **Performance Tuning:** Analyze cache efficiency and I/O patterns\n- **Storage Optimization:** Review compression ratios and retention\n- **Troubleshooting:** Diagnose DBEngine performance issues\n\n**Storage Tiers:**\nNetdata supports multiple storage tiers with different retention periods:\n- **Tier 0:** per-second\n- **Tier 1:** per-minute\n- **Tier 2:** per-hour\n\nEach tier's retention is configurable by disk size and time.\n\n**Availability:**\nThis endpoint only works if DBEngine is enabled. Returns 404 if DBEngine is disabled.\n\n**Migration:**\nModern Netdata installations should use:\n- Netdata Cloud for storage monitoring across agents\n- Internal metrics: `netdata.dbengine_*` charts\n- System info API for aggregate statistics\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
   operationId: 'dbengine_stats1',
   responses: {
     200: {
@@ -9985,7 +10078,7 @@ export const getApiV1DbengineStatsRoute = createRoute({
           schema: z
             .record(
               z.string(),
-              z.object({}).openapi({ description: 'Statistics for this specific tier' }),
+              z.looseObject({}).openapi({ description: 'Statistics for this specific tier' }),
             )
             .openapi({
               description:
@@ -10027,7 +10120,7 @@ export const getApiV1MlInfoRoute = createRoute({
   tags: ['management'],
   summary: '[DEPRECATED] Get machine learning detection information',
   description:
-    "**[DEPRECATED - Use internal metrics and Netdata Cloud for ML monitoring]**\n\n**Machine Learning Detection Info**\n\nReturns information about Netdata's built-in machine learning (ML) anomaly detection system for the specified host. Netdata trains ML models on every metric to detect anomalous behavior in real-time.\n\n**Information Provided:**\n\n**Training Status:**\n- Whether ML is enabled and trained\n- Training progress and completion percentage\n- Number of models trained\n- Training time and resource usage\n\n**Detection Configuration:**\n- Detection sensitivity settings\n- Anomaly detection thresholds\n- Update frequency\n- Model parameters\n\n**Model Statistics:**\n- Number of dimensions being modeled\n- Model types in use (k-means, etc.)\n- Model accuracy metrics\n- Training data requirements\n\n**Detection State:**\n- Current anomaly detection status\n- Recent anomaly counts\n- Detection performance metrics\n\n**Use Cases:**\n- **ML Verification:** Confirm ML is trained and detecting anomalies\n- **Troubleshooting:** Diagnose why ML isn't detecting issues\n- **Configuration:** Verify ML settings are applied correctly\n- **Monitoring:** Track ML training progress on new agents\n\n**Availability:**\nThis endpoint only works if:\n- Netdata was compiled with ML support (`ENABLE_ML`)\n- ML is enabled in configuration\n- The agent has finished initial startup\n\nReturns 503 (Service Unavailable) if ML is not compiled in or not ready.\n\n**Machine Learning in Netdata:**\n- Trains individual k-means models for every metric dimension\n- Updates models continuously as new data arrives\n- Detects anomalies in real-time (within seconds)\n- No configuration required - works out of the box\n- Models stored locally, no data sent to cloud\n\n**Migration:**\nModern deployments should:\n- Use internal metrics: `netdata.ml_*` charts\n- Check Netdata Cloud for ML insights\n- Use alert transitions API to see ML-based alerts\n- Monitor anomaly rates via `/api/v2/data` with appropriate options\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
+    "**[DEPRECATED - Use internal metrics and Netdata Cloud for ML monitoring]**\n\n**Machine Learning Detection Info**\n\nReturns information about Netdata's built-in machine learning (ML) anomaly detection system for the specified host. Netdata trains ML models on every metric to detect anomalous behavior in real-time.\n\n**Information Provided:**\n\n**Training Status:**\n- Whether ML is enabled and trained\n- Training progress and completion percentage\n- Number of models trained\n- Training time and resource usage\n\n**Detection Configuration:**\n- Detection sensitivity settings\n- Anomaly detection thresholds\n- Update frequency\n- Model parameters\n\n**Model Statistics:**\n- Number of dimensions being modeled\n- Model types in use (k-means, etc.)\n- Model accuracy metrics\n- Training data requirements\n\n**Detection State:**\n- Current anomaly detection status\n- Recent anomaly counts\n- Detection performance metrics\n\n**Use Cases:**\n- **ML Verification:** Confirm ML is trained and detecting anomalies\n- **Troubleshooting:** Diagnose why ML isn't detecting issues\n- **Configuration:** Verify ML settings are applied correctly\n- **Monitoring:** Track ML training progress on new agents\n\n**Availability:**\nThis endpoint only works if:\n- Netdata was compiled with ML support (`ENABLE_ML`)\n- ML is enabled in configuration\n- The agent has finished initial startup\n\nReturns 503 (Service Unavailable) if ML is not compiled in or not ready.\n\n**Machine Learning in Netdata:**\n- Trains individual k-means models for every metric dimension\n- Updates models continuously as new data arrives\n- Detects anomalies in real-time (within seconds)\n- No configuration required - works out of the box\n- Models stored locally, no data sent to cloud\n\n**Migration:**\nModern deployments should:\n- Use internal metrics: `netdata.ml_*` charts\n- Check Netdata Cloud for ML insights\n- Use the alert transitions API for alerts, and `/api/v2/data` for anomaly rates\n- Monitor anomaly rates via `/api/v2/data` with appropriate options\n\n**Security & Access Control:**\n- 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply\n- **Default Access:** Public (no authentication required)\n- **Bearer Protection:** When enabled via `/api/v3/bearer_protection`, requires bearer token\n- **IP Restrictions:** Subject to `allow dashboard from` in netdata.conf\n- **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools\n",
   operationId: 'ml_info1',
   responses: {
     200: {
@@ -10035,7 +10128,7 @@ export const getApiV1MlInfoRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Machine learning detection configuration and status' }),
           example: {
             enabled: true,

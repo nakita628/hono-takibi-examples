@@ -23,6 +23,9 @@ hono-takibi が出せるものすべて（routes・docs・type・client・rpc・
 - CI（GitHub Actions）は無い。typecheck は手元で `tsc --noEmit` を実行して確かめ、結果を [typecheck.md](./typecheck.md) に記録する。
 - サンドボックスから届くのは npm、`raw.githubusercontent.com`、環境に許可したホスト（`api.apis.guru` など、config の入力元）。
   `git ls-remote https://github.com/<owner>/<repo>.git` も使える。`api.github.com` と `github.com` の Web ページは届かない。
+- hono-takibi（の json-schema-ref-parser）は取得の前に自分で DNS を引くため、このサンドボックスでは GitHub 以外のホストの URL から
+  生成できない（`getaddrinfo ENOTFOUND <host>`。`NODE_USE_ENV_PROXY=1` も効かない）。その場合は仕様を `curl` で落とし、
+  `input` だけを手元のファイルに替えた一時 config で生成して、一時 config は消す（単一ファイルの仕様なら生成物は URL のときと同じ）。
 - hono-takibi は OpenAPI 3.x だけを読む。Swagger 2.0 は仕様上の非対応で、バグではない。
 
 ## 0. 最新の main に揃える
@@ -86,6 +89,12 @@ cd ../.. && node scripts/probe-spec.mjs <raw URL> --app apps/<name>   # operatio
   `parseResponse` なしの版は出さない。
 - template の雛形（`(c) => {}`）は typecheck が通らない（[#497](https://github.com/nakita628/hono-takibi/issues/497)）。
   `scripts/fill-handler-stubs.mjs` が `throw new Error('Not implemented')` を入れる。hono-takibi は再生成してもハンドラ本体を保つ。
+- 1 つの出力の構文エラーで実行全体が止まる（何も書かれない）ときは、その出力だけを外して残りを生成し、config に理由と issue をコメントする:
+  - `type` が止まる: enum の値に配列やオブジェクトがある（[#504](https://github.com/nakita628/hono-takibi/issues/504)）、パスに `'` がある（[#505](https://github.com/nakita628/hono-takibi/issues/505)）→ `type` を外す。
+  - hooks が止まる: パスに `'` がある（#505）→ hooks を外す。
+  - 既定の `template` が止まる: タグかパスの先頭の区切りが数字で始まる（[#506](https://github.com/nakita628/hono-takibi/issues/506)）→ `template: { routeHandler: true }`。
+- typecheck の既知のエラー: メディア型にスキーマがない応答（`content: {}`）の操作がクライアントの型から消える（[#507](https://github.com/nakita628/hono-takibi/issues/507)）、
+  パスにあって `parameters` にない引数（[#508](https://github.com/nakita628/hono-takibi/issues/508)）。
 - `<name>` は kebab-case。`<baseUrl>` は仕様の `servers` が使えればそれ、なければ開発時の既定ポートの `http://localhost:<port>`。
 - `new-app.sh` は `git ls-remote` で取得時点のコミットを固定し、config のコメントに書く。生成はその直後に行う（`main` が動くため）。
 - 1 ベンダーに複数の仕様があるときは、`line` / `knock` のように `configs/*.config.ts` と `src/<name>/` に分け、
@@ -130,7 +139,7 @@ typecheck が通っても、エラーにならない誤出力があり得る（[
 - 不具合（ラベル `bug`）: `## What` `## Where` `## When` `## Who`（hono-takibi・Node.js・OS の版）`## How`（最小の OpenAPI、config、コマンド、実際の出力と期待する出力）`## Why`
 - 要望（ラベル `enhancement`）: `## Why` `## What` `## Where` `## Who` `## When` `## How`
 
-実例は [#497](https://github.com/nakita628/hono-takibi/issues/497)〜[#501](https://github.com/nakita628/hono-takibi/issues/501)。
+実例は [#497](https://github.com/nakita628/hono-takibi/issues/497)〜[#501](https://github.com/nakita628/hono-takibi/issues/501)、[#504](https://github.com/nakita628/hono-takibi/issues/504)〜[#508](https://github.com/nakita628/hono-takibi/issues/508)。
 issue とコメントの末尾には、必ず次の 2 行を付ける:
 
 ```markdown

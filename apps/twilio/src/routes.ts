@@ -68,7 +68,7 @@ const ApiV2010AccountSchema = z
       .openapi({ description: 'A 34 character string that uniquely identifies this resource.' }),
     status: AccountEnumStatusSchema.exactOptional(),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -469,7 +469,7 @@ const ApiV2010AccountAvailablePhoneNumberCountrySchema = z
           'Whether all phone numbers available in the country are new to the Twilio platform. `true` if they are and `false` if all numbers are not in the Twilio Phone Number Beta program.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1485,6 +1485,14 @@ const ApiV2010AccountCallSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'The wait time in milliseconds before the call is placed.' }),
+    stir_verstat: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The STIR/SHAKEN verification status of the call, for example `TN-Validation-Passed-A`. Empty if the incoming call had no STIR/SHAKEN information.',
+      }),
     trunk_sid: z
       .string()
       .regex(/^TK[0-9a-fA-F]{32}$/)
@@ -1501,7 +1509,7 @@ const ApiV2010AccountCallSchema = z
       .exactOptional()
       .openapi({ description: 'The URI of this resource, relative to `https://api.twilio.com`.' }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -2027,7 +2035,7 @@ const ApiV2010AccountConferenceSchema = z
       .exactOptional()
       .openapi({ description: 'The URI of this resource, relative to `https://api.twilio.com`.' }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -2896,7 +2904,7 @@ const ApiV2010AccountIncomingPhoneNumberIncomingPhoneNumberAssignedAddOnSchema =
       .exactOptional()
       .openapi({ description: 'The URI of the resource, relative to `https://api.twilio.com`.' }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'A list of related resources identified by their relative URIs.' }),
@@ -4201,7 +4209,7 @@ const ApiV2010AccountMessageSchema = z
       .exactOptional()
       .openapi({ description: 'The API version used to process the Message' }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -5225,7 +5233,7 @@ const ApiV2010AccountRecordingSchema = z
           'How to decrypt the recording if it was encrypted using [Call Recording Encryption](https://www.twilio.com/docs/voice/tutorials/voice-recording-encryption) feature.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'A list of related resources identified by their relative URIs.' }),
@@ -5329,7 +5337,7 @@ const ApiV2010AccountRecordingRecordingAddOnResultSchema = z
         description: 'The SID of the recording to which the AddOnResult resource belongs.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'A list of related resources identified by their relative URIs.' }),
@@ -5417,7 +5425,7 @@ const ApiV2010AccountRecordingRecordingAddOnResultRecordingAddOnResultPayloadSch
           'The SID of the recording to which the AddOnResult resource that contains the payload belongs.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'A list of related resources identified by their relative URIs.' }),
@@ -5654,14 +5662,14 @@ const ApiV2010AccountSigningKeySchema = z
   .openapi({ required: [] })
   .openapi('ApiV2010AccountSigningKey')
 
-const ApiV2010AccountSipSchema = z.object({}).openapi('ApiV2010AccountSip')
+const ApiV2010AccountSipSchema = z.looseObject({}).openapi('ApiV2010AccountSip')
 
 const ApiV2010AccountSipSipDomainSipAuthSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ApiV2010AccountSipSipDomainSipAuth')
 
 const ApiV2010AccountSipSipDomainSipAuthSipAuthCallsSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ApiV2010AccountSipSipDomainSipAuthSipAuthCalls')
 
 const ApiV2010AccountSipSipDomainSipAuthSipAuthCallsSipAuthCallsCredentialListMappingSchema = z
@@ -5765,7 +5773,7 @@ const ApiV2010AccountSipSipDomainSipAuthSipAuthCallsSipAuthCallsIpAccessControlL
   .openapi('ApiV2010AccountSipSipDomainSipAuthSipAuthCallsSipAuthCallsIpAccessControlListMapping')
 
 const ApiV2010AccountSipSipDomainSipAuthSipAuthRegistrationsSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ApiV2010AccountSipSipDomainSipAuthSipAuthRegistrations')
 
 const ApiV2010AccountSipSipDomainSipAuthSipAuthRegistrationsSipAuthRegistrationsCredentialListMappingSchema =
@@ -5926,7 +5934,7 @@ const ApiV2010AccountSipSipCredentialListSchema = z
       .exactOptional()
       .openapi({ description: 'A 34 character string that uniquely identifies this resource.' }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'A list of credentials associated with this credential list.' }),
@@ -6117,7 +6125,7 @@ const ApiV2010AccountSipSipDomainSchema = z
         'x-twilio': { pii: { handling: 'standard', deleteSla: 30 } },
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6212,7 +6220,7 @@ const ApiV2010AccountSipSipIpAccessControlListSchema = z
           'The date that this resource was last updated, given as GMT in [RFC 2822](https://www.php.net/manual/en/class.datetime.php#datetime.constants.rfc2822) format.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6712,7 +6720,7 @@ const ApiV2010AccountTranscriptionSchema = z
   .openapi({ required: [] })
   .openapi('ApiV2010AccountTranscription')
 
-const ApiV2010AccountUsageSchema = z.object({}).openapi('ApiV2010AccountUsage')
+const ApiV2010AccountUsageSchema = z.looseObject({}).openapi('ApiV2010AccountUsage')
 
 const ApiV2010AccountUsageUsageRecordSchema = z
   .object({
@@ -6798,7 +6806,7 @@ const ApiV2010AccountUsageUsageRecordSchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6914,7 +6922,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordAllTimeSchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7030,7 +7038,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordDailySchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7146,7 +7154,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordLastMonthSchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7262,7 +7270,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordMonthlySchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7378,7 +7386,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordThisMonthSchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7494,7 +7502,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordTodaySchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7610,7 +7618,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordYearlySchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -7726,7 +7734,7 @@ const ApiV2010AccountUsageUsageRecordUsageRecordYesterdaySchema = z
           'The first date for which usage is included in this UsageRecord. The date is specified in GMT and formatted as `YYYY-MM-DD`.',
       }),
     subresource_uris: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -8300,63 +8308,45 @@ export const get20100401AccountsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -8449,63 +8439,45 @@ export const post20100401AccountsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -8600,63 +8572,45 @@ export const get20100401AccountsSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -8818,63 +8772,45 @@ export const post20100401AccountsSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
     409: {
@@ -9125,63 +9061,45 @@ export const get20100401AccountsAccountSidAddressesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -9328,63 +9246,45 @@ export const post20100401AccountsAccountSidAddressesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -9469,63 +9369,45 @@ export const get20100401AccountsAccountSidAddressesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -9688,63 +9570,45 @@ export const post20100401AccountsAccountSidAddressesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -9979,63 +9843,45 @@ export const get20100401AccountsAccountSidApplicationsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -10263,63 +10109,45 @@ export const post20100401AccountsAccountSidApplicationsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -10411,63 +10239,45 @@ export const get20100401AccountsAccountSidApplicationsSidJsonRoute = createRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -10714,63 +10524,45 @@ export const post20100401AccountsAccountSidApplicationsSidJsonRoute = createRout
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -10902,63 +10694,45 @@ export const get20100401AccountsAccountSidAuthorizedConnectAppsConnectAppSidJson
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -11117,63 +10891,45 @@ export const get20100401AccountsAccountSidAuthorizedConnectAppsJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -11316,63 +11072,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -11444,63 +11182,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeJsonRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -11905,63 +11625,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeLocalJ
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -12368,63 +12070,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeMachin
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -12829,63 +12513,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeMobile
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -13292,63 +12958,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeNation
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -13755,63 +13403,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeShared
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -14218,63 +13848,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeTollFr
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -14679,63 +14291,45 @@ export const get20100401AccountsAccountSidAvailablePhoneNumbersCountryCodeVoipJs
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -14791,63 +14385,45 @@ export const get20100401AccountsAccountSidBalanceJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -15186,6 +14762,7 @@ export const get20100401AccountsAccountSidCallsJsonRoute = createRoute({
                     trunk_sid: 'TKdeadbeefdeadbeefdeadbeefdeadbeef',
                     uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                     queue_time: '1000',
+                    stir_verstat: 'TN-Validation-Passed-A',
                   },
                   {
                     account_sid: 'ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
@@ -15233,6 +14810,7 @@ export const get20100401AccountsAccountSidCallsJsonRoute = createRoute({
                     trunk_sid: 'TKdeadbeefdeadbeefdeadbeefdeadbeef',
                     uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0.json',
                     queue_time: '1000',
+                    stir_verstat: 'TN-Validation-Passed-A',
                   },
                 ],
                 end: 1,
@@ -15296,6 +14874,7 @@ export const get20100401AccountsAccountSidCallsJsonRoute = createRoute({
                     trunk_sid: 'TKdeadbeefdeadbeefdeadbeefdeadbeef',
                     uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                     queue_time: '1000',
+                    stir_verstat: 'TN-Validation-Passed-A',
                   },
                   {
                     account_sid: 'ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
@@ -15343,6 +14922,7 @@ export const get20100401AccountsAccountSidCallsJsonRoute = createRoute({
                     trunk_sid: 'TKdeadbeefdeadbeefdeadbeefdeadbeef',
                     uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0.json',
                     queue_time: '1000',
+                    stir_verstat: 'TN-Validation-Passed-A',
                   },
                 ],
                 end: 3,
@@ -15404,63 +14984,45 @@ export const get20100401AccountsAccountSidCallsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -15962,6 +15524,7 @@ export const post20100401AccountsAccountSidCallsJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
             createWithTwiml: {
@@ -16011,69 +15574,52 @@ export const post20100401AccountsAccountSidCallsJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
           },
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -16182,69 +15728,52 @@ export const get20100401AccountsAccountSidCallsSidJsonRoute = createRoute({
                 trunk_sid: 'TKdeadbeefdeadbeefdeadbeefdeadbeef',
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
           },
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -16466,6 +15995,7 @@ export const post20100401AccountsAccountSidCallsSidJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
             cancel: {
@@ -16515,6 +16045,7 @@ export const post20100401AccountsAccountSidCallsSidJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
             posttwiml: {
@@ -16564,6 +16095,7 @@ export const post20100401AccountsAccountSidCallsSidJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
             updatetimelimit: {
@@ -16613,69 +16145,52 @@ export const post20100401AccountsAccountSidCallsSidJsonRoute = createRoute({
                 trunk_sid: null,
                 uri: '/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json',
                 queue_time: '1000',
+                stir_verstat: 'TN-Validation-Passed-A',
               },
             },
           },
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -16913,63 +16428,45 @@ export const get20100401AccountsAccountSidCallsCallSidEventsJsonRoute = createRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -17075,63 +16572,45 @@ export const get20100401AccountsAccountSidCallsCallSidNotificationsSidJsonRoute 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -17369,63 +16848,45 @@ export const get20100401AccountsAccountSidCallsCallSidNotificationsJsonRoute = c
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -17653,63 +17114,45 @@ export const get20100401AccountsAccountSidCallsCallSidRecordingsJsonRoute = crea
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -17888,63 +17331,45 @@ export const post20100401AccountsAccountSidCallsCallSidRecordingsJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
     201: {
@@ -17979,63 +17404,45 @@ export const post20100401AccountsAccountSidCallsCallSidRecordingsJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -18148,63 +17555,45 @@ export const get20100401AccountsAccountSidCallsCallSidRecordingsSidJsonRoute = c
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -18328,63 +17717,45 @@ export const post20100401AccountsAccountSidCallsCallSidRecordingsSidJsonRoute = 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
     408: {
@@ -18631,63 +18002,45 @@ export const get20100401AccountsAccountSidConferencesSidJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -18816,63 +18169,45 @@ export const post20100401AccountsAccountSidConferencesSidJsonRoute = createRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -19580,63 +18915,45 @@ export const get20100401AccountsAccountSidConferencesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -19866,63 +19183,45 @@ export const get20100401AccountsAccountSidConferencesConferenceSidRecordingsJson
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -20036,63 +19335,45 @@ export const get20100401AccountsAccountSidConferencesConferenceSidRecordingsSidJ
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -20216,63 +19497,45 @@ export const post20100401AccountsAccountSidConferencesConferenceSidRecordingsSid
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -20427,63 +19690,45 @@ export const get20100401AccountsAccountSidConnectAppsSidJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -20641,63 +19886,45 @@ export const post20100401AccountsAccountSidConnectAppsSidJsonRoute = createRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -20905,63 +20132,45 @@ export const get20100401AccountsAccountSidConnectAppsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -21150,63 +20359,45 @@ export const get20100401AccountsAccountSidAddressesAddressSidDependentPhoneNumbe
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -21312,63 +20503,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersSidJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -21684,63 +20857,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersSidJsonRoute = cr
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -22034,63 +21189,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersJsonRoute = create
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -22392,63 +21529,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -22552,63 +21671,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersResourceSidAssigne
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -22859,63 +21960,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersResourceSidAssigne
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -23021,63 +22104,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersResourceSidAssign
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -23195,63 +22260,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersResourceSidAssigne
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -23448,63 +22495,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersResourceSidAssigne
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -23740,63 +22769,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersLocalJsonRoute = c
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -24086,63 +23097,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersLocalJsonRoute = 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -24378,63 +23371,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersMobileJsonRoute = 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -24727,63 +23702,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersMobileJsonRoute =
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -25019,63 +23976,45 @@ export const get20100401AccountsAccountSidIncomingPhoneNumbersTollFreeJsonRoute 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -25369,63 +24308,45 @@ export const post20100401AccountsAccountSidIncomingPhoneNumbersTollFreeJsonRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -25498,63 +24419,45 @@ export const get20100401AccountsAccountSidKeysSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -25645,63 +24548,45 @@ export const post20100401AccountsAccountSidKeysSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -25898,63 +24783,45 @@ export const get20100401AccountsAccountSidKeysJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -26027,63 +24894,45 @@ export const post20100401AccountsAccountSidKeysJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -26180,63 +25029,45 @@ export const get20100401AccountsAccountSidMessagesMessageSidMediaSidJsonRoute = 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -26518,63 +25349,45 @@ export const get20100401AccountsAccountSidMessagesMessageSidMediaJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -26672,63 +25485,45 @@ export const get20100401AccountsAccountSidQueuesQueueSidMembersCallSidJsonRoute 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -26850,63 +25645,45 @@ export const post20100401AccountsAccountSidQueuesQueueSidMembersCallSidJsonRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -27074,63 +25851,45 @@ export const get20100401AccountsAccountSidQueuesQueueSidMembersJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -27491,63 +26250,45 @@ export const get20100401AccountsAccountSidMessagesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28084,63 +26825,45 @@ export const post20100401AccountsAccountSidMessagesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28235,63 +26958,45 @@ export const get20100401AccountsAccountSidMessagesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28439,63 +27144,45 @@ export const post20100401AccountsAccountSidMessagesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28635,63 +27322,45 @@ export const post20100401AccountsAccountSidMessagesMessageSidFeedbackJsonRoute =
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28836,63 +27505,45 @@ export const get20100401AccountsAccountSidSigningKeysJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -28967,63 +27618,45 @@ export const post20100401AccountsAccountSidSigningKeysJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -29114,63 +27747,45 @@ export const get20100401AccountsAccountSidNotificationsSidJsonRoute = createRout
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -29391,63 +28006,45 @@ export const get20100401AccountsAccountSidNotificationsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -29525,63 +28122,45 @@ export const get20100401AccountsAccountSidOutgoingCallerIdsSidJsonRoute = create
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -29677,63 +28256,45 @@ export const post20100401AccountsAccountSidOutgoingCallerIdsSidJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -29965,63 +28526,45 @@ export const get20100401AccountsAccountSidOutgoingCallerIdsJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -30146,63 +28689,45 @@ export const post20100401AccountsAccountSidOutgoingCallerIdsJsonRoute = createRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -30319,63 +28844,45 @@ export const get20100401AccountsAccountSidConferencesConferenceSidParticipantsCa
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -30708,63 +29215,45 @@ export const post20100401AccountsAccountSidConferencesConferenceSidParticipantsC
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -31172,63 +29661,45 @@ export const get20100401AccountsAccountSidConferencesConferenceSidParticipantsJs
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -32252,63 +30723,45 @@ export const post20100401AccountsAccountSidConferencesConferenceSidParticipantsJ
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -32558,63 +31011,45 @@ export const post20100401AccountsAccountSidCallsCallSidPaymentsJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -32779,63 +31214,45 @@ export const post20100401AccountsAccountSidCallsCallSidPaymentsSidJsonRoute = cr
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -32915,63 +31332,45 @@ export const get20100401AccountsAccountSidQueuesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -33084,63 +31483,45 @@ export const post20100401AccountsAccountSidQueuesSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -33347,63 +31728,45 @@ export const get20100401AccountsAccountSidQueuesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -33496,63 +31859,45 @@ export const post20100401AccountsAccountSidQueuesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -33805,63 +32150,45 @@ export const post20100401AccountsAccountSidCallsCallSidTranscriptionsJsonRoute =
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -33977,63 +32304,45 @@ export const post20100401AccountsAccountSidCallsCallSidTranscriptionsSidJsonRout
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -34184,63 +32493,45 @@ export const get20100401AccountsAccountSidRecordingsSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -34654,63 +32945,45 @@ export const get20100401AccountsAccountSidRecordingsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -34813,63 +33086,45 @@ export const get20100401AccountsAccountSidRecordingsReferenceSidAddOnResultsSidJ
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -35119,63 +33374,45 @@ export const get20100401AccountsAccountSidRecordingsReferenceSidAddOnResultsJson
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -35298,63 +33535,45 @@ export const get20100401AccountsAccountSidRecordingsReferenceSidAddOnResultsAddO
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -35644,63 +33863,45 @@ export const get20100401AccountsAccountSidRecordingsReferenceSidAddOnResultsAddO
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -35805,63 +34006,45 @@ export const get20100401AccountsAccountSidRecordingsReferenceSidAddOnResultsAddO
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -35963,63 +34146,45 @@ export const get20100401AccountsAccountSidRecordingsRecordingSidTranscriptionsSi
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -36267,63 +34432,45 @@ export const get20100401AccountsAccountSidRecordingsRecordingSidTranscriptionsJs
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -36406,63 +34553,45 @@ export const get20100401AccountsAccountSidSMSShortCodesSidJsonRoute = createRout
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -36609,63 +34738,45 @@ export const post20100401AccountsAccountSidSMSShortCodesSidJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -36851,63 +34962,45 @@ export const get20100401AccountsAccountSidSMSShortCodesJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -36978,63 +35071,45 @@ export const get20100401AccountsAccountSidSigningKeysSidJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -37115,63 +35190,45 @@ export const post20100401AccountsAccountSidSigningKeysSidJsonRoute = createRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -37394,63 +35451,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsCredential
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -37550,63 +35589,45 @@ export const post20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsCredentia
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -37702,63 +35723,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsCredential
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38007,63 +36010,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsIpAccessCo
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38164,63 +36149,45 @@ export const post20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsIpAccessC
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38316,63 +36283,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthCallsIpAccessCo
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38621,63 +36570,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthRegistrationsCr
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38777,63 +36708,45 @@ export const post20100401AccountsAccountSidSIPDomainsDomainSidAuthRegistrationsC
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -38929,63 +36842,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidAuthRegistrationsCr
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -39229,63 +37124,45 @@ export const get20100401AccountsAccountSidSIPCredentialListsCredentialListSidCre
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -39386,63 +37263,45 @@ export const post20100401AccountsAccountSidSIPCredentialListsCredentialListSidCr
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -39538,63 +37397,45 @@ export const get20100401AccountsAccountSidSIPCredentialListsCredentialListSidCre
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -39708,63 +37549,45 @@ export const post20100401AccountsAccountSidSIPCredentialListsCredentialListSidCr
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -39988,63 +37811,45 @@ export const get20100401AccountsAccountSidSIPCredentialListsJsonRoute = createRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -40122,63 +37927,45 @@ export const post20100401AccountsAccountSidSIPCredentialListsJsonRoute = createR
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -40257,63 +38044,45 @@ export const get20100401AccountsAccountSidSIPCredentialListsSidJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -40409,63 +38178,45 @@ export const post20100401AccountsAccountSidSIPCredentialListsSidJsonRoute = crea
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -40689,63 +38440,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidCredentialListMappi
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -40848,63 +38581,45 @@ export const post20100401AccountsAccountSidSIPDomainsDomainSidCredentialListMapp
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -41001,63 +38716,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidCredentialListMappi
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -41299,63 +38996,45 @@ export const get20100401AccountsAccountSidSIPDomainsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -41571,63 +39250,45 @@ export const post20100401AccountsAccountSidSIPDomainsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -41724,63 +39385,45 @@ export const get20100401AccountsAccountSidSIPDomainsSidJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42015,63 +39658,45 @@ export const post20100401AccountsAccountSidSIPDomainsSidJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42282,63 +39907,45 @@ export const get20100401AccountsAccountSidSIPIpAccessControlListsJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42417,63 +40024,45 @@ export const post20100401AccountsAccountSidSIPIpAccessControlListsJsonRoute = cr
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42553,63 +40142,45 @@ export const get20100401AccountsAccountSidSIPIpAccessControlListsSidJsonRoute = 
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42705,63 +40276,45 @@ export const post20100401AccountsAccountSidSIPIpAccessControlListsSidJsonRoute =
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -42908,63 +40461,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidIpAccessControlList
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -43205,63 +40740,45 @@ export const get20100401AccountsAccountSidSIPDomainsDomainSidIpAccessControlList
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -43362,63 +40879,45 @@ export const post20100401AccountsAccountSidSIPDomainsDomainSidIpAccessControlLis
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -43593,63 +41092,45 @@ export const get20100401AccountsAccountSidSIPIpAccessControlListsIpAccessControl
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -43779,63 +41260,45 @@ export const post20100401AccountsAccountSidSIPIpAccessControlListsIpAccessContro
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -43935,63 +41398,45 @@ export const get20100401AccountsAccountSidSIPIpAccessControlListsIpAccessControl
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -44139,63 +41584,45 @@ export const post20100401AccountsAccountSidSIPIpAccessControlListsIpAccessContro
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },
@@ -45201,63 +42628,45 @@ export const post20100401AccountsAccountSidCallsCallSidSiprecJsonRoute = createR
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -45373,63 +42782,45 @@ export const post20100401AccountsAccountSidCallsCallSidSiprecSidJsonRoute = crea
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -46365,63 +43756,45 @@ export const post20100401AccountsAccountSidCallsCallSidStreamsJsonRoute = create
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -46536,63 +43909,45 @@ export const post20100401AccountsAccountSidCallsCallSidStreamsSidJsonRoute = cre
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -46694,63 +44049,45 @@ export const post20100401AccountsAccountSidTokensJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -46834,63 +44171,45 @@ export const get20100401AccountsAccountSidTranscriptionsSidJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -47101,63 +44420,45 @@ export const get20100401AccountsAccountSidTranscriptionsJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -47392,63 +44693,45 @@ export const get20100401AccountsAccountSidUsageRecordsJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -47676,63 +44959,45 @@ export const get20100401AccountsAccountSidUsageRecordsAllTimeJsonRoute = createR
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -47960,63 +45225,45 @@ export const get20100401AccountsAccountSidUsageRecordsDailyJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -48244,63 +45491,45 @@ export const get20100401AccountsAccountSidUsageRecordsLastMonthJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -48528,63 +45757,45 @@ export const get20100401AccountsAccountSidUsageRecordsMonthlyJsonRoute = createR
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -48812,63 +46023,45 @@ export const get20100401AccountsAccountSidUsageRecordsThisMonthJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -49096,63 +46289,45 @@ export const get20100401AccountsAccountSidUsageRecordsTodayJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -49380,63 +46555,45 @@ export const get20100401AccountsAccountSidUsageRecordsYearlyJsonRoute = createRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -49664,63 +46821,45 @@ export const get20100401AccountsAccountSidUsageRecordsYesterdayJsonRoute = creat
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -49808,63 +46947,45 @@ export const get20100401AccountsAccountSidUsageTriggersSidJsonRoute = createRout
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -49992,63 +47113,45 @@ export const post20100401AccountsAccountSidUsageTriggersSidJsonRoute = createRou
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -50301,63 +47404,45 @@ export const get20100401AccountsAccountSidUsageTriggersJsonRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -50486,63 +47571,45 @@ export const post20100401AccountsAccountSidUsageTriggersJsonRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -50640,63 +47707,45 @@ export const post20100401AccountsAccountSidCallsCallSidUserDefinedMessagesJsonRo
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          description: 'Specify the origin(s) allowed to access the resource',
-          example: '*',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the origin(s) allowed to access the resource',
-              example: '*',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Methods': {
-          description: 'Specify the HTTP methods allowed when accessing the resource',
-          example: 'POST, OPTIONS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the HTTP methods allowed when accessing the resource',
-              example: 'POST, OPTIONS',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Headers': {
-          description: 'Specify the headers allowed when accessing the resource',
-          example: 'Content-Type, Authorization',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Specify the headers allowed when accessing the resource',
-              example: 'Content-Type, Authorization',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Allow-Credentials': {
-          description: 'Indicates whether the browser should include credentials',
-          schema: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Indicates whether the browser should include credentials',
-              param: { required: false },
-            }),
-        },
-        'Access-Control-Expose-Headers': {
-          description: 'Headers exposed to the client',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers exposed to the client',
-              param: { required: false },
-              example: 'X-Custom-Header1, X-Custom-Header2',
-            }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the origin(s) allowed to access the resource',
+            example: '*',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the HTTP methods allowed when accessing the resource',
+            example: 'POST, OPTIONS',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Specify the headers allowed when accessing the resource',
+            example: 'Content-Type, Authorization',
+            param: { required: false },
+          }),
+        'Access-Control-Allow-Credentials': z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Indicates whether the browser should include credentials',
+            param: { required: false },
+          }),
+        'Access-Control-Expose-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers exposed to the client',
+            param: { required: false },
+            example: 'X-Custom-Header1, X-Custom-Header2',
+          }),
       }),
     },
   },
@@ -50811,63 +47860,45 @@ export const post20100401AccountsAccountSidCallsCallSidUserDefinedMessageSubscri
           },
         },
         headers: z.object({
-          'Access-Control-Allow-Origin': {
-            description: 'Specify the origin(s) allowed to access the resource',
-            example: '*',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the origin(s) allowed to access the resource',
-                example: '*',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Methods': {
-            description: 'Specify the HTTP methods allowed when accessing the resource',
-            example: 'POST, OPTIONS',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the HTTP methods allowed when accessing the resource',
-                example: 'POST, OPTIONS',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Headers': {
-            description: 'Specify the headers allowed when accessing the resource',
-            example: 'Content-Type, Authorization',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Specify the headers allowed when accessing the resource',
-                example: 'Content-Type, Authorization',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Allow-Credentials': {
-            description: 'Indicates whether the browser should include credentials',
-            schema: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'Indicates whether the browser should include credentials',
-                param: { required: false },
-              }),
-          },
-          'Access-Control-Expose-Headers': {
-            description: 'Headers exposed to the client',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Headers exposed to the client',
-                param: { required: false },
-                example: 'X-Custom-Header1, X-Custom-Header2',
-              }),
-          },
+          'Access-Control-Allow-Origin': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the origin(s) allowed to access the resource',
+              example: '*',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Methods': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the HTTP methods allowed when accessing the resource',
+              example: 'POST, OPTIONS',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Specify the headers allowed when accessing the resource',
+              example: 'Content-Type, Authorization',
+              param: { required: false },
+            }),
+          'Access-Control-Allow-Credentials': z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Indicates whether the browser should include credentials',
+              param: { required: false },
+            }),
+          'Access-Control-Expose-Headers': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Headers exposed to the client',
+              param: { required: false },
+              example: 'X-Custom-Header1, X-Custom-Header2',
+            }),
         }),
       },
     },

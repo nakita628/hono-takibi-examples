@@ -1081,6 +1081,7 @@ curl http://localhost:9090/api/v1/search/metric_names \
 |---|---|---|---|---|
 |match[]|query|[string]|false|Series selector argument used to scope metric discovery.|
 |search[]|query|[string]|false|One or more search terms matched against metric names (OR logic).|
+|search_expr|query|string|false|Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|query|integer(int64)|false|Fuzzy threshold in the range 0-100. A value of 0 is the lowest fuzzy threshold.|
 |fuzz_alg|query|string|false|Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|query|boolean|false|Whether matching is case-sensitive.|
@@ -1110,7 +1111,7 @@ curl http://localhost:9090/api/v1/search/metric_names \
 
 ```text
 {"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}
-{"status":"success","has_more":false}
+{"status":"success","has_more":false,"returned":1}
 
 ```
 
@@ -1168,6 +1169,7 @@ sort_by: score
 |body|body|[SearchMetricNamesPostInputBody](#schemasearchmetricnamespostinputbody)|true|Submit a metric name search. This endpoint accepts the same parameters as the GET version.|
 |» match[]|body|[string]|false|Form field: Series selector argument used to scope metric discovery.|
 |» search[]|body|[string]|false|Form field: One or more search terms matched against metric names (OR logic).|
+|» search_expr|body|string|false|Form field: Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |» fuzz_threshold|body|integer(int64)|false|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |» fuzz_alg|body|string|false|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |» case_sensitive|body|boolean|false|Form field: Whether matching is case-sensitive.|
@@ -1197,7 +1199,7 @@ sort_by: score
 
 ```text
 {"results":[{"name":"http_requests_total","type":"counter","help":"Total HTTP requests."}]}
-{"status":"success","has_more":false}
+{"status":"success","has_more":false,"returned":1}
 
 ```
 
@@ -1547,6 +1549,7 @@ curl http://localhost:9090/api/v1/search/label_names \
 |---|---|---|---|---|
 |match[]|query|[string]|false|Series selector argument used to scope label discovery.|
 |search[]|query|[string]|false|One or more search terms matched against label names (OR logic).|
+|search_expr|query|string|false|Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|query|integer(int64)|false|Fuzzy threshold in the range 0-100. A value of 0 is the lowest fuzzy threshold.|
 |fuzz_alg|query|string|false|Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|query|boolean|false|Whether matching is case-sensitive.|
@@ -1575,7 +1578,7 @@ curl http://localhost:9090/api/v1/search/label_names \
 
 ```text
 {"results":[{"name":"instance"},{"name":"job"}]}
-{"status":"success","has_more":false}
+{"status":"success","has_more":false,"returned":2}
 
 ```
 
@@ -1634,6 +1637,7 @@ sort_by: score
 |body|body|[SearchLabelNamesPostInputBody](#schemasearchlabelnamespostinputbody)|true|Submit a label name search. This endpoint accepts the same parameters as the GET version.|
 |» match[]|body|[string]|false|Form field: Series selector argument used to scope label discovery.|
 |» search[]|body|[string]|false|Form field: One or more search terms matched against label names (OR logic).|
+|» search_expr|body|string|false|Form field: Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |» fuzz_threshold|body|integer(int64)|false|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |» fuzz_alg|body|string|false|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |» case_sensitive|body|boolean|false|Form field: Whether matching is case-sensitive.|
@@ -1662,7 +1666,7 @@ sort_by: score
 
 ```text
 {"results":[{"name":"instance"},{"name":"job"}]}
-{"status":"success","has_more":false}
+{"status":"success","has_more":false,"returned":2}
 
 ```
 
@@ -1707,6 +1711,7 @@ curl 'http://localhost:9090/api/v1/search/label_values?label=instance' \
 |label|query|string|true|Label name whose values should be searched.|
 |match[]|query|[string]|false|Series selector argument used to scope label value discovery.|
 |search[]|query|[string]|false|One or more search terms matched against label values (OR logic).|
+|search_expr|query|string|false|Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|query|integer(int64)|false|Fuzzy threshold in the range 0-100. A value of 0 is the lowest fuzzy threshold.|
 |fuzz_alg|query|string|false|Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|query|boolean|false|Whether matching is case-sensitive.|
@@ -1735,7 +1740,7 @@ curl 'http://localhost:9090/api/v1/search/label_values?label=instance' \
 
 ```text
 {"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}
-{"status":"success","has_more":true}
+{"status":"success","has_more":true,"returned":2}
 
 ```
 
@@ -1796,6 +1801,7 @@ sort_by: score
 |» label|body|string|true|Form field: Label name whose values should be searched.|
 |» match[]|body|[string]|false|Form field: Series selector argument used to scope label value discovery.|
 |» search[]|body|[string]|false|Form field: One or more search terms matched against label values (OR logic).|
+|» search_expr|body|string|false|Form field: Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |» fuzz_threshold|body|integer(int64)|false|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |» fuzz_alg|body|string|false|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |» case_sensitive|body|boolean|false|Form field: Whether matching is case-sensitive.|
@@ -1824,7 +1830,7 @@ sort_by: score
 
 ```text
 {"results":[{"value":"localhost:9090"},{"value":"localhost:9091"}]}
-{"status":"success","has_more":true}
+{"status":"success","has_more":true,"returned":2}
 
 ```
 
@@ -4698,6 +4704,7 @@ Response body with an array of strings.
   "search[]": [
     "http_req"
   ],
+  "search_expr": "http AND NOT bucket",
   "fuzz_threshold": 80,
   "fuzz_alg": "subsequence",
   "case_sensitive": true,
@@ -4720,6 +4727,7 @@ POST request body for metric name search.
 |---|---|---|---|---|
 |match[]|[string]|false|none|Form field: Series selector argument used to scope metric discovery.|
 |search[]|[string]|false|none|Form field: One or more search terms matched against metric names (OR logic).|
+|search_expr|string|false|none|Form field: Boolean search expression matched against metric names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|integer(int64)|false|none|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |fuzz_alg|string|false|none|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|boolean|false|none|Form field: Whether matching is case-sensitive.|
@@ -4758,6 +4766,7 @@ POST request body for metric name search.
   "search[]": [
     "inst"
   ],
+  "search_expr": "inst OR job",
   "fuzz_threshold": 80,
   "fuzz_alg": "subsequence",
   "case_sensitive": true,
@@ -4779,6 +4788,7 @@ POST request body for label name search.
 |---|---|---|---|---|
 |match[]|[string]|false|none|Form field: Series selector argument used to scope label discovery.|
 |search[]|[string]|false|none|Form field: One or more search terms matched against label names (OR logic).|
+|search_expr|string|false|none|Form field: Boolean search expression matched against label names. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|integer(int64)|false|none|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |fuzz_alg|string|false|none|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|boolean|false|none|Form field: Whether matching is case-sensitive.|
@@ -4817,6 +4827,7 @@ POST request body for label name search.
   "search[]": [
     "909"
   ],
+  "search_expr": "909 AND NOT 9091",
   "fuzz_threshold": 80,
   "fuzz_alg": "subsequence",
   "case_sensitive": true,
@@ -4839,6 +4850,7 @@ POST request body for label value search.
 |label|string|true|none|Form field: Label name whose values should be searched.|
 |match[]|[string]|false|none|Form field: Series selector argument used to scope label value discovery.|
 |search[]|[string]|false|none|Form field: One or more search terms matched against label values (OR logic).|
+|search_expr|string|false|none|Form field: Boolean search expression matched against label values. Supports AND, OR, NOT, parentheses and double-quoted terms. Mutually exclusive with search[].|
 |fuzz_threshold|integer(int64)|false|none|Form field: Fuzzy threshold in the range 0-100. Default is 0, the lowest fuzzy threshold.|
 |fuzz_alg|string|false|none|Form field: Fuzzy algorithm. Supported values are subsequence (default) and jarowinkler.|
 |case_sensitive|boolean|false|none|Form field: Whether matching is case-sensitive.|

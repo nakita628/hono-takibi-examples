@@ -2277,7 +2277,10 @@ curl http://localhost:9080/api/v4/messages/string/decoded \
   "data": {
     "data": [
       {}
-    ]
+    ],
+    "isup": {},
+    "shark": null,
+    "shark_error": "string"
   },
   "meta": {
     "request_id": "string",
@@ -7779,7 +7782,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
-## Create agent subscription (Auth-Token)
+## Create agent subscription (admin)
 
 <a id="opIdagentSubscriptionsCreate"></a>
 
@@ -7790,7 +7793,7 @@ curl http://localhost:9080/api/v4/agents/subscriptions \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Auth-Token: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "uuid": "string",
     "gid": 0,
@@ -7828,7 +7831,7 @@ curl http://localhost:9080/api/v4/agents/subscriptions \
 }
 ```
 
-<h3 id="create-agent-subscription-auth-token-parameters">Parameters</h3>
+<h3 id="create-agent-subscription-admin-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -7906,6 +7909,25 @@ curl http://localhost:9080/api/v4/agents/subscriptions \
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "error": {
+    "type": "https://api.homer/errors/invalid_argument",
+    "title": "Invalid argument",
+    "status": 400,
+    "detail": "Field `from` must be <= `to`",
+    "errors": [
+      {
+        "field": "string",
+        "message": "string"
+      }
+    ]
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -7925,18 +7947,19 @@ curl http://localhost:9080/api/v4/agents/subscriptions \
 }
 ```
 
-<h3 id="create-agent-subscription-auth-token-responses">Responses</h3>
+<h3 id="create-agent-subscription-admin-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Created|[IdResponse](#schemaidresponse)|
 |400|Bad Request|Bad request|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Unauthorized|[ErrorResponse](#schemaerrorresponse)|
+|403|Forbidden|Forbidden|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|Server error|[ErrorResponse](#schemaerrorresponse)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-authTokenHeader
+bearerAuth
 </aside>
 
 ## Agent subscription by ID
@@ -8085,7 +8108,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
-## Update agent subscription
+## Update agent subscription (admin)
 
 <a id="opIdagentSubscriptionsUpdate"></a>
 
@@ -8134,7 +8157,7 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 }
 ```
 
-<h3 id="update-agent-subscription-parameters">Parameters</h3>
+<h3 id="update-agent-subscription-admin-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -8213,6 +8236,25 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "error": {
+    "type": "https://api.homer/errors/invalid_argument",
+    "title": "Invalid argument",
+    "status": 400,
+    "detail": "Field `from` must be <= `to`",
+    "errors": [
+      {
+        "field": "string",
+        "message": "string"
+      }
+    ]
+  }
+}
+```
+
 > 404 Response
 
 ```json
@@ -8251,13 +8293,14 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 }
 ```
 
-<h3 id="update-agent-subscription-responses">Responses</h3>
+<h3 id="update-agent-subscription-admin-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Updated|[IdResponse](#schemaidresponse)|
 |400|Bad Request|Bad request|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Unauthorized|[ErrorResponse](#schemaerrorresponse)|
+|403|Forbidden|Forbidden|[ErrorResponse](#schemaerrorresponse)|
 |404|Not Found|Not found|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|Server error|[ErrorResponse](#schemaerrorresponse)|
 
@@ -8266,7 +8309,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
-## Delete agent subscription
+## Delete agent subscription (admin)
 
 <a id="opIdagentSubscriptionsDelete"></a>
 
@@ -8281,7 +8324,7 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 
 `DELETE /agents/subscriptions/{subscriptionId}`
 
-<h3 id="delete-agent-subscription-parameters">Parameters</h3>
+<h3 id="delete-agent-subscription-admin-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -8308,6 +8351,25 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "error": {
+    "type": "https://api.homer/errors/invalid_argument",
+    "title": "Invalid argument",
+    "status": 400,
+    "detail": "Field `from` must be <= `to`",
+    "errors": [
+      {
+        "field": "string",
+        "message": "string"
+      }
+    ]
+  }
+}
+```
+
 > 404 Response
 
 ```json
@@ -8346,12 +8408,13 @@ curl http://localhost:9080/api/v4/agents/subscriptions/string \
 }
 ```
 
-<h3 id="delete-agent-subscription-responses">Responses</h3>
+<h3 id="delete-agent-subscription-admin-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Deleted|None|
 |401|Unauthorized|Unauthorized|[ErrorResponse](#schemaerrorresponse)|
+|403|Forbidden|Forbidden|[ErrorResponse](#schemaerrorresponse)|
 |404|Not Found|Not found|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|Server error|[ErrorResponse](#schemaerrorresponse)|
 
@@ -13510,7 +13573,10 @@ Use session_id for one Call-ID, or session_ids (non-empty, max 50) for an OR fil
 {
   "data": [
     {}
-  ]
+  ],
+  "isup": {},
+  "shark": null,
+  "shark_error": "string"
 }
 ```
 
@@ -13519,6 +13585,9 @@ Use session_id for one Call-ID, or session_ids (non-empty, max 50) for an OR fil
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[object]|false|none|none|
+|isup|object|false|none|ITU-T Q.763 decode of an application/isup SIP body, when the message is SIP-I.|
+|shark|object|false|none|tshark -T json dissection when coordinator.decoder_shark.active is true.|
+|shark_error|string|false|none|tshark failure. The rest of the decode is still returned.|
 
 <h2 id="tocS_MessageDecodedResponse">MessageDecodedResponse</h2>
 <!-- backwards compatibility -->
@@ -13532,7 +13601,10 @@ Use session_id for one Call-ID, or session_ids (non-empty, max 50) for an OR fil
   "data": {
     "data": [
       {}
-    ]
+    ],
+    "isup": {},
+    "shark": null,
+    "shark_error": "string"
   },
   "meta": {
     "request_id": "string",

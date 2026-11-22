@@ -9,8 +9,9 @@ const QuoteFormatSchema = z
 const StringSchema = z.string().openapi('String')
 
 const NodeIdSchema = z
-  .hex()
-  .regex(/^[a-f0-9]{64}$/)
+  .string()
+  .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+  .max(104)
   .openapi('NodeId')
 
 const AttestationSchema = z
@@ -169,6 +170,7 @@ const GetNetworkInfoOutSchema = z
   .object({
     current_service_create_txid: z.union([TransactionIdSchema, z.literal(null).nullable()]),
     current_view: z.union([Uint64Schema, z.literal(null).nullable()]),
+    pq_service_certificate: PemSchema.exactOptional(),
     primary_id: z.union([NodeIdSchema, z.literal(null).nullable()]),
     recovery_count: Uint64Schema,
     service_certificate: PemSchema,
@@ -205,10 +207,7 @@ const Uint32Schema = z.int().min(0).max(4294967295).openapi('Uint32')
 
 const ParserConfigurationSchema = z
   .object({
-    initial_window_size: SizeStringSchema.exactOptional(),
     max_body_size: SizeStringSchema.exactOptional(),
-    max_concurrent_streams_count: Uint64Schema.exactOptional(),
-    max_frame_size: SizeStringSchema.exactOptional(),
     max_header_size: SizeStringSchema.exactOptional(),
     max_headers_count: Uint32Schema.exactOptional(),
     max_request_target_size: SizeStringSchema.exactOptional(),

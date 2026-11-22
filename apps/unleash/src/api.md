@@ -2821,7 +2821,13 @@ curl https://app.getunleash.io/demo/api/admin/api-tokens \
 
 `GET /api/admin/api-tokens`
 
-Retrieves all API tokens that exist in the Unleash instance.
+Retrieves all API tokens that exist in the Unleash instance. Use `appName` to get only the tokens linked to an application.
+
+<h3 id="get-api-tokens-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|appName|query|string|false|Filter by the name of the application the tokens are linked to, using supported operators: IS. Everything after `IS:` is one exact, case-sensitive application name, including any commas or spaces. Percent-encode the value (for example with `encodeURIComponent`), since a `+` is read as a space. Only user-created tokens linked to that application are returned, so legacy (v1) and unlinked tokens never match. An unknown application returns an empty list.|
 
 > Example responses
 
@@ -2831,6 +2837,7 @@ Retrieves all API tokens that exist in the Unleash instance.
 {
   "tokens": [
     {
+      "appName": "checkout-service",
       "secret": "project:environment.xyzrandomstring",
       "tokenName": "some-user",
       "type": "client",
@@ -2847,6 +2854,16 @@ Retrieves all API tokens that exist in the Unleash instance.
       "secure": true
     }
   ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "9c40958a-daac-400e-98fb-3bb438567008",
+  "name": "ValidationError",
+  "message": "The request payload you provided doesn't conform to the schema. The .parameters property should be object. You sent []."
 }
 ```
 
@@ -2875,10 +2892,19 @@ Retrieves all API tokens that exist in the Unleash instance.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|apiTokensSchema|[apiTokensSchema](#schemaapitokensschema)|
+|400|Bad Request|The request data does not match what we expect.|Inline|
 |401|Unauthorized|Authorization information is missing or invalid. Provide a valid API token as the `authorization` header, e.g. `authorization:*.*.my-admin-token`.|Inline|
 |403|Forbidden|The provided user credentials are valid, but the user does not have the necessary permissions to perform this operation|Inline|
 
 <h3 id="get-api-tokens-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The ID of the error instance|
+|name|string|false|none|The name of the error kind|
+|message|string|false|none|A description of what went wrong.|
 
 Status Code **401**
 
@@ -2922,7 +2948,8 @@ curl https://app.getunleash.io/demo/api/admin/api-tokens \
       "project-851",
       "project-852"
     ],
-    "tokenName": "token-64522"
+    "tokenName": "token-64522",
+    "appName": "checkout-service"
   }'
 ```
 
@@ -2942,7 +2969,8 @@ Create an API token of a specific type: one of client, admin, frontend, backend.
     "project-851",
     "project-852"
   ],
-  "tokenName": "token-64522"
+  "tokenName": "token-64522",
+  "appName": "checkout-service"
 }
 ```
 
@@ -2958,6 +2986,7 @@ Create an API token of a specific type: one of client, admin, frontend, backend.
 |» project|body|string|false|The project that the token should be valid for. Defaults to "*" meaning every project. This property is mutually incompatible with the `projects` property. If you specify one, you cannot specify the other.|
 |» projects|body|[string]|false|A list of projects that the token should be valid for. This property is mutually incompatible with the `project` property. If you specify one, you cannot specify the other.|
 |» tokenName|body|string|true|The name of the token.|
+|» appName|body|string|false|none|
 
 > Example responses
 
@@ -2965,6 +2994,7 @@ Create an API token of a specific type: one of client, admin, frontend, backend.
 
 ```json
 {
+  "appName": "checkout-service",
   "secret": "project:environment.xyzrandomstring",
   "tokenName": "some-user",
   "type": "client",
@@ -3088,6 +3118,7 @@ Retrieves all API tokens that match a given token name. Because token names are 
 {
   "tokens": [
     {
+      "appName": "checkout-service",
       "secret": "project:environment.xyzrandomstring",
       "tokenName": "some-user",
       "type": "client",
@@ -17573,7 +17604,7 @@ curl https://app.getunleash.io/demo/api/admin/metrics/applications/string \
 
 `DELETE /api/admin/metrics/applications/{appName}`
 
-Delete the application specified in the request URL. Returns 200 OK if the application was successfully deleted or if it didn't exist
+Delete the application specified in the request URL. Returns 200 OK if the application was successfully deleted or if it didn't exist. Returns 400 Bad Request if an API token is linked to the application.
 
 <h3 id="delete-an-application-parameters">Parameters</h3>
 
@@ -17582,6 +17613,16 @@ Delete the application specified in the request URL. Returns 200 OK if the appli
 |appName|path|string|true|none|
 
 > Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "9c40958a-daac-400e-98fb-3bb438567008",
+  "name": "ValidationError",
+  "message": "The request payload you provided doesn't conform to the schema. The .parameters property should be object. You sent []."
+}
+```
 
 > 401 Response
 
@@ -17608,10 +17649,19 @@ Delete the application specified in the request URL. Returns 200 OK if the appli
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|This response has no body.|None|
+|400|Bad Request|The request data does not match what we expect.|Inline|
 |401|Unauthorized|Authorization information is missing or invalid. Provide a valid API token as the `authorization` header, e.g. `authorization:*.*.my-admin-token`.|Inline|
 |403|Forbidden|The provided user credentials are valid, but the user does not have the necessary permissions to perform this operation|Inline|
 
 <h3 id="delete-an-application-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The ID of the error instance|
+|name|string|false|none|The name of the error kind|
+|message|string|false|none|A description of what went wrong.|
 
 Status Code **401**
 
@@ -23327,6 +23377,7 @@ Returns the project-specific [API tokens](https://docs.getunleash.io/concepts/ap
 {
   "tokens": [
     {
+      "appName": "checkout-service",
       "secret": "project:environment.xyzrandomstring",
       "tokenName": "some-user",
       "type": "client",
@@ -23468,6 +23519,7 @@ Endpoint that allows creation of [project API tokens](https://docs.getunleash.io
 
 ```json
 {
+  "appName": "checkout-service",
   "secret": "project:environment.xyzrandomstring",
   "tokenName": "some-user",
   "type": "client",
@@ -28574,6 +28626,16 @@ Update the configuration for the specified tag type.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "9c40958a-daac-400e-98fb-3bb438567008",
+  "name": "NotFoundError",
+  "message": "Could not find the addon with ID \"12345\"."
+}
+```
+
 > 415 Response
 
 ```json
@@ -28592,6 +28654,7 @@ Update the configuration for the specified tag type.
 |400|Bad Request|The request data does not match what we expect.|Inline|
 |401|Unauthorized|Authorization information is missing or invalid. Provide a valid API token as the `authorization` header, e.g. `authorization:*.*.my-admin-token`.|Inline|
 |403|Forbidden|The provided user credentials are valid, but the user does not have the necessary permissions to perform this operation|Inline|
+|404|Not Found|The requested resource was not found.|Inline|
 |415|Unsupported Media Type|The operation does not support request payloads of the provided type. Please ensure that you're using one of the listed payload types and that you have specified the right content type in the "content-type" header.|Inline|
 
 <h3 id="update-a-tag-type-responseschema">Response Schema</h3>
@@ -28613,6 +28676,14 @@ Status Code **401**
 |message|string|false|none|A description of what went wrong.|
 
 Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The ID of the error instance|
+|name|string|false|none|The name of the error kind|
+|message|string|false|none|A description of what went wrong.|
+
+Status Code **404**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33424,6 +33495,7 @@ The state of all features given the provided input.
 
 ```json
 {
+  "appName": "checkout-service",
   "secret": "project:environment.xyzrandomstring",
   "tokenName": "some-user",
   "type": "client",
@@ -33447,6 +33519,7 @@ An overview of an [Unleash API token](https://docs.getunleash.io/concepts/api-to
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|appName|string|false|none|The immutable appName of the explicitly associated Application, when configured.|
 |secret|string \| null|false|none|The token used for authentication.|
 |tokenName|string|true|none|A unique name for this particular token|
 |type|string|true|none|The type of API token|
@@ -33479,6 +33552,7 @@ An overview of an [Unleash API token](https://docs.getunleash.io/concepts/api-to
 {
   "tokens": [
     {
+      "appName": "checkout-service",
       "secret": "project:environment.xyzrandomstring",
       "tokenName": "some-user",
       "type": "client",
@@ -33505,6 +33579,31 @@ An object with [Unleash API tokens](https://docs.getunleash.io/concepts/api-toke
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |tokens|[[apiTokenSchema](#schemaapitokenschema)]|true|none|A list of Unleash API tokens.|
+
+<h2 id="tocS_applicationCreatedSchema">applicationCreatedSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationcreatedschema"></a>
+<a id="schema_applicationCreatedSchema"></a>
+<a id="tocSapplicationcreatedschema"></a>
+<a id="tocsapplicationcreatedschema"></a>
+
+```json
+{
+  "appName": "checkout-service",
+  "description": "Payment and basket service",
+  "createdAt": "2026-11-20T09:12:00.000Z"
+}
+```
+
+An application that was created in Unleash.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|appName|string|true|none|The name SDKs report and tokens link to.|
+|description|string \| null|true|none|What the application does.|
+|createdAt|string(date-time)|true|none|When the application was created.|
 
 <h2 id="tocS_applicationEnvironmentInstancesSchema">applicationEnvironmentInstancesSchema</h2>
 <!-- backwards compatibility -->
@@ -34827,7 +34926,8 @@ A list of context fields
     "project-851",
     "project-852"
   ],
-  "tokenName": "token-64522"
+  "tokenName": "token-64522",
+  "appName": "checkout-service"
 }
 ```
 
@@ -34844,6 +34944,30 @@ The data required to create an [Unleash API token](https://docs.getunleash.io/co
 |project|string|false|none|The project that the token should be valid for. Defaults to "*" meaning every project. This property is mutually incompatible with the `projects` property. If you specify one, you cannot specify the other.|
 |projects|[string]|false|none|A list of projects that the token should be valid for. This property is mutually incompatible with the `project` property. If you specify one, you cannot specify the other.|
 |tokenName|string|true|none|The name of the token.|
+|appName|string|false|none|none|
+
+<h2 id="tocS_createApplicationRequestSchema">createApplicationRequestSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateapplicationrequestschema"></a>
+<a id="schema_createApplicationRequestSchema"></a>
+<a id="tocScreateapplicationrequestschema"></a>
+<a id="tocscreateapplicationrequestschema"></a>
+
+```json
+{
+  "appName": "checkout-service",
+  "description": "Payment and basket service"
+}
+```
+
+An application to create before any SDK reports it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|appName|string|true|none|The name SDKs report and tokens link to. It can never change. Letters, digits, `.`, `_`, `~` and `-`, starting with a letter or digit.|
+|description|string|false|none|What the application does.|
 
 <h2 id="tocS_createApplicationSchema">createApplicationSchema</h2>
 <!-- backwards compatibility -->
@@ -35914,6 +36038,8 @@ An event describing something happening in the system
 |type|feature-link-added|
 |type|feature-link-removed|
 |type|feature-link-updated|
+|type|feature-payload-schema-updated|
+|type|feature-payload-schema-deleted|
 |type|strategy-order-changed|
 |type|feature-untagged|
 |type|feature-stale-on|
@@ -37312,7 +37438,7 @@ A feature flag definition
 |dependencies|[object]|false|none|The list of parent dependencies. This is an experimental field and may change.|
 |collaborators|object|false|none|Information related to users who have made changes to this feature flage.|
 |links|[object]|false|none|The list of links. This is an experimental field and may change.|
-|payloadSchema|object|false|none|The JSON Schema document, draft 2020-12, that describes the variant payloads of the flag. Absent when the flag has none. This is an experimental field and may change.|
+|payloadSchema|object|false|none|The JSON Schema document, draft 2020-12, that describes the variant payloads of the flag. Absent when the flag has none. Only present on Unleash Enterprise. This is an experimental field and may change.|
 |lifetimeDays|integer|false|none|The lifetime of this flag in days. If the value is `0`, the flag is expected to be permanent. Absent when the flag uses the lifetime of its feature type. This is an experimental field and may change.|
 |expectedLifetimeEndsAt|string(date-time) \| null|false|none|The date the flag is expected to reach the end of its lifetime. `null` if the flag is permanent. This is an experimental field and may change.|
 
@@ -44233,11 +44359,8 @@ Strategy variants allow you to attach any data to strategies instead of only ret
   "companyName": "Lumon Industries",
   "companyIsNA": true,
   "productUpdatesEmailConsent": true,
-  "password": "k!5As3HquUrQ",
-  "inviteEmails": [
-    "marks@lumon.industries",
-    "hellyr@lumon.industries"
-  ]
+  "hearAboutUs": "Search Engine (Google, Bing, etc.)",
+  "password": "k!5As3HquUrQ"
 }
 ```
 
@@ -44252,8 +44375,8 @@ An object describing the user and company signup data submission.
 |companyName|string|false|none|The name of the company.|
 |companyIsNA|boolean|false|none|Whether the company is based in North America.|
 |productUpdatesEmailConsent|boolean|false|none|Whether the user has consented to receive product update emails.|
+|hearAboutUs|string|false|none|How the user heard about Unleash.|
 |password|string|false|none|The user's new password.|
-|inviteEmails|[string]|false|none|A list of email addresses to invite.|
 
 <h2 id="tocS_tagSchema">tagSchema</h2>
 <!-- backwards compatibility -->
@@ -45185,37 +45308,6 @@ All fields that can be directly changed for the user
 |name|string|false|none|The user's name (not the user's username).|
 |rootRole|integer \| string|false|none|The role to assign to the user. Can be either the role's ID or its unique name.|
 
-<h2 id="tocS_upsertPayloadSchemaSchema">upsertPayloadSchemaSchema</h2>
-<!-- backwards compatibility -->
-<a id="schemaupsertpayloadschemaschema"></a>
-<a id="schema_upsertPayloadSchemaSchema"></a>
-<a id="tocSupsertpayloadschemaschema"></a>
-<a id="tocsupsertpayloadschemaschema"></a>
-
-```json
-{
-  "schema": {
-    "type": "object",
-    "properties": {
-      "model": {
-        "type": "string"
-      }
-    },
-    "required": [
-      "model"
-    ]
-  }
-}
-```
-
-The schema that the variant payloads of a feature flag have to match.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schema|object|true|none|A JSON Schema document, draft 2020-12. It replaces the schema the flag already has, if any.|
-
 <h2 id="tocS_upsertSegmentSchema">upsertSegmentSchema</h2>
 <!-- backwards compatibility -->
 <a id="schemaupsertsegmentschema"></a>
@@ -45370,6 +45462,569 @@ Describes the access overview (list of permissions and metadata) for a user.
 |user|[userSchema](#schemauserschema)|true|none|The user that this access overview is for|
 |rootRole|[roleSchema](#schemaroleschema)|true|none|The name of the root role that this user has|
 |projectRoles|[object]|true|none|The list of project roles that this user has in the selected project|
+
+<h2 id="tocS_userRecentFlagSchema">userRecentFlagSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemauserrecentflagschema"></a>
+<a id="schema_userRecentFlagSchema"></a>
+<a id="tocSuserrecentflagschema"></a>
+<a id="tocsuserrecentflagschema"></a>
+
+```json
+{
+  "name": "disable-comments",
+  "type": "kill-switch",
+  "description": "Controls disabling of the comments section in case of an incident",
+  "dependencyType": "parent",
+  "project": "dx-squad",
+  "stale": false,
+  "favorite": true,
+  "impressionData": false,
+  "createdAt": "2023-01-28T15:21:39.975Z",
+  "archivedAt": "2023-01-29T15:21:39.975Z",
+  "environments": [
+    {
+      "name": "my-dev-env",
+      "featureName": "disable-comments",
+      "environment": "development",
+      "type": "development",
+      "enabled": true,
+      "sortOrder": 3,
+      "variantCount": 0,
+      "strategies": [
+        {
+          "id": "6b5157cb-343a-41e7-bfa3-7b4ec3044840",
+          "name": "flexibleRollout",
+          "title": "Gradual Rollout 25-Prod",
+          "disabled": false,
+          "featureName": "myAwesomeFeature",
+          "sortOrder": 9999,
+          "segments": [
+            1,
+            2
+          ],
+          "constraints": [
+            {
+              "contextName": "appName",
+              "operator": "IN",
+              "caseInsensitive": false,
+              "inverted": false,
+              "values": [
+                "my-app",
+                "my-other-app"
+              ],
+              "value": "my-app"
+            }
+          ],
+          "variants": [
+            {
+              "name": "blue_group",
+              "weight": 0,
+              "weightType": "fix",
+              "stickiness": "custom.context.field",
+              "payload": {
+                "type": "json",
+                "value": "{\"color\": \"red\"}"
+              }
+            }
+          ],
+          "parameters": {
+            "property1": "string",
+            "property2": "string"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "name": "blue_group",
+          "weight": 0,
+          "weightType": "variable",
+          "stickiness": "custom.context.field",
+          "payload": {
+            "type": "json",
+            "value": "{\"color\": \"red\"}"
+          },
+          "overrides": [
+            {
+              "contextName": "userId",
+              "values": [
+                "red",
+                "blue"
+              ]
+            }
+          ]
+        }
+      ],
+      "changeRequestIds": [
+        0
+      ],
+      "milestoneName": "Phase One",
+      "milestoneOrder": 0,
+      "totalMilestones": 0,
+      "lastSeenAt": "2023-01-28T16:21:39.975Z",
+      "hasStrategies": true,
+      "hasEnabledStrategies": true,
+      "releasePlans": [
+        {
+          "id": "01JB9GGTGQYEQ9D40R17T3YVW2",
+          "discriminator": "plan",
+          "name": "My release plan",
+          "description": "This is my release plan",
+          "featureName": "my-feature",
+          "environment": "production",
+          "createdByUserId": 53,
+          "createdAt": "2022-01-01T00:00:00Z",
+          "activeMilestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
+          "milestones": [
+            {
+              "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+              "name": "My milestone",
+              "sortOrder": 1,
+              "releasePlanDefinitionId": "01JB9GGTGQYEQ9D40R17T3YVW2",
+              "startedAt": "2024-01-01T00:00:00.000Z",
+              "transitionCondition": {},
+              "progressionExecutedAt": "2024-01-01T00:00:00.000Z",
+              "pausedAt": "2024-01-01T00:00:00.000Z",
+              "strategies": [
+                {
+                  "id": "01JB9GGTGQYEQ9D40R17T3YVW3",
+                  "milestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                  "sortOrder": 9999,
+                  "title": "Gradual Rollout 25-Prod",
+                  "name": "flexibleRollout",
+                  "strategyName": "flexibleRollout",
+                  "parameters": {
+                    "groupId": "some_new",
+                    "rollout": "25",
+                    "stickiness": "sessionId"
+                  },
+                  "constraints": [
+                    {
+                      "values": [
+                        "1",
+                        "2"
+                      ],
+                      "inverted": false,
+                      "operator": "IN",
+                      "contextName": "appName",
+                      "caseInsensitive": false
+                    }
+                  ],
+                  "variants": [
+                    {
+                      "name": "blue_group",
+                      "weight": 0,
+                      "weightType": "fix",
+                      "stickiness": "custom.context.field",
+                      "payload": {
+                        "type": "json",
+                        "value": "{\"color\": \"red\"}"
+                      }
+                    }
+                  ],
+                  "segments": [
+                    1,
+                    2
+                  ],
+                  "disabled": false
+                }
+              ]
+            }
+          ],
+          "releasePlanTemplateId": "01JB9GGTGQYEQ9D40R17T3YVW2",
+          "safeguards": [
+            {
+              "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+              "action": {
+                "type": "pauseReleasePlanProgressions",
+                "id": "01JB9GGTGQYEQ9D40R17T3YVW2"
+              },
+              "triggerCondition": {
+                "operator": ">",
+                "threshold": 100
+              },
+              "impactMetric": {
+                "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                "metricName": "unleash_counter_feature_toggle_usage_total",
+                "timeRange": "day",
+                "aggregationMode": "rps",
+                "labelSelectors": {
+                  "environment": [
+                    "development"
+                  ],
+                  "project": [
+                    "default"
+                  ]
+                },
+                "source": "internal"
+              }
+            }
+          ]
+        }
+      ],
+      "safeguards": [
+        {
+          "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+          "action": {
+            "type": "disableFeatureEnvironment",
+            "featureName": "string",
+            "environment": "string",
+            "project": "string"
+          },
+          "triggerCondition": {
+            "operator": ">",
+            "threshold": 100
+          },
+          "impactMetric": {
+            "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+            "metricName": "unleash_counter_feature_toggle_usage_total",
+            "timeRange": "day",
+            "aggregationMode": "rps",
+            "labelSelectors": {
+              "environment": [
+                "development"
+              ],
+              "project": [
+                "default"
+              ]
+            },
+            "source": "internal"
+          }
+        }
+      ],
+      "yes": 974,
+      "no": 50
+    }
+  ],
+  "segments": [
+    "pro-users",
+    "main-segment"
+  ],
+  "tags": [
+    {
+      "value": "a-tag-value",
+      "type": "simple",
+      "color": "#FFFFFF"
+    }
+  ],
+  "lifecycle": {
+    "stage": "initial",
+    "status": "kept",
+    "enteredStageAt": "2023-01-28T15:21:39.975Z"
+  },
+  "createdBy": {
+    "id": 123,
+    "name": "User",
+    "imageUrl": "https://example.com/242x200.png"
+  },
+  "userLastUpdatedAt": "2026-11-09T12:00:00.000Z"
+}
+```
+
+A flag the current user recently worked on.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Unique feature name|
+|type|string|true|none|Type of the flag e.g. experiment, kill-switch, release, operational, permission|
+|description|string \| null|true|none|Detailed description of the feature|
+|dependencyType|string \| null|true|none|The type of dependency. 'parent' means that the feature is a parent feature, 'child' means that the feature is a child feature.|
+|project|string|true|none|Name of the project the feature belongs to|
+|stale|boolean|true|none|`true` if the feature is stale based on the age and feature type, otherwise `false`.|
+|favorite|boolean|true|none|`true` if the feature was favorited, otherwise `false`.|
+|impressionData|boolean|true|none|`true` if the impression data collection is enabled for the feature, otherwise `false`.|
+|createdAt|string(date-time) \| null|true|none|The date the feature was created|
+|archivedAt|string(date-time) \| null|true|none|The date the feature was archived|
+|environments|[[featureSearchEnvironmentSchema](#schemafeaturesearchenvironmentschema)]|true|none|The list of environments where the feature can be used|
+|segments|[string]|true|none|The list of segments the feature is enabled for.|
+|tags|[[tagSchema](#schematagschema)]|false|none|The list of feature tags|
+|lifecycle|object|false|none|Current lifecycle stage of the feature|
+|createdBy|object|true|none|User who created the feature flag|
+|userLastUpdatedAt|string(date-time)|true|none|When the current user created or last changed this flag.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|dependencyType|parent|
+|dependencyType|child|
+|dependencyType|null|
+
+<h2 id="tocS_userRecentFlagsSchema">userRecentFlagsSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemauserrecentflagsschema"></a>
+<a id="schema_userRecentFlagsSchema"></a>
+<a id="tocSuserrecentflagsschema"></a>
+<a id="tocsuserrecentflagsschema"></a>
+
+```json
+{
+  "flags": [
+    {
+      "name": "disable-comments",
+      "type": "kill-switch",
+      "description": "Controls disabling of the comments section in case of an incident",
+      "dependencyType": "parent",
+      "project": "dx-squad",
+      "stale": false,
+      "favorite": true,
+      "impressionData": false,
+      "createdAt": "2023-01-28T15:21:39.975Z",
+      "archivedAt": "2023-01-29T15:21:39.975Z",
+      "environments": [
+        {
+          "name": "my-dev-env",
+          "featureName": "disable-comments",
+          "environment": "development",
+          "type": "development",
+          "enabled": true,
+          "sortOrder": 3,
+          "variantCount": 0,
+          "strategies": [
+            {
+              "id": "6b5157cb-343a-41e7-bfa3-7b4ec3044840",
+              "name": "flexibleRollout",
+              "title": "Gradual Rollout 25-Prod",
+              "disabled": false,
+              "featureName": "myAwesomeFeature",
+              "sortOrder": 9999,
+              "segments": [
+                1,
+                2
+              ],
+              "constraints": [
+                {
+                  "contextName": "appName",
+                  "operator": "IN",
+                  "caseInsensitive": false,
+                  "inverted": false,
+                  "values": [
+                    "my-app",
+                    "my-other-app"
+                  ],
+                  "value": "my-app"
+                }
+              ],
+              "variants": [
+                {
+                  "name": "blue_group",
+                  "weight": 0,
+                  "weightType": "fix",
+                  "stickiness": "custom.context.field",
+                  "payload": {
+                    "type": "json",
+                    "value": "{\"color\": \"red\"}"
+                  }
+                }
+              ],
+              "parameters": {
+                "property1": "string",
+                "property2": "string"
+              }
+            }
+          ],
+          "variants": [
+            {
+              "name": "blue_group",
+              "weight": 0,
+              "weightType": "variable",
+              "stickiness": "custom.context.field",
+              "payload": {
+                "type": "json",
+                "value": "{\"color\": \"red\"}"
+              },
+              "overrides": [
+                {
+                  "contextName": "userId",
+                  "values": [
+                    "red",
+                    "blue"
+                  ]
+                }
+              ]
+            }
+          ],
+          "changeRequestIds": [
+            0
+          ],
+          "milestoneName": "Phase One",
+          "milestoneOrder": 0,
+          "totalMilestones": 0,
+          "lastSeenAt": "2023-01-28T16:21:39.975Z",
+          "hasStrategies": true,
+          "hasEnabledStrategies": true,
+          "releasePlans": [
+            {
+              "id": "01JB9GGTGQYEQ9D40R17T3YVW2",
+              "discriminator": "plan",
+              "name": "My release plan",
+              "description": "This is my release plan",
+              "featureName": "my-feature",
+              "environment": "production",
+              "createdByUserId": 53,
+              "createdAt": "2022-01-01T00:00:00Z",
+              "activeMilestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
+              "milestones": [
+                {
+                  "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                  "name": "My milestone",
+                  "sortOrder": 1,
+                  "releasePlanDefinitionId": "01JB9GGTGQYEQ9D40R17T3YVW2",
+                  "startedAt": "2024-01-01T00:00:00.000Z",
+                  "transitionCondition": {},
+                  "progressionExecutedAt": "2024-01-01T00:00:00.000Z",
+                  "pausedAt": "2024-01-01T00:00:00.000Z",
+                  "strategies": [
+                    {
+                      "id": "01JB9GGTGQYEQ9D40R17T3YVW3",
+                      "milestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                      "sortOrder": 9999,
+                      "title": "Gradual Rollout 25-Prod",
+                      "name": "flexibleRollout",
+                      "strategyName": "flexibleRollout",
+                      "parameters": {
+                        "groupId": "some_new",
+                        "rollout": "25",
+                        "stickiness": "sessionId"
+                      },
+                      "constraints": [
+                        {
+                          "values": [
+                            "1",
+                            "2"
+                          ],
+                          "inverted": false,
+                          "operator": "IN",
+                          "contextName": "appName",
+                          "caseInsensitive": false
+                        }
+                      ],
+                      "variants": [
+                        {
+                          "name": "blue_group",
+                          "weight": 0,
+                          "weightType": "fix",
+                          "stickiness": "custom.context.field",
+                          "payload": {
+                            "type": "json",
+                            "value": "{\"color\": \"red\"}"
+                          }
+                        }
+                      ],
+                      "segments": [
+                        1,
+                        2
+                      ],
+                      "disabled": false
+                    }
+                  ]
+                }
+              ],
+              "releasePlanTemplateId": "01JB9GGTGQYEQ9D40R17T3YVW2",
+              "safeguards": [
+                {
+                  "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                  "action": {
+                    "type": "pauseReleasePlanProgressions",
+                    "id": "01JB9GGTGQYEQ9D40R17T3YVW2"
+                  },
+                  "triggerCondition": {
+                    "operator": ">",
+                    "threshold": 100
+                  },
+                  "impactMetric": {
+                    "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                    "metricName": "unleash_counter_feature_toggle_usage_total",
+                    "timeRange": "day",
+                    "aggregationMode": "rps",
+                    "labelSelectors": {
+                      "environment": [
+                        "development"
+                      ],
+                      "project": [
+                        "default"
+                      ]
+                    },
+                    "source": "internal"
+                  }
+                }
+              ]
+            }
+          ],
+          "safeguards": [
+            {
+              "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+              "action": {
+                "type": "disableFeatureEnvironment",
+                "featureName": "string",
+                "environment": "string",
+                "project": "string"
+              },
+              "triggerCondition": {
+                "operator": ">",
+                "threshold": 100
+              },
+              "impactMetric": {
+                "id": "01JB9GGTGQYEQ9D40R17T3YVW1",
+                "metricName": "unleash_counter_feature_toggle_usage_total",
+                "timeRange": "day",
+                "aggregationMode": "rps",
+                "labelSelectors": {
+                  "environment": [
+                    "development"
+                  ],
+                  "project": [
+                    "default"
+                  ]
+                },
+                "source": "internal"
+              }
+            }
+          ],
+          "yes": 974,
+          "no": 50
+        }
+      ],
+      "segments": [
+        "pro-users",
+        "main-segment"
+      ],
+      "tags": [
+        {
+          "value": "a-tag-value",
+          "type": "simple",
+          "color": "#FFFFFF"
+        }
+      ],
+      "lifecycle": {
+        "stage": "initial",
+        "status": "kept",
+        "enteredStageAt": "2023-01-28T15:21:39.975Z"
+      },
+      "createdBy": {
+        "id": 123,
+        "name": "User",
+        "imageUrl": "https://example.com/242x200.png"
+      },
+      "userLastUpdatedAt": "2026-11-09T12:00:00.000Z"
+    }
+  ],
+  "limit": 100,
+  "offset": 0
+}
+```
+
+Flags the current user interacted with, most recent first.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|flags|[[userRecentFlagSchema](#schemauserrecentflagschema)]|true|none|The page of flags the current user most recently worked on.|
+|limit|integer|true|none|The maximum number of flags returned in this page.|
+|offset|integer|true|none|The number of flags skipped before this page.|
 
 <h2 id="tocS_userSchema">userSchema</h2>
 <!-- backwards compatibility -->
@@ -50796,6 +51451,99 @@ An object describing the remote MCP server settings.
 |enabled|boolean|true|none|Whether the remote MCP server is currently enabled.|
 |feedbackOptIn|boolean|false|none|Experimental: Whether the instance has opted in to sharing remote MCP usage feedback with Unleash. If not set, it defaults to `true` (opted in).|
 
+<h2 id="tocS_upsertPayloadSchemaSchema">upsertPayloadSchemaSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemaupsertpayloadschemaschema"></a>
+<a id="schema_upsertPayloadSchemaSchema"></a>
+<a id="tocSupsertpayloadschemaschema"></a>
+<a id="tocsupsertpayloadschemaschema"></a>
+
+```json
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "model": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "model"
+    ]
+  }
+}
+```
+
+The schema that the variant payloads of a feature flag have to match.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schema|object|true|none|A JSON Schema document, draft 2020-12.|
+
+<h2 id="tocS_payloadSchemaValidationSchema">payloadSchemaValidationSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemapayloadschemavalidationschema"></a>
+<a id="schema_payloadSchemaValidationSchema"></a>
+<a id="tocSpayloadschemavalidationschema"></a>
+<a id="tocspayloadschemavalidationschema"></a>
+
+```json
+{
+  "nonMatchingPayloads": [
+    {
+      "source": {
+        "kind": "strategy",
+        "id": "01JYJ7V6A6WJ2XM3Z7Q5S1K9RT"
+      },
+      "variantName": "blue",
+      "value": "{\"color\":1}",
+      "error": "data/color must be string"
+    }
+  ]
+}
+```
+
+The result of checking a payload schema against the json variant payloads stored for a feature flag.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nonMatchingPayloads|[object]|true|none|Every stored json variant payload that does not match the schema, with the reason and where the payload is stored. Empty when the schema can be saved.|
+
+<h2 id="tocS_inferredPayloadSchemaSchema">inferredPayloadSchemaSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemainferredpayloadschemaschema"></a>
+<a id="schema_inferredPayloadSchemaSchema"></a>
+<a id="tocSinferredpayloadschemaschema"></a>
+<a id="tocsinferredpayloadschemaschema"></a>
+
+```json
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "model": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "model"
+    ]
+  }
+}
+```
+
+A payload schema inferred from the json variant payloads stored for a feature flag.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schema|object|true|none|A JSON Schema document, draft 2020-12, that every stored json variant payload matches.|
+
 <h2 id="tocS_scimTokenSchema">scimTokenSchema</h2>
 <!-- backwards compatibility -->
 <a id="schemascimtokenschema"></a>
@@ -51129,7 +51877,6 @@ Schema representing the creation of a release template.
 
 ```json
 {
-  "id": "01JB9GGTGQYEQ9D40R17T3YVW2",
   "name": "My release plan",
   "description": "This is my release plan",
   "milestones": [
@@ -51192,7 +51939,6 @@ Schema representing the update of a release template.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|true|none|The release plan/template's ID. Release template IDs are ulids.|
 |name|string|true|none|The name of the release template.|
 |description|string \| null|false|none|A description of the release template.|
 |milestones|[[createReleasePlanMilestoneSchema](#schemacreatereleaseplanmilestoneschema)]|false|none|A list of the milestones in this release template.|
@@ -51281,16 +52027,9 @@ Schema representing the creation of a release plan milestone.
   "releasePlanDefinitionId": "01JB9GGTGQYEQ9D40R17T3YVW2",
   "strategies": [
     {
-      "id": "01JB9GGTGQYEQ9D40R17T3YVW3",
-      "milestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
-      "sortOrder": 9999,
+      "name": "flexibleRollout",
       "title": "Gradual Rollout 25-Prod",
-      "strategyName": "flexibleRollout",
-      "parameters": {
-        "groupId": "some_new",
-        "rollout": "25",
-        "stickiness": "sessionId"
-      },
+      "sortOrder": 9999,
       "constraints": [
         {
           "values": [
@@ -51315,10 +52054,16 @@ Schema representing the creation of a release plan milestone.
           }
         }
       ],
+      "parameters": {
+        "groupId": "some_new",
+        "rollout": "25",
+        "stickiness": "sessionId"
+      },
       "segments": [
         1,
         2
-      ]
+      ],
+      "strategyName": "flexibleRollout"
     }
   ]
 }
@@ -51330,10 +52075,10 @@ Schema representing the update of a release plan milestone.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|The name of the milestone.|
-|sortOrder|integer|true|none|The order of the milestone in the release plan.|
+|name|string|false|none|The name of the milestone.|
+|sortOrder|integer|false|none|The order of the milestone in the release plan.|
 |releasePlanDefinitionId|string|true|none|The ID of the release plan/template that this milestone belongs to.|
-|strategies|[[updateReleasePlanMilestoneStrategySchema](#schemaupdatereleaseplanmilestonestrategyschema)]|false|none|A list of strategies that are attached to this milestone.|
+|strategies|[[replaceReleasePlanMilestoneStrategySchema](#schemareplacereleaseplanmilestonestrategyschema)]|false|none|A list of strategies that are attached to this milestone.|
 
 <h2 id="tocS_createReleasePlanMilestoneStrategySchema">createReleasePlanMilestoneStrategySchema</h2>
 <!-- backwards compatibility -->
@@ -51412,6 +52157,7 @@ Schema representing the creation of a release plan milestone strategy.
   "milestoneId": "01JB9GGTGQYEQ9D40R17T3YVW1",
   "sortOrder": 9999,
   "title": "Gradual Rollout 25-Prod",
+  "name": "flexibleRollout",
   "strategyName": "flexibleRollout",
   "parameters": {
     "groupId": "some_new",
@@ -51459,11 +52205,76 @@ Schema representing the update of a release plan milestone.
 |milestoneId|string|true|none|The ID of the milestone that this strategy belongs to.|
 |sortOrder|number|true|none|The order of the strategy in the list|
 |title|string \| null|false|none|A descriptive title for the strategy|
-|strategyName|string|true|none|The name of the strategy type|
+|name|string|false|none|The name of the strategy type|
+|strategyName|string|false|none|**Deprecated.** Deprecated alias for name. Use name instead.|
 |parameters|[parametersSchema](#schemaparametersschema)|false|none|An object containing the parameters for the strategy|
 |constraints|[[constraintSchema](#schemaconstraintschema)]|false|none|A list of the constraints attached to the strategy. See https://docs.getunleash.io/concepts/activation-strategies#constraints|
 |variants|[[createStrategyVariantSchema](#schemacreatestrategyvariantschema)]|false|none|Strategy level variants|
 |segments|[number]|false|none|Ids of segments to use for this strategy|
+
+<h2 id="tocS_replaceReleasePlanMilestoneStrategySchema">replaceReleasePlanMilestoneStrategySchema</h2>
+<!-- backwards compatibility -->
+<a id="schemareplacereleaseplanmilestonestrategyschema"></a>
+<a id="schema_replaceReleasePlanMilestoneStrategySchema"></a>
+<a id="tocSreplacereleaseplanmilestonestrategyschema"></a>
+<a id="tocsreplacereleaseplanmilestonestrategyschema"></a>
+
+```json
+{
+  "name": "flexibleRollout",
+  "title": "Gradual Rollout 25-Prod",
+  "sortOrder": 9999,
+  "constraints": [
+    {
+      "values": [
+        "1",
+        "2"
+      ],
+      "inverted": false,
+      "operator": "IN",
+      "contextName": "appName",
+      "caseInsensitive": false
+    }
+  ],
+  "variants": [
+    {
+      "name": "blue_group",
+      "weight": 0,
+      "weightType": "fix",
+      "stickiness": "custom.context.field",
+      "payload": {
+        "type": "json",
+        "value": "{\"color\": \"red\"}"
+      }
+    }
+  ],
+  "parameters": {
+    "groupId": "some_new",
+    "rollout": "25",
+    "stickiness": "sessionId"
+  },
+  "segments": [
+    1,
+    2
+  ],
+  "strategyName": "flexibleRollout"
+}
+```
+
+A replacement strategy supplied when updating a milestone. The parent milestone supplies the milestoneId.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The name of the strategy type|
+|title|string \| null|false|none|A descriptive title for the strategy|
+|sortOrder|number|true|none|The order of the strategy in the list|
+|constraints|[[constraintSchema](#schemaconstraintschema)]|false|none|A list of the constraints attached to the strategy. See https://docs.getunleash.io/concepts/activation-strategies#constraints|
+|variants|[[createStrategyVariantSchema](#schemacreatestrategyvariantschema)]|false|none|Strategy level variants|
+|parameters|[parametersSchema](#schemaparametersschema)|false|none|An object containing the parameters for the strategy|
+|segments|[number]|false|none|Ids of segments to use for this strategy|
+|strategyName|string|false|none|**Deprecated.** The name of the strategy type|
 
 <h2 id="tocS_updateMilestoneStrategySchema">updateMilestoneStrategySchema</h2>
 <!-- backwards compatibility -->

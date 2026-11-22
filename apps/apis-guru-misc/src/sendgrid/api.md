@@ -17935,7 +17935,7 @@ Status Code **202**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_metadata|[metadata](#schemametadata)|true|none|none|
+|_metadata|[metadata2](#schemametadata2)|true|none|none|
 |id|string|false|none|The ID of the export job.|
 
 Status Code **400**
@@ -19582,7 +19582,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_metadata|[metadata](#schemametadata)|false|none|none|
+|_metadata|[metadata2](#schemametadata2)|false|none|none|
 |result|[[list](#schemalist)]|false|none|none|
 
 <aside class="warning">
@@ -38620,7 +38620,7 @@ The individual events and their stats.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_metadata|[metadata](#schemametadata)|false|none|none|
+|_metadata|[metadata2](#schemametadata2)|false|none|none|
 |results|[object]|true|none|none|
 
 <h2 id="tocS_blocks-response">blocks-response</h2>
@@ -39118,7 +39118,7 @@ The individual events and their stats.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_metadata|[metadata](#schemametadata)|false|none|none|
+|_metadata|[metadata2](#schemametadata2)|false|none|none|
 |completed_at|string|false|none|The ISO8601 timestamp when the export was completed.|
 |contact_count|integer|false|none|The total number of exported contacts.|
 |created_at|string|true|none|The ISO8601 timestamp when the export was begun.|
@@ -41168,12 +41168,12 @@ null
 |status|not delivered|
 |status|delivered|
 
-<h2 id="tocS_metadata">metadata</h2>
+<h2 id="tocS_metadata2">metadata2</h2>
 <!-- backwards compatibility -->
-<a id="schemametadata"></a>
-<a id="schema_metadata"></a>
-<a id="tocSmetadata"></a>
-<a id="tocsmetadata"></a>
+<a id="schemametadata2"></a>
+<a id="schema_metadata2"></a>
+<a id="tocSmetadata2"></a>
+<a id="tocsmetadata2"></a>
 
 ```json
 {
@@ -42196,7 +42196,7 @@ Segment status indicates whether the segment's contacts will be updated periodic
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_metadata|[metadata](#schemametadata)|true|none|none|
+|_metadata|[metadata2](#schemametadata2)|true|none|none|
 |results|[object]|true|none|none|
 
 <h2 id="tocS_spam-reports-response">spam-reports-response</h2>

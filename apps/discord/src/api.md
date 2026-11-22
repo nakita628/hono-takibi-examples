@@ -25839,9 +25839,9 @@ Returns the fully cascaded permissions for a member in this channel, applying th
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|implicit|query|boolean|false|none|
-|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|implicit|query|boolean|false|Whether to apply implicit-permission computations. Defaults to true; pass false for the raw explicit permissions.|
+|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the channel|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the member|
 
 > Example responses
 
@@ -25930,9 +25930,9 @@ Returns the permissions a role grants in this channel, applying the channel's pe
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|implicit|query|boolean|false|none|
-|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|implicit|query|boolean|false|Whether to apply implicit-permission computations. Defaults to true. Pass false for the raw explicit permissions.|
+|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the channel|
+|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the role|
 
 > Example responses
 
@@ -29244,7 +29244,7 @@ curl https://discord.com/api/v10/channels/string/polls/string/answers/1 \
 |limit|query|integer|false|none|
 |channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
 |message_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|answer_id|path|integer(int32)|true|none|
+|answer_id|path|integer(int32)|true|The ID of the answer|
 
 > Example responses
 
@@ -50329,7 +50329,7 @@ Modifies the incident actions of the guild
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
 |body|body|[GuildIncidentActionsRequest](#schemaguildincidentactionsrequest)|true|none|
 |» invites_disabled_until|body|string \| null(date-time)|false|When invites will be enabled again|
 |» dms_disabled_until|body|string \| null(date-time)|false|When direct messages will be enabled again|
@@ -52077,8 +52077,8 @@ curl https://discord.com/api/v10/guilds/string/messages/search \
 |---|---|---|---|---|
 |sort_by|query|[SortingMode](#schemasortingmode)|false|none|
 |sort_order|query|[SortingOrder](#schemasortingorder)|false|none|
-|content|query|string|false|none|
-|slop|query|integer|false|none|
+|content|query|string|false|Text to search for. Matches messages containing these words within slop positions of each other.|
+|slop|query|integer|false|How many positions apart or out of order the words in content can be and still match. 0 matches the exact phrase; higher values, up to 100, match words further apart.|
 |author_id|query|[[SnowflakeType](#schemasnowflaketype)]|false|none|
 |author_type|query|[[AuthorType](#schemaauthortype)]|false|none|
 |mentions|query|[[SnowflakeType](#schemasnowflaketype)]|false|none|
@@ -55607,8 +55607,8 @@ Returns the fully cascaded guild-level permissions for a member, applying all of
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the member|
 
 > Example responses
 
@@ -55697,8 +55697,8 @@ Returns the permissions a role grants at the guild level, combining the role's o
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the role|
 
 > Example responses
 
@@ -56273,8 +56273,8 @@ List join requests for guild, optionally filtered by application status
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|status|query|string|false|none|
-|limit|query|integer|false|none|
+|status|query|string|false|Filter by application status. Defaults to SUBMITTED if omitted|
+|limit|query|integer|false|Maximum number of join requests to return|
 |before|query|[SnowflakeType](#schemasnowflaketype)|false|none|
 |after|query|[SnowflakeType](#schemasnowflaketype)|false|none|
 |guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
@@ -58879,8 +58879,8 @@ Create an exception to a recurring guild scheduled event
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the scheduled event|
 |body|body|[GuildScheduledEventExceptionCreateRequest](#schemaguildscheduledeventexceptioncreaterequest)|true|none|
 |» scheduled_start_time|body|string \| null(date-time)|false|Overridden start time of this occurrence|
 |» scheduled_end_time|body|string \| null(date-time)|false|Overridden end time of this occurrence|
@@ -58979,9 +58979,9 @@ Delete an exception to a recurring guild scheduled event
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the scheduled event|
+|exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the event exception|
 
 > Example responses
 
@@ -59079,9 +59079,9 @@ Modify an exception to a recurring guild scheduled event
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the scheduled event|
+|exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the event exception|
 |body|body|[GuildScheduledEventExceptionPatchRequestPartial](#schemaguildscheduledeventexceptionpatchrequestpartial)|true|none|
 |» scheduled_start_time|body|string \| null(date-time)|false|Overridden start time of this occurrence|
 |» scheduled_end_time|body|string \| null(date-time)|false|Overridden end time of this occurrence|
@@ -59176,10 +59176,10 @@ curl https://discord.com/api/v10/guilds/string/scheduled-events/string/users \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|with_member|query|boolean|false|none|
-|limit|query|integer|false|none|
-|before|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|after|query|[SnowflakeType](#schemasnowflaketype)|false|none|
+|with_member|query|boolean|false|Include guild member data if it exists|
+|limit|query|integer|false|Number of users to return (up to maximum 100)|
+|before|query|[SnowflakeType](#schemasnowflaketype)|false|Consider only users before given user id|
+|after|query|[SnowflakeType](#schemasnowflaketype)|false|Consider only users after given user id|
 |guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
 |guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
 
@@ -59372,9 +59372,9 @@ Get the count of users subscribed to a guild scheduled event
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|guild_scheduled_event_exception_ids|query|[[SnowflakeType](#schemasnowflaketype)]|false|none|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|guild_scheduled_event_exception_ids|query|[[SnowflakeType](#schemasnowflaketype)]|false|List of scheduled event exception ids to get user counts for|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the scheduled event|
 
 > Example responses
 
@@ -59467,13 +59467,13 @@ Get a list of users subscribed to a guild scheduled event exception
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|with_member|query|boolean|false|none|
-|limit|query|integer|false|none|
-|before|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|after|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|guild_scheduled_event_exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|with_member|query|boolean|false|Include guild member data if it exists|
+|limit|query|integer|false|Number of users to return (up to maximum 100)|
+|before|query|[SnowflakeType](#schemasnowflaketype)|false|Consider only users before given user id|
+|after|query|[SnowflakeType](#schemasnowflaketype)|false|Consider only users after given user id|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the guild|
+|guild_scheduled_event_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the scheduled event|
+|guild_scheduled_event_exception_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the event exception|
 
 > Example responses
 
@@ -70074,7 +70074,7 @@ Add a target user to an existing invite.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |code|path|string|true|none|
-|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the user to target|
 
 > Example responses
 
@@ -70157,7 +70157,7 @@ Remove a target user from an existing invite.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |code|path|string|true|none|
-|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the user to stop targeting|
 
 > Example responses
 
@@ -72517,8 +72517,8 @@ Update the external moderation metadata for a lobby message.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|lobby_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|message_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|lobby_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the lobby the message is in|
+|message_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the message to update|
 |body|body|object|true|none|
 |» **additionalProperties**|body|string|false|none|
 
@@ -73246,9 +73246,9 @@ Update the external moderation metadata for a user message (DM).
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|user_id_1|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|user_id_2|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|message_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id_1|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the first user in the DM|
+|user_id_2|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the second user in the DM|
+|message_id|path|[SnowflakeType](#schemasnowflaketype)|true|The ID of the message to update|
 |body|body|object|true|none|
 |» **additionalProperties**|body|string|false|none|
 
@@ -73761,11 +73761,11 @@ Returns all subscriptions containing the SKU, filtered by user.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|before|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|after|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|limit|query|integer|false|none|
-|user_id|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|sku_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|before|query|[SnowflakeType](#schemasnowflaketype)|false|List subscriptions before this ID|
+|after|query|[SnowflakeType](#schemasnowflaketype)|false|List subscriptions after this ID|
+|limit|query|integer|false|Number of results to return (1-100)|
+|user_id|query|[SnowflakeType](#schemasnowflaketype)|false|User ID for which to return subscriptions. Required except for OAuth queries.|
+|sku_id|path|[SnowflakeType](#schemasnowflaketype)|true|ID of SKU|
 
 > Example responses
 
@@ -73879,9 +73879,9 @@ Get a subscription by its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|user_id|query|[SnowflakeType](#schemasnowflaketype)|false|none|
-|sku_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|subscription_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id|query|[SnowflakeType](#schemasnowflaketype)|false|User ID for which to return the subscription. Required except for OAuth queries.|
+|sku_id|path|[SnowflakeType](#schemasnowflaketype)|true|ID of SKU|
+|subscription_id|path|[SnowflakeType](#schemasnowflaketype)|true|ID of the subscription|
 
 > Example responses
 
@@ -75798,7 +75798,7 @@ curl https://discord.com/api/v10/users/@me/guilds \
 |before|query|[SnowflakeType](#schemasnowflaketype)|false|none|
 |after|query|[SnowflakeType](#schemasnowflaketype)|false|none|
 |limit|query|integer|false|none|
-|shard|query|integer|false|none|
+|shard|query|integer|false|Return the guilds contained within the specified shard. Required for applications that are sharded. Valid values are 0 to session_start_limit.max_concurrency - 1. Not the same as Gateway shard ids.|
 |with_counts|query|boolean|false|none|
 
 > Example responses
@@ -96240,6 +96240,7 @@ BotToken
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
+|*oneOf*|integer|false|none|Channels were reordered|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
@@ -96252,6 +96253,7 @@ BotToken
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
+|*oneOf*|integer|false|none|Roles were reordered|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|
 |*oneOf*|integer|false|none|none|

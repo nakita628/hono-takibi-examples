@@ -24,12 +24,6 @@ Base URLs:
 |marketing-email||
 |transactional-email||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="single-send-advanced">Advanced</h1>
 
 ## Send an email
@@ -168,6 +162,7 @@ null
 |sendResult|QUARANTINED_ADDRESS|
 |sendResult|QUEUED|
 |sendResult|RECIPIENT_FATIGUE_SUPPRESSED|
+|sendResult|RECIPIENT_SEND_LIMIT_EXCEEDED|
 |sendResult|SENT|
 |sendResult|TEMPLATE_RENDER_EXCEPTION|
 |sendResult|THROTTLED|

@@ -152,14 +152,15 @@ When a successful publish bypasses a gate, the response includes `bypassedGates`
 
 Every refusal a request can get past with a flag:
 
-| Flag                      | Where        | Gets past                                                                                                    |
-| ------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------ |
-| `ignoreWarnings`          | Body         | Warnings (`422`)                                                                                             |
-| `skipSchemaValidation`    | Body         | Schema and invariant failures, with **Bypass draft approvals** access                                        |
-| `skipHooks`               | Body         | Custom Hook rejections                                                                                       |
-| `skipChecklist`           | Body         | An experiment start's incomplete launch checklist items (`409` `checklist_incomplete`), but not its blockers |
-| `allowUnscopedRules`      | Body         | A rule for All Environments and All Projects where the organization requires a scope (`422` `unscoped_rule`) |
-| `overrideDraftLimit=true` | Query string | Creating a draft past the draft limit                                                                        |
+| Flag                      | Where        | Gets past                                                                                                                   |
+| ------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `ignoreWarnings`          | Body         | Warnings (`422`)                                                                                                            |
+| `skipSchemaValidation`    | Body         | Schema and invariant failures, with **Bypass draft approvals** access                                                       |
+| `skipHooks`               | Body         | Custom Hook rejections                                                                                                      |
+| `skipChecklist`           | Body         | An experiment start's incomplete launch checklist items (`409` `checklist_incomplete`), but not its blockers                |
+| `allowUnscopedRules`      | Body         | A rule for All Environments and All Projects where the organization requires a scope (`422` `unscoped_rule`)                |
+| `overrideDraftLimit=true` | Query string | Creating a draft past the draft limit                                                                                       |
+| `bypassApproval`          | Body         | A direct write to a resource that requires approval, with **Bypass draft approvals** access or the REST API approval bypass |
 
 Base URLs:
 
@@ -169,16 +170,9 @@ Base URLs:
 
 # Authentication
 
-- HTTP Authentication, scheme: bearer If using Bearer auth, pass the Secret Key as the token:
-```bash
-curl https://api.growthbook.io/api/v1/features   -H "Authorization: Bearer secret_abc123DEF456"
-```
+- HTTP Authentication, scheme: bearer Pass your API key as the Bearer token. See [Authentication](/api/introduction#authentication).
 
-- HTTP Authentication, scheme: basic If using HTTP Basic auth, pass the Secret Key as the username and leave the password blank:
-```bash
-curl https://api.growthbook.io/api/v1/features   -u secret_abc123DEF456:
-# The ":" at the end stops curl from asking for a password
-```
+- HTTP Authentication, scheme: basic Pass your API key as the username and leave the password blank. See [Authentication](/api/introduction#authentication).
 
 <h1 id="growthbook-rest-api-projects">projects</h1>
 
@@ -258,8 +252,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1139,8 +1131,8 @@ Returns features with pagination. Rules are returned as a unified top-level arra
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
 |projectId|query|string|false|Filter by project id|
 |clientKey|query|string|false|Filter by a SDK connection's client key|
-|archived|query|string \| boolean|false|Whether to include archived features. Defaults to `false` (non-archived only). Pass `true` to include archived features alongside non-archived ones.|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|archived|query|boolean|false|Whether to include archived features. Defaults to `false` (non-archived only). Pass `true` to include archived features alongside non-archived ones.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 
 > Example responses
 
@@ -1296,8 +1288,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1537,8 +1527,8 @@ Example:
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» id|body|string|true|Unique, permanent key, shown as the Feature Flag's name in the UI and used in code. Keep it short. If `featureRegexValidator` in `GET /api/v1/settings` is set, follow it (`featureKeyExample` shows the format); otherwise use kebab-case (e.g. `checkout-express-pay`). Put context in `description`.|
 |» archived|body|boolean|false|none|
@@ -1550,11 +1540,7 @@ Example:
 |» valueType|body|string|true|The data type of the feature payload. Boolean by default.|
 |» defaultValue|body|string|true|Default value when feature is enabled. Type must match `valueType`. In Config mode (`baseConfig` set) the default must be exactly a config with no overrides: send `"{}"` to use `baseConfig`, or set `defaultValueConfig` to point at a descendant.|
 |» baseConfig|body|string \| null|false|Key of the config backing this flag ("Config mode"). Requires `valueType: "json"` and a live config. The config supplies the base JSON and schema; `defaultValue` and rule values are override patches on top. null or omitted for a plain flag.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» defaultValueConfig|body|string \| null|false|Optional. A config within `baseConfig`'s family that the default value resolves to instead of `baseConfig` itself. null or omitted means the default is `baseConfig`. The default is exactly this config and carries no overrides of its own.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» tags|body|[string]|false|Tags for filtering and grouping. Use these instead of encoding groups in names.|
 |» rules|body|[object]|false|Feature rules. Each rule carries its own environment scope via `allEnvironments` / `environments`.|
 |» » *anyOf*|body|object|false|none|
@@ -1582,8 +1568,6 @@ Example:
 |» » type|body|string|true|none|
 |» » value|body|string|true|none|
 |» » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » allEnvironments|body|boolean|false|When true the rule applies to all environments (default).|
 |» » environments|body|[string]|false|Environment IDs the rule applies to. Ignored when allEnvironments is true; with allEnvironments false, an omitted or empty list scopes the rule to no environment.|
@@ -1614,8 +1598,6 @@ Example:
 |» » type|body|string|true|none|
 |» » value|body|string|true|none|
 |» » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » coverage|body|number|true|none|
 |» » hashAttribute|body|string|true|none|
@@ -1655,8 +1637,6 @@ Example:
 |» » » value|body|string|true|none|
 |» » » variationId|body|string|true|none|
 |» » » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » experimentId|body|string|true|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » allEnvironments|body|boolean|false|When true the rule applies to all environments (default).|
@@ -2665,8 +2645,8 @@ Other top-level fields are patch-merged: omit a field to leave it unchanged. The
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|The id of the requested resource|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» description|body|string|false|Markdown. What the Feature Flag gates and why, rollout plan, and links. Put context here, not in the key.|
 |» archived|body|boolean|false|none|
@@ -2676,11 +2656,7 @@ Other top-level fields are patch-merged: omit a field to leave it unchanged. The
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.|
 |» defaultValue|body|string|false|none|
 |» baseConfig|body|string \| null|false|The config backing this flag, fixed at creation. Cannot be changed by an update — resend the current value or omit it; a different value is rejected.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» defaultValueConfig|body|string \| null|false|Optional. A config within `baseConfig`'s family that the default value resolves to instead of `baseConfig` itself. null or omitted means the default is `baseConfig`. The default is exactly this config and carries no overrides of its own.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» tags|body|[string]|false|Tags for filtering and grouping. Use these instead of encoding groups in names. Replaces the existing tags completely.|
 |» rules|body|[object]|false|Replaces all feature rules atomically. Behavior differs from v1: v1 PUT applies per-environment patches, v2 PUT swaps the entire `rules` array in one revision. To preserve existing rules during a partial edit, GET the feature first, mutate the returned `rules` array, and PUT the full array back. Safe-rollout rules round-trip via their `safeRolloutId` (creation requires `POST /v2/features/:id/revisions/:version/rules`).|
 |» » *anyOf*|body|object|false|none|
@@ -2708,8 +2684,6 @@ Other top-level fields are patch-merged: omit a field to leave it unchanged. The
 |» » type|body|string|true|none|
 |» » value|body|string|true|none|
 |» » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » allEnvironments|body|boolean|false|When true the rule applies to all environments (default).|
 |» » environments|body|[string]|false|Environment IDs the rule applies to. Ignored when allEnvironments is true; with allEnvironments false, an omitted or empty list scopes the rule to no environment.|
@@ -2740,8 +2714,6 @@ Other top-level fields are patch-merged: omit a field to leave it unchanged. The
 |» » type|body|string|true|none|
 |» » value|body|string|true|none|
 |» » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » coverage|body|number|true|none|
 |» » hashAttribute|body|string|true|none|
@@ -2781,8 +2753,6 @@ Other top-level fields are patch-merged: omit a field to leave it unchanged. The
 |» » » value|body|string|true|none|
 |» » » variationId|body|string|true|none|
 |» » » config|body|string \| null|false|Key of a config to back this value. When set, `value` is a JSON override patch merged on top of the config; omit or null for a plain value.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » experimentId|body|string|true|none|
 |» » sparse|body|boolean|false|JSON features only. When true, the rule value is a partial object merged onto the feature's default value instead of replacing it.|
 |» » allEnvironments|body|boolean|false|When true the rule applies to all environments (default).|
@@ -3883,12 +3853,12 @@ Returns a paginated list of feature revisions across all features in the organiz
 |---|---|---|---|---|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |featureId|query|string|false|none|
 |status|query|string \| [string]|false|Filter by revision status. Single value, comma-separated list, repeated params (?status=draft&status=approved), or `all-drafts` shorthand for all active-draft statuses (draft, pending-review, approved, changes-requested).|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by or contributed to by the calling user.|
-|archived|query|string \| boolean|false|Whether to include revisions for archived features. Defaults to `false` (non-archived features only). Pass `true` to include revisions for archived features alongside non-archived ones.|
+|mine|query|boolean|false|If true, return only revisions authored by or contributed to by the calling user.|
+|archived|query|boolean|false|Whether to include revisions for archived features. Defaults to `false` (non-archived features only). Pass `true` to include revisions for archived features alongside non-archived ones.|
 
 > Example responses
 
@@ -4241,8 +4211,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -4272,10 +4240,10 @@ Returns a paginated list of revisions for this feature, sorted newest-first. Rev
 |id|path|string|true|The id of the requested resource|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |status|query|string \| [string]|false|Filter by revision status. Single value, comma-separated list, repeated params (?status=draft&status=approved), or `all-drafts` shorthand for all active-draft statuses (draft, pending-review, approved, changes-requested).|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -4628,8 +4596,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -4674,7 +4640,7 @@ Creates a new draft revision branched from the current live revision.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
-|overrideDraftLimit|query|string \| boolean|false|If the organization caps concurrent drafts per feature (`maxConcurrentDrafts` setting), requests at or over the cap are rejected with a 409. Pass `true` to create the draft anyway. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|overrideDraftLimit|query|boolean|false|If the organization caps concurrent drafts per feature (`maxConcurrentDrafts` setting), requests at or over the cap are rejected with a 409. Pass `true` to create the draft anyway. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |body|body|object|true|none|
 |» comment|body|string|false|Markdown. What changed and why, for reviewers.|
 |» title|body|string|false|Short draft title (e.g. `Enable for beta testers`).|
@@ -5080,7 +5046,7 @@ Returns the most recently updated active draft revision for the feature. Returns
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
-|mine|query|string \| boolean|false|If true, return only the most recent active draft authored by or contributed to by the calling user.|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by or contributed to by the calling user.|
 |status|query|string \| [string]|false|Filter by revision status. Single value, comma-separated list, repeated params (?status=draft&status=approved), or `all-drafts` shorthand for all active-draft statuses (draft, pending-review, approved, changes-requested).|
 |author|query|string|false|Filter to drafts created by this user (userId).|
 
@@ -5897,10 +5863,10 @@ Status Code **200**
 |» supplemental|[object]|false|none|none|
 |» » name|string|true|none|none|
 |» » type|string|true|none|none|
-|» » before|object \| null|true|none|none|
+|» » before|object \| null|false|none|none|
 |» » » *anyOf*|object|false|none|none|
 |» » » *anyOf*|null|false|none|none|
-|» » after|object \| null|true|none|none|
+|» » after|object \| null|false|none|none|
 |» » » *anyOf*|object|false|none|none|
 |» » » *anyOf*|null|false|none|none|
 
@@ -6526,13 +6492,11 @@ curl https://api.growthbook.io/api/v2/features/string/revisions/0/default-value 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» defaultValue|body|string|true|New default value. In Config mode (feature has `baseConfig`), the default must be exactly a config with no overrides: send `"{}"` to use `baseConfig`, or set `defaultValueConfig` to point at a descendant.|
 |» defaultValueConfig|body|string \| null|false|Key of a config within the feature's `baseConfig` family that the default value resolves to (the base itself or a descendant). The default is exactly that config with no overrides; pass `null` to use `baseConfig`. Do not embed `@config:` in `defaultValue` — use this field.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -9033,8 +8997,8 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» rule|body|[Targeting Rule](#schematargeting rule) \| [Experiment Rule](#schemaexperiment rule) \| [Safe Rollout Rule](#schemasafe rollout rule)|true|none|
 |» » *anyOf*|body|[Targeting Rule](#schematargeting rule)|false|A targeting rule that serves a specific value to users matching the conditions. Set coverage < 1 for a percentage rollout.|
@@ -9052,8 +9016,6 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -9065,21 +9027,13 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|number|false|none|
@@ -9098,8 +9052,6 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» » » » » » *anyOf*|body|number|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » condition|body|string \| null|false|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -9111,18 +9063,12 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» condition|body|string|true|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » environments|body|[string] \| null|false|none|
 |» » » » » » *anyOf*|body|[string]|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » » enabled|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » approvalNotes|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » monitored|body|boolean|false|none|
 |» » » holdConditions|body|object|false|none|
 |» » » » minSampleSize|body|integer|false|none|
@@ -9136,8 +9082,6 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -9149,15 +9093,11 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » » *anyOf*|body|string(date-time)|false|none|
 |» » » *anyOf*|body|null|false|none|
@@ -9182,14 +9122,10 @@ Appends a new rule to the revision's rule list. Supply `allEnvironments: true` o
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » lockdownConfig|body|object|false|none|
 |» » » mode|body|string|true|none|
 |» » requiresStartApproval|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» schedule|body|object|false|Simple start/end date window. For force/rollout rules this creates a standalone ramp action; for experiment-ref/safe-rollout rules this sets legacy schedule fields on the rule. Mutually exclusive with `rampSchedule`.|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Rule is enabled at this time.|
 |» » » *anyOf*|body|string(date-time)|false|none|
@@ -10055,8 +9991,8 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |id|path|string|true|none|
 |version|path|integer \| string|true|none|
 |ruleId|path|string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» rule|body|object|true|none|
 |» » description|body|string|false|Short note on why the rule exists (e.g. `Beta testers only`).|
@@ -10071,8 +10007,6 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » type|body|string|false|none|
 |» » value|body|string|false|none|
 |» » config|body|string \| null|false|Force/rollout rules only. Key of a config to back the value (or null to detach). When set, `value` is a JSON override patch merged on top of the config. Omit to leave the existing config backing unchanged.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » sparse|body|boolean|false|none|
 |» » coverage|body|number|false|none|
 |» » hashAttribute|body|string|false|none|
@@ -10086,8 +10020,6 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » » variationId|body|string|true|none|
 |» » » value|body|string|true|none|
 |» » » config|body|string \| null|false|Key of a config to back this variation value (or null to detach). When set, `value` is a JSON override patch merged on top of the config.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » controlValue|body|string|false|none|
 |» » variationValue|body|string|false|none|
 |» » allEnvironments|body|boolean|false|Omit both scope fields to keep the current scope.|
@@ -10104,8 +10036,6 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -10117,21 +10047,13 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|number|false|none|
@@ -10150,8 +10072,6 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » » » » » *anyOf*|body|number|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » condition|body|string \| null|false|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -10163,18 +10083,12 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» condition|body|string|true|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » environments|body|[string] \| null|false|none|
 |» » » » » » *anyOf*|body|[string]|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » » enabled|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » approvalNotes|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » monitored|body|boolean|false|none|
 |» » » holdConditions|body|object|false|none|
 |» » » » minSampleSize|body|integer|false|none|
@@ -10188,8 +10102,6 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -10201,15 +10113,11 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » » *anyOf*|body|string(date-time)|false|none|
 |» » » *anyOf*|body|null|false|none|
@@ -10234,14 +10142,10 @@ Patches fields on an existing rule (identified by `ruleId`). The rule `type` can
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » lockdownConfig|body|object|false|none|
 |» » » mode|body|string|true|none|
 |» » requiresStartApproval|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» schedule|body|object|false|Simple start/end date window. For force/rollout rules this manages a standalone ramp action; for experiment-ref/safe-rollout rules this updates legacy schedule fields on the rule. Mutually exclusive with `rampSchedule`.|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Rule is enabled at this time.|
 |» » » *anyOf*|body|string(date-time)|false|none|
@@ -11934,8 +11838,6 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -11947,21 +11849,13 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|number|false|none|
@@ -11980,8 +11874,6 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -11993,18 +11885,12 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|none|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -12018,8 +11904,6 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -12031,15 +11915,11 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » *anyOf*|body|string(date-time)|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -12064,22 +11944,16 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» lockdownConfig|body|object|false|none|
 |» » mode|body|string|true|none|
 |» requiresStartApproval|body|boolean \| null|false|none|
-|» » *anyOf*|body|boolean|false|none|
-|» » *anyOf*|body|null|false|none|
 |» environment|body|string|false|**Deprecated.**|
 |» startState|body|object|false|The rule state to roll back to (the rollback/jump-to-start anchor). Merged onto the rule's current state, so `{ "coverage": 0 }` keeps existing targeting but rolls back to 0%. Steps accumulate on it, and it is the only place a plan sets `hashAttribute` (plus optional `seed` and `hashVersion`), which a partial-coverage step on a force rule requires unless the rule has one. On create, omitting it infers the anchor from the rule's current coverage (and returns a warning if that isn't 0%); on update of a live schedule, omitting it leaves the existing anchor unchanged.|
 |» » coverage|body|number \| null|false|Traffic fraction (0–1). For monitored steps the rollout rule is promoted to an experiment: treatment = [0, coverage), control = [0.5, 0.5+coverage). Both arms are equal-sized and non-adjacent, so a step-up only adds new users to each arm — no existing user changes group. The REST API enforces coverage ≤ 0.5 on monitored steps so control end never exceeds 1.0. The SDK uses explicit hash ranges on bucketingV2 clients to keep bucketing stable across monitored/unmonitored transitions.|
 |» » » *anyOf*|body|number|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » condition|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » savedGroups|body|[object] \| null|false|none|
 |» » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -12091,21 +11965,13 @@ You can build the ramp from a template (`templateId`) and set the rollback ancho
 |» condition|body|string|true|none|
 |» » » *anyOf*|body|null|false|none|
 |» » allEnvironments|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » environments|body|[string] \| null|false|none|
 |» » » *anyOf*|body|[string]|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » enabled|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » *anyOf*|body|number|false|none|
 |» » » *anyOf*|body|number|false|none|
@@ -14274,21 +14140,13 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v2/features/string/revisions/0/recall-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v2/features/{id}/revisions/{version}/recall-review`
 
 Retracts the review request, returning the revision from `pending-review`, `changes-requested`, or `approved` back to `draft`. Allowed for any user with draft-management permission on the feature (the same permission required to request review), not only the original requester. Existing review log entries are preserved as audit history but any in-flight reviewer verdicts (Approved / Requested Changes) submitted during this review cycle no longer count — submitting a fresh `request-review` starts a new cycle.
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="recall-a-review-request-revert-to-draft-parameters">Parameters</h3>
 
@@ -14296,7 +14154,6 @@ Retracts the review request, returning the revision from `pending-review`, `chan
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -14686,21 +14543,13 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v2/features/string/revisions/0/undo-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v2/features/{id}/revisions/{version}/undo-review`
 
 Reviewer retracts their own verdict. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created. The revision status rewinds to the state implied by the remaining active verdicts from other reviewers: any outstanding `Requested Changes` → `changes-requested`, else any outstanding `Approved` → `approved`, else `pending-review`. Existing review comments are preserved. If the retraction resolves the revision to `approved` and auto-publish-on-approval is armed, the revision is published.
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="undo-a-reviewers-own-review-verdict-parameters">Parameters</h3>
 
@@ -14708,7 +14557,6 @@ Reviewer retracts their own verdict. The verdict belongs to whoever the request 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -15275,21 +15123,13 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v2/features/string/revisions/0/log/string \
   -X DELETE \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /v2/features/{id}/revisions/{version}/log/{logId}`
 
 Author of a `Comment` log entry can delete it. Verdict entries (Approved, Requested Changes, Review Requested) and other audit-trail events are immutable. To retract a verdict use `/undo-review`; to retract a review request use `/recall-review`.
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="delete-an-owned-revision-comment-entry-parameters">Parameters</h3>
 
@@ -15298,7 +15138,6 @@ Author of a `Comment` log entry can delete it. Verdict entries (Approved, Reques
 |id|path|string|true|none|
 |version|path|integer|true|none|
 |logId|path|string|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -16148,8 +15987,8 @@ Publishes the draft and makes its changes live. The caller needs Publish access 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» comment|body|string|false|Note recorded in the audit log for this publish. Also becomes the draft's comment if the draft has none; otherwise the existing draft comment is kept.|
 |» bypassApproval|body|boolean|false|Deprecated and ignored. Approval is bypassed automatically when the caller has Bypass draft approvals access for this resource or when the organization enables the REST API approval bypass. Otherwise, the revision must be approved before it can be published.|
@@ -16553,19 +16392,11 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v2/features/string/revisions/0/discard \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v2/features/{id}/revisions/{version}/discard`
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="discard-a-draft-revision-parameters">Parameters</h3>
 
@@ -16573,7 +16404,6 @@ curl https://api.growthbook.io/api/v2/features/string/revisions/0/discard \
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -16963,21 +16793,13 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v2/features/string/revisions/0/reopen \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v2/features/{id}/revisions/{version}/reopen`
 
 Returns a `discarded` revision to `draft` status so it can be edited, reviewed, and published. Prior review state is not restored — the draft must go back through review if approvals are required.
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="reopen-a-discarded-revision-as-a-draft-parameters">Parameters</h3>
 
@@ -16985,7 +16807,6 @@ Returns a `discarded` revision to `draft` status so it can be edited, reviewed, 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -17849,7 +17670,7 @@ honored only when API_ALLOW_SKIP_PAGINATION is set (self-hosted deployments).
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
 |projectId|query|string|false|Filter by project id|
 |clientKey|query|string|false|Filter by a SDK connection's client key|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 
 > Example responses
 
@@ -18097,8 +17918,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -18601,8 +18420,6 @@ This operation is deprecated
 |» valueType|body|string|true|The data type of the feature payload. Boolean by default.|
 |» defaultValue|body|string|true|Default value when feature is enabled. Type must match `valueType`. In Config mode (`baseConfig` set) this is the JSON override patch merged on top of the config.|
 |» baseConfig|body|string \| null|false|Key of the config backing this flag ("Config mode"). Requires `valueType: "json"` and a live config; `defaultValue` and rule values become override patches on top. null or omitted for a plain flag.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» tags|body|[string]|false|Tags for filtering and grouping. Use these instead of encoding groups in names.|
 |» environments|body|object|false|Settings for each environment, keyed by environment ID. Any environment you leave out is enabled or disabled per that environment's "Default state for new features" setting.|
 |» » **additionalProperties**|body|object|false|none|
@@ -20294,8 +20111,6 @@ Updates the Feature Flag and immediately publishes a new revision. The caller ne
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization.|
 |» defaultValue|body|string|false|none|
 |» baseConfig|body|string \| null|false|The config backing this flag ("Config mode"), fixed at creation. Cannot be changed by an update — resend the current value or omit it; a different value (or null to detach) is rejected.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» tags|body|[string]|false|Tags for filtering and grouping. Use these instead of encoding groups in names. Replaces the existing tags completely.|
 |» environments|body|object|false|Settings for each environment, keyed by environment ID. Any environment you leave out keeps its current settings.|
 |» » **additionalProperties**|body|object|false|none|
@@ -21900,11 +21715,11 @@ Returns a paginated list of feature revisions across all features in the organiz
 |---|---|---|---|---|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |featureId|query|string|false|none|
 |status|query|string \| [string]|false|Filter by revision status. Single value, comma-separated list, repeated params (?status=draft&status=approved), or `all-drafts` shorthand for all active-draft statuses (draft, pending-review, approved, changes-requested).|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -22226,8 +22041,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22263,7 +22076,7 @@ Returns a paginated list of revisions for this feature, sorted newest-first. Opt
 |id|path|string|true|The id of the requested resource|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |status|query|string \| [string]|false|Filter by revision status. Single value, comma-separated list, repeated params (?status=draft&status=approved), or `all-drafts` shorthand for all active-draft statuses (draft, pending-review, approved, changes-requested).|
 |author|query|string|false|none|
 
@@ -22587,8 +22400,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22639,7 +22450,7 @@ Creates a new draft revision branched from the current live revision. A feature 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
-|overrideDraftLimit|query|string \| boolean|false|If the organization caps concurrent drafts per feature (`maxConcurrentDrafts` setting), requests at or over the cap are rejected with a 409. Pass `true` to create the draft anyway. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|overrideDraftLimit|query|boolean|false|If the organization caps concurrent drafts per feature (`maxConcurrentDrafts` setting), requests at or over the cap are rejected with a 409. Pass `true` to create the draft anyway. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |body|body|object|true|none|
 |» comment|body|string|false|none|
 |» title|body|string|false|none|
@@ -23020,7 +22831,7 @@ Returns the most recently updated draft revision for the feature. Returns 404 if
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
-|mine|query|string \| boolean|false|If true, return only the most recent active draft authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by or contributed to by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
 
 > Example responses
 
@@ -26669,8 +26480,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » condition|body|string|true|none|
 |» » scheduleRules|body|[object]|false|none|
 |» » » timestamp|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » enabled|body|boolean|true|none|
 |» » scheduleType|body|string|false|none|
 |» » type|body|string|true|none|
@@ -26691,8 +26500,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » condition|body|string|true|none|
 |» » scheduleRules|body|[object]|false|none|
 |» » » timestamp|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » enabled|body|boolean|true|none|
 |» » scheduleType|body|string|false|none|
 |» » type|body|string|true|none|
@@ -26706,8 +26513,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » » guardrailMetricIds|body|[string]|true|none|
 |» » » maxDuration|body|object|true|none|
@@ -26730,8 +26535,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » condition|body|string|true|none|
 |» » scheduleRules|body|[object]|false|none|
 |» » » timestamp|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » enabled|body|boolean|true|none|
 |» » scheduleType|body|string|false|none|
 |» » type|body|string|false|none|
@@ -26756,8 +26559,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -26769,21 +26570,13 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|number|false|none|
@@ -26802,8 +26595,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » » » » *anyOf*|body|number|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » condition|body|string \| null|false|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -26815,18 +26606,12 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» condition|body|string|true|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » environments|body|[string] \| null|false|none|
 |» » » » » » *anyOf*|body|[string]|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » » enabled|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » approvalNotes|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » monitored|body|boolean|false|none|
 |» » » holdConditions|body|object|false|none|
 |» » » » minSampleSize|body|integer|false|none|
@@ -26840,8 +26625,6 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -26853,15 +26636,11 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » » *anyOf*|body|string(date-time)|false|none|
 |» » » *anyOf*|body|null|false|none|
@@ -26886,21 +26665,13 @@ Appends a new rule to the end of the rule list for the given environment. A `rul
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » lockdownConfig|body|object|false|none|
 |» » » mode|body|string|true|none|
 |» » requiresStartApproval|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» schedule|body|object|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» revisionTitle|body|string|false|none|
 |» revisionComment|body|string|false|none|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -27743,8 +27514,6 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» » scheduleRules|body|[object] \| null|false|none|
 |» » » *anyOf*|body|[object]|false|none|
 |» timestamp|body|string \| null|true|none|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» enabled|body|boolean|true|none|
 |» » » *anyOf*|body|null|false|none|
 |» » scheduleType|body|string \| null|false|none|
@@ -27778,8 +27547,6 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -27791,21 +27558,13 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|number|false|none|
@@ -27824,8 +27583,6 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» » » » » » *anyOf*|body|number|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » condition|body|string \| null|false|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -27837,18 +27594,12 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» condition|body|string|true|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » environments|body|[string] \| null|false|none|
 |» » » » » » *anyOf*|body|[string]|false|none|
 |» » » » » » *anyOf*|body|null|false|none|
 |» » » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » » enabled|body|boolean \| null|false|none|
-|» » » » » » *anyOf*|body|boolean|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » approvalNotes|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » monitored|body|boolean|false|none|
 |» » » holdConditions|body|object|false|none|
 |» » » » minSampleSize|body|integer|false|none|
@@ -27862,8 +27613,6 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -27875,15 +27624,11 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » » *anyOf*|body|string(date-time)|false|none|
 |» » » *anyOf*|body|null|false|none|
@@ -27908,21 +27653,13 @@ Patches fields on an existing rule. The rule `type` cannot be changed — to con
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » lockdownConfig|body|object|false|none|
 |» » » mode|body|string|true|none|
 |» » requiresStartApproval|body|boolean \| null|false|none|
-|» » » *anyOf*|body|boolean|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» schedule|body|object|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» revisionTitle|body|string|false|none|
 |» revisionComment|body|string|false|none|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -29456,8 +29193,6 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -29469,21 +29204,13 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|number|false|none|
@@ -29502,8 +29229,6 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -29515,18 +29240,12 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|none|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -29540,8 +29259,6 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -29553,15 +29270,11 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» startDate|body|string(date-time) \| null|false|ISO 8601 date-time, e.g. "2025-06-01T00:00:00Z". Absent or null means start immediately on publish.|
 |» » *anyOf*|body|string(date-time)|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -29586,14 +29299,10 @@ Queues a revision-controlled ramp action for this rule. If the rule already has 
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» lockdownConfig|body|object|false|none|
 |» » mode|body|string|true|none|
 |» requiresStartApproval|body|boolean \| null|false|none|
-|» » *anyOf*|body|boolean|false|none|
-|» » *anyOf*|body|null|false|none|
 |» environment|body|string|false|**Deprecated.**|
 |» revisionTitle|body|string|false|none|
 |» revisionComment|body|string|false|none|
@@ -32157,10 +31866,8 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/features/string/revisions/0/discard \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/features/{id}/revisions/{version}/discard`
@@ -32173,19 +31880,12 @@ This operation is deprecated
 
 Permanently discards a draft revision. Only drafts (never published revisions) can be discarded. Any pending ramp actions staged on the draft are dropped.
 
-> Body parameter
-
-```json
-{}
-```
-
 <h3 id="discard-a-draft-revision-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -33197,6 +32897,11 @@ Returns all ramp schedules for the organization, with optional filters.
       "monitoringStartDate": "1970-01-01T00:00:00Z",
       "lastRollbackAt": "1970-01-01T00:00:00Z",
       "lastRollbackReason": "string",
+      "stepFailure": {
+        "attempts": 0,
+        "lastError": "string",
+        "retryAt": "1970-01-01T00:00:00Z"
+      },
       "monitoringStatus": {
         "safeRolloutId": "string",
         "monitoringMode": "auto",
@@ -33229,8 +32934,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 |rampSchedules|[[RampSchedule](#schemarampschedule)]|true|none|none|
 
 <aside class="warning">
@@ -33507,8 +33210,6 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -33520,18 +33221,12 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|none|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -33545,8 +33240,6 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -33558,21 +33251,13 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|number|false|none|
@@ -33587,8 +33272,6 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -33600,15 +33283,11 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» startDate|body|string(date-time) \| null|false|none|
 |» » *anyOf*|body|string(date-time)|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -33616,16 +33295,12 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
 |» » *anyOf*|body|string(date-time)|false|none|
 |» » *anyOf*|body|null|false|none|
 |» requiresStartApproval|body|boolean \| null|false|When true, the ramp holds at step -1 with its rule disabled (zero traffic) until a human approves the start via /actions/approve-step. Composes with startDate.|
-|» » *anyOf*|body|boolean|false|none|
-|» » *anyOf*|body|null|false|none|
 |» monitoringConfig|body|object \| null|false|none|
 |» » *anyOf*|body|object|false|none|
 |» » datasourceId|body|string|true|none|
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » guardrailMetricIds|body|[string]|true|none|
 |» » signalMetricIds|body|[string]|false|none|
@@ -33866,6 +33541,11 @@ Creates a ramp schedule, optionally attached to a published feature rule by pass
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -34157,6 +33837,11 @@ to halt, `/actions/advance` to skip steps, or `/actions/rollback` to revert.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -34446,6 +34131,11 @@ to revert all rule effects entirely.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -34736,6 +34426,11 @@ want to skip the remainder of the current step.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -34785,6 +34480,303 @@ want to skip the remainder of the current step.
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
 <h3 id="resume-a-paused-ramp-schedule-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rampSchedule|[RampSchedule](#schemarampschedule)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Retry a ramp schedule's failed step
+
+<a id="opIdretryRampSchedule"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/ramp-schedules/string/actions/retry \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v1/ramp-schedules/{id}/actions/retry`
+
+When a step fails for a reason that may clear on its own, such as a
+database timeout or a concurrent edit, the schedule holds at its current step
+and retries on a backoff: 5s, 10s, 30s, 1m, then doubling up to 30m. After 10
+failed attempts it pauses. `stepFailure` on the schedule shows the attempt
+count, the last error and when the next attempt is due.
+
+This runs the next attempt now instead of waiting. It applies the same hold
+conditions the scheduler would — use `/actions/advance` to bypass them. A
+failed attempt counts toward the limit and returns its error.
+
+
+<h3 id="retry-a-ramp-schedules-failed-step-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "rampSchedule": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "entityType": "feature",
+    "entityId": "string",
+    "targets": [
+      {
+        "id": "string",
+        "entityType": "feature",
+        "entityId": "string",
+        "ruleId": "string",
+        "environment": "string",
+        "status": "pending-join",
+        "activatingRevisionVersion": 0
+      }
+    ],
+    "startActions": [
+      {
+        "targetType": "feature-rule",
+        "targetId": "string",
+        "patch": {
+          "ruleId": "string",
+          "coverage": 0,
+          "condition": "string",
+          "savedGroups": [
+            {
+              "match": "all",
+              "ids": [
+                "string"
+              ]
+            }
+          ],
+          "prerequisites": [
+            {
+              "id": "string",
+              "condition": "string"
+            }
+          ],
+          "allEnvironments": true,
+          "environments": [
+            "string"
+          ],
+          "force": null,
+          "enabled": true,
+          "hashAttribute": "string",
+          "seed": "string",
+          "hashVersion": 1
+        }
+      }
+    ],
+    "steps": [
+      {
+        "interval": 0.1,
+        "approvalNotes": "string",
+        "monitored": true,
+        "holdConditions": {
+          "minSampleSize": 1,
+          "requiresApproval": true
+        },
+        "actions": [
+          {
+            "targetType": "feature-rule",
+            "targetId": "string",
+            "patch": {
+              "ruleId": "string",
+              "coverage": 0,
+              "condition": "string",
+              "savedGroups": [
+                {
+                  "match": "all",
+                  "ids": [
+                    "string"
+                  ]
+                }
+              ],
+              "prerequisites": [
+                {
+                  "id": "string",
+                  "condition": "string"
+                }
+              ],
+              "allEnvironments": true,
+              "environments": [
+                "string"
+              ],
+              "force": null,
+              "enabled": true
+            }
+          }
+        ]
+      }
+    ],
+    "endActions": [
+      {
+        "targetType": "feature-rule",
+        "targetId": "string",
+        "patch": {
+          "ruleId": "string",
+          "coverage": 0,
+          "condition": "string",
+          "savedGroups": [
+            {
+              "match": "all",
+              "ids": [
+                "string"
+              ]
+            }
+          ],
+          "prerequisites": [
+            {
+              "id": "string",
+              "condition": "string"
+            }
+          ],
+          "allEnvironments": true,
+          "environments": [
+            "string"
+          ],
+          "force": null,
+          "enabled": true
+        }
+      }
+    ],
+    "startDate": "1970-01-01T00:00:00Z",
+    "cutoffDate": "1970-01-01T00:00:00Z",
+    "requiresStartApproval": true,
+    "startApprovedAt": "1970-01-01T00:00:00Z",
+    "status": "pending",
+    "currentStepIndex": -1,
+    "startedAt": "1970-01-01T00:00:00Z",
+    "phaseStartedAt": "1970-01-01T00:00:00Z",
+    "pausedAt": "1970-01-01T00:00:00Z",
+    "nextStepAt": "1970-01-01T00:00:00Z",
+    "nextProcessAt": "1970-01-01T00:00:00Z",
+    "elapsedMs": 0,
+    "lockdownConfig": {
+      "mode": "none"
+    },
+    "monitoringConfig": {
+      "datasourceId": "string",
+      "guardrailMetricIds": [
+        "string"
+      ],
+      "signalMetricIds": [
+        "string"
+      ],
+      "updateScheduleMinutes": 10,
+      "monitoringMode": "auto",
+      "autoUpdate": true,
+      "srmAction": "rollback",
+      "noTrafficAction": "rollback",
+      "noTrafficGracePeriodHours": 0.1,
+      "multipleExposureAction": "rollback",
+      "exposureQuery": {
+        "id": "string",
+        "identifierType": "string"
+      },
+      "exposureQueryId": "string"
+    },
+    "experimentHealthAction": "rollback",
+    "currentStepEnteredAt": "1970-01-01T00:00:00Z",
+    "stepApproval": {
+      "stepIndex": 0,
+      "approvedAt": "1970-01-01T00:00:00Z",
+      "approvedBy": "string",
+      "approvedByUser": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "context": "ui"
+    },
+    "awaitingApproval": true,
+    "monitoringStartDate": "1970-01-01T00:00:00Z",
+    "lastRollbackAt": "1970-01-01T00:00:00Z",
+    "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
+    "monitoringStatus": {
+      "safeRolloutId": "string",
+      "monitoringMode": "auto",
+      "autoUpdate": true,
+      "effectiveAutoUpdate": true,
+      "blockedReason": "string",
+      "nextSnapshotAt": "1970-01-01T00:00:00Z",
+      "currentStepMonitored": true
+    }
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="retry-a-ramp-schedules-failed-step-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="retry-a-ramp-schedules-failed-step-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -35043,6 +35035,11 @@ From this terminal state the schedule can be brought back to `ready` via
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -35336,6 +35333,11 @@ first.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -35642,6 +35644,11 @@ Accepts any non-terminal schedule status.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -35945,6 +35952,11 @@ the cutoff-date-driven completion).
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -36242,6 +36254,11 @@ Requires update + publish (start gate) or review (step gate) permissions for the
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -36554,6 +36571,11 @@ followed by a publish.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -36862,6 +36884,11 @@ and the response contains `deleted: true` instead of `rampSchedule`.
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -37191,6 +37218,11 @@ When to use other actions instead:
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -37372,14 +37404,8 @@ Status Code **200**
 |totalSteps|number|true|none|none|
 |lockdownMode|string|false|none|none|
 |startedAt|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
 |lastRollbackAt|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
 |lastRollbackReason|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
 |monitoring|[monitoring](#schemamonitoring)|false|none|none|
 |healthSummary|[healthSummary](#schemahealthsummary)|false|none|Populated when monitoring is enabled and analysis data is available. Contains the current evaluator decision, aggregate traffic health, and per-metric status with effect sizes.|
 
@@ -37624,6 +37650,11 @@ Sets the user preference for ramp monitoring updates. In `manual` mode, automati
   "monitoringStartDate": "1970-01-01T00:00:00Z",
   "lastRollbackAt": "1970-01-01T00:00:00Z",
   "lastRollbackReason": "string",
+  "stepFailure": {
+    "attempts": 0,
+    "lastError": "string",
+    "retryAt": "1970-01-01T00:00:00Z"
+  },
   "monitoringStatus": {
     "safeRolloutId": "string",
     "monitoringMode": "auto",
@@ -37668,147 +37699,8 @@ Sets the user preference for ramp monitoring updates. In `manual` mode, automati
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource created|Inline|
+|200|OK|Resource created|[RampSchedule](#schemarampschedule)|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
-
-<h3 id="set-ramp-monitoring-mode-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|Unique identifier (rs_ prefix)|
-|dateCreated|string(date-time)|true|none|none|
-|dateUpdated|string(date-time)|true|none|none|
-|name|string|true|none|none|
-|entityType|string|true|none|none|
-|entityId|string|true|none|none|
-|targets|[[targets](#schematargets)]|true|none|Controlled entity references|
-|startActions|[[startActions](#schemastartactions)]|false|none|Actions that restore controlled rules to their pre-ramp state. Applied when rolling back or jumping to start, and the base every step accumulates on; the only place a plan can set hashAttribute, seed or hashVersion.|
-|steps|[[steps](#schemasteps)]|true|none|Ordered ramp steps|
-|endActions|[[endActions](#schemaendactions)]|false|none|Actions applied on top of all step patches when the ramp completes. Represents the final desired rule state.|
-|startDate|string(date-time) \| null|false|none|When the ramp fires. Absent/null means immediately on publish; set to a future datetime to delay start and keep the rule disabled until that time.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|cutoffDate|string(date-time) \| null|false|none|Rule-level kill date. When reached, the ramp is completed and the rule is disabled (enabled=false). Use for time-boxed rules that must stop serving on a fixed date regardless of ramp progress. Set to null to clear.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|requiresStartApproval|boolean|false|none|When true, the ramp holds at step -1 with its rule disabled (zero traffic) until a human approves the start via /actions/approve-step. Composes with startDate ('hold until approved, then arm for that date').|
-|startApprovedAt|string(date-time) \| null|false|none|When the current launch's start was approved. Cleared on every return to step -1 (publish, rollback), re-arming the approval gate.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|status|string|true|none|none|
-|currentStepIndex|integer|true|none|Index of current step; -1 = not yet started|
-|startedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|phaseStartedAt|string(date-time) \| null|false|none|Anchor for cumulative interval timing; resets after each approval gate is satisfied|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|pausedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextStepAt|string(date-time) \| null|true|none|When the current step's time gate elapses; null for steps with no interval (pure approval gates) and terminal states|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextProcessAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|elapsedMs|integer \| null|false|none|Milliseconds since startedAt (computed at response time, not stored)|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lockdownConfig|[lockdownConfig](#schemalockdownconfig)|false|none|none|
-|monitoringConfig|object \| null|false|none|none|
-|» *anyOf*|object|false|none|none|
-|» datasourceId|string|true|none|none|
-|» guardrailMetricIds|[string]|true|none|none|
-|» signalMetricIds|[string]|false|none|none|
-|» updateScheduleMinutes|number \| null|false|none|none|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|false|none|none|
-|» autoUpdate|boolean|false|none|none|
-|» srmAction|string|false|none|none|
-|» noTrafficAction|string|false|none|none|
-|» noTrafficGracePeriodHours|number \| null|false|none|How long to wait for traffic before applying `noTrafficAction`. Defaults to 24 hours when null or not set.|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» multipleExposureAction|string|false|none|none|
-|» exposureQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
-|» » id|string|true|none|The ID of one of the data source's assignment queries.|
-|» » identifierType|string \| null|true|none|The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
-|» exposureQueryId|string|true|none|**Deprecated.** Deprecated: use `exposureQuery`.|
-|» *anyOf*|null|false|none|none|
-|experimentHealthAction|string|false|none|none|
-|currentStepEnteredAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|stepApproval|object \| null|false|none|Approval record for the current step. Valid only while `stepApproval.stepIndex === currentStepIndex`.|
-|» *anyOf*|object|false|none|none|
-|» stepIndex|integer|true|none|Index of the step that was approved.|
-|» approvedAt|string(date-time)|true|none|When the approval was granted.|
-|» approvedBy|string|true|none|Who approved: the approver's user ID, or the API key's ID when a key approved as itself.|
-|» approvedByUser|[EventUser](#schemaeventuser)|false|none|The approver, with an API key's name.|
-|» context|string|true|none|Surface through which the approval was granted.|
-|» *anyOf*|null|false|none|none|
-|awaitingApproval|boolean|true|none|Computed at read time: whether a human approval is the gate blocking the schedule right now — either the start-approval gate (`requiresStartApproval` before step 0) or the current step's `holdConditions.requiresApproval` once its time hold (if any) has elapsed. Paused schedules report `false` (the pause is the blocking gate). For monitored steps the approve-step endpoint may still reject an approval until analysis-based gates clear.|
-|monitoringStartDate|string(date-time) \| null|false|none|When the monitored section most recently started (first monitored step entered). Used for no-traffic grace period gating.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackReason|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|monitoringStatus|object \| null|false|none|Read-only monitoring status. Present when monitoringConfig is set.|
-|» *anyOf*|object|false|none|none|
-|» safeRolloutId|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|true|none|User-selected monitoring mode. `auto` schedules snapshots automatically; `manual` requires clicking Update.|
-|» autoUpdate|boolean|true|none|Legacy alias for auto-update behavior. Prefer `monitoringMode` (`auto` means true, `manual` means false).|
-|» effectiveAutoUpdate|boolean|true|none|Computed runtime flag. True only when monitoring mode is auto and schedule state allows automatic snapshot scheduling.|
-|» blockedReason|string \| null|false|none|When `effectiveAutoUpdate` is false, this describes the computed reason auto-updates are currently blocked.|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» nextSnapshotAt|string(date-time) \| null|false|none|When the next automatic snapshot query will run|
-|» » *anyOf*|string(date-time)|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» currentStepMonitored|boolean|true|none|Whether the step at currentStepIndex has monitoring enabled|
-|» *anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entityType|feature|
-|status|pending|
-|status|ready|
-|status|running|
-|status|paused|
-|status|completed|
-|status|rolled-back|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
-|» srmAction|rollback|
-|» srmAction|hold|
-|» srmAction|warn|
-|» noTrafficAction|rollback|
-|» noTrafficAction|hold|
-|» noTrafficAction|warn|
-|» multipleExposureAction|rollback|
-|» multipleExposureAction|hold|
-|» multipleExposureAction|warn|
-|experimentHealthAction|rollback|
-|experimentHealthAction|hold|
-|experimentHealthAction|warn|
-|» context|ui|
-|» context|api|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
 
 ### Response Headers
 
@@ -38051,6 +37943,11 @@ Deprecated alias for setting monitoring mode. Prefer `/actions/set-monitoring-mo
   "monitoringStartDate": "1970-01-01T00:00:00Z",
   "lastRollbackAt": "1970-01-01T00:00:00Z",
   "lastRollbackReason": "string",
+  "stepFailure": {
+    "attempts": 0,
+    "lastError": "string",
+    "retryAt": "1970-01-01T00:00:00Z"
+  },
   "monitoringStatus": {
     "safeRolloutId": "string",
     "monitoringMode": "auto",
@@ -38095,147 +37992,8 @@ Deprecated alias for setting monitoring mode. Prefer `/actions/set-monitoring-mo
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource created|Inline|
+|200|OK|Resource created|[RampSchedule](#schemarampschedule)|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
-
-<h3 id="toggle-automatic-monitoring-updates-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|Unique identifier (rs_ prefix)|
-|dateCreated|string(date-time)|true|none|none|
-|dateUpdated|string(date-time)|true|none|none|
-|name|string|true|none|none|
-|entityType|string|true|none|none|
-|entityId|string|true|none|none|
-|targets|[[targets](#schematargets)]|true|none|Controlled entity references|
-|startActions|[[startActions](#schemastartactions)]|false|none|Actions that restore controlled rules to their pre-ramp state. Applied when rolling back or jumping to start, and the base every step accumulates on; the only place a plan can set hashAttribute, seed or hashVersion.|
-|steps|[[steps](#schemasteps)]|true|none|Ordered ramp steps|
-|endActions|[[endActions](#schemaendactions)]|false|none|Actions applied on top of all step patches when the ramp completes. Represents the final desired rule state.|
-|startDate|string(date-time) \| null|false|none|When the ramp fires. Absent/null means immediately on publish; set to a future datetime to delay start and keep the rule disabled until that time.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|cutoffDate|string(date-time) \| null|false|none|Rule-level kill date. When reached, the ramp is completed and the rule is disabled (enabled=false). Use for time-boxed rules that must stop serving on a fixed date regardless of ramp progress. Set to null to clear.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|requiresStartApproval|boolean|false|none|When true, the ramp holds at step -1 with its rule disabled (zero traffic) until a human approves the start via /actions/approve-step. Composes with startDate ('hold until approved, then arm for that date').|
-|startApprovedAt|string(date-time) \| null|false|none|When the current launch's start was approved. Cleared on every return to step -1 (publish, rollback), re-arming the approval gate.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|status|string|true|none|none|
-|currentStepIndex|integer|true|none|Index of current step; -1 = not yet started|
-|startedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|phaseStartedAt|string(date-time) \| null|false|none|Anchor for cumulative interval timing; resets after each approval gate is satisfied|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|pausedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextStepAt|string(date-time) \| null|true|none|When the current step's time gate elapses; null for steps with no interval (pure approval gates) and terminal states|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextProcessAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|elapsedMs|integer \| null|false|none|Milliseconds since startedAt (computed at response time, not stored)|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lockdownConfig|[lockdownConfig](#schemalockdownconfig)|false|none|none|
-|monitoringConfig|object \| null|false|none|none|
-|» *anyOf*|object|false|none|none|
-|» datasourceId|string|true|none|none|
-|» guardrailMetricIds|[string]|true|none|none|
-|» signalMetricIds|[string]|false|none|none|
-|» updateScheduleMinutes|number \| null|false|none|none|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|false|none|none|
-|» autoUpdate|boolean|false|none|none|
-|» srmAction|string|false|none|none|
-|» noTrafficAction|string|false|none|none|
-|» noTrafficGracePeriodHours|number \| null|false|none|How long to wait for traffic before applying `noTrafficAction`. Defaults to 24 hours when null or not set.|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» multipleExposureAction|string|false|none|none|
-|» exposureQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
-|» » id|string|true|none|The ID of one of the data source's assignment queries.|
-|» » identifierType|string \| null|true|none|The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
-|» exposureQueryId|string|true|none|**Deprecated.** Deprecated: use `exposureQuery`.|
-|» *anyOf*|null|false|none|none|
-|experimentHealthAction|string|false|none|none|
-|currentStepEnteredAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|stepApproval|object \| null|false|none|Approval record for the current step. Valid only while `stepApproval.stepIndex === currentStepIndex`.|
-|» *anyOf*|object|false|none|none|
-|» stepIndex|integer|true|none|Index of the step that was approved.|
-|» approvedAt|string(date-time)|true|none|When the approval was granted.|
-|» approvedBy|string|true|none|Who approved: the approver's user ID, or the API key's ID when a key approved as itself.|
-|» approvedByUser|[EventUser](#schemaeventuser)|false|none|The approver, with an API key's name.|
-|» context|string|true|none|Surface through which the approval was granted.|
-|» *anyOf*|null|false|none|none|
-|awaitingApproval|boolean|true|none|Computed at read time: whether a human approval is the gate blocking the schedule right now — either the start-approval gate (`requiresStartApproval` before step 0) or the current step's `holdConditions.requiresApproval` once its time hold (if any) has elapsed. Paused schedules report `false` (the pause is the blocking gate). For monitored steps the approve-step endpoint may still reject an approval until analysis-based gates clear.|
-|monitoringStartDate|string(date-time) \| null|false|none|When the monitored section most recently started (first monitored step entered). Used for no-traffic grace period gating.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackReason|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|monitoringStatus|object \| null|false|none|Read-only monitoring status. Present when monitoringConfig is set.|
-|» *anyOf*|object|false|none|none|
-|» safeRolloutId|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|true|none|User-selected monitoring mode. `auto` schedules snapshots automatically; `manual` requires clicking Update.|
-|» autoUpdate|boolean|true|none|Legacy alias for auto-update behavior. Prefer `monitoringMode` (`auto` means true, `manual` means false).|
-|» effectiveAutoUpdate|boolean|true|none|Computed runtime flag. True only when monitoring mode is auto and schedule state allows automatic snapshot scheduling.|
-|» blockedReason|string \| null|false|none|When `effectiveAutoUpdate` is false, this describes the computed reason auto-updates are currently blocked.|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» nextSnapshotAt|string(date-time) \| null|false|none|When the next automatic snapshot query will run|
-|» » *anyOf*|string(date-time)|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» currentStepMonitored|boolean|true|none|Whether the step at currentStepIndex has monitoring enabled|
-|» *anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entityType|feature|
-|status|pending|
-|status|ready|
-|status|running|
-|status|paused|
-|status|completed|
-|status|rolled-back|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
-|» srmAction|rollback|
-|» srmAction|hold|
-|» srmAction|warn|
-|» noTrafficAction|rollback|
-|» noTrafficAction|hold|
-|» noTrafficAction|warn|
-|» multipleExposureAction|rollback|
-|» multipleExposureAction|hold|
-|» multipleExposureAction|warn|
-|experimentHealthAction|rollback|
-|experimentHealthAction|hold|
-|experimentHealthAction|warn|
-|» context|ui|
-|» context|api|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
 
 ### Response Headers
 
@@ -38342,8 +38100,6 @@ Changes to guardrail or signal metric IDs take effect on the next analysis run.
 |» exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 
 #### Enumerated Values
@@ -38553,6 +38309,11 @@ Changes to guardrail or signal metric IDs take effect on the next analysis run.
   "monitoringStartDate": "1970-01-01T00:00:00Z",
   "lastRollbackAt": "1970-01-01T00:00:00Z",
   "lastRollbackReason": "string",
+  "stepFailure": {
+    "attempts": 0,
+    "lastError": "string",
+    "retryAt": "1970-01-01T00:00:00Z"
+  },
   "monitoringStatus": {
     "safeRolloutId": "string",
     "monitoringMode": "auto",
@@ -38597,147 +38358,8 @@ Changes to guardrail or signal metric IDs take effect on the next analysis run.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource updated|Inline|
+|200|OK|Resource updated|[RampSchedule](#schemarampschedule)|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
-
-<h3 id="update-ramp-monitoring-configuration-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|Unique identifier (rs_ prefix)|
-|dateCreated|string(date-time)|true|none|none|
-|dateUpdated|string(date-time)|true|none|none|
-|name|string|true|none|none|
-|entityType|string|true|none|none|
-|entityId|string|true|none|none|
-|targets|[[targets](#schematargets)]|true|none|Controlled entity references|
-|startActions|[[startActions](#schemastartactions)]|false|none|Actions that restore controlled rules to their pre-ramp state. Applied when rolling back or jumping to start, and the base every step accumulates on; the only place a plan can set hashAttribute, seed or hashVersion.|
-|steps|[[steps](#schemasteps)]|true|none|Ordered ramp steps|
-|endActions|[[endActions](#schemaendactions)]|false|none|Actions applied on top of all step patches when the ramp completes. Represents the final desired rule state.|
-|startDate|string(date-time) \| null|false|none|When the ramp fires. Absent/null means immediately on publish; set to a future datetime to delay start and keep the rule disabled until that time.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|cutoffDate|string(date-time) \| null|false|none|Rule-level kill date. When reached, the ramp is completed and the rule is disabled (enabled=false). Use for time-boxed rules that must stop serving on a fixed date regardless of ramp progress. Set to null to clear.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|requiresStartApproval|boolean|false|none|When true, the ramp holds at step -1 with its rule disabled (zero traffic) until a human approves the start via /actions/approve-step. Composes with startDate ('hold until approved, then arm for that date').|
-|startApprovedAt|string(date-time) \| null|false|none|When the current launch's start was approved. Cleared on every return to step -1 (publish, rollback), re-arming the approval gate.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|status|string|true|none|none|
-|currentStepIndex|integer|true|none|Index of current step; -1 = not yet started|
-|startedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|phaseStartedAt|string(date-time) \| null|false|none|Anchor for cumulative interval timing; resets after each approval gate is satisfied|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|pausedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextStepAt|string(date-time) \| null|true|none|When the current step's time gate elapses; null for steps with no interval (pure approval gates) and terminal states|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextProcessAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|elapsedMs|integer \| null|false|none|Milliseconds since startedAt (computed at response time, not stored)|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lockdownConfig|[lockdownConfig](#schemalockdownconfig)|false|none|none|
-|monitoringConfig|object \| null|false|none|none|
-|» *anyOf*|object|false|none|none|
-|» datasourceId|string|true|none|none|
-|» guardrailMetricIds|[string]|true|none|none|
-|» signalMetricIds|[string]|false|none|none|
-|» updateScheduleMinutes|number \| null|false|none|none|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|false|none|none|
-|» autoUpdate|boolean|false|none|none|
-|» srmAction|string|false|none|none|
-|» noTrafficAction|string|false|none|none|
-|» noTrafficGracePeriodHours|number \| null|false|none|How long to wait for traffic before applying `noTrafficAction`. Defaults to 24 hours when null or not set.|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» multipleExposureAction|string|false|none|none|
-|» exposureQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
-|» » id|string|true|none|The ID of one of the data source's assignment queries.|
-|» » identifierType|string \| null|true|none|The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
-|» exposureQueryId|string|true|none|**Deprecated.** Deprecated: use `exposureQuery`.|
-|» *anyOf*|null|false|none|none|
-|experimentHealthAction|string|false|none|none|
-|currentStepEnteredAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|stepApproval|object \| null|false|none|Approval record for the current step. Valid only while `stepApproval.stepIndex === currentStepIndex`.|
-|» *anyOf*|object|false|none|none|
-|» stepIndex|integer|true|none|Index of the step that was approved.|
-|» approvedAt|string(date-time)|true|none|When the approval was granted.|
-|» approvedBy|string|true|none|Who approved: the approver's user ID, or the API key's ID when a key approved as itself.|
-|» approvedByUser|[EventUser](#schemaeventuser)|false|none|The approver, with an API key's name.|
-|» context|string|true|none|Surface through which the approval was granted.|
-|» *anyOf*|null|false|none|none|
-|awaitingApproval|boolean|true|none|Computed at read time: whether a human approval is the gate blocking the schedule right now — either the start-approval gate (`requiresStartApproval` before step 0) or the current step's `holdConditions.requiresApproval` once its time hold (if any) has elapsed. Paused schedules report `false` (the pause is the blocking gate). For monitored steps the approve-step endpoint may still reject an approval until analysis-based gates clear.|
-|monitoringStartDate|string(date-time) \| null|false|none|When the monitored section most recently started (first monitored step entered). Used for no-traffic grace period gating.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackReason|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|monitoringStatus|object \| null|false|none|Read-only monitoring status. Present when monitoringConfig is set.|
-|» *anyOf*|object|false|none|none|
-|» safeRolloutId|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|true|none|User-selected monitoring mode. `auto` schedules snapshots automatically; `manual` requires clicking Update.|
-|» autoUpdate|boolean|true|none|Legacy alias for auto-update behavior. Prefer `monitoringMode` (`auto` means true, `manual` means false).|
-|» effectiveAutoUpdate|boolean|true|none|Computed runtime flag. True only when monitoring mode is auto and schedule state allows automatic snapshot scheduling.|
-|» blockedReason|string \| null|false|none|When `effectiveAutoUpdate` is false, this describes the computed reason auto-updates are currently blocked.|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» nextSnapshotAt|string(date-time) \| null|false|none|When the next automatic snapshot query will run|
-|» » *anyOf*|string(date-time)|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» currentStepMonitored|boolean|true|none|Whether the step at currentStepIndex has monitoring enabled|
-|» *anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entityType|feature|
-|status|pending|
-|status|ready|
-|status|running|
-|status|paused|
-|status|completed|
-|status|rolled-back|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
-|» srmAction|rollback|
-|» srmAction|hold|
-|» srmAction|warn|
-|» noTrafficAction|rollback|
-|» noTrafficAction|hold|
-|» noTrafficAction|warn|
-|» multipleExposureAction|rollback|
-|» multipleExposureAction|hold|
-|» multipleExposureAction|warn|
-|experimentHealthAction|rollback|
-|experimentHealthAction|hold|
-|experimentHealthAction|warn|
-|» context|ui|
-|» context|api|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
 
 ### Response Headers
 
@@ -38987,6 +38609,11 @@ Sets the lockdown mode. `locked` prevents other users from publishing unrelated 
   "monitoringStartDate": "1970-01-01T00:00:00Z",
   "lastRollbackAt": "1970-01-01T00:00:00Z",
   "lastRollbackReason": "string",
+  "stepFailure": {
+    "attempts": 0,
+    "lastError": "string",
+    "retryAt": "1970-01-01T00:00:00Z"
+  },
   "monitoringStatus": {
     "safeRolloutId": "string",
     "monitoringMode": "auto",
@@ -39031,147 +38658,8 @@ Sets the lockdown mode. `locked` prevents other users from publishing unrelated 
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource updated|Inline|
+|200|OK|Resource updated|[RampSchedule](#schemarampschedule)|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
-
-<h3 id="update-ramp-lockdown-configuration-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|Unique identifier (rs_ prefix)|
-|dateCreated|string(date-time)|true|none|none|
-|dateUpdated|string(date-time)|true|none|none|
-|name|string|true|none|none|
-|entityType|string|true|none|none|
-|entityId|string|true|none|none|
-|targets|[[targets](#schematargets)]|true|none|Controlled entity references|
-|startActions|[[startActions](#schemastartactions)]|false|none|Actions that restore controlled rules to their pre-ramp state. Applied when rolling back or jumping to start, and the base every step accumulates on; the only place a plan can set hashAttribute, seed or hashVersion.|
-|steps|[[steps](#schemasteps)]|true|none|Ordered ramp steps|
-|endActions|[[endActions](#schemaendactions)]|false|none|Actions applied on top of all step patches when the ramp completes. Represents the final desired rule state.|
-|startDate|string(date-time) \| null|false|none|When the ramp fires. Absent/null means immediately on publish; set to a future datetime to delay start and keep the rule disabled until that time.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|cutoffDate|string(date-time) \| null|false|none|Rule-level kill date. When reached, the ramp is completed and the rule is disabled (enabled=false). Use for time-boxed rules that must stop serving on a fixed date regardless of ramp progress. Set to null to clear.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|requiresStartApproval|boolean|false|none|When true, the ramp holds at step -1 with its rule disabled (zero traffic) until a human approves the start via /actions/approve-step. Composes with startDate ('hold until approved, then arm for that date').|
-|startApprovedAt|string(date-time) \| null|false|none|When the current launch's start was approved. Cleared on every return to step -1 (publish, rollback), re-arming the approval gate.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|status|string|true|none|none|
-|currentStepIndex|integer|true|none|Index of current step; -1 = not yet started|
-|startedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|phaseStartedAt|string(date-time) \| null|false|none|Anchor for cumulative interval timing; resets after each approval gate is satisfied|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|pausedAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextStepAt|string(date-time) \| null|true|none|When the current step's time gate elapses; null for steps with no interval (pure approval gates) and terminal states|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|nextProcessAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|elapsedMs|integer \| null|false|none|Milliseconds since startedAt (computed at response time, not stored)|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lockdownConfig|[lockdownConfig](#schemalockdownconfig)|false|none|none|
-|monitoringConfig|object \| null|false|none|none|
-|» *anyOf*|object|false|none|none|
-|» datasourceId|string|true|none|none|
-|» guardrailMetricIds|[string]|true|none|none|
-|» signalMetricIds|[string]|false|none|none|
-|» updateScheduleMinutes|number \| null|false|none|none|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|false|none|none|
-|» autoUpdate|boolean|false|none|none|
-|» srmAction|string|false|none|none|
-|» noTrafficAction|string|false|none|none|
-|» noTrafficGracePeriodHours|number \| null|false|none|How long to wait for traffic before applying `noTrafficAction`. Defaults to 24 hours when null or not set.|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» multipleExposureAction|string|false|none|none|
-|» exposureQuery|object|true|none|The assignment query, grouping its ID with the identifier type analyzed on.|
-|» » id|string|true|none|The ID of one of the data source's assignment queries.|
-|» » identifierType|string \| null|true|none|The identifier type analyzed on. Null when none can be resolved: no assignment query is selected, or a record saved before identifier types were stored points at a query that no longer exists.|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
-|» exposureQueryId|string|true|none|**Deprecated.** Deprecated: use `exposureQuery`.|
-|» *anyOf*|null|false|none|none|
-|experimentHealthAction|string|false|none|none|
-|currentStepEnteredAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|stepApproval|object \| null|false|none|Approval record for the current step. Valid only while `stepApproval.stepIndex === currentStepIndex`.|
-|» *anyOf*|object|false|none|none|
-|» stepIndex|integer|true|none|Index of the step that was approved.|
-|» approvedAt|string(date-time)|true|none|When the approval was granted.|
-|» approvedBy|string|true|none|Who approved: the approver's user ID, or the API key's ID when a key approved as itself.|
-|» approvedByUser|[EventUser](#schemaeventuser)|false|none|The approver, with an API key's name.|
-|» context|string|true|none|Surface through which the approval was granted.|
-|» *anyOf*|null|false|none|none|
-|awaitingApproval|boolean|true|none|Computed at read time: whether a human approval is the gate blocking the schedule right now — either the start-approval gate (`requiresStartApproval` before step 0) or the current step's `holdConditions.requiresApproval` once its time hold (if any) has elapsed. Paused schedules report `false` (the pause is the blocking gate). For monitored steps the approve-step endpoint may still reject an approval until analysis-based gates clear.|
-|monitoringStartDate|string(date-time) \| null|false|none|When the monitored section most recently started (first monitored step entered). Used for no-traffic grace period gating.|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackAt|string(date-time) \| null|false|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|lastRollbackReason|string \| null|false|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|monitoringStatus|object \| null|false|none|Read-only monitoring status. Present when monitoringConfig is set.|
-|» *anyOf*|object|false|none|none|
-|» safeRolloutId|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» monitoringMode|string|true|none|User-selected monitoring mode. `auto` schedules snapshots automatically; `manual` requires clicking Update.|
-|» autoUpdate|boolean|true|none|Legacy alias for auto-update behavior. Prefer `monitoringMode` (`auto` means true, `manual` means false).|
-|» effectiveAutoUpdate|boolean|true|none|Computed runtime flag. True only when monitoring mode is auto and schedule state allows automatic snapshot scheduling.|
-|» blockedReason|string \| null|false|none|When `effectiveAutoUpdate` is false, this describes the computed reason auto-updates are currently blocked.|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» nextSnapshotAt|string(date-time) \| null|false|none|When the next automatic snapshot query will run|
-|» » *anyOf*|string(date-time)|false|none|none|
-|» » *anyOf*|null|false|none|none|
-|» currentStepMonitored|boolean|true|none|Whether the step at currentStepIndex has monitoring enabled|
-|» *anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entityType|feature|
-|status|pending|
-|status|ready|
-|status|running|
-|status|paused|
-|status|completed|
-|status|rolled-back|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
-|» srmAction|rollback|
-|» srmAction|hold|
-|» srmAction|warn|
-|» noTrafficAction|rollback|
-|» noTrafficAction|hold|
-|» noTrafficAction|warn|
-|» multipleExposureAction|rollback|
-|» multipleExposureAction|hold|
-|» multipleExposureAction|warn|
-|experimentHealthAction|rollback|
-|experimentHealthAction|hold|
-|experimentHealthAction|warn|
-|» context|ui|
-|» context|api|
-|» monitoringMode|auto|
-|» monitoringMode|manual|
 
 ### Response Headers
 
@@ -39257,8 +38745,6 @@ On a schedule attached to a rule this skips the revision review flow, so when th
 |» » » minSampleSize|body|integer|false|none|
 |» » » requiresApproval|body|boolean|false|none|
 |» » approvalNotes|body|string \| null|false|Optional notes shown to approvers when the step is awaiting approval.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 
 > Example responses
 
@@ -39452,6 +38938,11 @@ On a schedule attached to a rule this skips the revision review flow, so when th
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -39747,6 +39238,11 @@ Requires the `runQueries` permission on the configured datasource (enforced via 
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -40249,6 +39745,11 @@ curl https://api.growthbook.io/api/v1/ramp-schedules/string \
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -40615,8 +40116,6 @@ variation-1 exposure).
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -40628,18 +40127,12 @@ variation-1 exposure).
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|When true, this step runs A/B traffic analysis while active. Enrolled users are split 50/50 between control and variation, so a coverage of 1.0 means 50% of users see the variation. The SDK uses hash-based filters on the experiment rule to prevent bucketing shifts when transitioning between monitored and unmonitored steps.|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -40653,8 +40146,6 @@ variation-1 exposure).
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -40666,21 +40157,13 @@ variation-1 exposure).
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashAttribute|body|string \| null|false|Attribute the rule buckets on. Required (here or on the rule) when a step sets partial coverage on a force rule, which becomes a rollout.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » seed|body|string \| null|false|Hash seed for a promoted force rule. Defaults to the rule id.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » hashVersion|body|number \| null|false|Hash algorithm version for a promoted force rule. Defaults to 2.|
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|number|false|none|
@@ -40695,8 +40178,6 @@ variation-1 exposure).
 |» » » » *anyOf*|body|number|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » condition|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » savedGroups|body|[object] \| null|false|none|
 |» » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -40708,15 +40189,11 @@ variation-1 exposure).
 |» condition|body|string|true|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » allEnvironments|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » environments|body|[string] \| null|false|none|
 |» » » » *anyOf*|body|[string]|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » force|body|object|false|Value to serve, in the string form rule values use ("false", "10", '{"limit": 5}'). A non-string JSON value is accepted and stored as its JSON text. Must be valid for the feature's value type.|
 |» » » enabled|body|boolean \| null|false|none|
-|» » » » *anyOf*|body|boolean|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» startDate|body|string(date-time) \| null|false|none|
 |» » *anyOf*|body|string(date-time)|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -40742,8 +40219,6 @@ variation-1 exposure).
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » *anyOf*|body|null|false|none|
 |» experimentHealthAction|body|string|false|none|
@@ -40972,6 +40447,11 @@ variation-1 exposure).
     "monitoringStartDate": "1970-01-01T00:00:00Z",
     "lastRollbackAt": "1970-01-01T00:00:00Z",
     "lastRollbackReason": "string",
+    "stepFailure": {
+      "attempts": 0,
+      "lastError": "string",
+      "retryAt": "1970-01-01T00:00:00Z"
+    },
     "monitoringStatus": {
       "safeRolloutId": "string",
       "monitoringMode": "auto",
@@ -41274,8 +40754,448 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Create a data source
+
+<a id="opIdpostDataSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/data-sources \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "description": "string",
+    "projectIds": [
+      "string"
+    ],
+    "connection": {
+      "type": "postgres",
+      "host": "string",
+      "port": 0,
+      "database": "string",
+      "user": "string",
+      "password": "string",
+      "defaultSchema": "string",
+      "ssl": true,
+      "caCert": "string",
+      "clientCert": "string",
+      "clientKey": "string"
+    },
+    "eventTracker": "segment",
+    "identifierTypes": [
+      {
+        "id": "string",
+        "description": "string"
+      }
+    ],
+    "assignmentQueries": [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "identifierTypes": [
+          "string"
+        ],
+        "identifierType": "string",
+        "sql": "string",
+        "includesNameColumns": true,
+        "dimensionColumns": [
+          "string"
+        ],
+        "projects": [
+          "string"
+        ],
+        "columnMapping": {
+          "experimentIdColumn": "string",
+          "variationIdColumn": "string",
+          "timestampColumn": "string",
+          "userIdColumns": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "experimentNameColumn": "string",
+          "variationNameColumn": "string"
+        }
+      }
+    ],
+    "identifierJoinQueries": [
+      {
+        "identifierTypes": [
+          "string"
+        ],
+        "sql": "string"
+      }
+    ],
+    "mixpanelSettings": {
+      "viewedExperimentEventName": "string",
+      "experimentIdProperty": "string",
+      "variationIdProperty": "string",
+      "extraUserIdProperty": "string"
+    },
+    "pipelineSettings": {
+      "allowWriting": true,
+      "mode": "ephemeral",
+      "writeDatabase": "string",
+      "writeDataset": "string",
+      "unitsTableRetentionHours": 0.1,
+      "unitsTableDeletion": true,
+      "includedExperimentIds": [
+        "string"
+      ],
+      "excludedExperimentIds": [
+        "string"
+      ],
+      "incrementalOptInExperimentIds": [
+        "string"
+      ]
+    },
+    "maxConcurrentQueries": 0,
+    "queryCacheTTLMins": 0
+  }'
+```
+
+`POST /v1/data-sources`
+
+Tests the connection and validates each assignment query against the warehouse before saving. The Managed Warehouse, Google Analytics and Event Forwarders are set up in the app.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "projectIds": [
+    "string"
+  ],
+  "connection": {
+    "type": "postgres",
+    "host": "string",
+    "port": 0,
+    "database": "string",
+    "user": "string",
+    "password": "string",
+    "defaultSchema": "string",
+    "ssl": true,
+    "caCert": "string",
+    "clientCert": "string",
+    "clientKey": "string"
+  },
+  "eventTracker": "segment",
+  "identifierTypes": [
+    {
+      "id": "string",
+      "description": "string"
+    }
+  ],
+  "assignmentQueries": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "identifierTypes": [
+        "string"
+      ],
+      "identifierType": "string",
+      "sql": "string",
+      "includesNameColumns": true,
+      "dimensionColumns": [
+        "string"
+      ],
+      "projects": [
+        "string"
+      ],
+      "columnMapping": {
+        "experimentIdColumn": "string",
+        "variationIdColumn": "string",
+        "timestampColumn": "string",
+        "userIdColumns": {
+          "property1": "string",
+          "property2": "string"
+        },
+        "experimentNameColumn": "string",
+        "variationNameColumn": "string"
+      }
+    }
+  ],
+  "identifierJoinQueries": [
+    {
+      "identifierTypes": [
+        "string"
+      ],
+      "sql": "string"
+    }
+  ],
+  "mixpanelSettings": {
+    "viewedExperimentEventName": "string",
+    "experimentIdProperty": "string",
+    "variationIdProperty": "string",
+    "extraUserIdProperty": "string"
+  },
+  "pipelineSettings": {
+    "allowWriting": true,
+    "mode": "ephemeral",
+    "writeDatabase": "string",
+    "writeDataset": "string",
+    "unitsTableRetentionHours": 0.1,
+    "unitsTableDeletion": true,
+    "includedExperimentIds": [
+      "string"
+    ],
+    "excludedExperimentIds": [
+      "string"
+    ],
+    "incrementalOptInExperimentIds": [
+      "string"
+    ]
+  },
+  "maxConcurrentQueries": 0,
+  "queryCacheTTLMins": 0
+}
+```
+
+<h3 id="create-a-data-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» name|body|string|true|none|
+|» description|body|string|false|none|
+|» projectIds|body|[string]|false|none|
+|» connection|body|[PostgresConnection](#schemapostgresconnection) \| [RedshiftConnection](#schemaredshiftconnection) \| [VerticaConnection](#schemaverticaconnection) \| [MysqlConnection](#schemamysqlconnection) \| [MssqlConnection](#schemamssqlconnection) \| [SnowflakeConnection](#schemasnowflakeconnection) \| [BigQueryConnection](#schemabigqueryconnection) \| [AthenaConnection](#schemaathenaconnection) \| [PrestoConnection](#schemaprestoconnection) \| [DatabricksConnection](#schemadatabricksconnection) \| [ClickHouseConnection](#schemaclickhouseconnection) \| [MixpanelConnection](#schemamixpanelconnection) \| [AdobeExperiencePlatformQueryServiceConnection](#schemaadobeexperienceplatformqueryserviceconnection)|true|Credentials are stored encrypted and never returned|
+|» » *oneOf*|body|[PostgresConnection](#schemapostgresconnection)|false|none|
+|» » *oneOf*|body|[RedshiftConnection](#schemaredshiftconnection)|false|none|
+|» » *oneOf*|body|[VerticaConnection](#schemaverticaconnection)|false|none|
+|» » *oneOf*|body|[MysqlConnection](#schemamysqlconnection)|false|none|
+|» » *oneOf*|body|[MssqlConnection](#schemamssqlconnection)|false|none|
+|» » *oneOf*|body|[SnowflakeConnection](#schemasnowflakeconnection)|false|none|
+|» » *oneOf*|body|[BigQueryConnection](#schemabigqueryconnection)|false|none|
+|» » *oneOf*|body|[AthenaConnection](#schemaathenaconnection)|false|none|
+|» » *oneOf*|body|[PrestoConnection](#schemaprestoconnection)|false|none|
+|» » *oneOf*|body|[DatabricksConnection](#schemadatabricksconnection)|false|none|
+|» » *oneOf*|body|[ClickHouseConnection](#schemaclickhouseconnection)|false|none|
+|» » *oneOf*|body|[MixpanelConnection](#schemamixpanelconnection)|false|none|
+|» » *oneOf*|body|[AdobeExperiencePlatformQueryServiceConnection](#schemaadobeexperienceplatformqueryserviceconnection)|false|none|
+|» eventTracker|body|string|false|`eventForwarder` is only accepted unchanged|
+|» identifierTypes|body|[object]|false|Replaces the list. An entry matching an existing id keeps its description if left out; send `""` to clear it.|
+|» » id|body|string|true|none|
+|» » description|body|string|false|none|
+|» assignmentQueries|body|[object]|false|Replaces the list. An entry with an existing `id` keeps `description`, `identifierTypes`, `includesNameColumns`, `dimensionColumns`, `projects` and `columnMapping` if left out; clear the others with `""`, `false` or `[]`. Each query is validated against the warehouse.|
+|» » id|body|string|false|Omit to create a new query|
+|» » name|body|string|true|none|
+|» » description|body|string|false|none|
+|» » identifierTypes|body|[string]|false|Required for a new query unless identifierType is set|
+|» » identifierType|body|string|false|**Deprecated.** Deprecated: use identifierTypes, which wins if both are set|
+|» » sql|body|string|true|none|
+|» » includesNameColumns|body|boolean|false|none|
+|» » dimensionColumns|body|[string]|false|none|
+|» » projects|body|[string]|false|Project IDs that can use this. An empty list means all Projects. Projects control access and availability, so don't use them as labels.|
+|» » columnMapping|body|object|false|Columns `sql` returns under a non-canonical name, by role. Replaces the stored mapping; send `{}` to clear it.|
+|» » » experimentIdColumn|body|string|false|none|
+|» » » variationIdColumn|body|string|false|none|
+|» » » timestampColumn|body|string|false|none|
+|» » » userIdColumns|body|object|false|Column for each identifier type, keyed by type|
+|» » » » **additionalProperties**|body|string|false|none|
+|» » » experimentNameColumn|body|string|false|none|
+|» » » variationNameColumn|body|string|false|none|
+|» identifierJoinQueries|body|[object]|false|Replaces the list|
+|» » identifierTypes|body|[string]|true|none|
+|» » sql|body|string|true|none|
+|» mixpanelSettings|body|object|false|none|
+|» » viewedExperimentEventName|body|string|false|none|
+|» » experimentIdProperty|body|string|false|none|
+|» » variationIdProperty|body|string|false|none|
+|» » extraUserIdProperty|body|string|false|none|
+|» pipelineSettings|body|object|false|Merged into the stored settings: fields left out keep their values, but any change must leave `allowWriting`, `mode`, `writeDataset` and `unitsTableRetentionHours` set, with a non-empty `writeDataset` when `allowWriting` is true. Send `[]` to clear `excludedExperimentIds` or `incrementalOptInExperimentIds`, and `includedExperimentIds: null` to apply the mode to every experiment again (`[]` applies it to none).|
+|» » allowWriting|body|boolean|false|Let GrowthBook write temporary tables to speed up analysis|
+|» » mode|body|string|false|none|
+|» » writeDatabase|body|string|false|none|
+|» » writeDataset|body|string|false|Schema (or dataset) to write tables to|
+|» » unitsTableRetentionHours|body|number|false|none|
+|» » unitsTableDeletion|body|boolean|false|none|
+|» » includedExperimentIds|body|[string] \| null|false|none|
+|» » » *anyOf*|body|[string]|false|none|
+|» » » *anyOf*|body|null|false|none|
+|» » excludedExperimentIds|body|[string]|false|none|
+|» » incrementalOptInExperimentIds|body|[string]|false|none|
+|» maxConcurrentQueries|body|integer|false|none|
+|» queryCacheTTLMins|body|integer|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» eventTracker|segment|
+|» eventTracker|snowplow|
+|» eventTracker|jitsu|
+|» eventTracker|freshpaint|
+|» eventTracker|ga4|
+|» eventTracker|fullstory|
+|» eventTracker|matomo|
+|» eventTracker|heap|
+|» eventTracker|rudderstack|
+|» eventTracker|amplitude|
+|» eventTracker|mparticle|
+|» eventTracker|mixpanel|
+|» eventTracker|firebase|
+|» eventTracker|keen|
+|» eventTracker|clevertap|
+|» eventTracker|langfuse|
+|» eventTracker|phoenix|
+|» eventTracker|eventForwarder|
+|» eventTracker|custom|
+|» » mode|ephemeral|
+|» » mode|incremental|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "dataSource": {
+    "id": "string",
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "type": "string",
+    "name": "string",
+    "description": "string",
+    "projectIds": [
+      "string"
+    ],
+    "eventTracker": "string",
+    "identifierTypes": [
+      {
+        "id": "string",
+        "description": "string"
+      }
+    ],
+    "assignmentQueries": [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "identifierTypes": [
+          "string"
+        ],
+        "identifierType": "string",
+        "sql": "string",
+        "includesNameColumns": true,
+        "dimensionColumns": [
+          "string"
+        ],
+        "projects": [
+          "string"
+        ],
+        "columnMapping": {
+          "experimentIdColumn": "string",
+          "variationIdColumn": "string",
+          "timestampColumn": "string",
+          "userIdColumns": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "experimentNameColumn": "string",
+          "variationNameColumn": "string"
+        },
+        "error": "string"
+      }
+    ],
+    "identifierJoinQueries": [
+      {
+        "identifierTypes": [
+          "string"
+        ],
+        "sql": "string"
+      }
+    ],
+    "mixpanelSettings": {
+      "viewedExperimentEventName": "string",
+      "experimentIdProperty": "string",
+      "variationIdProperty": "string",
+      "extraUserIdProperty": "string"
+    },
+    "pipelineSettings": {
+      "allowWriting": true,
+      "mode": "ephemeral",
+      "writeDatabase": "string",
+      "writeDataset": "string",
+      "unitsTableRetentionHours": 0.1,
+      "unitsTableDeletion": true,
+      "includedExperimentIds": [
+        "string"
+      ],
+      "excludedExperimentIds": [
+        "string"
+      ],
+      "incrementalOptInExperimentIds": [
+        "string"
+      ]
+    },
+    "maxConcurrentQueries": 0,
+    "queryCacheTTLMins": 0
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="create-a-data-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="create-a-data-source-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataSource|[DataSource](#schemadatasource)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42715,8 +42635,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43674,8 +43592,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -44712,8 +44628,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45995,8 +45909,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -48152,8 +48064,6 @@ curl https://api.growthbook.io/api/v1/fact-metrics/string/analysis \
 |» lookbackDays|body|number|false|Number of days to look back for the analysis. Defaults to 30.|
 |» populationType|body|string|false|The type of population to analyze. Defaults to 'factTable', meaning the analysis will return the metric value for all units found in the fact table.|
 |» populationId|body|string \| null|false|The ID of the population (e.g., segment ID) when populationType is not 'factTable'. Defaults to null.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
 |» additionalNumeratorFilters|body|[string]|false|We support passing in adhoc filters for an analysis that don't live on the metric itself. These are in addition to the metric's filters. To use this, you can pass in an array of Fact Table Filter Ids.|
 |» additionalDenominatorFilters|body|[string]|false|We support passing in adhoc filters for an analysis that don't live on the metric itself. These are in addition to the metric's filters. To use this, you can pass in an array of Fact Table Filter Ids.|
 |» useCache|body|boolean|false|Whether to use a cached query if one exists. Defaults to true.|
@@ -48227,7 +48137,7 @@ curl https://api.growthbook.io/api/v1/metrics \
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
 |projectId|query|string|false|Filter by project id|
 |datasourceId|query|string|false|Filter by Data Source|
-|includeArchived|query|string \| boolean|false|Whether to include archived metrics. Defaults to `true`. Pass `false` to return only non-archived metrics.|
+|includeArchived|query|boolean|false|Whether to include archived metrics. Defaults to `true`. Pass `false` to return only non-archived metrics.|
 
 > Example responses
 
@@ -48354,8 +48264,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -49245,6 +49153,95 @@ curl https://api.growthbook.io/api/v1/metrics/string \
 
 ```json
 {
+  "metric": {
+    "id": "string",
+    "managedBy": "",
+    "dateCreated": "string",
+    "dateUpdated": "string",
+    "owner": "string",
+    "ownerEmail": "string",
+    "datasourceId": "string",
+    "name": "string",
+    "description": "string",
+    "type": "binomial",
+    "tags": [
+      "string"
+    ],
+    "projects": [
+      "string"
+    ],
+    "archived": true,
+    "behavior": {
+      "goal": "increase",
+      "cappingSettings": {
+        "type": "none",
+        "value": 0,
+        "ignoreZeros": true
+      },
+      "cap": 0,
+      "capping": "absolute",
+      "capValue": 0,
+      "windowSettings": {
+        "type": "none",
+        "delayValue": 0,
+        "delayUnit": "minutes",
+        "windowValue": 0,
+        "windowUnit": "minutes"
+      },
+      "priorSettings": {
+        "override": true,
+        "proper": true,
+        "mean": 0,
+        "stddev": 0.1
+      },
+      "conversionWindowStart": 0,
+      "conversionWindowEnd": 0,
+      "riskThresholdSuccess": 0,
+      "riskThresholdDanger": 0,
+      "minPercentChange": 0,
+      "maxPercentChange": 0,
+      "minSampleSize": 0,
+      "targetMDE": 0
+    },
+    "sql": {
+      "identifierTypes": [
+        "string"
+      ],
+      "conversionSQL": "string",
+      "userAggregationSQL": "string",
+      "denominatorMetricId": "string"
+    },
+    "sqlBuilder": {
+      "identifierTypeColumns": [
+        {
+          "identifierType": "string",
+          "columnName": "string"
+        }
+      ],
+      "tableName": "string",
+      "valueColumnName": "string",
+      "timestampColumnName": "string",
+      "conditions": [
+        {
+          "column": "string",
+          "operator": "string",
+          "value": "string"
+        }
+      ]
+    },
+    "mixpanel": {
+      "eventName": "string",
+      "eventValue": "string",
+      "userAggregation": "string",
+      "conditions": [
+        {
+          "property": "string",
+          "operator": "string",
+          "value": "string"
+        }
+      ]
+    }
+  },
   "updatedId": "string"
 }
 ```
@@ -49290,7 +49287,8 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|updatedId|string|true|none|none|
+|metric|[Metric](#schemametric)|true|none|none|
+|updatedId|string|true|none|**Deprecated.** Deprecated: use `metric.id`.|
 
 ### Response Headers
 
@@ -49420,16 +49418,9 @@ Returns, for each experiment that uses the given metric (directly or via a metri
 |result|query|string|false|Filter by comma-separated results (won, lost, inconclusive, dnf)|
 |tag|query|string|false|Filter by comma-separated tags|
 |type|query|string|false|Filter by comma-separated experiment types (feature, visualChange, redirect)|
-|bandits|query|string|false|When true, return only multi-armed bandits; when false, exclude them|
+|bandits|query|boolean|false|When true, return only multi-armed bandits; when false, exclude them|
 |startDate|query|string|false|Only include experiments that have a phase which ended on or after this date|
 |endDate|query|string|false|Only include experiments that have a phase which ended on or before this date|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|bandits|true|
-|bandits|false|
 
 > Example responses
 
@@ -49492,8 +49483,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -49535,8 +49524,8 @@ curl https://api.growthbook.io/api/v1/experiments \
 |tag|query|string|false|Filter by comma-separated tags|
 |implementationType|query|[string]|false|Filter by comma-separated implementation types (feature, visualChange, redirect) — the kinds of changes linked to the experiment. To filter standard experiments vs bandits, use `bandits` instead|
 |metricId|query|string|false|Filter by comma-separated metric ids. Matches experiments that use a metric as a goal, secondary, or guardrail metric|
-|bandits|query|string|false|When true, return only multi-armed bandits; when false, exclude them|
-|archived|query|string \| boolean|false|Filter by archived status. Set to `true` to return only archived experiments, `false` to exclude them. If omitted, both archived and non-archived experiments are returned.|
+|bandits|query|boolean|false|When true, return only multi-armed bandits; when false, exclude them|
+|archived|query|boolean|false|Filter by archived status. Set to `true` to return only archived experiments, `false` to exclude them. If omitted, both archived and non-archived experiments are returned.|
 |sortBy|query|string|false|Field to sort the results by|
 |sortOrder|query|string|false|Sort direction (used with `sortBy`)|
 
@@ -49554,8 +49543,6 @@ curl https://api.growthbook.io/api/v1/experiments \
 |implementationType|feature|
 |implementationType|visualChange|
 |implementationType|redirect|
-|bandits|true|
-|bandits|false|
 |sortBy|dateCreated|
 |sortBy|dateUpdated|
 |sortBy|name|
@@ -49862,8 +49849,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -50334,8 +50319,6 @@ Keep `name` short; put reasoning in `hypothesis` and context in `description`. `
 |» assignmentQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `assignmentQueryId`. Can only be set if a templateId is not provided.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead. Can only be set if a templateId is not provided.|
 |» isClusterExperiment|body|boolean|false|Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.|
 |» clusterSubUnitIdentifier|body|string|false|The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.|
@@ -50454,8 +50437,8 @@ Keep `name` short; put reasoning in `hypothesis` and context in `description`. `
 |» » slices|body|[object]|true|none|
 |» » » column|body|string|true|none|
 |» » » levels|body|[string]|true|none|
-|» precomputedUnitDimensionIds|body|[string]|false|none|
-|» statusUpdateSchedule|body|object|false|none|
+|» precomputedUnitDimensionIds|body|[string]|false|A list of unit dimension ids that will be calculated every update and generate timeseries data. Requires the datasource to have pipeline mode enabled.|
+|» statusUpdateSchedule|body|object|false|Scheduled start/end for an experiment. All fields optional; the end may be an absolute `stopAt` or a deferred relative `stopAfter`, but not both.|
 |» » startAt|body|string(date-time)|false|ISO datetime when the experiment should start. Must be in the future. Setting or clearing this field invalidates any existing staged start (`nextScheduledStatusUpdate`); call POST /experiments/{id}/start to stage the new schedule.|
 |» » stopAt|body|string(date-time)|false|ISO datetime when the experiment should stop. Resolved from `stopAfter` at start when a relative end was set.|
 |» » stopAfter|body|object|false|Relative end offset. Deferred: resolved to a concrete `stopAt` at the experiment's actual start (or off `dateStarted` when already running).|
@@ -51156,8 +51139,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -51970,8 +51951,6 @@ Setting `status` from draft to running starts the experiment as `POST /experimen
 |» assignmentQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `assignmentQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead.|
 |» isClusterExperiment|body|boolean|false|Run as a cluster-randomized experiment: randomize on the assignment query's identifier type (the cluster, e.g. region_id) while analyzing a nested sub-unit (clusterSubUnitIdentifier, e.g. user_id). The assignment query must declare both identifier types.|
 |» clusterSubUnitIdentifier|body|string|false|The nested sub-unit identifier type analyzed within each cluster (e.g. user_id). Required when isClusterExperiment is true; must be declared by the assignment query and differ from its cluster identifier type.|
@@ -52103,7 +52082,7 @@ Setting `status` from draft to running starts the experiment as `POST /experimen
 |» » » unit|body|string|true|none|
 |» » scheduledStopPlan|body|[ScheduledStopPlan](#schemascheduledstopplan)|false|End-of-experiment automation applied at the scheduled end. Required whenever a `stopAt` or `stopAfter` is set (any mode, including `notify`).|
 |» » *anyOf*|body|null|false|none|
-|» precomputedUnitDimensionIds|body|[string]|false|none|
+|» precomputedUnitDimensionIds|body|[string]|false|A list of unit dimension ids that will be calculated every update and generate timeseries data. Requires the datasource to have pipeline mode enabled.|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipChecklist|body|boolean|false|When `status` starts a draft: start past its incomplete launch checklist items, as `POST /experiments/{id}/start` does. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
@@ -53725,26 +53704,17 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/experiments/string/unarchive \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/experiments/{id}/unarchive`
-
-> Body parameter
-
-```json
-{}
-```
 
 <h3 id="unarchive-an-experiment-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|The id of the requested resource|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -56626,8 +56596,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -57101,8 +57069,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -57353,8 +57319,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -57888,8 +57852,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -58788,8 +58750,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -58964,10 +58924,10 @@ curl https://api.growthbook.io/api/v1/reports \
 |» differenceType|body|string|false|How lifts are expressed in results. Defaults to experiment setting.|
 |» attributionModel|body|string|false|Metric conversion window attribution model. Defaults to experiment setting.|
 |» lookbackOverride|body|object|false|Lookback window when `attributionModel` is `lookbackOverride`|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » value|body|object|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » value|body|number|true|none|
 |» » valueUnit|body|string|true|none|
@@ -60864,10 +60824,10 @@ Updates the analysis settings for an existing report. Changes are staged and do 
 |» sequentialTestingTuningParameter|body|number|false|Tuning parameter for sequential testing (frequentist only)|
 |» attributionModel|body|string|false|Metric conversion window attribution model|
 |» lookbackOverride|body|object|false|Lookback window when `attributionModel` is `lookbackOverride`|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » value|body|object|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » value|body|number|true|none|
 |» » valueUnit|body|string|true|none|
@@ -61334,6 +61294,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
 |projectId|query|string|false|Filter by project id|
 |withProxy|query|string|false|none|
 |multiOrg|query|string|false|none|
+|archived|query|boolean|false|Whether to include archived SDK Connections. Defaults to `false` (non-archived only). Pass `true` to include archived SDK Connections alongside non-archived ones.|
 
 > Example responses
 
@@ -61372,6 +61333,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
       ],
       "includeTagsInMetadata": true,
       "includeExperimentScheduleInMetadata": true,
+      "tracesEnabled": true,
       "key": "string",
       "proxyEnabled": true,
       "proxyHost": "string",
@@ -61381,7 +61343,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
       "remoteEvalEnabled": true,
       "savedGroupReferencesEnabled": true,
       "savedGroupFormat": "inline",
-      "includeReferencedPrerequisites": true
+      "includeReferencedPrerequisites": true,
+      "archived": true
     }
   ],
   "limit": 0,
@@ -61412,8 +61375,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -61454,13 +61415,16 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "proxyEnabled": true,
     "proxyHost": "string",
     "hashSecureAttributes": true,
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
+    "includeReferencedPrerequisites": true,
+    "ignoreWarnings": true,
+    "skipHooks": true
   }'
 ```
 
@@ -61491,13 +61455,16 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
   ],
   "includeTagsInMetadata": true,
   "includeExperimentScheduleInMetadata": true,
+  "tracesEnabled": true,
   "proxyEnabled": true,
   "proxyHost": "string",
   "hashSecureAttributes": true,
   "remoteEvalEnabled": true,
   "savedGroupReferencesEnabled": true,
   "savedGroupFormat": "inline",
-  "includeReferencedPrerequisites": true
+  "includeReferencedPrerequisites": true,
+  "ignoreWarnings": true,
+  "skipHooks": true
 }
 ```
 
@@ -61523,6 +61490,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
 |» allowedCustomFieldsInMetadata|body|[string]|false|none|
 |» includeTagsInMetadata|body|boolean|false|none|
 |» includeExperimentScheduleInMetadata|body|boolean|false|none|
+|» tracesEnabled|body|boolean|false|Send SDK evaluation traces to GrowthBook. Only available to organizations with tracing enabled.|
 |» proxyEnabled|body|boolean|false|none|
 |» proxyHost|body|string|false|none|
 |» hashSecureAttributes|body|boolean|false|none|
@@ -61530,6 +61498,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
 |» savedGroupReferencesEnabled|body|boolean|false|Deprecated. Use `savedGroupFormat`.|
 |» savedGroupFormat|body|string|false|none|
 |» includeReferencedPrerequisites|body|boolean|false|Carry prerequisite Feature Flags into this payload even when they target other Projects. Defaults to true for new connections.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
 #### Enumerated Values
 
@@ -61575,6 +61545,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "key": "string",
     "proxyEnabled": true,
     "proxyHost": "string",
@@ -61584,7 +61555,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections \
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
+    "includeReferencedPrerequisites": true,
+    "archived": true
   }
 }
 ```
@@ -61700,6 +61672,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "key": "string",
     "proxyEnabled": true,
     "proxyHost": "string",
@@ -61709,7 +61682,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
+    "includeReferencedPrerequisites": true,
+    "archived": true
   }
 }
 ```
@@ -61767,17 +61741,24 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "proxyEnabled": true,
     "proxyHost": "string",
     "hashSecureAttributes": true,
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
+    "includeReferencedPrerequisites": true,
+    "archived": true,
+    "bypassApproval": true,
+    "ignoreWarnings": true,
+    "skipHooks": true
   }'
 ```
 
 `PUT /v1/sdk-connections/{id}`
+
+Applies the change immediately and records it as a published revision, so it appears in the connection's history. When the organization requires approvals for this connection's Projects and environment, stage the change in a draft revision instead (`PUT /sdk-connections-revisions/{id}/new/settings`), or pass `bypassApproval`. Set `archived` to archive or restore the connection.
 
 > Body parameter
 
@@ -61804,13 +61785,18 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
   ],
   "includeTagsInMetadata": true,
   "includeExperimentScheduleInMetadata": true,
+  "tracesEnabled": true,
   "proxyEnabled": true,
   "proxyHost": "string",
   "hashSecureAttributes": true,
   "remoteEvalEnabled": true,
   "savedGroupReferencesEnabled": true,
   "savedGroupFormat": "inline",
-  "includeReferencedPrerequisites": true
+  "includeReferencedPrerequisites": true,
+  "archived": true,
+  "bypassApproval": true,
+  "ignoreWarnings": true,
+  "skipHooks": true
 }
 ```
 
@@ -61837,6 +61823,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
 |» allowedCustomFieldsInMetadata|body|[string]|false|none|
 |» includeTagsInMetadata|body|boolean|false|none|
 |» includeExperimentScheduleInMetadata|body|boolean|false|none|
+|» tracesEnabled|body|boolean|false|Send SDK evaluation traces to GrowthBook. Only available to organizations with tracing enabled.|
 |» proxyEnabled|body|boolean|false|none|
 |» proxyHost|body|string|false|none|
 |» hashSecureAttributes|body|boolean|false|none|
@@ -61844,6 +61831,10 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
 |» savedGroupReferencesEnabled|body|boolean|false|Deprecated. Use `savedGroupFormat`.|
 |» savedGroupFormat|body|string|false|none|
 |» includeReferencedPrerequisites|body|boolean|false|Carry prerequisite Feature Flags into this payload even when they target other Projects. Defaults to true for new connections.|
+|» archived|body|boolean|false|Archive (true) or restore (false) the connection. Archiving takes the same authority as deleting it; restoring takes publish authority.|
+|» bypassApproval|body|boolean|false|Set to true to write directly to the live SDK Connection without approval. The caller must have Bypass draft approvals access in the SDK Connection's Projects, unless the organization enables the REST API approval bypass. This field has no effect when approval is not required.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
 #### Enumerated Values
 
@@ -61889,6 +61880,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "key": "string",
     "proxyEnabled": true,
     "proxyHost": "string",
@@ -61898,8 +61890,16 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
-  }
+    "includeReferencedPrerequisites": true,
+    "archived": true
+  },
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ]
 }
 ```
 
@@ -61945,6 +61945,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |sdkConnection|[SdkConnection](#schemasdkconnection)|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
 
 ### Response Headers
 
@@ -61972,6 +61973,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string \
 ```
 
 `DELETE /v1/sdk-connections/{id}`
+
+Deletes an archived SDK Connection. Archive a live one first (`PUT /sdk-connections/{id}` with `archived: true`, or in a draft revision when the organization requires approvals for it), then delete it. A live connection deletes in one step only when the organization enables 'REST API always bypasses approval requirements'.
 
 <h3 id="deletes-a-single-sdk-connection-parameters">Parameters</h3>
 
@@ -62100,6 +62103,7 @@ curl https://api.growthbook.io/api/v1/sdk-connections/lookup/string \
     ],
     "includeTagsInMetadata": true,
     "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
     "key": "string",
     "proxyEnabled": true,
     "proxyHost": "string",
@@ -62109,7 +62113,8 @@ curl https://api.growthbook.io/api/v1/sdk-connections/lookup/string \
     "remoteEvalEnabled": true,
     "savedGroupReferencesEnabled": true,
     "savedGroupFormat": "inline",
-    "includeReferencedPrerequisites": true
+    "includeReferencedPrerequisites": true,
+    "archived": true
   }
 }
 ```
@@ -62127,6 +62132,6701 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |sdkConnection|[SdkConnection](#schemasdkconnection)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+<h1 id="growthbook-rest-api-sdk-connection-revisions">sdk-connection-revisions</h1>
+
+Draft revisions for SDK Connections: staged changes to a connection's settings and webhooks, their review, and their lifecycle (publish, discard, rebase).
+
+Pass `version: "new"` on the edit endpoints to create the draft. Use these when the organization requires approvals for a connection, or to group several changes into one publish.
+
+## List SDK Connection revisions across the organization
+
+<a id="opIdlistSdkConnectionRevisions"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections-revisions`
+
+Returns revisions across every SDK Connection the caller can read, newest first. Use `status=open` to find the drafts waiting on a review or a publish.
+
+<h3 id="list-sdk-connection-revisions-across-the-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|The number of items to return|
+|offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
+|author|query|string|false|none|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|sdkConnectionId|query|string|false|Restrict results to revisions of a single SDK Connection.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revisions": [
+    {
+      "id": "string",
+      "version": 0,
+      "title": "string",
+      "status": "draft",
+      "authorId": "string",
+      "author": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "contributors": [
+        "string"
+      ],
+      "revertedFrom": "string",
+      "reviews": [
+        {
+          "id": "string",
+          "userId": "string",
+          "decision": "approve",
+          "comment": "string",
+          "stale": true,
+          "dateCreated": "1970-01-01T00:00:00Z",
+          "user": {
+            "type": "dashboard",
+            "id": "string",
+            "apiKey": "string",
+            "name": "string",
+            "email": "string",
+            "requestedBy": {
+              "id": "string",
+              "name": "string",
+              "email": "string"
+            },
+            "assumedRole": true
+          }
+        }
+      ],
+      "activityLog": [
+        {
+          "id": "string",
+          "userId": "string",
+          "action": "created",
+          "description": "string",
+          "proposedChangesSnapshot": [
+            {
+              "op": "add",
+              "path": "string",
+              "value": null
+            }
+          ],
+          "targetSnapshot": null,
+          "dateCreated": "1970-01-01T00:00:00Z",
+          "user": {
+            "type": "dashboard",
+            "id": "string",
+            "apiKey": "string",
+            "name": "string",
+            "email": "string",
+            "requestedBy": {
+              "id": "string",
+              "name": "string",
+              "email": "string"
+            },
+            "assumedRole": true
+          }
+        }
+      ],
+      "autoPublishOnApproval": true,
+      "autoPublishEnabledBy": "string",
+      "autoPublishEnabledByUser": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "scheduledPublishAt": "1970-01-01T00:00:00Z",
+      "scheduledPublishLockEdits": true,
+      "scheduledPublishLockOthers": true,
+      "scheduledPublishBypassApproval": true,
+      "scheduledPublishAttempts": 0,
+      "scheduledPublishLastError": "string",
+      "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+      "resolution": {
+        "action": "merged",
+        "userId": "string",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        },
+        "dateCreated": "1970-01-01T00:00:00Z"
+      },
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z",
+      "baseSdkConnection": {
+        "id": "string",
+        "name": "string",
+        "eventTracker": "string",
+        "languages": [
+          "string"
+        ],
+        "sdkVersion": "string",
+        "environment": "string",
+        "projects": [
+          "string"
+        ],
+        "encryptPayload": true,
+        "hashSecureAttributes": true,
+        "includeVisualExperiments": true,
+        "includeDraftExperiments": true,
+        "includeDraftExperimentRefs": true,
+        "includeExperimentNames": true,
+        "includeRedirectExperiments": true,
+        "includeRuleIds": true,
+        "includeProjectIdInMetadata": true,
+        "includeCustomFieldsInMetadata": true,
+        "allowedCustomFieldsInMetadata": [
+          "string"
+        ],
+        "includeTagsInMetadata": true,
+        "includeExperimentScheduleInMetadata": true,
+        "remoteEvalEnabled": true,
+        "tracesEnabled": true,
+        "savedGroupReferencesEnabled": true,
+        "savedGroupFormat": "inline",
+        "includeReferencedPrerequisites": true,
+        "proxyEnabled": true,
+        "proxyHost": "string",
+        "archived": true
+      },
+      "proposedSdkConnection": {
+        "id": "string",
+        "name": "string",
+        "eventTracker": "string",
+        "languages": [
+          "string"
+        ],
+        "sdkVersion": "string",
+        "environment": "string",
+        "projects": [
+          "string"
+        ],
+        "encryptPayload": true,
+        "hashSecureAttributes": true,
+        "includeVisualExperiments": true,
+        "includeDraftExperiments": true,
+        "includeDraftExperimentRefs": true,
+        "includeExperimentNames": true,
+        "includeRedirectExperiments": true,
+        "includeRuleIds": true,
+        "includeProjectIdInMetadata": true,
+        "includeCustomFieldsInMetadata": true,
+        "allowedCustomFieldsInMetadata": [
+          "string"
+        ],
+        "includeTagsInMetadata": true,
+        "includeExperimentScheduleInMetadata": true,
+        "remoteEvalEnabled": true,
+        "tracesEnabled": true,
+        "savedGroupReferencesEnabled": true,
+        "savedGroupFormat": "inline",
+        "includeReferencedPrerequisites": true,
+        "proxyEnabled": true,
+        "proxyHost": "string",
+        "archived": true
+      },
+      "baseSdkWebhooks": [
+        {
+          "id": "string",
+          "name": "string",
+          "endpoint": "string",
+          "httpMethod": "GET",
+          "headers": "string",
+          "payloadFormat": "standard",
+          "payloadKey": "string",
+          "timeoutSeconds": 1
+        }
+      ],
+      "proposedSdkWebhooks": [
+        {
+          "id": "string",
+          "name": "string",
+          "endpoint": "string",
+          "httpMethod": "GET",
+          "headers": "string",
+          "payloadFormat": "standard",
+          "payloadKey": "string",
+          "timeoutSeconds": 1
+        }
+      ],
+      "proposedChanges": [
+        {
+          "op": "add",
+          "path": "string",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "total": 0,
+  "hasMore": true,
+  "nextOffset": 0
+}
+```
+
+<h3 id="list-sdk-connection-revisions-across-the-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="list-sdk-connection-revisions-across-the-organization-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revisions|[[SdkConnectionRevision](#schemasdkconnectionrevision)]|true|none|none|
+|limit|integer|true|none|none|
+|offset|integer|true|none|none|
+|count|integer|true|none|none|
+|total|integer|true|none|none|
+|hasMore|boolean|true|none|none|
+|nextOffset|integer \| null|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## List revisions for an SDK Connection
+
+<a id="opIdgetSdkConnectionRevisions"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections-revisions/{id}`
+
+Returns this SDK Connection's revisions, newest first: its drafts and its published history.
+
+<h3 id="list-revisions-for-an-sdk-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|limit|query|integer|false|The number of items to return|
+|offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
+|author|query|string|false|none|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revisions": [
+    {
+      "id": "string",
+      "version": 0,
+      "title": "string",
+      "status": "draft",
+      "authorId": "string",
+      "author": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "contributors": [
+        "string"
+      ],
+      "revertedFrom": "string",
+      "reviews": [
+        {
+          "id": "string",
+          "userId": "string",
+          "decision": "approve",
+          "comment": "string",
+          "stale": true,
+          "dateCreated": "1970-01-01T00:00:00Z",
+          "user": {
+            "type": "dashboard",
+            "id": "string",
+            "apiKey": "string",
+            "name": "string",
+            "email": "string",
+            "requestedBy": {
+              "id": "string",
+              "name": "string",
+              "email": "string"
+            },
+            "assumedRole": true
+          }
+        }
+      ],
+      "activityLog": [
+        {
+          "id": "string",
+          "userId": "string",
+          "action": "created",
+          "description": "string",
+          "proposedChangesSnapshot": [
+            {
+              "op": "add",
+              "path": "string",
+              "value": null
+            }
+          ],
+          "targetSnapshot": null,
+          "dateCreated": "1970-01-01T00:00:00Z",
+          "user": {
+            "type": "dashboard",
+            "id": "string",
+            "apiKey": "string",
+            "name": "string",
+            "email": "string",
+            "requestedBy": {
+              "id": "string",
+              "name": "string",
+              "email": "string"
+            },
+            "assumedRole": true
+          }
+        }
+      ],
+      "autoPublishOnApproval": true,
+      "autoPublishEnabledBy": "string",
+      "autoPublishEnabledByUser": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "scheduledPublishAt": "1970-01-01T00:00:00Z",
+      "scheduledPublishLockEdits": true,
+      "scheduledPublishLockOthers": true,
+      "scheduledPublishBypassApproval": true,
+      "scheduledPublishAttempts": 0,
+      "scheduledPublishLastError": "string",
+      "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+      "resolution": {
+        "action": "merged",
+        "userId": "string",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        },
+        "dateCreated": "1970-01-01T00:00:00Z"
+      },
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "dateUpdated": "1970-01-01T00:00:00Z",
+      "baseSdkConnection": {
+        "id": "string",
+        "name": "string",
+        "eventTracker": "string",
+        "languages": [
+          "string"
+        ],
+        "sdkVersion": "string",
+        "environment": "string",
+        "projects": [
+          "string"
+        ],
+        "encryptPayload": true,
+        "hashSecureAttributes": true,
+        "includeVisualExperiments": true,
+        "includeDraftExperiments": true,
+        "includeDraftExperimentRefs": true,
+        "includeExperimentNames": true,
+        "includeRedirectExperiments": true,
+        "includeRuleIds": true,
+        "includeProjectIdInMetadata": true,
+        "includeCustomFieldsInMetadata": true,
+        "allowedCustomFieldsInMetadata": [
+          "string"
+        ],
+        "includeTagsInMetadata": true,
+        "includeExperimentScheduleInMetadata": true,
+        "remoteEvalEnabled": true,
+        "tracesEnabled": true,
+        "savedGroupReferencesEnabled": true,
+        "savedGroupFormat": "inline",
+        "includeReferencedPrerequisites": true,
+        "proxyEnabled": true,
+        "proxyHost": "string",
+        "archived": true
+      },
+      "proposedSdkConnection": {
+        "id": "string",
+        "name": "string",
+        "eventTracker": "string",
+        "languages": [
+          "string"
+        ],
+        "sdkVersion": "string",
+        "environment": "string",
+        "projects": [
+          "string"
+        ],
+        "encryptPayload": true,
+        "hashSecureAttributes": true,
+        "includeVisualExperiments": true,
+        "includeDraftExperiments": true,
+        "includeDraftExperimentRefs": true,
+        "includeExperimentNames": true,
+        "includeRedirectExperiments": true,
+        "includeRuleIds": true,
+        "includeProjectIdInMetadata": true,
+        "includeCustomFieldsInMetadata": true,
+        "allowedCustomFieldsInMetadata": [
+          "string"
+        ],
+        "includeTagsInMetadata": true,
+        "includeExperimentScheduleInMetadata": true,
+        "remoteEvalEnabled": true,
+        "tracesEnabled": true,
+        "savedGroupReferencesEnabled": true,
+        "savedGroupFormat": "inline",
+        "includeReferencedPrerequisites": true,
+        "proxyEnabled": true,
+        "proxyHost": "string",
+        "archived": true
+      },
+      "baseSdkWebhooks": [
+        {
+          "id": "string",
+          "name": "string",
+          "endpoint": "string",
+          "httpMethod": "GET",
+          "headers": "string",
+          "payloadFormat": "standard",
+          "payloadKey": "string",
+          "timeoutSeconds": 1
+        }
+      ],
+      "proposedSdkWebhooks": [
+        {
+          "id": "string",
+          "name": "string",
+          "endpoint": "string",
+          "httpMethod": "GET",
+          "headers": "string",
+          "payloadFormat": "standard",
+          "payloadKey": "string",
+          "timeoutSeconds": 1
+        }
+      ],
+      "proposedChanges": [
+        {
+          "op": "add",
+          "path": "string",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "total": 0,
+  "hasMore": true,
+  "nextOffset": 0
+}
+```
+
+<h3 id="list-revisions-for-an-sdk-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="list-revisions-for-an-sdk-connection-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revisions|[[SdkConnectionRevision](#schemasdkconnectionrevision)]|true|none|none|
+|limit|integer|true|none|none|
+|offset|integer|true|none|none|
+|count|integer|true|none|none|
+|total|integer|true|none|none|
+|hasMore|boolean|true|none|none|
+|nextOffset|integer \| null|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Create a draft revision
+
+<a id="opIdpostSdkConnectionRevision"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "title": "string",
+    "comment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}`
+
+Creates an empty draft from the live SDK Connection. The edit endpoints also create one when called with `version: "new"`.
+
+> Body parameter
+
+```json
+{
+  "title": "string",
+  "comment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
+
+<h3 id="create-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|body|body|object|true|none|
+|» title|body|string|false|Short draft title (e.g. `Enable for beta testers`).|
+|» comment|body|string|false|Markdown. What changed and why, for reviewers.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="create-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="create-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get the most recent active draft revision
+
+<a id="opIdgetSdkConnectionRevisionLatest"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/latest \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections-revisions/{id}/latest`
+
+Returns the most recently updated open (non-merged, non-discarded) revision. Returns 404 if there is none. Pass `mine=true` to restrict to drafts authored by the calling user.
+
+<h3 id="get-the-most-recent-active-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+<h3 id="get-the-most-recent-active-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-the-most-recent-active-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get a single SDK Connection revision
+
+<a id="opIdgetSdkConnectionRevision"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections-revisions/{id}/{version}`
+
+Returns one revision: the settings and webhooks it started from, the ones it proposes, its reviews, and its activity.
+
+<h3 id="get-a-single-sdk-connection-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+<h3 id="get-a-single-sdk-connection-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-a-single-sdk-connection-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Get merge status for a draft revision
+
+<a id="opIdgetSdkConnectionRevisionMergeStatus"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/merge-status \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/sdk-connections-revisions/{id}/{version}/merge-status`
+
+Dry-runs a merge of the draft into the live SDK Connection and returns any conflicts. A draft whose base is out of date can be brought up to date with `rebase`.
+
+<h3 id="get-merge-status-for-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "success": true,
+  "hasConflicts": true,
+  "conflicts": [
+    {
+      "field": "string",
+      "baseValue": null,
+      "liveValue": null,
+      "proposedValue": null
+    }
+  ],
+  "canAutoMerge": true
+}
+```
+
+<h3 id="get-merge-status-for-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="get-merge-status-for-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|true|none|none|
+|hasConflicts|boolean|true|none|none|
+|conflicts|[object]|true|none|none|
+|» field|string|true|none|none|
+|» baseValue|object|false|none|none|
+|» liveValue|object|false|none|none|
+|» proposedValue|object|false|none|none|
+|canAutoMerge|boolean|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update SDK Connection settings in a draft revision
+
+<a id="opIdputSdkConnectionRevisionSettings"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/settings \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "language": "string",
+    "sdkVersion": "string",
+    "environment": "string",
+    "projects": [
+      "string"
+    ],
+    "encryptPayload": true,
+    "includeVisualExperiments": true,
+    "includeDraftExperiments": true,
+    "includeDraftExperimentRefs": true,
+    "includeExperimentNames": true,
+    "includeRedirectExperiments": true,
+    "includeRuleIds": true,
+    "includeProjectIdInMetadata": true,
+    "includeCustomFieldsInMetadata": true,
+    "allowedCustomFieldsInMetadata": [
+      "string"
+    ],
+    "includeTagsInMetadata": true,
+    "includeExperimentScheduleInMetadata": true,
+    "tracesEnabled": true,
+    "proxyEnabled": true,
+    "proxyHost": "string",
+    "hashSecureAttributes": true,
+    "remoteEvalEnabled": true,
+    "savedGroupReferencesEnabled": true,
+    "savedGroupFormat": "inline",
+    "includeReferencedPrerequisites": true,
+    "ignoreWarnings": true,
+    "skipHooks": true,
+    "revisionTitle": "string",
+    "revisionComment": "string"
+  }'
+```
+
+`PUT /v1/sdk-connections-revisions/{id}/{version}/settings`
+
+Stages settings changes on the draft. Takes the same fields as `PUT /sdk-connections/{id}`, and only the fields sent are changed. Pass `version: "new"` to create the draft. Nothing changes on the live SDK Connection until the revision is published.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "language": "string",
+  "sdkVersion": "string",
+  "environment": "string",
+  "projects": [
+    "string"
+  ],
+  "encryptPayload": true,
+  "includeVisualExperiments": true,
+  "includeDraftExperiments": true,
+  "includeDraftExperimentRefs": true,
+  "includeExperimentNames": true,
+  "includeRedirectExperiments": true,
+  "includeRuleIds": true,
+  "includeProjectIdInMetadata": true,
+  "includeCustomFieldsInMetadata": true,
+  "allowedCustomFieldsInMetadata": [
+    "string"
+  ],
+  "includeTagsInMetadata": true,
+  "includeExperimentScheduleInMetadata": true,
+  "tracesEnabled": true,
+  "proxyEnabled": true,
+  "proxyHost": "string",
+  "hashSecureAttributes": true,
+  "remoteEvalEnabled": true,
+  "savedGroupReferencesEnabled": true,
+  "savedGroupFormat": "inline",
+  "includeReferencedPrerequisites": true,
+  "ignoreWarnings": true,
+  "skipHooks": true,
+  "revisionTitle": "string",
+  "revisionComment": "string"
+}
+```
+
+<h3 id="update-sdk-connection-settings-in-a-draft-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer \| string|true|none|
+|body|body|object|true|none|
+|» name|body|string|false|Short display name, usually app and platform (e.g. `Web app`).|
+|» language|body|string|false|none|
+|» sdkVersion|body|string|false|none|
+|» environment|body|string|false|none|
+|» projects|body|[string]|false|none|
+|» encryptPayload|body|boolean|false|none|
+|» includeVisualExperiments|body|boolean|false|none|
+|» includeDraftExperiments|body|boolean|false|none|
+|» includeDraftExperimentRefs|body|boolean|false|When true, experiment-ref rules linked to draft experiments are included in feature definitions. Off by default.|
+|» includeExperimentNames|body|boolean|false|none|
+|» includeRedirectExperiments|body|boolean|false|none|
+|» includeRuleIds|body|boolean|false|none|
+|» includeProjectIdInMetadata|body|boolean|false|none|
+|» includeCustomFieldsInMetadata|body|boolean|false|none|
+|» allowedCustomFieldsInMetadata|body|[string]|false|none|
+|» includeTagsInMetadata|body|boolean|false|none|
+|» includeExperimentScheduleInMetadata|body|boolean|false|none|
+|» tracesEnabled|body|boolean|false|Send SDK evaluation traces to GrowthBook. Only available to organizations with tracing enabled.|
+|» proxyEnabled|body|boolean|false|none|
+|» proxyHost|body|string|false|none|
+|» hashSecureAttributes|body|boolean|false|none|
+|» remoteEvalEnabled|body|boolean|false|none|
+|» savedGroupReferencesEnabled|body|boolean|false|Deprecated. Use `savedGroupFormat`.|
+|» savedGroupFormat|body|string|false|none|
+|» includeReferencedPrerequisites|body|boolean|false|Carry prerequisite Feature Flags into this payload even when they target other Projects. Defaults to true for new connections.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
+|» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» savedGroupFormat|inline|
+|» savedGroupFormat|referencesV1|
+|» savedGroupFormat|referencesV2|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-sdk-connection-settings-in-a-draft-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-sdk-connection-settings-in-a-draft-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Stage an archive or restore in a draft revision
+
+<a id="opIdputSdkConnectionRevisionArchive"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/archive \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revisionTitle": "string",
+    "revisionComment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true,
+    "archived": true
+  }'
+```
+
+`PUT /v1/sdk-connections-revisions/{id}/{version}/archive`
+
+Stages archiving (`true`) or restoring (`false`) the SDK Connection. Pass `version: "new"` to create the draft. An archived connection serves no payload, and can be deleted once the archive is published.
+
+> Body parameter
+
+```json
+{
+  "revisionTitle": "string",
+  "revisionComment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true,
+  "archived": true
+}
+```
+
+<h3 id="stage-an-archive-or-restore-in-a-draft-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer \| string|true|none|
+|body|body|object|true|none|
+|» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
+|» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» archived|body|boolean|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="stage-an-archive-or-restore-in-a-draft-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="stage-an-archive-or-restore-in-a-draft-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Add a webhook in a draft revision
+
+<a id="opIdpostSdkConnectionRevisionWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/webhooks \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revisionTitle": "string",
+    "revisionComment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true,
+    "name": "string",
+    "endpoint": "http://example.com",
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "timeoutSeconds": 1
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/webhooks`
+
+Stages a new webhook on the draft. Its id is in the returned revision's `proposedSdkWebhooks`. Pass `version: "new"` to create the draft.
+
+> Body parameter
+
+```json
+{
+  "revisionTitle": "string",
+  "revisionComment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true,
+  "name": "string",
+  "endpoint": "http://example.com",
+  "httpMethod": "GET",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "headers": "string",
+  "timeoutSeconds": 1
+}
+```
+
+<h3 id="add-a-webhook-in-a-draft-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer \| string|true|none|
+|body|body|object|true|none|
+|» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
+|» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» name|body|string|true|none|
+|» endpoint|body|string(uri)|true|none|
+|» httpMethod|body|string|false|none|
+|» payloadFormat|body|string|false|none|
+|» payloadKey|body|string|false|none|
+|» headers|body|string|false|JSON-encoded object, e.g. "{\"X-Token\": \"abc\"}"|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» httpMethod|GET|
+|» httpMethod|POST|
+|» httpMethod|PUT|
+|» httpMethod|DELETE|
+|» httpMethod|PATCH|
+|» httpMethod|PURGE|
+|» payloadFormat|standard|
+|» payloadFormat|standard-no-payload|
+|» payloadFormat|sdkPayload|
+|» payloadFormat|edgeConfig|
+|» payloadFormat|edgeConfigUnescaped|
+|» payloadFormat|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="add-a-webhook-in-a-draft-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="add-a-webhook-in-a-draft-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Update a webhook in a draft revision
+
+<a id="opIdputSdkConnectionRevisionWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/webhooks/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revisionTitle": "string",
+    "revisionComment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true,
+    "name": "string",
+    "endpoint": "http://example.com",
+    "httpMethod": "GET",
+    "payloadFormat": "standard",
+    "payloadKey": "string",
+    "headers": "string",
+    "timeoutSeconds": 1
+  }'
+```
+
+`PUT /v1/sdk-connections-revisions/{id}/{version}/webhooks/{webhookId}`
+
+Stages changes to one of the draft's webhooks. Only the fields sent are changed. Pass `version: "new"` to create the draft.
+
+> Body parameter
+
+```json
+{
+  "revisionTitle": "string",
+  "revisionComment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true,
+  "name": "string",
+  "endpoint": "http://example.com",
+  "httpMethod": "GET",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "headers": "string",
+  "timeoutSeconds": 1
+}
+```
+
+<h3 id="update-a-webhook-in-a-draft-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer \| string|true|none|
+|webhookId|path|string|true|The webhook's id in this revision|
+|body|body|object|true|none|
+|» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
+|» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» name|body|string|false|none|
+|» endpoint|body|string(uri)|false|none|
+|» httpMethod|body|string|false|none|
+|» payloadFormat|body|string|false|none|
+|» payloadKey|body|string|false|none|
+|» headers|body|string|false|JSON-encoded object, e.g. "{\"X-Token\": \"abc\"}"|
+|» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» httpMethod|GET|
+|» httpMethod|POST|
+|» httpMethod|PUT|
+|» httpMethod|DELETE|
+|» httpMethod|PATCH|
+|» httpMethod|PURGE|
+|» payloadFormat|standard|
+|» payloadFormat|standard-no-payload|
+|» payloadFormat|sdkPayload|
+|» payloadFormat|edgeConfig|
+|» payloadFormat|edgeConfigUnescaped|
+|» payloadFormat|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="update-a-webhook-in-a-draft-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource updated|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="update-a-webhook-in-a-draft-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Remove a webhook in a draft revision
+
+<a id="opIddeleteSdkConnectionRevisionWebhook"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/webhooks/string \
+  -X DELETE \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revisionTitle": "string",
+    "revisionComment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
+```
+
+`DELETE /v1/sdk-connections-revisions/{id}/{version}/webhooks/{webhookId}`
+
+Stages removing one of the SDK Connection's webhooks. Pass `version: "new"` to create the draft.
+
+> Body parameter
+
+```json
+{
+  "revisionTitle": "string",
+  "revisionComment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
+
+<h3 id="remove-a-webhook-in-a-draft-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer \| string|true|none|
+|webhookId|path|string|true|The webhook's id in this revision|
+|body|body|object|true|none|
+|» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
+|» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="remove-a-webhook-in-a-draft-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource deleted|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="remove-a-webhook-in-a-draft-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Request review for a draft revision
+
+<a id="opIdpostSdkConnectionRevisionRequestReview"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/request-review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "autoPublishOnApproval": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/request-review`
+
+Moves the draft into `pending-review`. Set `autoPublishOnApproval` to publish it the moment it is approved; that needs the organization to allow it and the caller to be able to publish the change.
+
+> Body parameter
+
+```json
+{
+  "autoPublishOnApproval": true
+}
+```
+
+<h3 id="request-review-for-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» autoPublishOnApproval|body|boolean|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="request-review-for-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="request-review-for-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Submit a review on a draft revision
+
+<a id="opIdpostSdkConnectionRevisionSubmitReview"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/submit-review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "decision": "approve",
+    "comment": "string",
+    "skipAutoPublish": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/submit-review`
+
+Submits an `approve`, `request-changes`, or `comment` review. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created. When the approval publishes a revision set to publish on approval, the response has `autoPublished: true`; pass `skipAutoPublish: true` to approve without publishing.
+
+> Body parameter
+
+```json
+{
+  "decision": "approve",
+  "comment": "string",
+  "skipAutoPublish": true
+}
+```
+
+<h3 id="submit-a-review-on-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» decision|body|string|true|none|
+|» comment|body|string|false|Markdown. Why you approved, requested changes or commented.|
+|» skipAutoPublish|body|boolean|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» decision|approve|
+|» decision|request-changes|
+|» decision|comment|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  },
+  "autoPublished": true
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="submit-a-review-on-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="submit-a-review-on-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+|autoPublished|boolean|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Recall a review request
+
+<a id="opIdpostSdkConnectionRevisionRecallReview"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/recall-review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{}'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/recall-review`
+
+Returns a revision in review to `draft`, clearing its reviews and any publish-on-approval.
+
+> Body parameter
+
+```json
+{}
+```
+
+<h3 id="recall-a-review-request-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="recall-a-review-request-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="recall-a-review-request-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Retract your own review verdict
+
+<a id="opIdpostSdkConnectionRevisionUndoReview"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/undo-review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{}'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/undo-review`
+
+Retracts the calling user's own `approve` or `request-changes` verdict. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created.
+
+> Body parameter
+
+```json
+{}
+```
+
+<h3 id="retract-your-own-review-verdict-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="retract-your-own-review-verdict-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="retract-your-own-review-verdict-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Reopen a discarded revision
+
+<a id="opIdpostSdkConnectionRevisionReopen"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/reopen \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{}'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/reopen`
+
+Returns a discarded revision to `draft`.
+
+> Body parameter
+
+```json
+{}
+```
+
+<h3 id="reopen-a-discarded-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="reopen-a-discarded-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="reopen-a-discarded-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Schedule (or cancel) a deferred publish
+
+<a id="opIdpostSdkConnectionRevisionSchedulePublish"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/schedule-publish \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "lockEdits": true,
+    "lockOthers": true,
+    "bypassApproval": true,
+    "ignoreWarnings": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/schedule-publish`
+
+Sets a revision to publish at a future time, or cancels that with `null`. Requires the `scheduled-revisions` commercial feature. A draft that still requires approval must request review first, unless the caller can bypass approval and passes `bypassApproval`.
+
+> Body parameter
+
+```json
+{
+  "scheduledPublishAt": "1970-01-01T00:00:00Z",
+  "lockEdits": true,
+  "lockOthers": true,
+  "bypassApproval": true,
+  "ignoreWarnings": true
+}
+```
+
+<h3 id="schedule-or-cancel-a-deferred-publish-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» scheduledPublishAt|body|string(date-time) \| null|true|When to publish, as an RFC3339 timestamp, or `null` to cancel a pending schedule.|
+|» » *anyOf*|body|string(date-time)|false|none|
+|» » *anyOf*|body|null|false|none|
+|» lockEdits|body|boolean|false|none|
+|» lockOthers|body|boolean|false|none|
+|» bypassApproval|body|boolean|false|none|
+|» ignoreWarnings|body|boolean|false|Set to true to acknowledge a warning the publish would raise, such as a webhook that references a secret that doesn't exist, and schedule it anyway. The scheduled publish goes ahead with what was acknowledged. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="schedule-or-cancel-a-deferred-publish-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="schedule-or-cancel-a-deferred-publish-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Rebase a draft revision onto the live SDK Connection
+
+<a id="opIdpostSdkConnectionRevisionRebase"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/rebase \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "conflictResolutions": {
+      "property1": "overwrite",
+      "property2": "overwrite"
+    },
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/rebase`
+
+Moves the draft's base to the live state, keeping its changes on top. For each conflicting field (`sdkConnection` or `sdkWebhooks`), `conflictResolutions` picks `overwrite` (the draft's value) or `discard` (the live value).
+
+> Body parameter
+
+```json
+{
+  "conflictResolutions": {
+    "property1": "overwrite",
+    "property2": "overwrite"
+  },
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
+
+<h3 id="rebase-a-draft-revision-onto-the-live-sdk-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» conflictResolutions|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » **additionalProperties**|overwrite|
+|» » **additionalProperties**|discard|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="rebase-a-draft-revision-onto-the-live-sdk-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="rebase-a-draft-revision-onto-the-live-sdk-connection-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Publish a draft revision
+
+<a id="opIdpostSdkConnectionRevisionPublish"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/publish \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/publish`
+
+Applies the draft's changes to the live SDK Connection and its webhooks. When approval is required, the draft must be approved unless the caller has Bypass draft approvals access. A 422 response lists every blocking gate and how to resolve it.
+
+> Body parameter
+
+```json
+{
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
+
+<h3 id="publish-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  },
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ]
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="publish-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="publish-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Discard a draft revision
+
+<a id="opIdpostSdkConnectionRevisionDiscard"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/discard \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "reason": "string"
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/discard`
+
+Abandons an open draft. A published or already discarded revision is refused.
+
+> Body parameter
+
+```json
+{
+  "reason": "string"
+}
+```
+
+<h3 id="discard-a-draft-revision-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» reason|body|string|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="discard-a-draft-revision-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="discard-a-draft-revision-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
+## Revert the SDK Connection to a prior revision
+
+<a id="opIdpostSdkConnectionRevisionRevert"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/sdk-connections-revisions/string/0/revert \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "strategy": "draft",
+    "title": "string",
+    "comment": "string",
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
+```
+
+`POST /v1/sdk-connections-revisions/{id}/{version}/revert`
+
+Restores the settings and webhooks a published revision left the SDK Connection with. Creates a draft by default, or applies it now with `strategy: "publish"`. Whether the connection is archived is not restored. A webhook the revert brings back is recreated with a new signing key. When the revert is applied at once, its id is listed in `recreatedWebhookIds`.
+
+> Body parameter
+
+```json
+{
+  "strategy": "draft",
+  "title": "string",
+  "comment": "string",
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
+
+<h3 id="revert-the-sdk-connection-to-a-prior-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The SDK Connection id|
+|version|path|integer|true|none|
+|body|body|object|true|none|
+|» strategy|body|string|false|Whether to stage the revert as a draft or publish it immediately. Defaults to `draft`, or to `publish` when the org enables 'reverts bypass approval'. Without that setting, publishing a revert that requires approval needs Bypass draft approvals access.|
+|» title|body|string|false|Short draft title (e.g. `Enable for beta testers`).|
+|» comment|body|string|false|Markdown. What changed and why, for reviewers.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» strategy|draft|
+|» strategy|publish|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revision": {
+    "id": "string",
+    "version": 0,
+    "title": "string",
+    "status": "draft",
+    "authorId": "string",
+    "author": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "contributors": [
+      "string"
+    ],
+    "revertedFrom": "string",
+    "reviews": [
+      {
+        "id": "string",
+        "userId": "string",
+        "decision": "approve",
+        "comment": "string",
+        "stale": true,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "activityLog": [
+      {
+        "id": "string",
+        "userId": "string",
+        "action": "created",
+        "description": "string",
+        "proposedChangesSnapshot": [
+          {
+            "op": "add",
+            "path": "string",
+            "value": null
+          }
+        ],
+        "targetSnapshot": null,
+        "dateCreated": "1970-01-01T00:00:00Z",
+        "user": {
+          "type": "dashboard",
+          "id": "string",
+          "apiKey": "string",
+          "name": "string",
+          "email": "string",
+          "requestedBy": {
+            "id": "string",
+            "name": "string",
+            "email": "string"
+          },
+          "assumedRole": true
+        }
+      }
+    ],
+    "autoPublishOnApproval": true,
+    "autoPublishEnabledBy": "string",
+    "autoPublishEnabledByUser": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "scheduledPublishAt": "1970-01-01T00:00:00Z",
+    "scheduledPublishLockEdits": true,
+    "scheduledPublishLockOthers": true,
+    "scheduledPublishBypassApproval": true,
+    "scheduledPublishAttempts": 0,
+    "scheduledPublishLastError": "string",
+    "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+    "resolution": {
+      "action": "merged",
+      "userId": "string",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      },
+      "dateCreated": "1970-01-01T00:00:00Z"
+    },
+    "dateCreated": "1970-01-01T00:00:00Z",
+    "dateUpdated": "1970-01-01T00:00:00Z",
+    "baseSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "proposedSdkConnection": {
+      "id": "string",
+      "name": "string",
+      "eventTracker": "string",
+      "languages": [
+        "string"
+      ],
+      "sdkVersion": "string",
+      "environment": "string",
+      "projects": [
+        "string"
+      ],
+      "encryptPayload": true,
+      "hashSecureAttributes": true,
+      "includeVisualExperiments": true,
+      "includeDraftExperiments": true,
+      "includeDraftExperimentRefs": true,
+      "includeExperimentNames": true,
+      "includeRedirectExperiments": true,
+      "includeRuleIds": true,
+      "includeProjectIdInMetadata": true,
+      "includeCustomFieldsInMetadata": true,
+      "allowedCustomFieldsInMetadata": [
+        "string"
+      ],
+      "includeTagsInMetadata": true,
+      "includeExperimentScheduleInMetadata": true,
+      "remoteEvalEnabled": true,
+      "tracesEnabled": true,
+      "savedGroupReferencesEnabled": true,
+      "savedGroupFormat": "inline",
+      "includeReferencedPrerequisites": true,
+      "proxyEnabled": true,
+      "proxyHost": "string",
+      "archived": true
+    },
+    "baseSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedSdkWebhooks": [
+      {
+        "id": "string",
+        "name": "string",
+        "endpoint": "string",
+        "httpMethod": "GET",
+        "headers": "string",
+        "payloadFormat": "standard",
+        "payloadKey": "string",
+        "timeoutSeconds": 1
+      }
+    ],
+    "proposedChanges": [
+      {
+        "op": "add",
+        "path": "string",
+        "value": null
+      }
+    ]
+  },
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ],
+  "recreatedWebhookIds": [
+    "string"
+  ]
+}
+```
+
+> 202 Response
+
+```json
+{
+  "confirmation": {
+    "id": "string",
+    "status": "pending",
+    "actions": [
+      {
+        "action": "feature.create",
+        "environments": [
+          "string"
+        ]
+      }
+    ],
+    "summary": "string",
+    "url": "string",
+    "expiresAt": "string",
+    "response": {
+      "status": 0,
+      "body": null
+    },
+    "note": "string"
+  },
+  "message": "string"
+}
+```
+
+<h3 id="revert-the-sdk-connection-to-a-prior-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Resource created|Inline|
+|202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
+
+<h3 id="revert-the-sdk-connection-to-a-prior-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|[SdkConnectionRevision](#schemasdkconnectionrevision)|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
+|recreatedWebhookIds|[string]|false|none|Webhooks this revert brought back, when it was applied at once. Each is created again with a new signing key, so a receiver that verifies signatures needs the new key from `GET /sdk-connections/{id}/webhooks`. A revert staged as a draft recreates them when the draft is published.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|202|Location|string||The confirmation to poll|
+|202|Retry-After|integer||Seconds to wait before polling|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -63384,8 +70084,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -64209,23 +70907,7 @@ curl https://api.growthbook.io/api/v1/saved-groups/string/references \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-features-experiments-and-saved-groups-that-reference-this-saved-group-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|experiments|[object]|true|none|none|
-|» id|string|true|none|none|
-|» name|string|false|none|none|
-|» project|string|false|none|none|
-|» projects|[string]|false|none|none|
-|contextualBandits|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|interleavings|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|savedGroups|[[savedGroups](#schemasavedgroups)]|true|none|none|
+|200|OK|Successful response|[SavedGroupReferences](#schemasavedgroupreferences)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -64313,8 +70995,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -64592,16 +71272,16 @@ Called by remote saved group loaders. Each report replaces the previous one from
 |body|body|object|true|none|
 |» storeId|body|string|true|The data store's ID, such as `redis-us-east`, set in the loader's config. Loaders sharing a store (such as one Redis) use the same ID. Shown in the UI.|
 |» status|body|object|true|Loaders validate the file while loading it, so each store reports its own result.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » rowCount|body|integer|true|Unique IDs loaded|
-|» » *anyOf*|body|object|false|The file has problems, so the store kept serving the previous upload|
+|» » *oneOf*|body|object|false|The file has problems, so the store kept serving the previous upload|
 |» » type|body|string|true|none|
 |» » invalidLineCount|body|integer|true|none|
 |» » errors|body|[string]|true|The first problems found in the file|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » error|body|string|true|A problem in the data store, not the file|
 
@@ -64879,11 +71559,11 @@ Returns a paginated list of revisions across all saved groups in the organizatio
 |---|---|---|---|---|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |savedGroupId|query|string|false|Restrict results to revisions for a single saved group. When omitted, returns revisions across every saved group the caller can read.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -65100,8 +71780,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -65131,10 +71809,10 @@ Returns a paginated list of revisions for this saved group, sorted newest-first.
 |savedGroupId|path|string|true|none|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -65351,8 +72029,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -65390,7 +72066,7 @@ Creates a new draft revision branched from the current live saved group. A saved
 }
 ```
 
-<h3 id="create-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="create-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -65615,14 +72291,14 @@ Creates a new draft revision branched from the current live saved group. A saved
 }
 ```
 
-<h3 id="create-a-draft-revision-2-responses">Responses</h3>
+<h3 id="create-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="create-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="create-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -65658,12 +72334,12 @@ curl https://api.growthbook.io/api/v1/saved-groups-revisions/string/latest \
 
 Returns the most recently updated open (non-merged, non-discarded) revision for the saved group. Returns 404 if there is no active draft. Pass `mine=true` to restrict to drafts authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.
 
-<h3 id="get-the-most-recent-active-draft-revision-2-parameters">Parameters</h3>
+<h3 id="get-the-most-recent-active-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |savedGroupId|path|string|true|none|
-|mine|query|string \| boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
 
 > Example responses
 
@@ -65853,13 +72529,13 @@ Returns the most recently updated open (non-merged, non-discarded) revision for 
 }
 ```
 
-<h3 id="get-the-most-recent-active-draft-revision-2-responses">Responses</h3>
+<h3 id="get-the-most-recent-active-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-the-most-recent-active-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="get-the-most-recent-active-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -68172,7 +74848,7 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="request-review-for-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -68398,14 +75074,14 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-2-responses">Responses</h3>
+<h3 id="request-review-for-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="request-review-for-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="request-review-for-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -68460,7 +75136,7 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="submit-a-review-on-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -68696,14 +75372,14 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-2-responses">Responses</h3>
+<h3 id="submit-a-review-on-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="submit-a-review-on-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="submit-a-review-on-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -68733,29 +75409,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/saved-groups-revisions/string/0/recall-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/saved-groups-revisions/{savedGroupId}/{version}/recall-review`
 
 Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`) back to `draft`, clearing existing reviews and disarming any auto-publish-on-approval.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="recall-a-review-request-parameters">Parameters</h3>
+<h3 id="recall-a-review-request-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |savedGroupId|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -68973,14 +75640,14 @@ Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`
 }
 ```
 
-<h3 id="recall-a-review-request-responses">Responses</h3>
+<h3 id="recall-a-review-request-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="recall-a-review-request-responseschema">Response Schema</h3>
+<h3 id="recall-a-review-request-1-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -69009,29 +75676,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/saved-groups-revisions/string/0/reopen \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/saved-groups-revisions/{savedGroupId}/{version}/reopen`
 
 Returns a previously discarded revision to `draft` status so it can be edited and published again. Only discarded revisions can be reopened.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="reopen-a-discarded-revision-parameters">Parameters</h3>
+<h3 id="reopen-a-discarded-revision-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |savedGroupId|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -69249,14 +75907,14 @@ Returns a previously discarded revision to `draft` status so it can be edited an
 }
 ```
 
-<h3 id="reopen-a-discarded-revision-responses">Responses</h3>
+<h3 id="reopen-a-discarded-revision-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="reopen-a-discarded-revision-responseschema">Response Schema</h3>
+<h3 id="reopen-a-discarded-revision-1-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -69313,7 +75971,7 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-parameters">Parameters</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -69544,14 +76202,14 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-responses">Responses</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="schedule-or-cancel-a-deferred-publish-responseschema">Response Schema</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-1-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -69580,29 +76238,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/saved-groups-revisions/string/0/undo-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/saved-groups-revisions/{savedGroupId}/{version}/undo-review`
 
 Retracts the calling user's own active `approve` or `request-changes` verdict, returning the revision to `pending-review`. Review comments stay in the log. Retracting a `request-changes` can leave the revision approved by someone else, in which case an armed auto-publish fires. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="retract-your-own-review-verdict-parameters">Parameters</h3>
+<h3 id="retract-your-own-review-verdict-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |savedGroupId|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -69820,14 +76469,14 @@ Retracts the calling user's own active `approve` or `request-changes` verdict, r
 }
 ```
 
-<h3 id="retract-your-own-review-verdict-responses">Responses</h3>
+<h3 id="retract-your-own-review-verdict-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="retract-your-own-review-verdict-responseschema">Response Schema</h3>
+<h3 id="retract-your-own-review-verdict-1-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -69863,7 +76512,7 @@ curl https://api.growthbook.io/api/v1/saved-groups-revisions/string/0/merge-stat
 
 Runs a dry-run merge of the draft against the current live saved group and returns any conflicts. Use this before publishing to preview changes and detect conflicting edits.
 
-<h3 id="get-merge-status-for-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="get-merge-status-for-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -69890,13 +76539,13 @@ Runs a dry-run merge of the draft against the current live saved group and retur
 }
 ```
 
-<h3 id="get-merge-status-for-a-draft-revision-2-responses">Responses</h3>
+<h3 id="get-merge-status-for-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-merge-status-for-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="get-merge-status-for-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -69906,9 +76555,9 @@ Status Code **200**
 |hasConflicts|boolean|true|none|none|
 |conflicts|[object]|true|none|none|
 |» field|string|true|none|none|
-|» baseValue|object|true|none|none|
-|» liveValue|object|true|none|none|
-|» proposedValue|object|true|none|none|
+|» baseValue|object|false|none|none|
+|» liveValue|object|false|none|none|
+|» proposedValue|object|false|none|none|
 |canAutoMerge|boolean|true|none|none|
 
 <aside class="warning">
@@ -70261,7 +76910,7 @@ Publishes the draft and applies its changes to the live Saved Group. The caller 
 }
 ```
 
-<h3 id="publish-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="publish-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -70494,14 +77143,14 @@ Publishes the draft and applies its changes to the live Saved Group. The caller 
 }
 ```
 
-<h3 id="publish-a-draft-revision-2-responses">Responses</h3>
+<h3 id="publish-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="publish-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="publish-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -70551,7 +77200,7 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-2-parameters">Parameters</h3>
+<h3 id="discard-a-draft-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -70776,14 +77425,14 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-2-responses">Responses</h3>
+<h3 id="discard-a-draft-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="discard-a-draft-revision-2-responseschema">Response Schema</h3>
+<h3 id="discard-a-draft-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -71189,8 +77838,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -71396,19 +78043,7 @@ curl https://api.growthbook.io/api/v1/constants/string/references \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-features-and-constants-that-reference-this-constant-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[object]|true|none|none|
-|» id|string|true|none|none|
-|» name|string|false|none|none|
-|» project|string|false|none|none|
-|constants|[[constants](#schemaconstants)]|true|none|none|
+|200|OK|Successful response|[ConstantReferences](#schemaconstantreferences)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -72018,11 +78653,11 @@ Returns a paginated list of revisions across all constants in the organization, 
 |---|---|---|---|---|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |key|query|string|false|Restrict results to revisions for a single constant (by its key). When omitted, returns revisions across every constant the caller can read.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -72223,8 +78858,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -72254,10 +78887,10 @@ Returns a paginated list of revisions for this constant, sorted newest-first. Op
 |key|path|string|true|none|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -72458,8 +79091,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -72497,7 +79128,7 @@ Creates a new draft revision branched from the current live constant. A constant
 }
 ```
 
-<h3 id="create-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="create-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -72706,14 +79337,14 @@ Creates a new draft revision branched from the current live constant. A constant
 }
 ```
 
-<h3 id="create-a-draft-revision-3-responses">Responses</h3>
+<h3 id="create-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="create-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="create-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -72749,12 +79380,12 @@ curl https://api.growthbook.io/api/v1/constants-revisions/string/latest \
 
 Returns the most recently updated open (non-merged, non-discarded) revision for the constant. Returns 404 if there is no active draft. Pass `mine=true` to restrict to drafts authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.
 
-<h3 id="get-the-most-recent-active-draft-revision-3-parameters">Parameters</h3>
+<h3 id="get-the-most-recent-active-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
-|mine|query|string \| boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
 
 > Example responses
 
@@ -72928,13 +79559,13 @@ Returns the most recently updated open (non-merged, non-discarded) revision for 
 }
 ```
 
-<h3 id="get-the-most-recent-active-draft-revision-3-responses">Responses</h3>
+<h3 id="get-the-most-recent-active-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-the-most-recent-active-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="get-the-most-recent-active-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -74039,7 +80670,7 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="request-review-for-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -74251,14 +80882,14 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-3-responses">Responses</h3>
+<h3 id="request-review-for-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="request-review-for-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="request-review-for-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -74313,7 +80944,7 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="submit-a-review-on-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -74533,14 +81164,14 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-3-responses">Responses</h3>
+<h3 id="submit-a-review-on-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="submit-a-review-on-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="submit-a-review-on-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -74570,29 +81201,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/constants-revisions/string/0/recall-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/constants-revisions/{key}/{version}/recall-review`
 
 Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`) back to `draft`, clearing existing reviews and disarming any auto-publish-on-approval.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="recall-a-review-request-1-parameters">Parameters</h3>
+<h3 id="recall-a-review-request-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -74794,14 +81416,14 @@ Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`
 }
 ```
 
-<h3 id="recall-a-review-request-1-responses">Responses</h3>
+<h3 id="recall-a-review-request-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="recall-a-review-request-1-responseschema">Response Schema</h3>
+<h3 id="recall-a-review-request-2-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -74830,29 +81452,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/constants-revisions/string/0/reopen \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/constants-revisions/{key}/{version}/reopen`
 
 Returns a previously discarded revision to `draft` status so it can be edited and published again. Only discarded revisions can be reopened.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="reopen-a-discarded-revision-1-parameters">Parameters</h3>
+<h3 id="reopen-a-discarded-revision-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -75054,14 +81667,14 @@ Returns a previously discarded revision to `draft` status so it can be edited an
 }
 ```
 
-<h3 id="reopen-a-discarded-revision-1-responses">Responses</h3>
+<h3 id="reopen-a-discarded-revision-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="reopen-a-discarded-revision-1-responseschema">Response Schema</h3>
+<h3 id="reopen-a-discarded-revision-2-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -75122,7 +81735,7 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-1-parameters">Parameters</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -75339,14 +81952,14 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-1-responses">Responses</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="schedule-or-cancel-a-deferred-publish-1-responseschema">Response Schema</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-2-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -75375,29 +81988,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/constants-revisions/string/0/undo-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/constants-revisions/{key}/{version}/undo-review`
 
 Retracts the calling user's own active `approve` or `request-changes` verdict, returning the revision to `pending-review`. Review comments stay in the log. Retracting a `request-changes` can leave the revision approved by someone else, in which case an armed auto-publish fires. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="retract-your-own-review-verdict-1-parameters">Parameters</h3>
+<h3 id="retract-your-own-review-verdict-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -75599,14 +82203,14 @@ Retracts the calling user's own active `approve` or `request-changes` verdict, r
 }
 ```
 
-<h3 id="retract-your-own-review-verdict-1-responses">Responses</h3>
+<h3 id="retract-your-own-review-verdict-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="retract-your-own-review-verdict-1-responseschema">Response Schema</h3>
+<h3 id="retract-your-own-review-verdict-2-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -75642,7 +82246,7 @@ curl https://api.growthbook.io/api/v1/constants-revisions/string/0/merge-status 
 
 Runs a dry-run merge of the draft against the current live constant and returns any conflicts. Use this before publishing to preview changes and detect conflicting edits.
 
-<h3 id="get-merge-status-for-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="get-merge-status-for-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -75669,13 +82273,13 @@ Runs a dry-run merge of the draft against the current live constant and returns 
 }
 ```
 
-<h3 id="get-merge-status-for-a-draft-revision-3-responses">Responses</h3>
+<h3 id="get-merge-status-for-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-merge-status-for-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="get-merge-status-for-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -75685,9 +82289,9 @@ Status Code **200**
 |hasConflicts|boolean|true|none|none|
 |conflicts|[object]|true|none|none|
 |» field|string|true|none|none|
-|» baseValue|object|true|none|none|
-|» liveValue|object|true|none|none|
-|» proposedValue|object|true|none|none|
+|» baseValue|object|false|none|none|
+|» liveValue|object|false|none|none|
+|» proposedValue|object|false|none|none|
 |canAutoMerge|boolean|true|none|none|
 
 <aside class="warning">
@@ -76009,7 +82613,7 @@ Publishes the draft and makes its changes live. The caller needs Publish access 
 }
 ```
 
-<h3 id="publish-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="publish-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -76228,14 +82832,14 @@ Publishes the draft and makes its changes live. The caller needs Publish access 
 }
 ```
 
-<h3 id="publish-a-draft-revision-3-responses">Responses</h3>
+<h3 id="publish-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="publish-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="publish-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -76285,7 +82889,7 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-3-parameters">Parameters</h3>
+<h3 id="discard-a-draft-revision-4-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -76494,14 +83098,14 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-3-responses">Responses</h3>
+<h3 id="discard-a-draft-revision-4-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="discard-a-draft-revision-3-responseschema">Response Schema</h3>
+<h3 id="discard-a-draft-revision-4-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -76945,8 +83549,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77076,8 +83678,8 @@ curl https://api.growthbook.io/api/v1/configs \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» key|body|string|true|Stable reference handle (lowercase slug, unique per org), referenced as `@config:key`|
 |» name|body|string|true|The display name of the config|
@@ -77296,24 +83898,7 @@ curl https://api.growthbook.io/api/v1/configs/string/references \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-features-and-configs-that-reference-this-config-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[object]|true|none|none|
-|» id|string|true|none|none|
-|» name|string|false|none|none|
-|» project|string|false|none|none|
-|constants|[object]|true|none|none|
-|» id|string|true|none|none|
-|» key|string|true|none|none|
-|» name|string|true|none|none|
-|» project|string|false|none|none|
-|» isConfig|boolean|false|none|none|
+|200|OK|Successful response|[ConfigReferences](#schemaconfigreferences)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77378,16 +83963,7 @@ Lists every feature rule and default value that overrides a key of this config's
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-the-feature-rules-and-default-values-implementing-each-key-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|familyKeys|[string]|true|none|none|
-|implementations|[[implementations](#schemaimplementations)]|true|none|none|
+|200|OK|Successful response|[ConfigKeyUsage](#schemaconfigkeyusage)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77455,19 +84031,7 @@ curl https://api.growthbook.io/api/v1/configs/string/lineage \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="get-the-full-lineage-family-tree-for-a-config-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|root|string|true|none|The key of the family root (the topmost ancestor).|
-|target|string|true|none|The requested config's key.|
-|ancestors|[string]|true|none|The target's ancestor keys, root-first, ending at its immediate parent.|
-|descendants|[string]|true|none|Keys of every config that descends from the target.|
-|nodes|[[nodes](#schemanodes)]|true|none|Every config in the family (root plus all descendants), breadth-first.|
+|200|OK|Successful response|[ConfigLineage](#schemaconfiglineage)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77565,20 +84129,7 @@ curl https://api.growthbook.io/api/v1/configs/string/schema/verify \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource created|Inline|
-
-<h3 id="verify-a-configs-schema-against-a-source-drift-check-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|inSync|boolean|true|none|True when the supplied schema is canonically identical to the config's stored schema.|
-|fingerprint|string|true|none|Canonical fingerprint of the config's stored schema.|
-|incomingFingerprint|string|true|none|Canonical fingerprint of the supplied schema.|
-|drift|[drift](#schemadrift)|false|none|Present only when `inSync` is false.|
-|ancestorOwnedFields|[[ancestorOwnedFields](#schemaancestorownedfields)]|false|none|Supplied fields an ancestor config already owns ("base wins"). Subtract these from `drift.contract` adds when round-tripping a full effective schema.|
-|warnings|[[ConfigSchemaWarning](#schemaconfigschemawarning)]|false|none|none|
+|200|OK|Resource created|[ConfigSchemaVerify](#schemaconfigschemaverify)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77605,7 +84156,7 @@ curl https://api.growthbook.io/api/v1/configs/string/schema \
 |---|---|---|---|---|
 |key|path|string|true|The key of the config|
 |format|query|string|false|Output format. `json-schema` (default) returns a JSON Schema document; `typescript`, `protobuf`, `python` (Pydantic), `go`, and `rust` (serde) render the schema as source in that language.|
-|effective|query|string \| boolean|false|When true, includes fields inherited across the lineage (the family's accumulated schema). When false (default), returns only this config's own fields.|
+|effective|query|boolean|false|When true, includes fields inherited across the lineage (the family's accumulated schema). When false (default), returns only this config's own fields.|
 |source|query|string|false|Render using a previously-captured source projection (its named types). Only affects the typed-code formats (`typescript`/`protobuf`/`python`/`go`/`rust`); ignored if the source has no projection.|
 
 #### Enumerated Values
@@ -77641,17 +84192,7 @@ curl https://api.growthbook.io/api/v1/configs/string/schema \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successful response|Inline|
-
-<h3 id="export-a-configs-schema-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schema|[ConfigSchemaSource](#schemaconfigschemasource)|true|none|The config's schema in the requested format: a JSON Schema document (`{ type: "json-schema", value }`) or rendered TypeScript source (`{ type: "typescript", value }`).|
-|effective|boolean|true|none|True when the schema includes inherited fields accumulated across the lineage; false when it is only this config's own fields.|
-|additionalProperties|boolean|true|none|Whether the config family permits extra keys.|
+|200|OK|Successful response|[ConfigSchemaExport](#schemaconfigschemaexport)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77898,8 +84439,8 @@ Applies the change immediately and records it as a published revision, so it app
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|The key of the config|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» name|body|string|false|Short display name. Put details in `description`.|
 |» parent|body|string|false|Change the lineage parent (the `key` of the config to inherit from). Set to an empty string to detach from the parent and make this a root config.|
@@ -78201,7 +84742,7 @@ Archives a config. A child config (including an environment/project override) is
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|The key of the config|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipSchemaValidation|body|boolean|false|Set to true to publish despite schema validation errors, failed invariants, or schema changes that invalidate dependent resources. This does not bypass a rejected Custom Hook; use `skipHooks` for that. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -78872,11 +85413,11 @@ Returns a paginated list of revisions across all configs in the organization, so
 |---|---|---|---|---|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |key|query|string|false|Restrict results to revisions for a single config (by its key). When omitted, returns revisions across every config the caller can read.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -79173,8 +85714,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -79204,10 +85743,10 @@ Returns a paginated list of revisions for this config, sorted newest-first. Opti
 |key|path|string|true|none|
 |limit|query|integer|false|The number of items to return|
 |offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
-|skipPagination|query|string \| boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
+|skipPagination|query|boolean|false|If true, return all matching items and ignore limit/offset.<br>Self-hosted only. Has no effect unless API_ALLOW_SKIP_PAGINATION is set to true or 1.|
 |status|query|string|false|Filter by revision status. Accepts a comma-separated list, or the literal `open` for non-merged/non-discarded revisions.|
 |author|query|string|false|none|
-|mine|query|string \| boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
+|mine|query|boolean|false|If true, return only revisions authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role. Mutually exclusive with `author`.|
 
 > Example responses
 
@@ -79504,8 +86043,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -79543,7 +86080,7 @@ Creates a new draft revision branched from the current live config. A config can
 }
 ```
 
-<h3 id="create-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="create-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -79848,14 +86385,14 @@ Creates a new draft revision branched from the current live config. A config can
 }
 ```
 
-<h3 id="create-a-draft-revision-4-responses">Responses</h3>
+<h3 id="create-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="create-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="create-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -79891,12 +86428,12 @@ curl https://api.growthbook.io/api/v1/configs-revisions/string/latest \
 
 Returns the most recently updated open (non-merged, non-discarded) revision for the config. Returns 404 if there is no active draft. Pass `mine=true` to restrict to drafts authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.
 
-<h3 id="get-the-most-recent-active-draft-revision-4-parameters">Parameters</h3>
+<h3 id="get-the-most-recent-active-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
-|mine|query|string \| boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
+|mine|query|boolean|false|If true, return only the most recent active draft authored by the calling user. Needs a personal access token, or an organization API key that assumes a named member's role.|
 
 > Example responses
 
@@ -80166,13 +86703,13 @@ Returns the most recently updated open (non-merged, non-discarded) revision for 
 }
 ```
 
-<h3 id="get-the-most-recent-active-draft-revision-4-responses">Responses</h3>
+<h3 id="get-the-most-recent-active-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-the-most-recent-active-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="get-the-most-recent-active-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -80556,8 +87093,8 @@ Stages metadata changes (name, owner, description, project, lineage parent, exte
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
@@ -80923,6 +87460,7 @@ curl https://api.growthbook.io/api/v1/configs-revisions/string/0/value \
       "property2": null
     },
     "inferSchemaIfMissing": true,
+    "inferUndeclaredFields": true,
     "ignoreWarnings": true,
     "skipSchemaValidation": true,
     "skipHooks": true
@@ -80948,6 +87486,7 @@ Set `inferSchemaIfMissing: true` to derive and stage a field schema from the val
     "property2": null
   },
   "inferSchemaIfMissing": true,
+  "inferUndeclaredFields": true,
   "ignoreWarnings": true,
   "skipSchemaValidation": true,
   "skipHooks": true
@@ -80960,14 +87499,15 @@ Set `inferSchemaIfMissing: true` to derive and stage a field schema from the val
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
 |» value|body|object|false|This config's own value as a JSON object — a targeted patch deep-merged onto the resolved parent value.|
 |» » **additionalProperties**|body|object|false|none|
 |» inferSchemaIfMissing|body|boolean|false|When the config has no schema yet, infer one from the supplied `value` and stage it on the same draft.|
+|» inferUndeclaredFields|body|boolean|false|Add an optional schema field, inferred from its value, for each top-level key in `value` that the Config's effective schema doesn't declare, staged on the same draft. Existing fields are never changed, and keys holding a `@const:`/`@config:` reference are skipped. Each added field is listed in `warnings` with code `inferred-field`. When `inferSchemaIfMissing` infers a whole schema, that takes precedence.|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipSchemaValidation|body|boolean|false|Set to true to publish despite schema validation errors, failed invariants, or schema changes that invalidate dependent resources. This does not bypass a rejected Custom Hook; use `skipHooks` for that. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipHooks|body|boolean|false|Set to true to publish despite a Custom Hook rejection. This does not bypass schema validation; use `skipSchemaValidation` for that. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -81352,8 +87892,8 @@ Stages a single property of this config's own value on the draft, leaving every 
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
@@ -81718,8 +88258,8 @@ Stages removal of a single property from this config's own value on the draft; t
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
 |property|query|string|true|Name of the property to remove.|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 
 > Example responses
 
@@ -82067,6 +88607,10 @@ curl https://api.growthbook.io/api/v1/configs-revisions/string/0/schema \
       }
     },
     "infer": true,
+    "value": {
+      "property1": null,
+      "property2": null
+    },
     "additionalProperties": true,
     "ignoreWarnings": true,
     "skipSchemaValidation": true,
@@ -82096,6 +88640,10 @@ Fields whose key a published ancestor already owns follow "base wins": an identi
     }
   },
   "infer": true,
+  "value": {
+    "property1": null,
+    "property2": null
+  },
   "additionalProperties": true,
   "ignoreWarnings": true,
   "skipSchemaValidation": true,
@@ -82109,13 +88657,15 @@ Fields whose key a published ancestor already owns follow "base wins": an identi
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
 |» schema|body|[ConfigSchemaSource](#schemaconfigschemasource)|false|none|
 |» infer|body|boolean|false|Derive the schema from the draft's value instead.|
+|» value|body|object|false|This config's own value, staged together with the schema and validated against it. Use it to retype or remove a field the value sets, which a schema write or a value write can't do on its own.|
+|» » **additionalProperties**|body|object|false|none|
 |» additionalProperties|body|boolean|false|Whether the resulting object schema permits extra keys (family extensibility).|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipSchemaValidation|body|boolean|false|Set to true to publish despite schema validation errors, failed invariants, or schema changes that invalidate dependent resources. This does not bypass a rejected Custom Hook; use `skipHooks` for that. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -82513,8 +89063,8 @@ Stages a per-source render projection on the draft, AND the schema it implies. P
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer \| string|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» revisionTitle|body|string|false|Short draft title (e.g. `Enable for beta testers`). Only used when `version` is "new"; ignored for existing drafts.|
 |» revisionComment|body|string|false|Markdown. What changed and why, for reviewers. Only used when `version` is "new"; ignored for existing drafts.|
@@ -83617,7 +90167,7 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="request-review-for-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -83925,14 +90475,14 @@ Set `autoPublishOnApproval` to `true` to publish the revision automatically the 
 }
 ```
 
-<h3 id="request-review-for-a-draft-revision-4-responses">Responses</h3>
+<h3 id="request-review-for-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="request-review-for-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="request-review-for-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -83987,7 +90537,7 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="submit-a-review-on-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -84303,14 +90853,14 @@ When `decision` is `approve` and the revision has `autoPublishOnApproval` enable
 }
 ```
 
-<h3 id="submit-a-review-on-a-draft-revision-4-responses">Responses</h3>
+<h3 id="submit-a-review-on-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="submit-a-review-on-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="submit-a-review-on-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -84340,29 +90890,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/configs-revisions/string/0/undo-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/configs-revisions/{key}/{version}/undo-review`
 
 Retracts the calling user's own active `approve` or `request-changes` verdict, returning the revision to `pending-review`. Review comments stay in the log. Retracting a `request-changes` can leave the revision approved by someone else, in which case an armed auto-publish fires. The verdict belongs to whoever the request acts as; see [Naming who asked](/api/introduction#naming-who-asked). No one can rule on a draft they created.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="retract-your-own-review-verdict-2-parameters">Parameters</h3>
+<h3 id="retract-your-own-review-verdict-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -84660,14 +91201,14 @@ Retracts the calling user's own active `approve` or `request-changes` verdict, r
 }
 ```
 
-<h3 id="retract-your-own-review-verdict-2-responses">Responses</h3>
+<h3 id="retract-your-own-review-verdict-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="retract-your-own-review-verdict-2-responseschema">Response Schema</h3>
+<h3 id="retract-your-own-review-verdict-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -84696,29 +91237,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/configs-revisions/string/0/recall-review \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/configs-revisions/{key}/{version}/recall-review`
 
 Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`) back to `draft`, clearing existing reviews and disarming any auto-publish-on-approval.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="recall-a-review-request-2-parameters">Parameters</h3>
+<h3 id="recall-a-review-request-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -85016,14 +91548,14 @@ Pulls a revision in review (`pending-review`, `changes-requested`, or `approved`
 }
 ```
 
-<h3 id="recall-a-review-request-2-responses">Responses</h3>
+<h3 id="recall-a-review-request-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="recall-a-review-request-2-responseschema">Response Schema</h3>
+<h3 id="recall-a-review-request-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -85052,29 +91584,20 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/configs-revisions/string/0/reopen \
   -X POST \
-  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{}'
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /v1/configs-revisions/{key}/{version}/reopen`
 
 Returns a previously discarded revision to `draft` status so it can be edited and published again. Only discarded revisions can be reopened.
 
-> Body parameter
-
-```json
-{}
-```
-
-<h3 id="reopen-a-discarded-revision-2-parameters">Parameters</h3>
+<h3 id="reopen-a-discarded-revision-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|body|body|object|true|none|
 
 > Example responses
 
@@ -85372,14 +91895,14 @@ Returns a previously discarded revision to `draft` status so it can be edited an
 }
 ```
 
-<h3 id="reopen-a-discarded-revision-2-responses">Responses</h3>
+<h3 id="reopen-a-discarded-revision-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="reopen-a-discarded-revision-2-responseschema">Response Schema</h3>
+<h3 id="reopen-a-discarded-revision-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -85440,7 +91963,7 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-2-parameters">Parameters</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-3-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -85753,14 +92276,14 @@ Arms a revision to publish automatically at a future time. Pass `scheduledPublis
 }
 ```
 
-<h3 id="schedule-or-cancel-a-deferred-publish-2-responses">Responses</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="schedule-or-cancel-a-deferred-publish-2-responseschema">Response Schema</h3>
+<h3 id="schedule-or-cancel-a-deferred-publish-3-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -85796,7 +92319,7 @@ curl https://api.growthbook.io/api/v1/configs-revisions/string/0/merge-status \
 
 Runs a dry-run merge of the draft against the current live config and returns any conflicts. Use this before publishing to preview changes and detect conflicting edits.
 
-<h3 id="get-merge-status-for-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="get-merge-status-for-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -85823,13 +92346,13 @@ Runs a dry-run merge of the draft against the current live config and returns an
 }
 ```
 
-<h3 id="get-merge-status-for-a-draft-revision-4-responses">Responses</h3>
+<h3 id="get-merge-status-for-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|Inline|
 
-<h3 id="get-merge-status-for-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="get-merge-status-for-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -85839,9 +92362,9 @@ Status Code **200**
 |hasConflicts|boolean|true|none|none|
 |conflicts|[object]|true|none|none|
 |» field|string|true|none|none|
-|» baseValue|object|true|none|none|
-|» liveValue|object|true|none|none|
-|» proposedValue|object|true|none|none|
+|» baseValue|object|false|none|none|
+|» liveValue|object|false|none|none|
+|» proposedValue|object|false|none|none|
 |canAutoMerge|boolean|true|none|none|
 
 <aside class="warning">
@@ -86278,14 +92801,14 @@ Publishes the draft and makes its changes live. The caller needs Publish access 
 }
 ```
 
-<h3 id="publish-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="publish-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» bypassApproval|body|boolean|false|Deprecated and ignored. Approval is bypassed automatically when the caller has Bypass draft approvals access for this resource or when the organization enables the REST API approval bypass. Otherwise, the revision must be approved before it can be published.|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge the warnings listed in a blocked response and continue. This covers experiment guards, locked dependents, and references affected by an archive. When the organization treats schema failures as warnings, it also covers schema and invariant warnings. It never bypasses a rejected Custom Hook. On revision publish endpoints, it can also force-publish an out-of-date draft when the caller has Bypass draft approvals access. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
@@ -86595,14 +93118,14 @@ Publishes the draft and makes its changes live. The caller needs Publish access 
 }
 ```
 
-<h3 id="publish-a-draft-revision-4-responses">Responses</h3>
+<h3 id="publish-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="publish-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="publish-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -86652,7 +93175,7 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-4-parameters">Parameters</h3>
+<h3 id="discard-a-draft-revision-5-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -86957,14 +93480,14 @@ Permanently discards a draft revision. Only open revisions (not merged or alread
 }
 ```
 
-<h3 id="discard-a-draft-revision-4-responses">Responses</h3>
+<h3 id="discard-a-draft-revision-5-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Resource created|Inline|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
 
-<h3 id="discard-a-draft-revision-4-responseschema">Response Schema</h3>
+<h3 id="discard-a-draft-revision-5-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -87029,8 +93552,8 @@ Creates a new draft (or immediately publishes) whose content matches the specifi
 |---|---|---|---|---|
 |key|path|string|true|none|
 |version|path|integer|true|none|
-|skipSchemaValidation|query|string \| boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
-|ignoreWarnings|query|string \| boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
+|skipSchemaValidation|query|boolean|false|Deprecated — pass `skipSchemaValidation` in the request body instead.|
+|ignoreWarnings|query|boolean|false|Deprecated — pass `ignoreWarnings` in the request body instead.|
 |body|body|object|true|none|
 |» strategy|body|string|false|Whether to stage the revert as a draft or publish it immediately. Defaults to `draft`, or to `publish` when the org enables 'reverts bypass approval'.|
 |» title|body|string|false|Short draft title (e.g. `Enable for beta testers`).|
@@ -87413,11 +93936,11 @@ curl https://api.growthbook.io/api/v1/releases/publish-revisions \
 
 `POST /v1/releases/publish-revisions`
 
-Publishes a set of revisions — at most one per entity — across Feature Flags, Saved Groups, configs, and constants as a single all-or-nothing operation.
+Publishes a set of revisions — at most one per entity — across Feature Flags, Saved Groups, Configs, Constants, and SDK Connections as a single all-or-nothing operation.
 
 Validation, guards, and custom hooks run against the combined end-state of the whole set, so interdependent changes (e.g. a config schema change plus the values that depend on it) publish together even when the in-between states would be invalid.
 
-A blocked publish returns one 422 listing every gate across every item and the flag that clears each. A concurrent change to any target aborts with a 409 and nothing publishes. A failure after the commit starts rolls everything back and emits `revision.publishFailed` for each revision in the set. SDK payloads refresh once per request. Pass `dryRun: true` for the full gate report with zero writes.
+A blocked publish returns one 422 listing every gate across every item and the flag that clears each. A concurrent change to any target aborts with a 409 and nothing publishes. A failure after the commit starts rolls everything back, including an SDK Connection's webhooks, and emits `revision.publishFailed` for each revision in the set that has revision events. SDK payloads refresh once per request, and a webhook an SDK Connection revision edits is sent only once the release has landed. Pass `dryRun: true` for the full gate report with zero writes.
 
 Requires the `releases` commercial feature.
 
@@ -87445,16 +93968,17 @@ Requires the `releases` commercial feature.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
-|» revisions|body|[[FeatureRevisionRef](#schemafeaturerevisionref) \| [SavedGroupRevisionRef](#schemasavedgrouprevisionref) \| [ConfigRevisionRef](#schemaconfigrevisionref) \| [ConstantRevisionRef](#schemaconstantrevisionref) \| [RevisionIdRef](#schemarevisionidref)]|true|The revisions to publish, at most one per entity.|
+|» revisions|body|[[FeatureRevisionRef](#schemafeaturerevisionref) \| [SavedGroupRevisionRef](#schemasavedgrouprevisionref) \| [ConfigRevisionRef](#schemaconfigrevisionref) \| [ConstantRevisionRef](#schemaconstantrevisionref) \| [SdkConnectionRevisionRef](#schemasdkconnectionrevisionref) \| [RevisionIdRef](#schemarevisionidref)]|true|The revisions to publish, at most one per entity.|
 |» » *anyOf*|body|[FeatureRevisionRef](#schemafeaturerevisionref)|false|none|
 |» » *anyOf*|body|[SavedGroupRevisionRef](#schemasavedgrouprevisionref)|false|none|
 |» » *anyOf*|body|[ConfigRevisionRef](#schemaconfigrevisionref)|false|none|
 |» » *anyOf*|body|[ConstantRevisionRef](#schemaconstantrevisionref)|false|none|
+|» » *anyOf*|body|[SdkConnectionRevisionRef](#schemasdkconnectionrevisionref)|false|none|
 |» » *anyOf*|body|[RevisionIdRef](#schemarevisionidref)|false|none|
 |» dryRun|body|boolean|false|Report every gate and outcome without writing anything.|
 |» ignoreWarnings|body|boolean|false|Set to true to acknowledge warnings from experiment guards, schema changes, or archives. It can also force-publish an out-of-date draft when the caller has Bypass draft approvals access for that resource. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» skipSchemaValidation|body|boolean|false|Set to true to publish despite schema or invariant failures. Validation still runs and the response still reports each failure. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
-|» skipHooks|body|boolean|false|Set to true to publish despite Custom Hook rejections. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to publish despite Custom Hook rejections. The caller must have Bypass draft approvals access for Feature Flags, Configs, and Constants in every Project. A Custom Hook on an SDK Connection takes that access for SDK Connections. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» comment|body|string|false|An optional publish comment recorded on every revision in this release — it appears in each entity's revision history and is passed to any custom validation hooks that run for the publish.|
 
 > Example responses
@@ -87560,11 +94084,7 @@ Status Code **200**
 |» severity|string|true|none|none|
 |» messages|[string]|true|none|none|
 |» override|string \| null|true|none|Request flag that clears this gate on retry, if any.|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» requiresPermission|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» resolution|object \| null|true|none|A route that resolves the gate without an override flag.|
 |» » *anyOf*|object|false|none|none|
 |» » action|string|true|none|none|
@@ -87587,12 +94107,14 @@ Status Code **200**
 |» entityType|saved-group|
 |» entityType|config|
 |» entityType|constant|
+|» entityType|sdk-connection|
 |» severity|blocker|
 |» severity|warning|
 |» entityType|feature|
 |» entityType|saved-group|
 |» entityType|config|
 |» entityType|constant|
+|» entityType|sdk-connection|
 
 ### Response Headers
 
@@ -87684,8 +94206,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -87760,9 +94280,12 @@ curl https://api.growthbook.io/api/v1/custom-hooks \
 |» hook|validateConfig|
 |» hook|validateConfigRevision|
 |» hook|validateExperiment|
+|» hook|validateSdkConnection|
+|» hook|validateSdkConnectionRevision|
 |» entityType|feature|
 |» entityType|config|
 |» entityType|experiment|
+|» entityType|sdkConnection|
 
 > Example responses
 
@@ -87898,7 +94421,7 @@ curl https://api.growthbook.io/api/v1/custom-hooks/test \
 |---|---|---|---|---|
 |body|body|object|true|none|
 |» functionBody|body|string|true|JavaScript function body to execute in the sandbox|
-|» functionArgs|body|object|false|Arguments exposed to the function as named globals (e.g. `feature`, `config`, `revision`)|
+|» functionArgs|body|object|false|Arguments exposed to the function as named globals (e.g. `feature`, `config`, `revision`, `sdkConnection`, `sdkWebhooks`)|
 |» » **additionalProperties**|body|object|false|none|
 |» originalFunctionArgs|body|object|false|State before the change. When supplied, the hook also runs against it and Incremental Changes Only suppression is applied to the result.|
 |» » **additionalProperties**|body|object|false|none|
@@ -87912,6 +94435,7 @@ curl https://api.growthbook.io/api/v1/custom-hooks/test \
 |» entityType|feature|
 |» entityType|config|
 |» entityType|experiment|
+|» entityType|sdkConnection|
 
 > Example responses
 
@@ -88083,9 +94607,7 @@ curl https://api.growthbook.io/api/v1/custom-hooks/string \
 |» entityType|body|string \| null|false|Retarget the hook's scope (set with entityId). Pass null (with entityId: null) to make the hook global/project-scoped; omit to leave unchanged.|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|null|false|none|
-|» entityId|body|string \| null|false|The scoped resource: a feature id, or a config key. Pass null (with entityType: null) to clear the scope; omit to leave unchanged.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
+|» entityId|body|string \| null|false|The scoped resource: a feature id, an experiment id, an SDK Connection id, or a config key. Pass null (with entityType: null) to clear the scope; omit to leave unchanged.|
 |» incrementalChangesOnly|body|boolean|false|none|
 
 #### Enumerated Values
@@ -88097,9 +94619,12 @@ curl https://api.growthbook.io/api/v1/custom-hooks/string \
 |» hook|validateConfig|
 |» hook|validateConfigRevision|
 |» hook|validateExperiment|
+|» hook|validateSdkConnection|
+|» hook|validateSdkConnectionRevision|
 |» » *anyOf*|feature|
 |» » *anyOf*|config|
 |» » *anyOf*|experiment|
+|» » *anyOf*|sdkConnection|
 
 > Example responses
 
@@ -88350,8 +94875,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -88543,8 +95066,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -88821,6 +95342,7 @@ curl https://api.growthbook.io/api/v1/members \
           "limitAccessByEnvironment": true
         }
       ],
+      "managedByIdp": true,
       "managedbyIdp": true,
       "teams": [
         "string"
@@ -88877,8 +95399,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -90125,8 +96645,6 @@ Status Code **200**
 |---|---|---|---|---|
 |audits|[[Audit](#schemaaudit)]|true|none|none|
 |nextCursor|string \| null|true|none|Pass as `before` to get the next page. Null when there are no older entries|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -90194,8 +96712,6 @@ Status Code **200**
 |---|---|---|---|---|
 |events|[[Event](#schemaevent)]|true|none|none|
 |nextCursor|string \| null|true|none|Pass as `before` to get the next page. Null when there are no older entries|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -90337,8 +96853,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -90396,7 +96910,7 @@ curl https://api.growthbook.io/api/v1/code-refs \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deleteMissing|query|string|false|Whether to delete code references that are no longer present in the submitted data|
+|deleteMissing|query|boolean|false|Whether to delete code references that are no longer present in the submitted data|
 |body|body|object|true|none|
 |» branch|body|string|true|none|
 |» repoName|body|string|true|none|
@@ -90406,13 +96920,6 @@ curl https://api.growthbook.io/api/v1/code-refs \
 |» » lines|body|string|true|none|
 |» » flagKey|body|string|true|none|
 |» » contentHash|body|string|true|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|deleteMissing|true|
-|deleteMissing|false|
 
 > Example responses
 
@@ -91386,7 +97893,6 @@ curl https://api.growthbook.io/api/v1/settings \
     "loseRisk": 0,
     "secureAttributeSalt": "string",
     "killswitchConfirmation": true,
-    "featureKillSwitchBehavior": "off",
     "requireReviews": [
       {
         "requireReviewOn": true,
@@ -91418,6 +97924,24 @@ curl https://api.growthbook.io/api/v1/settings \
           "blockSelfApproval": true,
           "autopublishOnApproval": true,
           "requiredApproverTeams": [
+            "string"
+          ]
+        }
+      ],
+      "sdkConnections": [
+        {
+          "required": true,
+          "projects": [
+            "string"
+          ],
+          "resetReviewOnChange": true,
+          "requireMetadataReview": true,
+          "blockSelfApproval": true,
+          "autopublishOnApproval": true,
+          "requiredApproverTeams": [
+            "string"
+          ],
+          "environments": [
             "string"
           ]
         }
@@ -91519,6 +98043,24 @@ curl https://api.growthbook.io/api/v1/settings/approvals \
             "string"
           ]
         }
+      ],
+      "sdkConnections": [
+        {
+          "required": true,
+          "projects": [
+            "string"
+          ],
+          "resetReviewOnChange": true,
+          "requireMetadataReview": true,
+          "blockSelfApproval": true,
+          "autopublishOnApproval": true,
+          "requiredApproverTeams": [
+            "string"
+          ],
+          "environments": [
+            "string"
+          ]
+        }
       ]
     },
     "targetingReviewMode": [
@@ -91534,7 +98076,7 @@ curl https://api.growthbook.io/api/v1/settings/approvals \
 
 `PUT /v1/settings/approvals`
 
-Replace the approval requirements for feature flags, configs and constants, for saved groups, and the Targeting Projects review mode. Each family is replaced wholesale when supplied; omit one to leave it unchanged.
+Replace the approval requirements for feature flags, configs and constants, for saved groups, for SDK connections, and the Targeting Projects review mode. Each family is replaced wholesale when supplied; omit one to leave it unchanged.
 
 > Body parameter
 
@@ -91574,6 +98116,24 @@ Replace the approval requirements for feature flags, configs and constants, for 
           "string"
         ]
       }
+    ],
+    "sdkConnections": [
+      {
+        "required": true,
+        "projects": [
+          "string"
+        ],
+        "resetReviewOnChange": true,
+        "requireMetadataReview": true,
+        "blockSelfApproval": true,
+        "autopublishOnApproval": true,
+        "requiredApproverTeams": [
+          "string"
+        ],
+        "environments": [
+          "string"
+        ]
+      }
     ]
   },
   "targetingReviewMode": [
@@ -91594,7 +98154,8 @@ Replace the approval requirements for feature flags, configs and constants, for 
 |body|body|object|true|none|
 |» requireReviews|body|[[RequireReviewRuleInput](#schemarequirereviewruleinput)]|false|none|
 |» approvalFlows|body|object|false|none|
-|» » savedGroups|body|[[SavedGroupApprovalRule](#schemasavedgroupapprovalrule)]|true|none|
+|» » savedGroups|body|[[SavedGroupApprovalRule](#schemasavedgroupapprovalrule)]|false|none|
+|» » sdkConnections|body|[[SdkConnectionApprovalRule](#schemasdkconnectionapprovalrule)]|false|none|
 |» targetingReviewMode|body|[[TargetingReviewRule](#schematargetingreviewrule)]|false|none|
 
 > Example responses
@@ -91634,6 +98195,24 @@ Replace the approval requirements for feature flags, configs and constants, for 
         "blockSelfApproval": true,
         "autopublishOnApproval": true,
         "requiredApproverTeams": [
+          "string"
+        ]
+      }
+    ],
+    "sdkConnections": [
+      {
+        "required": true,
+        "projects": [
+          "string"
+        ],
+        "resetReviewOnChange": true,
+        "requireMetadataReview": true,
+        "blockSelfApproval": true,
+        "autopublishOnApproval": true,
+        "requiredApproverTeams": [
+          "string"
+        ],
+        "environments": [
           "string"
         ]
       }
@@ -92340,6 +98919,102 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, basicAuth
 </aside>
 
+## List confirmations
+
+<a id="opIdlistConfirmations"></a>
+
+> Code samples
+
+```bash
+curl https://api.growthbook.io/api/v1/confirmations \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/confirmations`
+
+Lists the held requests made by this API key, or by any token of the same person, newest first. Returns pending ones unless `status` is set.
+
+<h3 id="list-confirmations-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|The number of items to return|
+|offset|query|integer|false|How many items to skip (use in conjunction with limit for pagination)|
+|status|query|string|false|Only return confirmations with this status|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|completed|
+|status|rejected|
+|status|expired|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "confirmations": [
+    {
+      "id": "string",
+      "status": "pending",
+      "actions": [
+        {
+          "action": "feature.create",
+          "environments": [
+            "string"
+          ]
+        }
+      ],
+      "summary": "string",
+      "url": "string",
+      "expiresAt": "string",
+      "response": {
+        "status": 0,
+        "body": null
+      },
+      "note": "string"
+    }
+  ],
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "total": 0,
+  "hasMore": true,
+  "nextOffset": 0
+}
+```
+
+<h3 id="list-confirmations-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+
+<h3 id="list-confirmations-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|confirmations|[[Confirmation](#schemaconfirmation)]|true|none|none|
+|limit|integer|true|none|none|
+|offset|integer|true|none|none|
+|count|integer|true|none|none|
+|total|integer|true|none|none|
+|hasMore|boolean|true|none|none|
+|nextOffset|integer \| null|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, basicAuth
+</aside>
+
 ## Get a confirmation
 
 <a id="opIdgetConfirmation"></a>
@@ -92972,8 +99647,6 @@ Status Code **200**
 |*anonymous*|[object]|false|none|none|
 |» variationId|string|true|none|none|
 |» weight|number \| null|true|none|none|
-|» » *anyOf*|number|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» *anyOf*|null|false|none|none|
 |results|object \| null|true|none|none|
 |» *anyOf*|object|false|none|none|
@@ -92994,22 +99667,12 @@ Status Code **200**
 |» » » variationId|string|true|none|none|
 |» » » variationName|string|false|none|none|
 |» » » weight|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » mean|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » users|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» leaves|[object]|true|none|none|
 |» » leafId|integer|true|none|none|
 |» » updateMessage|string \| null|true|none|none|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
 |» » error|string \| null|true|none|none|
-|» » » *anyOf*|string|false|none|none|
-|» » » *anyOf*|null|false|none|none|
 |» » clauses|[object]|true|none|none|
 |» » » attribute|string|true|none|none|
 |» » » levels|[string]|true|none|none|
@@ -93018,20 +99681,10 @@ Status Code **200**
 |» » » variationId|string|true|none|none|
 |» » » variationName|string|false|none|none|
 |» » » weight|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » bestArmProbability|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » users|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » mean|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » variance|number \| null|true|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » contexts|[object]|true|none|none|
 |» » » attributes|object|true|none|none|
 |» » » » **additionalProperties**|string|false|none|none|
@@ -93039,14 +99692,8 @@ Status Code **200**
 |» » » » variationId|string|true|none|none|
 |» » » » variationName|string|false|none|none|
 |» » » » users|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » mean|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » variance|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» snapshotId|string|true|none|none|
 |» dateCreated|string|true|none|none|
 |» health|object \| null|true|none|none|
@@ -93081,8 +99728,6 @@ Status Code **200**
 |» » » » » expected|[number]|true|none|none|
 |» » » *anyOf*|null|false|none|none|
 |» » multipleExposures|number \| null|true|none|none|
-|» » » *anyOf*|number|false|none|none|
-|» » » *anyOf*|null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» *anyOf*|null|false|none|none|
 |latest|object \| null|true|none|none|
@@ -93095,8 +99740,6 @@ Status Code **200**
 |» » status|string|true|none|none|
 |» » name|string|true|none|none|
 |» runStarted|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» dateCreated|string|true|none|none|
 |» multipleExposures|number|true|none|none|
 |» type|string|true|none|none|
@@ -93195,8 +99838,6 @@ Status Code **200**
 |» » status|string|true|none|none|
 |» » name|string|true|none|none|
 |» runStarted|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» dateCreated|string|true|none|none|
 |» multipleExposures|number|true|none|none|
 |» type|string|true|none|none|
@@ -93356,8 +99997,6 @@ Replaces every `contextual-bandit-ref` rule pointing at this contextual bandit o
 |» » variationId|body|string|true|Id of the Contextual Bandit variation.|
 |» » value|body|string|true|Feature value served for this variation.|
 |» » config|body|string \| null|false|Key of the config backing this value, or null when the value is not config-backed. The config supplies the base JSON (and its schema); the value is an override patch merged on top.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» description|body|string|false|none|
 |» enabled|body|boolean|false|none|
 |» allEnvironments|body|boolean|false|Apply the rule in every environment. Defaults to true.|
@@ -93548,8 +100187,6 @@ Adds a `contextual-bandit-ref` rule to the bottom of the feature's rule list and
 |» » variationId|body|string|true|Id of the Contextual Bandit variation.|
 |» » value|body|string|true|Feature value served for this variation.|
 |» » config|body|string \| null|false|Key of the config backing this value, or null when the value is not config-backed. The config supplies the base JSON (and its schema); the value is an override patch merged on top.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» description|body|string|false|none|
 |» enabled|body|boolean|false|none|
 |» allEnvironments|body|boolean|false|Apply the rule in every environment. Defaults to true.|
@@ -93683,7 +100320,7 @@ Removes every `contextual-bandit-ref` rule pointing at this contextual bandit fr
 |---|---|---|---|---|
 |id|path|string|true|The Contextual Bandit id|
 |featureId|path|string|true|The linked feature id|
-|autoPublish|query|string \| boolean|false|Publish the resulting revision immediately instead of leaving it as a draft.|
+|autoPublish|query|boolean|false|Publish the resulting revision immediately instead of leaving it as a draft.|
 |draftVersion|query|integer|false|Remove the rule from this existing draft revision instead of live. Required when the rule hasn't been published yet — omitting it targets the live revision, which has nothing to remove.|
 
 > Example responses
@@ -93745,8 +100382,6 @@ Status Code **200**
 |featureId|string|true|none|none|
 |removedRuleIds|[string]|true|none|none|
 |revisionVersion|number \| null|true|none|none|
-|» *anyOf*|number|false|none|none|
-|» *anyOf*|null|false|none|none|
 |published|boolean|true|none|none|
 
 ### Response Headers
@@ -94045,8 +100680,6 @@ curl https://api.growthbook.io/api/v1/contextual-bandits/string \
 |» burnInValue|body|number|false|none|
 |» burnInUnit|body|string|false|none|
 |» conversionWindowValue|body|number \| null|false|none|
-|» » *anyOf*|body|number|false|none|
-|» » *anyOf*|body|null|false|none|
 |» conversionWindowUnit|body|string \| null|false|none|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -96205,17 +102838,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|false|none|
 |» » projects|body|[string]|false|none|
 |» » experimentSearchString|body|string|false|none|
@@ -96225,22 +102852,16 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » previousTimeFrame|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» blocks|body|[object]|false|none|
 |» » *anyOf*|body|object|false|none|
 |» » id|body|string|true|none|
 |» » *anyOf*|body|object|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96255,7 +102876,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96274,7 +102895,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96302,7 +102923,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96321,31 +102942,19 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » startDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » endDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » columns|body|[object]|false|none|
 |» » » id|body|string|true|none|
 |» » » visible|body|boolean|true|none|
@@ -96356,7 +102965,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96370,17 +102979,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -96389,17 +102992,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
@@ -96408,7 +103005,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96422,17 +103019,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -96441,17 +103032,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
@@ -96460,7 +103045,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96474,17 +103059,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -96493,17 +103072,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
@@ -96512,7 +103085,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96541,7 +103114,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96568,7 +103141,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96585,7 +103158,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96602,7 +103175,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96623,25 +103196,17 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonMetricAnalysisId|body|string|false|none|
 |» » analysisSettings|body|object|true|none|
 |» » » userIdType|body|string|true|none|
 |» » » lookbackDays|body|number|true|none|
 |» » » populationType|body|string|true|none|
 |» » » populationId|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » additionalNumeratorFilters|body|[string]|false|none|
 |» » » additionalDenominatorFilters|body|[string]|false|none|
 |» » » startDate|body|string|true|none|
@@ -96649,7 +103214,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96666,40 +103231,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -96711,17 +103266,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -96739,18 +103288,14 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » metricId|body|string|true|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » denominatorUnit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
-|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » » » showAs|body|string|false|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96767,40 +103312,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -96812,17 +103347,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -96832,8 +103361,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » factTableId|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » values|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » rowFilters|body|[object]|true|none|
@@ -96843,16 +103370,12 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96869,40 +103392,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -96914,17 +103427,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -96947,16 +103454,12 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -96973,40 +103476,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97018,17 +103511,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97038,8 +103525,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » unit|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » steps|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » factTableId|body|string|true|none|
@@ -97056,13 +103541,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » concurrencyWindowSeconds|body|integer|false|none|
 |» » » » yAxisScale|body|string|false|none|
 |» » linkedFunnelMetricId|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97079,40 +103562,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97124,17 +103597,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97145,8 +103612,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » type|body|string|true|none|
 |» » » » sql|body|string|true|none|
 |» » » » timestampColumn|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » columnTypes|body|object|true|none|
 |» » » » » **additionalProperties**|body|string|false|none|
 |» » » » values|body|[object]|true|none|
@@ -97158,18 +103623,14 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » hiddenColumns|body|[string]|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» » id|body|string|true|none|
 |» » uid|body|string|false|none|
 |» » organization|body|string|false|none|
 |» » *anyOf*|body|object|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97181,7 +103642,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » h|body|integer|true|none|
 |» » » static|body|boolean|false|none|
 |» » content|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97197,7 +103658,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » showHypothesis|body|boolean|true|none|
 |» » showVariationImages|body|boolean|true|none|
 |» » variationIds|body|[string]|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97222,7 +103683,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97241,31 +103702,19 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » startDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » endDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » columns|body|[object]|false|none|
 |» » » id|body|string|true|none|
 |» » » visible|body|boolean|true|none|
@@ -97273,7 +103722,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97287,17 +103736,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -97306,23 +103749,17 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » metricId|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97336,17 +103773,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -97355,23 +103786,17 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » showProjectBreakdown|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97385,17 +103810,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -97404,23 +103823,17 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » dateGranularity|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97446,7 +103859,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97470,7 +103883,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97484,7 +103897,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » experimentId|body|string|true|none|
 |» » showTable|body|boolean|true|none|
 |» » showTimeseries|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97498,7 +103911,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » savedQueryId|body|string|true|none|
 |» » dataVizConfigIndex|body|number|false|none|
 |» » blockConfig|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97519,30 +103932,22 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonMetricAnalysisId|body|string|false|none|
 |» » analysisSettings|body|object|true|none|
 |» » » userIdType|body|string|true|none|
 |» » » lookbackDays|body|number|true|none|
 |» » » populationType|body|string|true|none|
 |» » » populationId|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » additionalNumeratorFilters|body|[string]|false|none|
 |» » » additionalDenominatorFilters|body|[string]|false|none|
 |» » » startDate|body|string|true|none|
 |» » » endDate|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97559,40 +103964,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97604,17 +103999,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97632,15 +104021,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » metricId|body|string|true|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » denominatorUnit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
-|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » » » showAs|body|string|false|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97657,40 +104042,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97702,17 +104077,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97722,8 +104091,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » factTableId|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » values|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » rowFilters|body|[object]|true|none|
@@ -97733,13 +104100,9 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97756,40 +104119,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97801,17 +104154,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97834,13 +104181,9 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97857,40 +104200,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -97902,17 +104235,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -97922,8 +104249,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » unit|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » steps|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » factTableId|body|string|true|none|
@@ -97940,10 +104265,8 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » concurrencyWindowSeconds|body|integer|false|none|
 |» » » » yAxisScale|body|string|false|none|
 |» » linkedFunnelMetricId|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -97960,40 +104283,30 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -98005,17 +104318,11 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -98026,8 +104333,6 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » type|body|string|true|none|
 |» » » » sql|body|string|true|none|
 |» » » » timestampColumn|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » columnTypes|body|object|true|none|
 |» » » » » **additionalProperties**|body|string|false|none|
 |» » » » values|body|[object]|true|none|
@@ -98039,11 +104344,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » hiddenColumns|body|[string]|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization. Omit to leave the current owner unchanged.|
@@ -98359,6 +104660,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -98383,6 +104685,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » » operator|saved_filter|
 |» » » » » showAs|total|
 |» » » » » showAs|per_unit|
+|» » » » » showAs|percent_of_population|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -98454,6 +104757,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -98550,6 +104854,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -98651,6 +104956,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -98750,6 +105056,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -99046,6 +105353,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -99070,6 +105378,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » » operator|saved_filter|
 |» » » » » showAs|total|
 |» » » » » showAs|per_unit|
+|» » » » » showAs|percent_of_population|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -99141,6 +105450,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -99237,6 +105547,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -99338,6 +105649,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -99437,6 +105749,7 @@ curl https://api.growthbook.io/api/v1/dashboards/string \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -100029,17 +106342,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » dateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|false|none|
 |» » projects|body|[string]|false|none|
 |» » experimentSearchString|body|string|false|none|
@@ -100049,19 +106356,13 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » previousTimeFrame|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» blocks|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100073,7 +106374,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » h|body|integer|true|none|
 |» » » static|body|boolean|false|none|
 |» » content|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100089,7 +106390,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » showHypothesis|body|boolean|true|none|
 |» » showVariationImages|body|boolean|true|none|
 |» » variationIds|body|[string]|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100114,7 +106415,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100133,31 +106434,19 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » startDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » endDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » columns|body|[object]|false|none|
 |» » » id|body|string|true|none|
 |» » » visible|body|boolean|true|none|
@@ -100165,7 +106454,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100179,17 +106468,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -100198,23 +106481,17 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » metricId|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100228,17 +106505,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -100247,23 +106518,17 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » showProjectBreakdown|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100277,17 +106542,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -100296,23 +106555,17 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » dateGranularity|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100338,7 +106591,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100362,7 +106615,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100376,7 +106629,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » experimentId|body|string|true|none|
 |» » showTable|body|boolean|true|none|
 |» » showTimeseries|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100390,7 +106643,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » savedQueryId|body|string|true|none|
 |» » dataVizConfigIndex|body|number|false|none|
 |» » blockConfig|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100411,30 +106664,22 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonMetricAnalysisId|body|string|false|none|
 |» » analysisSettings|body|object|true|none|
 |» » » userIdType|body|string|true|none|
 |» » » lookbackDays|body|number|true|none|
 |» » » populationType|body|string|true|none|
 |» » » populationId|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » additionalNumeratorFilters|body|[string]|false|none|
 |» » » additionalDenominatorFilters|body|[string]|false|none|
 |» » » startDate|body|string|true|none|
 |» » » endDate|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100451,40 +106696,30 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -100496,17 +106731,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -100524,15 +106753,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » type|body|string|true|none|
 |» » » » » metricId|body|string|true|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » denominatorUnit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
-|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » » » showAs|body|string|false|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100549,40 +106774,30 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -100594,17 +106809,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -100614,8 +106823,6 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » factTableId|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » values|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » rowFilters|body|[object]|true|none|
@@ -100625,13 +106832,9 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100648,40 +106851,30 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -100693,17 +106886,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -100726,13 +106913,9 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100749,40 +106932,30 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -100794,17 +106967,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -100814,8 +106981,6 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » unit|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » steps|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » factTableId|body|string|true|none|
@@ -100832,10 +106997,8 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » concurrencyWindowSeconds|body|integer|false|none|
 |» » » » yAxisScale|body|string|false|none|
 |» » linkedFunnelMetricId|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -100852,40 +107015,30 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -100897,17 +107050,11 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -100918,8 +107065,6 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » type|body|string|true|none|
 |» » » » sql|body|string|true|none|
 |» » » » timestampColumn|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » columnTypes|body|object|true|none|
 |» » » » » **additionalProperties**|body|string|false|none|
 |» » » » values|body|[object]|true|none|
@@ -100931,11 +107076,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » hiddenColumns|body|[string]|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 
@@ -101250,6 +107391,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -101274,6 +107416,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » » operator|saved_filter|
 |» » » » » showAs|total|
 |» » » » » showAs|per_unit|
+|» » » » » showAs|percent_of_population|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -101345,6 +107488,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -101441,6 +107585,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -101542,6 +107687,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -101641,6 +107787,7 @@ This endpoint does not accept an `owner` and always assigns the dashboard to the
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -101994,17 +108141,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » dateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|false|none|
 |» » projects|body|[string]|false|none|
 |» » experimentSearchString|body|string|false|none|
@@ -102014,19 +108155,13 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » previousTimeFrame|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» blocks|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102038,7 +108173,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » h|body|integer|true|none|
 |» » » static|body|boolean|false|none|
 |» » content|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102054,7 +108189,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » showHypothesis|body|boolean|true|none|
 |» » showVariationImages|body|boolean|true|none|
 |» » variationIds|body|[string]|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102079,7 +108214,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102098,31 +108233,19 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » startDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » endDateRange|body|object|false|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » columns|body|[object]|false|none|
 |» » » id|body|string|true|none|
 |» » » visible|body|boolean|true|none|
@@ -102130,7 +108253,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102144,17 +108267,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -102163,23 +108280,17 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » metricId|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102193,17 +108304,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -102212,23 +108317,17 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » showProjectBreakdown|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102242,17 +108341,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » dateRange|body|object|true|none|
 |» » » predefined|body|string|true|none|
 |» » » lookbackValue|body|number \| null|false|none|
-|» » » » *anyOf*|body|number|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » lookbackUnit|body|string \| null|false|none|
 |» » » » *anyOf*|body|string|false|none|
 |» » » » *anyOf*|body|null|false|none|
 |» » » startDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » endDate|body|string \| null|false|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » projects|body|[string]|true|none|
 |» » experimentSearchString|body|string|false|none|
 |» » comparison|body|object|false|none|
@@ -102261,23 +108354,17 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » » projects|body|boolean|false|none|
 |» » » experimentSearchString|body|boolean|false|none|
 |» » dateGranularity|body|string|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102303,7 +108390,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102327,7 +108414,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » sortDirection|body|string \| null|true|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102341,7 +108428,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » experimentId|body|string|true|none|
 |» » showTable|body|boolean|true|none|
 |» » showTimeseries|body|boolean|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102355,7 +108442,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » savedQueryId|body|string|true|none|
 |» » dataVizConfigIndex|body|number|false|none|
 |» » blockConfig|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102376,30 +108463,22 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonMetricAnalysisId|body|string|false|none|
 |» » analysisSettings|body|object|true|none|
 |» » » userIdType|body|string|true|none|
 |» » » lookbackDays|body|number|true|none|
 |» » » populationType|body|string|true|none|
 |» » » populationId|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » additionalNumeratorFilters|body|[string]|false|none|
 |» » » additionalDenominatorFilters|body|[string]|false|none|
 |» » » startDate|body|string|true|none|
 |» » » endDate|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102416,40 +108495,30 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -102461,17 +108530,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -102489,15 +108552,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » type|body|string|true|none|
 |» » » » » metricId|body|string|true|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » denominatorUnit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
-|» » » » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » » » showAs|body|string|false|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » » » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102514,40 +108573,30 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -102559,17 +108608,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -102579,8 +108622,6 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » factTableId|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » values|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » rowFilters|body|[object]|true|none|
@@ -102590,13 +108631,9 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102613,40 +108650,30 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -102658,17 +108685,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -102691,13 +108712,9 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102714,40 +108731,30 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -102759,17 +108766,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -102779,8 +108780,6 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dataset|body|object|true|none|
 |» » » » type|body|string|true|none|
 |» » » » unit|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » steps|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
 |» » » » » factTableId|body|string|true|none|
@@ -102797,10 +108796,8 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » concurrencyWindowSeconds|body|integer|false|none|
 |» » » » yAxisScale|body|string|false|none|
 |» » linkedFunnelMetricId|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » title|body|string|true|none|
 |» » description|body|string|true|none|
@@ -102817,40 +108814,30 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » previousTimeFrame|body|object|false|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » comparisonExplorerAnalysisId|body|string|false|none|
 |» » globalControlSettings|body|object|false|none|
 |» » » dateRange|body|boolean|false|none|
 |» » config|body|object|true|none|
 |» » » datasource|body|string|true|ID of the datasource to query|
 |» » » dimensions|body|[object]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » dateGranularity|body|string|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » maxValues|body|number|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » column|body|string|true|none|
 |» » » » values|body|[string]|true|none|
-|» » » » *anyOf*|body|object|false|none|
+|» » » » *oneOf*|body|object|false|none|
 |» » » » dimensionType|body|string|true|none|
 |» » » » slices|body|[object]|true|none|
 |» » » » » name|body|string|true|none|
@@ -102862,17 +108849,11 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » dateRange|body|object|true|none|
 |» » » » predefined|body|string|true|none|
 |» » » » lookbackValue|body|number \| null|false|none|
-|» » » » » *anyOf*|body|number|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » lookbackUnit|body|string \| null|false|none|
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » startDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » endDate|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » » chartSettings|body|object|false|none|
 |» » » » categoryAxisLabel|body|string|false|none|
@@ -102883,8 +108864,6 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » type|body|string|true|none|
 |» » » » sql|body|string|true|none|
 |» » » » timestampColumn|body|string \| null|true|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » columnTypes|body|object|true|none|
 |» » » » » **additionalProperties**|body|string|false|none|
 |» » » » values|body|[object]|true|none|
@@ -102896,11 +108875,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » type|body|string|true|none|
 |» » » » » valueType|body|string|true|none|
 |» » » » » valueColumn|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » » unit|body|string \| null|true|none|
-|» » » » » » *anyOf*|body|string|false|none|
-|» » » » » » *anyOf*|body|null|false|none|
 |» » » » hiddenColumns|body|[string]|false|none|
 |» » explorerAnalysisId|body|string|false|The exploration run this block renders. Omit it to send `config` alone and have the query run when the dashboard is written.|
 |» owner|body|string|false|The userId or email address of the owner. If an email address is provided, it will be used to look up the userId of the matching organization member. If an ID is provided, it will be validated as existing in the organization. Optional when authenticating with a Personal Access Token (PAT): when omitted, the owner defaults to the PAT's user. Required when authenticating with an organization secret API key (which has no associated user): omitting it fails with a 400. A private dashboard created with an organization secret API key can only be retrieved or updated using its owner's Personal Access Token (PAT).|
@@ -103216,6 +109191,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -103240,6 +109216,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » » operator|saved_filter|
 |» » » » » showAs|total|
 |» » » » » showAs|per_unit|
+|» » » » » showAs|percent_of_population|
 |» » » mode|previousPeriod|
 |» » » mode|previousPeriodMatchDayOfWeek|
 |» » » mode|previousYear|
@@ -103311,6 +109288,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -103407,6 +109385,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -103508,6 +109487,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » » operator|=|
 |» » » » » » operator|!=|
 |» » » » » » operator|<|
@@ -103607,6 +109587,7 @@ curl https://api.growthbook.io/api/v2/dashboards \
 |» » » » » *anyOf*|month|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 |» » » » » **additionalProperties**|string|
 |» » » » » **additionalProperties**|number|
 |» » » » » **additionalProperties**|date|
@@ -105346,9 +111327,9 @@ Archive an interleaving experiment by setting `archived`. Use the start and stop
 |» metrics|body|[object]|false|none|
 |» » id|body|string|true|none|
 |» » analyses|body|[object]|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
 |» » » attribution|body|string|true|none|
 |» coverage|body|number|false|none|
@@ -106068,9 +112049,9 @@ curl https://api.growthbook.io/api/v1/interleavings \
 |» metrics|body|[object]|false|none|
 |» » id|body|string|true|none|
 |» » analyses|body|[object]|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
 |» » » attribution|body|string|true|none|
 |» coverage|body|number|false|none|
@@ -108553,7 +114534,7 @@ curl https://api.growthbook.io/api/v1/teams/string \
 |» » » environments|body|[string]|true|none|
 |» » project|body|string|true|none|
 |» managedBy|body|object|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » resourceId|body|string|true|none|
 |» defaultProject|body|string|false|none|
@@ -108958,7 +114939,7 @@ curl https://api.growthbook.io/api/v1/teams \
 |» » » environments|body|[string]|true|none|
 |» » project|body|string|true|none|
 |» managedBy|body|object|false|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » type|body|string|true|none|
 |» » resourceId|body|string|true|none|
 |» defaultProject|body|string|false|none|
@@ -109588,8 +115569,6 @@ curl https://api.growthbook.io/api/v1/experiment-templates/string \
 |» exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» isClusterExperiment|body|boolean|false|none|
 |» clusterSubUnitIdentifier|body|string|false|none|
@@ -110162,8 +116141,6 @@ curl https://api.growthbook.io/api/v1/experiment-templates \
 |» exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» isClusterExperiment|body|boolean|false|none|
 |» clusterSubUnitIdentifier|body|string|false|none|
@@ -110541,8 +116518,6 @@ curl https://api.growthbook.io/api/v1/experiment-templates/bulk-import \
 |» » » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » » isClusterExperiment|body|boolean|false|none|
 |» » » clusterSubUnitIdentifier|body|string|false|none|
@@ -110708,13 +116683,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
         }
       ],
       "population": {
-        "source": {
-          "type": "factTable",
-          "factTableId": "string"
-        },
-        "rowFilters": [],
-        "aggregateFilter": "string",
-        "aggregateFilterColumn": "string",
+        "populationId": "string",
         "unit": "string"
       }
     }
@@ -110772,13 +116741,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
       }
     ],
     "population": {
-      "source": {
-        "type": "factTable",
-        "factTableId": "string"
-      },
-      "rowFilters": [],
-      "aggregateFilter": "string",
-      "aggregateFilterColumn": "string",
+      "populationId": "string",
       "unit": "string"
     }
   }
@@ -110793,23 +116756,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -110821,17 +116780,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -110849,13 +116802,9 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » » type|body|string|true|none|
 |» » » metricId|body|string|true|none|
 |» » » unit|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » denominatorUnit|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
-|» » » showAs|body|string|false|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » showAs|body|string|false|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » population|body|[ExplorationPopulation](#schemaexplorationpopulation)|false|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 
 #### Enumerated Values
 
@@ -110917,6 +116866,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » » » operator|=|
 |» » » » operator|!=|
 |» » » » operator|<|
@@ -110941,6 +116891,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
 |» » » » operator|saved_filter|
 |» » » showAs|total|
 |» » » showAs|per_unit|
+|» » » showAs|percent_of_population|
 
 > Example responses
 
@@ -111042,13 +116993,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/metric-exploration \
           }
         ],
         "population": {
-          "source": {
-            "type": "factTable",
-            "factTableId": "string"
-          },
-          "rowFilters": [],
-          "aggregateFilter": "string",
-          "aggregateFilterColumn": "string",
+          "populationId": "string",
           "unit": "string"
         }
       }
@@ -111099,37 +117044,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -111141,23 +117074,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -111169,17 +117098,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -111197,13 +117120,9 @@ Status Code **200**
 |» » » » type|string|true|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » unit|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominatorUnit|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
-|» » » » showAs|string|false|none|How a mean metric renders: `total` sums the numerator, `per_unit` divides it by the unit count. Ignored for other metric types. Omit to use the default (`per_unit` for `max` and `count distinct` aggregations, otherwise `total`).|
-|» » » population|[ExplorationPopulation](#schemaexplorationpopulation)|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. A population applied to every metric in the request. Only proportion metrics on the population's Fact Table are supported; the request is rejected if any metric is incompatible.|
+|» » » » showAs|string|false|none|How a metric renders: `total` sums the numerator, `per_unit` divides it by the unit count (mean metrics only), and `percent_of_population` divides it by the population's member count as a percentage (proportion metrics with a population only). Ignored for other metric types. Omit to use the default (`per_unit` for mean metrics with `max` and `count distinct` aggregations, `percent_of_population` for proportion metrics with a population, otherwise `total`).|
+|» » » population|[ExplorationPopulation](#schemaexplorationpopulation)|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. A saved Population applied to every metric in the request. Only proportion and mean metrics on the Population's Fact Table are supported, and mean metrics can't use percentile capping; the request is rejected if any metric is incompatible.|
 |» *anyOf*|null|false|none|none|
 |query|[Query](#schemaquery) \| null|true|none|none|
 |» *anyOf*|[Query](#schemaquery)|false|none|none|
@@ -111275,6 +117194,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » » » operator|=|
 |» » » » » operator|!=|
 |» » » » » operator|<|
@@ -111299,6 +117219,7 @@ Status Code **200**
 |» » » » » operator|saved_filter|
 |» » » » showAs|total|
 |» » » » showAs|per_unit|
+|» » » » showAs|percent_of_population|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -111428,23 +117349,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -111456,17 +117373,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -111476,8 +117387,6 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
 |» » factTableId|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » values|body|[object]|true|none|
 |» » » name|body|string|true|none|
 |» » » rowFilters|body|[object]|true|none|
@@ -111487,11 +117396,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |» » » type|body|string|true|none|
 |» » » valueType|body|string|true|none|
 |» » » valueColumn|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » unit|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 
 #### Enumerated Values
 
@@ -111553,6 +117458,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/fact-table-exploration \
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » » » operator|=|
 |» » » » operator|!=|
 |» » » » operator|<|
@@ -111726,37 +117632,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -111768,23 +117662,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -111796,17 +117686,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -111816,8 +117700,6 @@ Status Code **200**
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
 |» » » factTableId|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|true|none|none|
 |» » » » name|string|true|none|none|
 |» » » » rowFilters|[object]|true|none|none|
@@ -111827,11 +117709,7 @@ Status Code **200**
 |» » » » type|string|true|none|none|
 |» » » » valueType|string|true|none|none|
 |» » » » valueColumn|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » unit|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» *anyOf*|null|false|none|none|
 |query|[Query](#schemaquery) \| null|true|none|none|
 |» *anyOf*|[Query](#schemaquery)|false|none|none|
@@ -111903,6 +117781,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » » » operator|=|
 |» » » » » operator|!=|
 |» » » » » operator|<|
@@ -112069,23 +117948,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -112097,17 +117972,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -112130,11 +117999,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
 |» » » type|body|string|true|none|
 |» » » valueType|body|string|true|none|
 |» » » valueColumn|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » unit|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 
 #### Enumerated Values
 
@@ -112196,6 +118061,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/data-source-exploration 
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » » **additionalProperties**|string|
 |» » » **additionalProperties**|number|
 |» » » **additionalProperties**|date|
@@ -112380,37 +118246,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -112422,23 +118276,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -112450,17 +118300,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -112483,11 +118327,7 @@ Status Code **200**
 |» » » » type|string|true|none|none|
 |» » » » valueType|string|true|none|none|
 |» » » » valueColumn|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » unit|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» *anyOf*|null|false|none|none|
 |query|[Query](#schemaquery) \| null|true|none|none|
 |» *anyOf*|[Query](#schemaquery)|false|none|none|
@@ -112559,6 +118399,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » » **additionalProperties**|string|
 |» » » » **additionalProperties**|number|
 |» » » » **additionalProperties**|date|
@@ -112734,23 +118575,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -112762,17 +118599,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -112783,8 +118614,6 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |» » type|body|string|true|none|
 |» » sql|body|string|true|none|
 |» » timestampColumn|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » columnTypes|body|object|true|none|
 |» » » **additionalProperties**|body|string|false|none|
 |» » values|body|[object]|true|none|
@@ -112796,11 +118625,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |» » » type|body|string|true|none|
 |» » » valueType|body|string|true|none|
 |» » » valueColumn|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » » unit|body|string \| null|true|none|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » hiddenColumns|body|[string]|false|none|
 
 #### Enumerated Values
@@ -112863,6 +118688,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/sql-exploration \
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » » **additionalProperties**|string|
 |» » » **additionalProperties**|number|
 |» » » **additionalProperties**|date|
@@ -113049,37 +118875,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -113091,23 +118905,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -113119,17 +118929,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -113140,8 +118944,6 @@ Status Code **200**
 |» » » type|string|true|none|none|
 |» » » sql|string|true|none|none|
 |» » » timestampColumn|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » columnTypes|object|true|none|none|
 |» » » » **additionalProperties**|string|false|none|none|
 |» » » values|[object]|true|none|none|
@@ -113153,11 +118955,7 @@ Status Code **200**
 |» » » » type|string|true|none|none|
 |» » » » valueType|string|true|none|none|
 |» » » » valueColumn|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » unit|string \| null|true|none|none|
-|» » » » » *anyOf*|string|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » hiddenColumns|[string]|false|none|none|
 |» *anyOf*|null|false|none|none|
 |query|[Query](#schemaquery) \| null|true|none|none|
@@ -113230,6 +119028,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » » **additionalProperties**|string|
 |» » » » **additionalProperties**|number|
 |» » » » **additionalProperties**|date|
@@ -113397,23 +119196,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -113425,17 +119220,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -113445,8 +119234,6 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
 |» » unit|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » steps|body|[object]|true|none|
 |» » » name|body|string|true|none|
 |» » » factTableId|body|string|true|none|
@@ -113523,6 +119310,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/funnel-exploration \
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » » » operator|=|
 |» » » » operator|!=|
 |» » » » operator|<|
@@ -113703,37 +119491,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -113745,23 +119521,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -113773,17 +119545,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -113793,8 +119559,6 @@ Status Code **200**
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
 |» » » unit|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » steps|[object]|true|none|none|
 |» » » » name|string|true|none|none|
 |» » » » factTableId|string|true|none|none|
@@ -113881,6 +119645,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » » » operator|=|
 |» » » » » operator|!=|
 |» » » » » operator|<|
@@ -114068,23 +119833,19 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
 |body|body|object|true|none|
 |» datasource|body|string|true|ID of the datasource to query|
 |» dimensions|body|[object]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » dateGranularity|body|string|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » maxValues|body|number|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » column|body|string|true|none|
 |» » values|body|[string]|true|none|
-|» » *anyOf*|body|object|false|none|
+|» » *oneOf*|body|object|false|none|
 |» » dimensionType|body|string|true|none|
 |» » slices|body|[object]|true|none|
 |» » » name|body|string|true|none|
@@ -114096,17 +119857,11 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
 |» dateRange|body|object|true|none|
 |» » predefined|body|string|true|none|
 |» » lookbackValue|body|number \| null|false|none|
-|» » » *anyOf*|body|number|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » lookbackUnit|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » startDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » endDate|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» showAs|body|string|false|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» chartSettings|body|object|false|none|
 |» » categoryAxisLabel|body|string|false|none|
@@ -114116,11 +119871,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
 |» dataset|body|object|true|none|
 |» » type|body|string|true|none|
 |» » factTableId|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » unit|body|string \| null|true|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » stepColumns|body|[string]|true|none|
 |» » stepGroups|body|[object]|false|none|
 |» » » column|body|string|true|none|
@@ -114199,6 +119950,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/journey-exploration \
 |» » » *anyOf*|month|
 |» showAs|total|
 |» showAs|per_unit|
+|» showAs|percent_of_population|
 |» » direction|forward|
 |» » direction|backward|
 |» » » operator|=|
@@ -114388,37 +120140,25 @@ Status Code **200**
 |» dateStart|string|true|none|none|
 |» dateEnd|string|true|none|none|
 |» error|string \| null|false|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» result|object|true|none|none|
 |» » rows|[object]|true|none|none|
 |» » » dimensions|[string \| null]|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » values|[object]|false|none|none|
 |» » » » metricId|string|true|none|none|
 |» » » » numerator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » denominator|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » populationCount|number|false|none|**Beta** — this field is new and may change in backwards-incompatible ways. Number of units in the dataset's population for this row. Only present when the request has a population; each value's numerator and denominator keep their usual meaning, limited to population members.|
 |» » » steps|[object]|false|none|none|
 |» » » » count|number|true|none|none|
 |» » » » timeFromPrevSumHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » » timeFromPrevSumSquaresHrs|number \| null|true|none|none|
-|» » » » » *anyOf*|number|false|none|none|
-|» » » » » *anyOf*|null|false|none|none|
 |» » » journey|object|false|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » levels|[string]|true|none|none|
 |» » » » count|number|true|none|none|
-|» » » » *anyOf*|object|false|none|none|
+|» » » » *oneOf*|object|false|none|none|
 |» » » » kind|string|true|none|none|
 |» » » » direction|string|true|none|none|
 |» » » » stepIndex|number|true|none|none|
@@ -114430,23 +120170,19 @@ Status Code **200**
 |» config|object|true|none|none|
 |» » datasource|string|true|none|ID of the datasource to query|
 |» » dimensions|[object]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » dateGranularity|string|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » maxValues|number|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » column|string|true|none|none|
 |» » » values|[string]|true|none|none|
-|» » » *anyOf*|object|false|none|none|
+|» » » *oneOf*|object|false|none|none|
 |» » » dimensionType|string|true|none|none|
 |» » » slices|[object]|true|none|none|
 |» » » » name|string|true|none|none|
@@ -114458,17 +120194,11 @@ Status Code **200**
 |» » dateRange|object|true|none|none|
 |» » » predefined|string|true|none|none|
 |» » » lookbackValue|number \| null|false|none|none|
-|» » » » *anyOf*|number|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » lookbackUnit|string \| null|false|none|none|
 |» » » » *anyOf*|string|false|none|none|
 |» » » » *anyOf*|null|false|none|none|
 |» » » startDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » endDate|string \| null|false|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » showAs|string|false|none|**Deprecated.** Deprecated: use `showAs` on each metric value.|
 |» » chartSettings|object|false|none|none|
 |» » » categoryAxisLabel|string|false|none|none|
@@ -114478,11 +120208,7 @@ Status Code **200**
 |» » dataset|object|true|none|none|
 |» » » type|string|true|none|none|
 |» » » factTableId|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » unit|string \| null|true|none|none|
-|» » » » *anyOf*|string|false|none|none|
-|» » » » *anyOf*|null|false|none|none|
 |» » » stepColumns|[string]|true|none|none|
 |» » » stepGroups|[object]|false|none|none|
 |» » » » column|string|true|none|none|
@@ -114572,6 +120298,7 @@ Status Code **200**
 |» » » » *anyOf*|month|
 |» » showAs|total|
 |» » showAs|per_unit|
+|» » showAs|percent_of_population|
 |» » » direction|forward|
 |» » » direction|backward|
 |» » » » operator|=|
@@ -114670,7 +120397,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |matches|[object]|true|none|none|
-|» *anyOf*|object|false|none|none|
+|» *oneOf*|object|false|none|none|
 |» kind|string|true|none|none|
 |» explorerType|string|true|none|none|
 |» id|string|true|none|none|
@@ -114678,22 +120405,16 @@ Status Code **200**
 |» type|string|true|none|none|
 |» official|boolean|true|none|none|
 |» description|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» owner|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» ownerEmail|string|false|none|none|
 |» tags|[string]|true|none|none|
-|» *anyOf*|object|false|none|none|
+|» *oneOf*|object|false|none|none|
 |» kind|string|true|none|none|
 |» explorerType|string|true|none|none|
 |» id|string|true|none|none|
 |» name|string|true|none|none|
 |» official|boolean|true|none|none|
 |» eventName|string \| null|true|none|none|
-|» » *anyOf*|string|false|none|none|
-|» » *anyOf*|null|false|none|none|
 |» columnCount|integer|true|none|none|
 |totalMetrics|integer|true|none|none|
 |totalFactTables|integer|true|none|none|
@@ -115008,13 +120729,7 @@ curl https://api.growthbook.io/api/v1/product-analytics/explorations/string \
           }
         ],
         "population": {
-          "source": {
-            "type": "factTable",
-            "factTableId": "string"
-          },
-          "rowFilters": [],
-          "aggregateFilter": "string",
-          "aggregateFilterColumn": "string",
+          "populationId": "string",
           "unit": "string"
         }
       }
@@ -115432,8 +121147,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates/string \
 |» » » *anyOf*|body|number|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|When true, this step runs A/B traffic analysis while active. Treatment = [0, coverage), control = [0.5, 0.5+coverage). Arms are equal-sized and non-adjacent: step-ups only add users, never reassign existing ones. The UI caps monitored-step coverage at 0.5 so control end never exceeds 1.0. The SDK uses explicit hash ranges on the experiment rule to prevent bucketing shifts across monitored/unmonitored transitions.|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -115447,8 +121160,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates/string \
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -115460,14 +121171,10 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates/string \
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Ignored: templates never carry force values. Accepted so a schedule's steps can be copied into a template.|
 |» endPatch|body|object|false|none|
 |» » coverage|body|number|false|none|
@@ -115500,8 +121207,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates/string \
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » *anyOf*|body|null|false|none|
 |» lockdownConfig|body|object|false|none|
@@ -116136,8 +121841,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates \
 |» » » *anyOf*|body|number|false|none|
 |» » » *anyOf*|body|null|false|none|
 |» » approvalNotes|body|string \| null|false|none|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» » monitored|body|boolean|false|When true, this step runs A/B traffic analysis while active. Treatment = [0, coverage), control = [0.5, 0.5+coverage). Arms are equal-sized and non-adjacent: step-ups only add users, never reassign existing ones. The UI caps monitored-step coverage at 0.5 so control end never exceeds 1.0. The SDK uses explicit hash ranges on the experiment rule to prevent bucketing shifts across monitored/unmonitored transitions.|
 |» » holdConditions|body|object|false|none|
 |» » » minSampleSize|body|integer|false|none|
@@ -116151,8 +121854,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates \
 |» » » » » *anyOf*|body|number|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » condition|body|string \| null|false|none|
-|» » » » » *anyOf*|body|string|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » savedGroups|body|[object] \| null|false|none|
 |» » » » » *anyOf*|body|[object]|false|none|
 |» match|body|string|true|none|
@@ -116164,14 +121865,10 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates \
 |» condition|body|string|true|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » allEnvironments|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » environments|body|[string] \| null|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
 |» » » » » *anyOf*|body|null|false|none|
 |» » » » enabled|body|boolean \| null|false|none|
-|» » » » » *anyOf*|body|boolean|false|none|
-|» » » » » *anyOf*|body|null|false|none|
 |» » » » force|body|object|false|Ignored: templates never carry force values. Accepted so a schedule's steps can be copied into a template.|
 |» endPatch|body|object|false|none|
 |» » coverage|body|number|false|none|
@@ -116204,8 +121901,6 @@ curl https://api.growthbook.io/api/v1/ramp-schedule-templates \
 |» » exposureQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `exposureQueryId`.|
 |» » » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » » *anyOf*|body|string|false|none|
-|» » » » *anyOf*|body|null|false|none|
 |» » exposureQueryId|body|string|false|**Deprecated.** Deprecated: use `exposureQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `exposureQuery.identifierType` instead.|
 |» » *anyOf*|body|null|false|none|
 |» lockdownConfig|body|object|false|none|
@@ -117338,8 +123033,6 @@ Updates a Holdout. Use the start, start-analysis, and stop endpoints to move it 
 |» assignmentQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `assignmentQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead.|
 |» goalMetrics|body|[string]|false|none|
 |» secondaryMetrics|body|[string]|false|none|
@@ -117533,7 +123226,7 @@ curl https://api.growthbook.io/api/v1/holdouts \
 |projectId|query|string|false|none|
 |datasourceId|query|string|false|none|
 |stage|query|string|false|none|
-|archived|query|string \| boolean|false|Filter by archived state. Omit to return both archived and unarchived Holdouts.|
+|archived|query|boolean|false|Filter by archived state. Omit to return both archived and unarchived Holdouts.|
 
 #### Enumerated Values
 
@@ -117800,8 +123493,6 @@ Creates a Holdout. The Holdout starts in the `draft` stage. Use the start endpoi
 |» assignmentQuery|body|object|false|The assignment query, grouping its ID with the identifier type analyzed on. Mutually exclusive with the deprecated `assignmentQueryId`.|
 |» » id|body|string|true|The ID of one of the data source's assignment queries.|
 |» » identifierType|body|string \| null|false|The identifier type to analyze on, which the query must declare. Required when selecting a different assignment query that declares several. Otherwise defaults to the current identifier type, or the query's only one. Null is treated as omitted, so a response's value can be sent back.|
-|» » » *anyOf*|body|string|false|none|
-|» » » *anyOf*|body|null|false|none|
 |» assignmentQueryId|body|string|false|**Deprecated.** Deprecated: use `assignmentQuery`. Rejected when selecting a different assignment query that declares several identifier types; set `assignmentQuery.identifierType` instead.|
 |» goalMetrics|body|[string]|false|none|
 |» secondaryMetrics|body|[string]|false|none|
@@ -119224,49 +124915,8 @@ curl https://api.growthbook.io/api/v1/auto-runs/string/artifacts \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Resource created|Inline|
+|200|OK|Resource created|[AutoRun](#schemaautorun)|
 |202|Accepted|Held until a person confirms it in GrowthBook. Poll the Location until the confirmation completes.|[ConfirmationHeld](#schemaconfirmationheld)|
-
-<h3 id="record-something-an-auto-run-created-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|dateCreated|string(date-time)|true|none|none|
-|dateUpdated|string(date-time)|true|none|none|
-|source|string|true|none|none|
-|agent|string \| null|true|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|createdBy|string \| null|true|none|Id of the user who ran the wizard|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|metadata|[metadata](#schemametadata)|true|none|What the wizard learned about the environment it ran in — language, packageManager, framework, versions. Open by design; do not rely on any single key being present|
-|artifacts|[[artifacts](#schemaartifacts)]|true|none|none|
-|checks|[[checks](#schemachecks)]|true|none|none|
-|outcome|string \| null|true|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|failureReason|string \| null|true|none|none|
-|» *anyOf*|string|false|none|none|
-|» *anyOf*|null|false|none|none|
-|dateCompleted|string(date-time) \| null|true|none|none|
-|» *anyOf*|string(date-time)|false|none|none|
-|» *anyOf*|null|false|none|none|
-|url|string|true|none|Absolute URL of the run's page in the app. Built server-side so callers never guess the app origin|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|source|cli-wizard|
-|source|skill|
-|source|eppo-import|
-|» *anyOf*|completed|
-|» *anyOf*|partial|
-|» *anyOf*|failed|
 
 ### Response Headers
 
@@ -119377,8 +125027,6 @@ Status Code **200**
 |total|integer|true|none|none|
 |hasMore|boolean|true|none|none|
 |nextOffset|integer \| null|true|none|none|
-|» *anyOf*|integer|false|none|none|
-|» *anyOf*|null|false|none|none|
 |populations|[[Population](#schemapopulation)]|true|none|none|
 
 <aside class="warning">
@@ -119482,7 +125130,7 @@ curl https://api.growthbook.io/api/v1/populations \
 |» userIdTypes|body|[string]|true|Identifier types the Population can be joined on. Every step's fact table must support all of them|
 |» steps|body|[object]|true|Steps a unit must complete, in order, to be included. Currently limited to 1 step with support for multiple steps coming soon.|
 |» » source|body|object|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
 |» » » factTableId|body|string|true|none|
 |» » rowFilters|body|[object]|false|none|
@@ -119794,7 +125442,7 @@ curl https://api.growthbook.io/api/v1/populations/string \
 |» userIdTypes|body|[string]|false|Identifier types the Population can be joined on. Every step's fact table must support all of them|
 |» steps|body|[object]|false|Steps a unit must complete, in order, to be included. Currently limited to 1 step with support for multiple steps coming soon.|
 |» » source|body|object|true|none|
-|» » » *anyOf*|body|object|false|none|
+|» » » *oneOf*|body|object|false|none|
 |» » » type|body|string|true|none|
 |» » » factTableId|body|string|true|none|
 |» » rowFilters|body|[object]|false|none|
@@ -120312,13 +125960,16 @@ curl https://api.growthbook.io/api/v1/sdk-connections/string/webhooks \
     "payloadFormat": "standard",
     "payloadKey": "string",
     "headers": "string",
-    "timeoutSeconds": 1
+    "timeoutSeconds": 1,
+    "bypassApproval": true,
+    "ignoreWarnings": true,
+    "skipHooks": true
   }'
 ```
 
 `POST /v1/sdk-connections/{id}/webhooks`
 
-Called whenever the connection's payload changes. `httpMethod` defaults to POST. More than one webhook per organization requires a paid plan.
+Called whenever the connection's payload changes. `httpMethod` defaults to POST. More than one webhook per organization requires a paid plan. The change is recorded as a published revision of the connection. When the organization requires approvals for the connection, add it in a draft revision instead (`POST /sdk-connections-revisions/{id}/new/webhooks`), or pass `bypassApproval`.
 
 > Body parameter
 
@@ -120330,7 +125981,10 @@ Called whenever the connection's payload changes. `httpMethod` defaults to POST.
   "payloadFormat": "standard",
   "payloadKey": "string",
   "headers": "string",
-  "timeoutSeconds": 1
+  "timeoutSeconds": 1,
+  "bypassApproval": true,
+  "ignoreWarnings": true,
+  "skipHooks": true
 }
 ```
 
@@ -120349,6 +126003,9 @@ Called whenever the connection's payload changes. `httpMethod` defaults to POST.
 |» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
 |» » *anyOf*|body|integer|false|none|
 |» » *anyOf*|body|null|false|none|
+|» bypassApproval|body|boolean|false|Set to true to write directly to the live SDK Connection without approval. The caller must have Bypass draft approvals access in the SDK Connection's Projects, unless the organization enables the REST API approval bypass. This field has no effect when approval is not required.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
 #### Enumerated Values
 
@@ -120392,7 +126049,14 @@ Called whenever the connection's payload changes. `httpMethod` defaults to POST.
     "consecutiveFailures": 0,
     "disabled": true,
     "timeoutSeconds": 1
-  }
+  },
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ]
 }
 ```
 
@@ -120438,6 +126102,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |sdkWebhook|[SdkWebhook](#schemasdkwebhook)|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
 
 ### Response Headers
 
@@ -120471,6 +126136,9 @@ curl https://api.growthbook.io/api/v1/sdk-webhooks/string \
     "payloadKey": "string",
     "headers": "string",
     "timeoutSeconds": 1,
+    "bypassApproval": true,
+    "ignoreWarnings": true,
+    "skipHooks": true,
     "sdkConnections": [
       "string"
     ]
@@ -120479,7 +126147,7 @@ curl https://api.growthbook.io/api/v1/sdk-webhooks/string \
 
 `PUT /v1/sdk-webhooks/{id}`
 
-The webhook fires once after an update. Webhooks managed by the Vercel integration can't be changed.
+The webhook fires once after an update, and the change is recorded as a published revision of each connection it fires for. Webhooks managed by the Vercel integration can't be changed. When the organization requires approvals for a connection the webhook fires for, change it in a draft revision instead (`PUT /sdk-connections-revisions/{id}/new/webhooks/{webhookId}`), or pass `bypassApproval`.
 
 > Body parameter
 
@@ -120492,6 +126160,9 @@ The webhook fires once after an update. Webhooks managed by the Vercel integrati
   "payloadKey": "string",
   "headers": "string",
   "timeoutSeconds": 1,
+  "bypassApproval": true,
+  "ignoreWarnings": true,
+  "skipHooks": true,
   "sdkConnections": [
     "string"
   ]
@@ -120513,6 +126184,9 @@ The webhook fires once after an update. Webhooks managed by the Vercel integrati
 |» timeoutSeconds|body|integer \| null|false|Request timeout in seconds, up to the server maximum (120 unless configured). Null uses the default.|
 |» » *anyOf*|body|integer|false|none|
 |» » *anyOf*|body|null|false|none|
+|» bypassApproval|body|boolean|false|Set to true to write directly to the live SDK Connection without approval. The caller must have Bypass draft approvals access in the SDK Connection's Projects, unless the organization enables the REST API approval bypass. This field has no effect when approval is not required.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 |» sdkConnections|body|[string]|false|Replaces the SDK Connections this webhook fires for|
 
 #### Enumerated Values
@@ -120558,7 +126232,14 @@ The webhook fires once after an update. Webhooks managed by the Vercel integrati
     "consecutiveFailures": 0,
     "disabled": true,
     "timeoutSeconds": 1
-  }
+  },
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ]
 }
 ```
 
@@ -120604,6 +126285,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |sdkWebhook|[SdkWebhook](#schemasdkwebhook)|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
 
 ### Response Headers
 
@@ -120626,19 +126308,39 @@ bearerAuth, basicAuth
 ```bash
 curl https://api.growthbook.io/api/v1/sdk-webhooks/string \
   -X DELETE \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "bypassApproval": true,
+    "ignoreWarnings": true,
+    "skipHooks": true
+  }'
 ```
 
 `DELETE /v1/sdk-webhooks/{id}`
 
-Webhooks managed by the Vercel integration can't be deleted here.
+The removal is recorded as a published revision of each connection the webhook fired for. Webhooks managed by the Vercel integration can't be deleted here. When the organization requires approvals for a connection the webhook fires for, remove it in a draft revision instead (`DELETE /sdk-connections-revisions/{id}/new/webhooks/{webhookId}`), or pass `bypassApproval`.
+
+> Body parameter
+
+```json
+{
+  "bypassApproval": true,
+  "ignoreWarnings": true,
+  "skipHooks": true
+}
+```
 
 <h3 id="delete-an-sdk-webhook-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
+|body|body|object|false|none|
+|» bypassApproval|body|boolean|false|Set to true to write directly to the live SDK Connection without approval. The caller must have Bypass draft approvals access in the SDK Connection's Projects, unless the organization enables the REST API approval bypass. This field has no effect when approval is not required.|
+|» ignoreWarnings|body|boolean|false|Set to true to continue past a warning: one raised by a Custom Hook, or a webhook that references a secret that doesn't exist. On publish, it also force-publishes an out-of-date draft when the caller has Bypass draft approvals access. It never clears a Custom Hook rejection. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
+|» skipHooks|body|boolean|false|Set to true to continue despite a Custom Hook rejection. The caller must have Bypass draft approvals access for SDK Connections in every Project. Otherwise, this field is ignored. Only set this when a person has explicitly asked you to. If a check blocks you, stop and ask a person instead of working around it.|
 
 > Example responses
 
@@ -120646,7 +126348,14 @@ Webhooks managed by the Vercel integration can't be deleted here.
 
 ```json
 {
-  "deletedId": "string"
+  "deletedId": "string",
+  "bypassedGates": [
+    {
+      "type": "string",
+      "outcome": "bypassed",
+      "via": "ignoreWarnings"
+    }
+  ]
 }
 ```
 
@@ -120692,6 +126401,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |deletedId|string|true|none|none|
+|bypassedGates|[[bypassedGates](#schemabypassedgates)]|false|none|Gates that would have blocked this publish but were bypassed by the caller's authority. Present only when at least one gate was bypassed.|
 
 ### Response Headers
 
@@ -121151,8 +126861,8 @@ bearerAuth, basicAuth
 |dateUpdated|string(date-time)|true|none|none|
 |archived|boolean|true|none|none|
 |description|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |project|string|true|none|none|
 |targetingAllProjects|boolean|false|none|none|
 |targetingProjects|[string]|false|none|none|
@@ -122396,8 +128106,8 @@ bearerAuth, basicAuth
 |dateUpdated|string(date-time)|true|none|none|
 |archived|boolean|true|none|none|
 |description|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |project|string|true|none|none|
 |targetingAllProjects|boolean|false|none|none|
 |targetingProjects|[string]|false|none|none|
@@ -124330,8 +130040,8 @@ A safe rollout rule with automated guardrail monitoring and optional auto-rollba
 |dateUpdated|string|true|none|none|
 |name|string|true|none|none|
 |description|string|false|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |isPublic|boolean|true|none|none|
 |attributes|object|true|none|The attributes to set when using this Archetype|
 |projects|[string]|false|none|none|
@@ -124625,8 +130335,8 @@ A safe rollout rule with automated guardrail monitoring and optional auto-rollba
 |hypothesis|string|true|none|none|
 |description|string|true|none|none|
 |tags|[string]|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |archived|boolean|true|none|none|
 |status|string|true|none|none|
 |autoRefresh|boolean|true|none|none|
@@ -125613,8 +131323,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |hypothesis|string|true|none|none|
 |description|string|true|none|none|
 |tags|[string]|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |archived|boolean|true|none|none|
 |status|string|true|none|none|
 |autoRefresh|boolean|true|none|none|
@@ -125825,8 +131535,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |managedBy|string|true|none|Where this metric must be managed from. If not set (empty string), it can be managed from anywhere.|
 |dateCreated|string|true|none|none|
 |dateUpdated|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |datasourceId|string|true|none|none|
 |name|string|true|none|none|
 |description|string|true|none|none|
@@ -125919,8 +131629,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |datasourceId|string|true|none|none|
 |identifierType|string|true|none|none|
 |name|string|true|none|none|
@@ -125976,8 +131686,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |dateCreated|string|true|none|none|
 |dateUpdated|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |datasourceId|string|true|none|none|
 |identifierType|string|true|none|none|
 |name|string|true|none|none|
@@ -126037,8 +131747,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |publicId|string|false|none|URL-safe slug used in SDK payload metadata. Auto-generated from name if not provided.|
 |restrictAccess|boolean|false|none|When true, only members with an explicit role on this Project (directly or via a team) can access it. Members with the manageTeam permission retain access.|
 |allowTargeting|boolean|false|none|Whether Feature Flags owned by other Projects may add this Project to their Targeting Projects. Defaults to true. Turning it off blocks new targeting (and All Projects); existing targeting is kept.|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |settings|object|false|none|none|
 
 <h2 id="tocS_Environment">Environment</h2>
@@ -126173,6 +131883,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   ],
   "includeTagsInMetadata": true,
   "includeExperimentScheduleInMetadata": true,
+  "tracesEnabled": true,
   "key": "string",
   "proxyEnabled": true,
   "proxyHost": "string",
@@ -126182,7 +131893,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "remoteEvalEnabled": true,
   "savedGroupReferencesEnabled": true,
   "savedGroupFormat": "inline",
-  "includeReferencedPrerequisites": true
+  "includeReferencedPrerequisites": true,
+  "archived": true
 }
 ```
 
@@ -126213,6 +131925,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |allowedCustomFieldsInMetadata|[string]|false|none|none|
 |includeTagsInMetadata|boolean|false|none|none|
 |includeExperimentScheduleInMetadata|boolean|false|none|none|
+|tracesEnabled|boolean|false|none|Send SDK evaluation traces to GrowthBook. Only available to organizations with tracing enabled.|
 |key|string|true|none|none|
 |proxyEnabled|boolean|true|none|none|
 |proxyHost|string|true|none|none|
@@ -126223,6 +131936,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |savedGroupReferencesEnabled|boolean|false|none|Deprecated. Use `savedGroupFormat`.|
 |savedGroupFormat|string|false|none|How Saved Groups are written into this connection's payload. `referencesV2` needs an SDK version that supports it; the payload steps down to `referencesV1` if not.|
 |includeReferencedPrerequisites|boolean|false|none|none|
+|archived|boolean|false|none|An archived connection serves no payload. A connection must be archived before it can be deleted.|
 
 #### Enumerated Values
 
@@ -126231,6 +131945,543 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |savedGroupFormat|inline|
 |savedGroupFormat|referencesV1|
 |savedGroupFormat|referencesV2|
+
+<h2 id="tocS_SdkConnectionRevision">SdkConnectionRevision</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevision"></a>
+<a id="schema_SdkConnectionRevision"></a>
+<a id="tocSsdkconnectionrevision"></a>
+<a id="tocssdkconnectionrevision"></a>
+
+```json
+{
+  "id": "string",
+  "version": 0,
+  "title": "string",
+  "status": "draft",
+  "authorId": "string",
+  "author": {
+    "type": "dashboard",
+    "id": "string",
+    "apiKey": "string",
+    "name": "string",
+    "email": "string",
+    "requestedBy": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    },
+    "assumedRole": true
+  },
+  "contributors": [
+    "string"
+  ],
+  "revertedFrom": "string",
+  "reviews": [
+    {
+      "id": "string",
+      "userId": "string",
+      "decision": "approve",
+      "comment": "string",
+      "stale": true,
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      }
+    }
+  ],
+  "activityLog": [
+    {
+      "id": "string",
+      "userId": "string",
+      "action": "created",
+      "description": "string",
+      "proposedChangesSnapshot": [
+        {
+          "op": "add",
+          "path": "string",
+          "value": null
+        }
+      ],
+      "targetSnapshot": null,
+      "dateCreated": "1970-01-01T00:00:00Z",
+      "user": {
+        "type": "dashboard",
+        "id": "string",
+        "apiKey": "string",
+        "name": "string",
+        "email": "string",
+        "requestedBy": {
+          "id": "string",
+          "name": "string",
+          "email": "string"
+        },
+        "assumedRole": true
+      }
+    }
+  ],
+  "autoPublishOnApproval": true,
+  "autoPublishEnabledBy": "string",
+  "autoPublishEnabledByUser": {
+    "type": "dashboard",
+    "id": "string",
+    "apiKey": "string",
+    "name": "string",
+    "email": "string",
+    "requestedBy": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    },
+    "assumedRole": true
+  },
+  "scheduledPublishAt": "1970-01-01T00:00:00Z",
+  "scheduledPublishLockEdits": true,
+  "scheduledPublishLockOthers": true,
+  "scheduledPublishBypassApproval": true,
+  "scheduledPublishAttempts": 0,
+  "scheduledPublishLastError": "string",
+  "scheduledPublishGaveUpAt": "1970-01-01T00:00:00Z",
+  "resolution": {
+    "action": "merged",
+    "userId": "string",
+    "user": {
+      "type": "dashboard",
+      "id": "string",
+      "apiKey": "string",
+      "name": "string",
+      "email": "string",
+      "requestedBy": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      },
+      "assumedRole": true
+    },
+    "dateCreated": "1970-01-01T00:00:00Z"
+  },
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "dateUpdated": "1970-01-01T00:00:00Z",
+  "baseSdkConnection": {
+    "id": "string",
+    "name": "string",
+    "eventTracker": "string",
+    "languages": [
+      "string"
+    ],
+    "sdkVersion": "string",
+    "environment": "string",
+    "projects": [
+      "string"
+    ],
+    "encryptPayload": true,
+    "hashSecureAttributes": true,
+    "includeVisualExperiments": true,
+    "includeDraftExperiments": true,
+    "includeDraftExperimentRefs": true,
+    "includeExperimentNames": true,
+    "includeRedirectExperiments": true,
+    "includeRuleIds": true,
+    "includeProjectIdInMetadata": true,
+    "includeCustomFieldsInMetadata": true,
+    "allowedCustomFieldsInMetadata": [
+      "string"
+    ],
+    "includeTagsInMetadata": true,
+    "includeExperimentScheduleInMetadata": true,
+    "remoteEvalEnabled": true,
+    "tracesEnabled": true,
+    "savedGroupReferencesEnabled": true,
+    "savedGroupFormat": "inline",
+    "includeReferencedPrerequisites": true,
+    "proxyEnabled": true,
+    "proxyHost": "string",
+    "archived": true
+  },
+  "proposedSdkConnection": {
+    "id": "string",
+    "name": "string",
+    "eventTracker": "string",
+    "languages": [
+      "string"
+    ],
+    "sdkVersion": "string",
+    "environment": "string",
+    "projects": [
+      "string"
+    ],
+    "encryptPayload": true,
+    "hashSecureAttributes": true,
+    "includeVisualExperiments": true,
+    "includeDraftExperiments": true,
+    "includeDraftExperimentRefs": true,
+    "includeExperimentNames": true,
+    "includeRedirectExperiments": true,
+    "includeRuleIds": true,
+    "includeProjectIdInMetadata": true,
+    "includeCustomFieldsInMetadata": true,
+    "allowedCustomFieldsInMetadata": [
+      "string"
+    ],
+    "includeTagsInMetadata": true,
+    "includeExperimentScheduleInMetadata": true,
+    "remoteEvalEnabled": true,
+    "tracesEnabled": true,
+    "savedGroupReferencesEnabled": true,
+    "savedGroupFormat": "inline",
+    "includeReferencedPrerequisites": true,
+    "proxyEnabled": true,
+    "proxyHost": "string",
+    "archived": true
+  },
+  "baseSdkWebhooks": [
+    {
+      "id": "string",
+      "name": "string",
+      "endpoint": "string",
+      "httpMethod": "GET",
+      "headers": "string",
+      "payloadFormat": "standard",
+      "payloadKey": "string",
+      "timeoutSeconds": 1
+    }
+  ],
+  "proposedSdkWebhooks": [
+    {
+      "id": "string",
+      "name": "string",
+      "endpoint": "string",
+      "httpMethod": "GET",
+      "headers": "string",
+      "payloadFormat": "standard",
+      "payloadKey": "string",
+      "timeoutSeconds": 1
+    }
+  ],
+  "proposedChanges": [
+    {
+      "op": "add",
+      "path": "string",
+      "value": null
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|version|integer|false|none|none|
+|title|string|false|none|none|
+|status|string|true|none|none|
+|authorId|string|true|none|Who acted: a member's user ID, or an API key's ID when it acted as itself|
+|author|[EventUser](#schemaeventuser)|false|none|Who created the revision, with an API key's name|
+|contributors|[string]|false|none|none|
+|revertedFrom|string|false|none|none|
+|reviews|[[SdkConnectionRevisionReview](#schemasdkconnectionrevisionreview)]|true|none|none|
+|activityLog|[[SdkConnectionRevisionActivityLogEntry](#schemasdkconnectionrevisionactivitylogentry)]|true|none|none|
+|autoPublishOnApproval|boolean|false|none|Publish automatically the moment this revision is approved.|
+|autoPublishEnabledBy|string|false|none|User or API key the deferred publish runs as, re-checked when it fires. A key that assumed a member's role is recorded as `<keyId>:<memberId>`.|
+|autoPublishEnabledByUser|[EventUser](#schemaeventuser)|false|none|Who armed the deferred publish, with an API key's name|
+|scheduledPublishAt|string(date-time)|false|none|When the deferred publish fires. Absent when the revision publishes on approval instead, or is not armed at all.|
+|scheduledPublishLockEdits|boolean|false|none|Content edits to this revision are frozen until it fires.|
+|scheduledPublishLockOthers|boolean|false|none|Other revisions of the same resource cannot publish until this one fires or is cancelled.|
+|scheduledPublishBypassApproval|boolean|false|none|Armed by a caller who bypassed the approval requirement. Such a schedule must be cancelled and re-armed rather than edited.|
+|scheduledPublishAttempts|integer|false|none|How many times the poller has tried to publish this revision.|
+|scheduledPublishLastError|string|false|none|Why the most recent deferred-publish attempt failed.|
+|scheduledPublishGaveUpAt|string(date-time)|false|none|When the poller stopped retrying. Giving up CLEARS the schedule and disarms auto-publish, so nothing fires again until the revision is re-armed. The draft is left open, with `scheduledPublishLastError` preserved for context.|
+|resolution|object|false|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|dateUpdated|string(date-time)|true|none|none|
+|baseSdkConnection|[SdkConnectionRevisionSettings](#schemasdkconnectionrevisionsettings)|true|none|The settings when the revision was created|
+|proposedSdkConnection|[SdkConnectionRevisionSettings](#schemasdkconnectionrevisionsettings)|true|none|The settings with this revision's changes applied|
+|baseSdkWebhooks|[[SdkConnectionRevisionWebhook](#schemasdkconnectionrevisionwebhook)]|true|none|The webhooks when the revision was created|
+|proposedSdkWebhooks|[[SdkConnectionRevisionWebhook](#schemasdkconnectionrevisionwebhook)]|true|none|The webhooks with this revision's changes applied|
+|proposedChanges|[object]|true|none|The raw JSON Patch ops. Most callers can read the `proposed*` fields instead.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|draft|
+|status|pending-review|
+|status|approved|
+|status|changes-requested|
+|status|merged|
+|status|discarded|
+
+<h2 id="tocS_SdkConnectionRevisionReview">SdkConnectionRevisionReview</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevisionreview"></a>
+<a id="schema_SdkConnectionRevisionReview"></a>
+<a id="tocSsdkconnectionrevisionreview"></a>
+<a id="tocssdkconnectionrevisionreview"></a>
+
+```json
+{
+  "id": "string",
+  "userId": "string",
+  "decision": "approve",
+  "comment": "string",
+  "stale": true,
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "user": {
+    "type": "dashboard",
+    "id": "string",
+    "apiKey": "string",
+    "name": "string",
+    "email": "string",
+    "requestedBy": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    },
+    "assumedRole": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|userId|string|true|none|Who acted: a member's user ID, or an API key's ID when it acted as itself|
+|decision|string|true|none|none|
+|comment|string|false|none|none|
+|stale|boolean|false|none|True if a later review cycle (re-submit, approval reset, recall, or reopen) superseded this verdict. Stale verdicts are kept for attribution but no longer count as an active approval or change-request.|
+|dateCreated|string(date-time)|true|none|none|
+|user|[EventUser](#schemaeventuser)|false|none|Who performed an action|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|decision|approve|
+|decision|request-changes|
+|decision|comment|
+
+<h2 id="tocS_SdkConnectionRevisionActivityLogEntry">SdkConnectionRevisionActivityLogEntry</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevisionactivitylogentry"></a>
+<a id="schema_SdkConnectionRevisionActivityLogEntry"></a>
+<a id="tocSsdkconnectionrevisionactivitylogentry"></a>
+<a id="tocssdkconnectionrevisionactivitylogentry"></a>
+
+```json
+{
+  "id": "string",
+  "userId": "string",
+  "action": "created",
+  "description": "string",
+  "proposedChangesSnapshot": [
+    {
+      "op": "add",
+      "path": "string",
+      "value": null
+    }
+  ],
+  "targetSnapshot": null,
+  "dateCreated": "1970-01-01T00:00:00Z",
+  "user": {
+    "type": "dashboard",
+    "id": "string",
+    "apiKey": "string",
+    "name": "string",
+    "email": "string",
+    "requestedBy": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    },
+    "assumedRole": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|userId|string|true|none|Who acted: a member's user ID, or an API key's ID when it acted as itself|
+|action|string|true|none|none|
+|description|string \| null|false|none|none|
+|proposedChangesSnapshot|[object]|false|none|none|
+|targetSnapshot|object|false|none|none|
+|dateCreated|string(date-time)|true|none|none|
+|user|[EventUser](#schemaeventuser)|false|none|Who performed an action|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action|created|
+|action|updated|
+|action|reviewed|
+|action|approved|
+|action|requested-changes|
+|action|commented|
+|action|review-requested|
+|action|review-retracted|
+|action|merged|
+|action|discarded|
+|action|reopened|
+|action|recalled|
+|action|scheduled-publish|
+|action|scheduled-publish-updated|
+|action|scheduled-publish-canceled|
+|action|merge-recovered|
+
+<h2 id="tocS_SdkConnectionRevisionSettings">SdkConnectionRevisionSettings</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevisionsettings"></a>
+<a id="schema_SdkConnectionRevisionSettings"></a>
+<a id="tocSsdkconnectionrevisionsettings"></a>
+<a id="tocssdkconnectionrevisionsettings"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "eventTracker": "string",
+  "languages": [
+    "string"
+  ],
+  "sdkVersion": "string",
+  "environment": "string",
+  "projects": [
+    "string"
+  ],
+  "encryptPayload": true,
+  "hashSecureAttributes": true,
+  "includeVisualExperiments": true,
+  "includeDraftExperiments": true,
+  "includeDraftExperimentRefs": true,
+  "includeExperimentNames": true,
+  "includeRedirectExperiments": true,
+  "includeRuleIds": true,
+  "includeProjectIdInMetadata": true,
+  "includeCustomFieldsInMetadata": true,
+  "allowedCustomFieldsInMetadata": [
+    "string"
+  ],
+  "includeTagsInMetadata": true,
+  "includeExperimentScheduleInMetadata": true,
+  "remoteEvalEnabled": true,
+  "tracesEnabled": true,
+  "savedGroupReferencesEnabled": true,
+  "savedGroupFormat": "inline",
+  "includeReferencedPrerequisites": true,
+  "proxyEnabled": true,
+  "proxyHost": "string",
+  "archived": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|eventTracker|string|false|none|none|
+|languages|[string]|true|none|none|
+|sdkVersion|string|false|none|none|
+|environment|string|true|none|none|
+|projects|[string]|true|none|none|
+|encryptPayload|boolean|true|none|none|
+|hashSecureAttributes|boolean|false|none|none|
+|includeVisualExperiments|boolean|false|none|none|
+|includeDraftExperiments|boolean|false|none|none|
+|includeDraftExperimentRefs|boolean|false|none|none|
+|includeExperimentNames|boolean|false|none|none|
+|includeRedirectExperiments|boolean|false|none|none|
+|includeRuleIds|boolean|false|none|none|
+|includeProjectIdInMetadata|boolean|false|none|none|
+|includeCustomFieldsInMetadata|boolean|false|none|none|
+|allowedCustomFieldsInMetadata|[string]|false|none|none|
+|includeTagsInMetadata|boolean|false|none|none|
+|includeExperimentScheduleInMetadata|boolean|false|none|none|
+|remoteEvalEnabled|boolean|false|none|none|
+|tracesEnabled|boolean|false|none|none|
+|savedGroupReferencesEnabled|boolean|false|none|none|
+|savedGroupFormat|string|false|none|none|
+|includeReferencedPrerequisites|boolean|false|none|none|
+|proxyEnabled|boolean|false|none|none|
+|proxyHost|string|false|none|none|
+|archived|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|savedGroupFormat|inline|
+|savedGroupFormat|referencesV1|
+|savedGroupFormat|referencesV2|
+
+<h2 id="tocS_SdkConnectionRevisionWebhook">SdkConnectionRevisionWebhook</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevisionwebhook"></a>
+<a id="schema_SdkConnectionRevisionWebhook"></a>
+<a id="tocSsdkconnectionrevisionwebhook"></a>
+<a id="tocssdkconnectionrevisionwebhook"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "endpoint": "string",
+  "httpMethod": "GET",
+  "headers": "string",
+  "payloadFormat": "standard",
+  "payloadKey": "string",
+  "timeoutSeconds": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|httpMethod|string|true|none|none|
+|headers|string|false|none|JSON-encoded object of extra headers. Only returned by the read endpoints, to callers who can edit the webhook.|
+|payloadFormat|string|false|none|none|
+|payloadKey|string|false|none|none|
+|timeoutSeconds|integer \| null|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|httpMethod|GET|
+|httpMethod|PUT|
+|httpMethod|POST|
+|httpMethod|DELETE|
+|httpMethod|PURGE|
+|httpMethod|PATCH|
+|payloadFormat|standard|
+|payloadFormat|standard-no-payload|
+|payloadFormat|sdkPayload|
+|payloadFormat|edgeConfig|
+|payloadFormat|edgeConfigUnescaped|
+|payloadFormat|vercelNativeIntegration|
+|payloadFormat|none|
 
 <h2 id="tocS_DataSource">DataSource</h2>
 <!-- backwards compatibility -->
@@ -126343,6 +132594,571 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |pipelineSettings|object|false|none|none|
 |maxConcurrentQueries|integer|false|none|none|
 |queryCacheTTLMins|integer|false|none|none|
+
+<h2 id="tocS_PostgresConnection">PostgresConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresconnection"></a>
+<a id="schema_PostgresConnection"></a>
+<a id="tocSpostgresconnection"></a>
+<a id="tocspostgresconnection"></a>
+
+```json
+{
+  "type": "postgres",
+  "host": "string",
+  "port": 0,
+  "database": "string",
+  "user": "string",
+  "password": "string",
+  "defaultSchema": "string",
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|user|string|true|none|none|
+|password|string|true|none|none|
+|defaultSchema|string|false|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+
+<h2 id="tocS_RedshiftConnection">RedshiftConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaredshiftconnection"></a>
+<a id="schema_RedshiftConnection"></a>
+<a id="tocSredshiftconnection"></a>
+<a id="tocsredshiftconnection"></a>
+
+```json
+{
+  "type": "redshift",
+  "host": "string",
+  "port": 0,
+  "database": "string",
+  "user": "string",
+  "password": "string",
+  "defaultSchema": "string",
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|user|string|true|none|none|
+|password|string|true|none|none|
+|defaultSchema|string|false|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+
+<h2 id="tocS_VerticaConnection">VerticaConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaverticaconnection"></a>
+<a id="schema_VerticaConnection"></a>
+<a id="tocSverticaconnection"></a>
+<a id="tocsverticaconnection"></a>
+
+```json
+{
+  "type": "vertica",
+  "host": "string",
+  "port": 0,
+  "database": "string",
+  "user": "string",
+  "password": "string",
+  "defaultSchema": "string",
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|user|string|true|none|none|
+|password|string|true|none|none|
+|defaultSchema|string|false|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+
+<h2 id="tocS_MysqlConnection">MysqlConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemamysqlconnection"></a>
+<a id="schema_MysqlConnection"></a>
+<a id="tocSmysqlconnection"></a>
+<a id="tocsmysqlconnection"></a>
+
+```json
+{
+  "type": "mysql",
+  "host": "string",
+  "port": 0,
+  "database": "string",
+  "user": "string",
+  "password": "string",
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|user|string|true|none|none|
+|password|string|true|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+
+<h2 id="tocS_MssqlConnection">MssqlConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemamssqlconnection"></a>
+<a id="schema_MssqlConnection"></a>
+<a id="tocSmssqlconnection"></a>
+<a id="tocsmssqlconnection"></a>
+
+```json
+{
+  "type": "mssql",
+  "server": "string",
+  "port": 0,
+  "database": "string",
+  "user": "string",
+  "password": "string",
+  "defaultSchema": "string",
+  "requestTimeout": 0,
+  "options": {
+    "encrypt": true,
+    "trustServerCertificate": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|server|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|user|string|true|none|none|
+|password|string|true|none|none|
+|defaultSchema|string|false|none|none|
+|requestTimeout|integer|false|none|none|
+|options|object|false|none|none|
+
+<h2 id="tocS_SnowflakeConnection">SnowflakeConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemasnowflakeconnection"></a>
+<a id="schema_SnowflakeConnection"></a>
+<a id="tocSsnowflakeconnection"></a>
+<a id="tocssnowflakeconnection"></a>
+
+```json
+{
+  "type": "snowflake",
+  "account": "string",
+  "accessUrl": "string",
+  "username": "string",
+  "password": "string",
+  "database": "string",
+  "schema": "string",
+  "role": "string",
+  "warehouse": "string",
+  "authMethod": "password",
+  "privateKey": "string",
+  "privateKeyPassword": "string",
+  "workloadIdentityProvider": "AWS"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|account|string|true|none|none|
+|accessUrl|string|false|none|none|
+|username|string|true|none|none|
+|password|string|false|none|For `password` auth|
+|database|string|true|none|none|
+|schema|string|true|none|none|
+|role|string|false|none|none|
+|warehouse|string|false|none|none|
+|authMethod|string|false|none|none|
+|privateKey|string|false|none|none|
+|privateKeyPassword|string|false|none|none|
+|workloadIdentityProvider|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|authMethod|password|
+|authMethod|key-pair|
+|authMethod|workload-identity|
+|workloadIdentityProvider|AWS|
+|workloadIdentityProvider|AZURE|
+|workloadIdentityProvider|GCP|
+
+<h2 id="tocS_BigQueryConnection">BigQueryConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemabigqueryconnection"></a>
+<a id="schema_BigQueryConnection"></a>
+<a id="tocSbigqueryconnection"></a>
+<a id="tocsbigqueryconnection"></a>
+
+```json
+{
+  "type": "bigquery",
+  "authType": "auto",
+  "projectId": "string",
+  "clientEmail": "string",
+  "privateKey": "string",
+  "apiEndpoint": "string",
+  "reservation": "string",
+  "defaultProject": "string",
+  "defaultDataset": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|authType|string|false|none|`auto` uses the server's own credentials: self-hosted only|
+|projectId|string|false|none|none|
+|clientEmail|string|false|none|none|
+|privateKey|string|false|none|none|
+|apiEndpoint|string|false|none|none|
+|reservation|string|false|none|none|
+|defaultProject|string|true|none|none|
+|defaultDataset|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|authType|auto|
+|authType|json|
+
+<h2 id="tocS_AthenaConnection">AthenaConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaathenaconnection"></a>
+<a id="schema_AthenaConnection"></a>
+<a id="tocSathenaconnection"></a>
+<a id="tocsathenaconnection"></a>
+
+```json
+{
+  "type": "athena",
+  "authType": "auto",
+  "accessKeyId": "string",
+  "secretAccessKey": "string",
+  "assumeRoleARN": "string",
+  "roleSessionName": "string",
+  "durationSeconds": 0,
+  "externalId": "string",
+  "region": "string",
+  "database": "string",
+  "bucketUri": "string",
+  "workGroup": "string",
+  "catalog": "string",
+  "resultReuseMaxAgeInMinutes": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|authType|string|false|none|`auto` uses the server's own credentials: self-hosted only|
+|accessKeyId|string|false|none|none|
+|secretAccessKey|string|false|none|none|
+|assumeRoleARN|string|false|none|none|
+|roleSessionName|string|false|none|none|
+|durationSeconds|integer|false|none|none|
+|externalId|string|false|none|none|
+|region|string|true|none|none|
+|database|string|false|none|none|
+|bucketUri|string|true|none|none|
+|workGroup|string|false|none|none|
+|catalog|string|false|none|none|
+|resultReuseMaxAgeInMinutes|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|authType|auto|
+|authType|accessKey|
+|authType|assumeRole|
+
+<h2 id="tocS_PrestoConnection">PrestoConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaprestoconnection"></a>
+<a id="schema_PrestoConnection"></a>
+<a id="tocSprestoconnection"></a>
+<a id="tocsprestoconnection"></a>
+
+```json
+{
+  "type": "presto",
+  "engine": "presto",
+  "authType": "basicAuth",
+  "host": "string",
+  "port": 0,
+  "user": "string",
+  "trinoUser": "string",
+  "username": "string",
+  "password": "string",
+  "customAuth": "string",
+  "kerberosServicePrincipal": "string",
+  "kerberosClientPrincipal": "string",
+  "kerberosUser": "string",
+  "source": "string",
+  "catalog": "string",
+  "schema": "string",
+  "requestTimeout": 0,
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|engine|string|true|none|none|
+|authType|string|false|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|user|string|false|none|Presto only|
+|trinoUser|string|false|none|Trino only|
+|username|string|false|none|For basicAuth|
+|password|string|false|none|For basicAuth|
+|customAuth|string|false|none|none|
+|kerberosServicePrincipal|string|false|none|none|
+|kerberosClientPrincipal|string|false|none|none|
+|kerberosUser|string|false|none|none|
+|source|string|false|none|none|
+|catalog|string|true|none|none|
+|schema|string|true|none|none|
+|requestTimeout|integer|false|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|engine|presto|
+|engine|trino|
+|authType|basicAuth|
+|authType|none|
+|authType|customAuth|
+|authType|kerberos|
+
+<h2 id="tocS_DatabricksConnection">DatabricksConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabricksconnection"></a>
+<a id="schema_DatabricksConnection"></a>
+<a id="tocSdatabricksconnection"></a>
+<a id="tocsdatabricksconnection"></a>
+
+```json
+{
+  "type": "databricks",
+  "authType": "pat",
+  "token": "string",
+  "oauthClientId": "string",
+  "oauthClientSecret": "string",
+  "host": "string",
+  "port": 0,
+  "path": "string",
+  "catalog": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|authType|string|true|none|none|
+|token|string|false|none|For pat|
+|oauthClientId|string|false|none|For oauth-m2m|
+|oauthClientSecret|string|false|none|For oauth-m2m|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|path|string|true|none|none|
+|catalog|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|authType|pat|
+|authType|oauth-m2m|
+
+<h2 id="tocS_ClickHouseConnection">ClickHouseConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickhouseconnection"></a>
+<a id="schema_ClickHouseConnection"></a>
+<a id="tocSclickhouseconnection"></a>
+<a id="tocsclickhouseconnection"></a>
+
+```json
+{
+  "type": "clickhouse",
+  "url": "string",
+  "port": 0,
+  "username": "string",
+  "password": "string",
+  "database": "string",
+  "maxExecutionTime": 0,
+  "ssl": true,
+  "caCert": "string",
+  "clientCert": "string",
+  "clientKey": "string",
+  "caCertPath": "string",
+  "clientCertPath": "string",
+  "clientKeyPath": "string",
+  "clientCertChainPath": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|url|string|true|none|none|
+|port|integer|true|none|none|
+|username|string|false|none|none|
+|password|string|true|none|none|
+|database|string|true|none|none|
+|maxExecutionTime|integer|false|none|none|
+|ssl|boolean|false|none|none|
+|caCert|string|false|none|none|
+|clientCert|string|false|none|none|
+|clientKey|string|false|none|none|
+|caCertPath|string|false|none|none|
+|clientCertPath|string|false|none|none|
+|clientKeyPath|string|false|none|none|
+|clientCertChainPath|string|false|none|The `*Path` fields read PEM files on the GrowthBook server: self-hosted with a single organization only|
+
+<h2 id="tocS_MixpanelConnection">MixpanelConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemamixpanelconnection"></a>
+<a id="schema_MixpanelConnection"></a>
+<a id="tocSmixpanelconnection"></a>
+<a id="tocsmixpanelconnection"></a>
+
+```json
+{
+  "type": "mixpanel",
+  "username": "string",
+  "secret": "string",
+  "projectId": "string",
+  "server": "standard"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|username|string|true|none|none|
+|secret|string|true|none|none|
+|projectId|string|true|none|none|
+|server|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|server|standard|
+|server|eu|
+
+<h2 id="tocS_AdobeExperiencePlatformQueryServiceConnection">AdobeExperiencePlatformQueryServiceConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemaadobeexperienceplatformqueryserviceconnection"></a>
+<a id="schema_AdobeExperiencePlatformQueryServiceConnection"></a>
+<a id="tocSadobeexperienceplatformqueryserviceconnection"></a>
+<a id="tocsadobeexperienceplatformqueryserviceconnection"></a>
+
+```json
+{
+  "type": "adobe_experience_platform_query_service",
+  "host": "string",
+  "port": 0,
+  "database": "string",
+  "username": "string",
+  "technicalAccountId": "string",
+  "credential": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|host|string|true|none|none|
+|port|integer|true|none|none|
+|database|string|true|none|none|
+|username|string|true|none|none|
+|technicalAccountId|string|true|none|none|
+|credential|string|true|none|none|
 
 <h2 id="tocS_InformationSchema">InformationSchema</h2>
 <!-- backwards compatibility -->
@@ -126498,8 +133314,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
 |name|string|true|none|none|
-|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |condition|string|false|none|When type = 'condition', this is the JSON-encoded condition for the group|
 |attributeKey|string|false|none|When type = 'list' or 'remote', this is the attribute key the group is based on|
 |values|[string]|false|none|When type = 'list', this is the list of values for the attribute key|
@@ -126873,6 +133689,68 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |action|scheduled-publish-canceled|
 |action|merge-recovered|
 
+<h2 id="tocS_SavedGroupReferences">SavedGroupReferences</h2>
+<!-- backwards compatibility -->
+<a id="schemasavedgroupreferences"></a>
+<a id="schema_SavedGroupReferences"></a>
+<a id="tocSsavedgroupreferences"></a>
+<a id="tocssavedgroupreferences"></a>
+
+```json
+{
+  "features": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ],
+  "experiments": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string",
+      "projects": [
+        "string"
+      ]
+    }
+  ],
+  "contextualBandits": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ],
+  "interleavings": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ],
+  "savedGroups": [
+    {
+      "id": "string",
+      "groupName": "string",
+      "projects": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|features|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
+|experiments|[object]|true|none|none|
+|contextualBandits|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
+|interleavings|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
+|savedGroups|[object]|true|none|none|
+
 <h2 id="tocS_SavedGroupReferenceResource">SavedGroupReferenceResource</h2>
 <!-- backwards compatibility -->
 <a id="schemasavedgroupreferenceresource"></a>
@@ -126977,8 +133855,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |key|string|true|none|Stable reference handle; used as `@const:key` in values|
 |name|string|true|none|none|
 |type|string|true|none|none|
-|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |value|string|false|none|The default value (raw string for `string` constants, JSON-encoded for `json` constants)|
 |environmentValues|object|false|none|Per-environment value overrides (environment id → value). Falls back to `value` when an environment is absent.|
 |description|string|false|none|none|
@@ -127333,6 +134211,40 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |action|scheduled-publish-canceled|
 |action|merge-recovered|
 
+<h2 id="tocS_ConstantReferences">ConstantReferences</h2>
+<!-- backwards compatibility -->
+<a id="schemaconstantreferences"></a>
+<a id="schema_ConstantReferences"></a>
+<a id="tocSconstantreferences"></a>
+<a id="tocsconstantreferences"></a>
+
+```json
+{
+  "features": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ],
+  "constants": [
+    {
+      "id": "string",
+      "key": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|features|[object]|true|none|none|
+|constants|[object]|true|none|none|
+
 <h2 id="tocS_Config">Config</h2>
 <!-- backwards compatibility -->
 <a id="schemaconfig"></a>
@@ -127416,8 +134328,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |key|string|true|none|Stable reference handle; used as `@config:key` in values|
 |name|string|true|none|none|
-|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|false|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |parent|string|false|none|The `key` of the config this one inherits from (lineage parent — the primary spine). Synthesized into `$extends` at resolution time and never stored in `value`.|
 |extends|[string]|false|none|Additional composition bases (config `key`s) layered on top of `parent`, in precedence order (later overrides earlier; all override `parent`; this config's own keys win last). Like `parent`, set via this field — never via a `@config:` entry in `value`.|
 |value|object|false|none|This config's own base value as a JSON object (its declared fields only — inherited fields are layered in at resolution time, not stored here). Per-environment/project variants are expressed via `scopedOverrides`, not here.|
@@ -127458,22 +134370,22 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|object|true|none|A JSON Schema document (an object).|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|string|true|none|TypeScript source — an interface or object type.|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|string|true|none|Protobuf (proto3) source — a `message` definition.|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|string|true|none|Python source — a Pydantic `BaseModel` class.|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|string|true|none|Go source — a `struct` definition.|
-|*anyOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
 |type|string|true|none|none|
 |value|string|true|none|Rust source — a serde `struct` definition.|
 
@@ -127510,6 +134422,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |code|unsupported-member|
 |code|redundant-declaration|
 |code|undeclared-rule-field|
+|code|inferred-field|
 
 <h2 id="tocS_ConfigRevision">ConfigRevision</h2>
 <!-- backwards compatibility -->
@@ -127946,6 +134859,216 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |action|scheduled-publish-canceled|
 |action|merge-recovered|
 
+<h2 id="tocS_ConfigReferences">ConfigReferences</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigreferences"></a>
+<a id="schema_ConfigReferences"></a>
+<a id="tocSconfigreferences"></a>
+<a id="tocsconfigreferences"></a>
+
+```json
+{
+  "features": [
+    {
+      "id": "string",
+      "name": "string",
+      "project": "string"
+    }
+  ],
+  "constants": [
+    {
+      "id": "string",
+      "key": "string",
+      "name": "string",
+      "project": "string",
+      "isConfig": true
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|features|[object]|true|none|none|
+|constants|[object]|true|none|none|
+
+<h2 id="tocS_ConfigKeyUsage">ConfigKeyUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigkeyusage"></a>
+<a id="schema_ConfigKeyUsage"></a>
+<a id="tocSconfigkeyusage"></a>
+<a id="tocsconfigkeyusage"></a>
+
+```json
+{
+  "familyKeys": [
+    "string"
+  ],
+  "implementations": [
+    {
+      "featureId": "string",
+      "project": "string",
+      "location": "defaultValue",
+      "ruleType": "string",
+      "ruleId": "string",
+      "experimentId": "string",
+      "experimentName": "string",
+      "experimentStatus": "string",
+      "variationId": "string",
+      "configKey": "string",
+      "relation": "self",
+      "keys": [
+        "string"
+      ],
+      "state": "live",
+      "revisionVersion": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|familyKeys|[string]|true|none|none|
+|implementations|[object]|true|none|none|
+
+<h2 id="tocS_ConfigLineage">ConfigLineage</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfiglineage"></a>
+<a id="schema_ConfigLineage"></a>
+<a id="tocSconfiglineage"></a>
+<a id="tocsconfiglineage"></a>
+
+```json
+{
+  "root": "string",
+  "target": "string",
+  "ancestors": [
+    "string"
+  ],
+  "descendants": [
+    "string"
+  ],
+  "nodes": [
+    {
+      "key": "string",
+      "name": "string",
+      "parent": "string",
+      "extends": [
+        "string"
+      ],
+      "project": "string",
+      "archived": true,
+      "depth": 0,
+      "isTarget": true,
+      "incompatibleFields": [
+        "string"
+      ],
+      "orphanedFields": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|root|string|true|none|The key of the family root (the topmost ancestor).|
+|target|string|true|none|The requested config's key.|
+|ancestors|[string]|true|none|The target's ancestor keys, root-first, ending at its immediate parent.|
+|descendants|[string]|true|none|Keys of every config that descends from the target.|
+|nodes|[object]|true|none|Every config in the family (root plus all descendants), breadth-first.|
+
+<h2 id="tocS_ConfigSchemaVerify">ConfigSchemaVerify</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigschemaverify"></a>
+<a id="schema_ConfigSchemaVerify"></a>
+<a id="tocSconfigschemaverify"></a>
+<a id="tocsconfigschemaverify"></a>
+
+```json
+{
+  "inSync": true,
+  "fingerprint": "string",
+  "incomingFingerprint": "string",
+  "drift": {
+    "contract": [
+      {
+        "key": "string",
+        "change": "added"
+      }
+    ],
+    "docs": [
+      {
+        "key": "string",
+        "change": "added"
+      }
+    ]
+  },
+  "ancestorOwnedFields": [
+    {
+      "key": "string",
+      "ownedBy": "string",
+      "identical": true
+    }
+  ],
+  "warnings": [
+    {
+      "code": "dropped-declaration",
+      "message": "string",
+      "path": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|inSync|boolean|true|none|True when the supplied schema is canonically identical to the config's stored schema.|
+|fingerprint|string|true|none|Canonical fingerprint of the config's stored schema.|
+|incomingFingerprint|string|true|none|Canonical fingerprint of the supplied schema.|
+|drift|object|false|none|Present only when `inSync` is false.|
+|ancestorOwnedFields|[object]|false|none|Supplied fields an ancestor config already owns ("base wins"). Subtract these from `drift.contract` adds when round-tripping a full effective schema.|
+|warnings|[[ConfigSchemaWarning](#schemaconfigschemawarning)]|false|none|none|
+
+<h2 id="tocS_ConfigSchemaExport">ConfigSchemaExport</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigschemaexport"></a>
+<a id="schema_ConfigSchemaExport"></a>
+<a id="tocSconfigschemaexport"></a>
+<a id="tocsconfigschemaexport"></a>
+
+```json
+{
+  "schema": {
+    "type": "json-schema",
+    "value": {
+      "property1": null,
+      "property2": null
+    }
+  },
+  "effective": true,
+  "additionalProperties": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schema|[ConfigSchemaSource](#schemaconfigschemasource)|true|none|The config's schema in the requested format: a JSON Schema document (`{ type: "json-schema", value }`) or rendered TypeScript source (`{ type: "typescript", value }`).|
+|effective|boolean|true|none|True when the schema includes inherited fields accumulated across the lineage; false when it is only this config's own fields.|
+|additionalProperties|boolean|true|none|Whether the config family permits extra keys.|
+
 <h2 id="tocS_FeatureRevisionRef">FeatureRevisionRef</h2>
 <!-- backwards compatibility -->
 <a id="schemafeaturerevisionref"></a>
@@ -128038,6 +135161,29 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |key|string|true|none|Constant key.|
 |version|integer|true|none|Revision version to publish.|
 
+<h2 id="tocS_SdkConnectionRevisionRef">SdkConnectionRevisionRef</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionrevisionref"></a>
+<a id="schema_SdkConnectionRevisionRef"></a>
+<a id="tocSsdkconnectionrevisionref"></a>
+<a id="tocssdkconnectionrevisionref"></a>
+
+```json
+{
+  "entityType": "sdk-connection",
+  "id": "string",
+  "version": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entityType|string|true|none|none|
+|id|string|true|none|SDK Connection id.|
+|version|integer|true|none|Revision version to publish.|
+
 <h2 id="tocS_RevisionIdRef">RevisionIdRef</h2>
 <!-- backwards compatibility -->
 <a id="schemarevisionidref"></a>
@@ -128067,6 +135213,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |entityType|saved-group|
 |entityType|config|
 |entityType|constant|
+|entityType|sdk-connection|
 
 <h2 id="tocS_CustomHook">CustomHook</h2>
 <!-- backwards compatibility -->
@@ -128106,7 +135253,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |enabled|boolean|true|none|none|
 |projects|[string]|true|none|Project ids the hook applies to (empty = all projects). Always empty for entity-scoped hooks.|
 |entityType|string|false|none|Set (with entityId) to scope the hook to a single resource.|
-|entityId|string|false|none|The scoped resource: a feature id, or a config key. A config-scoped hook always runs for that config and every config that inherits from it (via parent/extends, transitively).|
+|entityId|string|false|none|The scoped resource: a feature id, an experiment id, an SDK Connection id, or a config key. A config-scoped hook always runs for that config and every config that inherits from it (via parent/extends, transitively).|
 |incrementalChangesOnly|boolean|false|none|When true, errors/warnings that already existed before the change being validated are suppressed|
 |lastSuccess|string(date-time)|false|none|none|
 |lastFailure|string(date-time)|false|none|none|
@@ -128122,9 +135269,12 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |hook|validateConfig|
 |hook|validateConfigRevision|
 |hook|validateExperiment|
+|hook|validateSdkConnection|
+|hook|validateSdkConnectionRevision|
 |entityType|feature|
 |entityType|config|
 |entityType|experiment|
+|entityType|sdkConnection|
 
 <h2 id="tocS_Organization">Organization</h2>
 <!-- backwards compatibility -->
@@ -128251,8 +135401,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |name|string|true|none|none|
 |description|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |projects|[string]|true|none|none|
 |tags|[string]|true|none|none|
 |datasource|string|true|none|none|
@@ -128888,8 +136038,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |name|string|true|none|none|
 |description|string|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |projects|[string]|true|none|none|
 |tags|[string]|true|none|none|
 |datasource|string|true|none|none|
@@ -129065,6 +136215,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
       "limitAccessByEnvironment": true
     }
   ],
+  "managedByIdp": true,
   "managedbyIdp": true,
   "teams": [
     "string"
@@ -129105,7 +136256,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |environments|[string]|false|none|none|
 |limitAccessByEnvironment|boolean|false|none|none|
 |additionalRoles|[object]|false|none|Additional roles granted alongside this one, in the same scope. Each is granted independently and environment access is the union across them.|
-|managedbyIdp|boolean|false|none|none|
+|managedByIdp|boolean|false|none|Whether the member is provisioned and managed by an identity provider (SCIM).|
+|managedbyIdp|boolean|false|none|**Deprecated.** Deprecated: use `managedByIdp`.|
 |teams|[string]|false|none|none|
 |projectRoles|[object]|false|none|none|
 |lastLoginDate|string(date-time)|false|none|none|
@@ -129230,7 +136382,6 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "loseRisk": 0,
   "secureAttributeSalt": "string",
   "killswitchConfirmation": true,
-  "featureKillSwitchBehavior": "off",
   "requireReviews": [
     {
       "requireReviewOn": true,
@@ -129262,6 +136413,24 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
         "blockSelfApproval": true,
         "autopublishOnApproval": true,
         "requiredApproverTeams": [
+          "string"
+        ]
+      }
+    ],
+    "sdkConnections": [
+      {
+        "required": true,
+        "projects": [
+          "string"
+        ],
+        "resetReviewOnChange": true,
+        "requireMetadataReview": true,
+        "blockSelfApproval": true,
+        "autopublishOnApproval": true,
+        "requiredApproverTeams": [
+          "string"
+        ],
+        "environments": [
           "string"
         ]
       }
@@ -129323,7 +136492,6 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |loseRisk|number|true|none|**Deprecated.** No longer used. Always the default value.|
 |secureAttributeSalt|string|true|none|none|
 |killswitchConfirmation|boolean|true|none|none|
-|featureKillSwitchBehavior|string|false|none|none|
 |requireReviews|[[RequireReviewRule](#schemarequirereviewrule)]|true|none|none|
 |approvalFlows|object|true|none|none|
 |targetingReviewMode|[[TargetingReviewRule](#schematargetingreviewrule)]|false|none|none|
@@ -129353,8 +136521,6 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |attributionModel|firstExposure|
 |attributionModel|experimentDuration|
 |attributionModel|lookbackOverride|
-|featureKillSwitchBehavior|off|
-|featureKillSwitchBehavior|warn|
 |banditScheduleUnit|hours|
 |banditScheduleUnit|days|
 |banditBurnInUnit|hours|
@@ -129436,6 +136602,45 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |blockSelfApproval|boolean|false|none|none|
 |autopublishOnApproval|boolean|false|none|none|
 |requiredApproverTeams|[string]|false|none|none|
+
+<h2 id="tocS_SdkConnectionApprovalRule">SdkConnectionApprovalRule</h2>
+<!-- backwards compatibility -->
+<a id="schemasdkconnectionapprovalrule"></a>
+<a id="schema_SdkConnectionApprovalRule"></a>
+<a id="tocSsdkconnectionapprovalrule"></a>
+<a id="tocssdkconnectionapprovalrule"></a>
+
+```json
+{
+  "required": true,
+  "projects": [
+    "string"
+  ],
+  "resetReviewOnChange": true,
+  "requireMetadataReview": true,
+  "blockSelfApproval": true,
+  "autopublishOnApproval": true,
+  "requiredApproverTeams": [
+    "string"
+  ],
+  "environments": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|required|boolean|true|none|none|
+|projects|[string]|false|none|none|
+|resetReviewOnChange|boolean|false|none|none|
+|requireMetadataReview|boolean|false|none|none|
+|blockSelfApproval|boolean|false|none|none|
+|autopublishOnApproval|boolean|false|none|none|
+|requiredApproverTeams|[string]|false|none|none|
+|environments|[string]|false|none|Environment IDs this rule applies to. Omitted or empty means every environment. Unlike the other fields, a Project rule does not inherit this from the all-Projects rule.|
 
 <h2 id="tocS_TargetingReviewRule">TargetingReviewRule</h2>
 <!-- backwards compatibility -->
@@ -129797,6 +137002,11 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
   "monitoringStartDate": "1970-01-01T00:00:00Z",
   "lastRollbackAt": "1970-01-01T00:00:00Z",
   "lastRollbackReason": "string",
+  "stepFailure": {
+    "attempts": 0,
+    "lastError": "string",
+    "retryAt": "1970-01-01T00:00:00Z"
+  },
   "monitoringStatus": {
     "safeRolloutId": "string",
     "monitoringMode": "auto",
@@ -129844,6 +137054,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |monitoringStartDate|string(date-time) \| null|false|none|When the monitored section most recently started (first monitored step entered). Used for no-traffic grace period gating.|
 |lastRollbackAt|string(date-time) \| null|false|none|none|
 |lastRollbackReason|string \| null|false|none|none|
+|stepFailure|object \| null|false|none|Set while the scheduler is retrying a failed step. The schedule holds at its current step and pauses once the retries run out. Use `/actions/retry` to make the next attempt now.|
 |monitoringStatus|object \| null|false|none|Read-only monitoring status. Present when monitoringConfig is set.|
 
 #### Enumerated Values
@@ -130260,7 +137471,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |shareUrl|string|false|none|Public URL for viewing the report. Only present when `shareLevel` is `public`.|
 |experimentId|string|false|none|none|
 |owner|string|false|none|The userId of the report owner. Absent for reports created before owner attribution existed.|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |snapshotId|string|false|none|Snapshot ID (experiment-snapshot type only)|
 |snapshotStatus|string|false|none|Status of the latest snapshot (poll this after refresh)|
 |snapshotError|string|false|none|Error message if snapshot failed|
@@ -130710,8 +137921,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
 |blocks|[object]|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 
 #### Enumerated Values
 
@@ -130731,13 +137942,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 
 ```json
 {
-  "source": {
-    "type": "factTable",
-    "factTableId": "string"
-  },
-  "rowFilters": [],
-  "aggregateFilter": "string",
-  "aggregateFilterColumn": "string",
+  "populationId": "string",
   "unit": "string"
 }
 ```
@@ -130746,11 +137951,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|source|object|true|none|none|
-|rowFilters|[object]|true|none|none|
-|aggregateFilter|string|false|none|Conditions on each unit's total within the queried date range, such as ">=3" or ">=3,<10". Requires aggregateFilterColumn|
-|aggregateFilterColumn|string|false|none|Numeric column to total, or "$$count" to count rows. Requires aggregateFilter|
-|unit|string|true|none|Identifier type that defines population membership. Every metric's unit must match it.|
+|populationId|string|true|none|ID of the saved Population|
+|unit|string|true|none|Identifier type that defines population membership. Every metric's unit must match it, and the Population must support it.|
 
 <h2 id="tocS_ContextualBandit">ContextualBandit</h2>
 <!-- backwards compatibility -->
@@ -130872,8 +138074,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |name|string|true|none|none|
 |description|string|false|none|none|
 |project|string|false|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |tags|[string]|true|none|none|
 |archived|boolean|true|none|none|
 |status|string|true|none|none|
@@ -130959,8 +138161,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |datasourceId|string|true|none|none|
 |name|string|true|none|none|
 |description|string|false|none|none|
@@ -130999,8 +138201,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |datasourceId|string|true|none|none|
 |name|string|true|none|none|
 |description|string|false|none|none|
@@ -131136,8 +138338,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |name|string|true|none|none|
 |description|string|false|none|none|
 |project|string|false|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |tags|[string]|true|none|none|
 |archived|boolean|true|none|none|
 |status|string|true|none|none|
@@ -131419,8 +138621,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |name|string|true|none|none|
 |description|string|true|none|none|
 |tags|[string]|true|none|none|
@@ -131596,8 +138798,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
 |project|string|false|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |templateMetadata|object|true|none|none|
 |type|string|true|none|none|
 |hypothesis|string|false|none|none|
@@ -131732,13 +138934,7 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
         }
       ],
       "population": {
-        "source": {
-          "type": "factTable",
-          "factTableId": "string"
-        },
-        "rowFilters": [],
-        "aggregateFilter": "string",
-        "aggregateFilterColumn": "string",
+        "populationId": "string",
         "unit": "string"
       }
     }
@@ -131933,8 +139129,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |id|string|true|none|none|
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |authors|[string]|true|none|none|
 |title|string|true|none|none|
 |text|string|true|none|none|
@@ -132057,8 +139253,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |name|string|true|none|none|
 |description|string|true|none|none|
 |projects|[string]|true|none|Project IDs this Holdout applies to. An empty array means All Projects.|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |tags|[string]|true|none|none|
 |archived|boolean|true|none|none|
 |stage|string|true|none|Lifecycle stage of the Holdout. Use the start, start-analysis, and stop endpoints to move through the lifecycle.|
@@ -132220,8 +139416,8 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
 |projects|[string]|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |name|string|true|none|none|
 |description|string|true|none|none|
 |datasource|string|true|none|none|
@@ -132471,312 +139667,6 @@ What happens at the scheduled end date. `notify` keeps the experiment running an
 |---|---|---|---|---|
 |defaultValue|string \| number \| [object] \| object \| null|true|none|none|
 |rules|[object]|false|none|none|
-
-<h2 id="tocS_ConfigReferences">ConfigReferences</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigreferences"></a>
-<a id="schema_ConfigReferences"></a>
-<a id="tocSconfigreferences"></a>
-<a id="tocsconfigreferences"></a>
-
-```json
-{
-  "features": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ],
-  "constants": [
-    {
-      "id": "string",
-      "key": "string",
-      "name": "string",
-      "project": "string",
-      "isConfig": true
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[object]|true|none|none|
-|constants|[object]|true|none|none|
-
-<h2 id="tocS_ConfigKeyUsage">ConfigKeyUsage</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigkeyusage"></a>
-<a id="schema_ConfigKeyUsage"></a>
-<a id="tocSconfigkeyusage"></a>
-<a id="tocsconfigkeyusage"></a>
-
-```json
-{
-  "familyKeys": [
-    "string"
-  ],
-  "implementations": [
-    {
-      "featureId": "string",
-      "project": "string",
-      "location": "defaultValue",
-      "ruleType": "string",
-      "ruleId": "string",
-      "experimentId": "string",
-      "experimentName": "string",
-      "experimentStatus": "string",
-      "variationId": "string",
-      "configKey": "string",
-      "relation": "self",
-      "keys": [
-        "string"
-      ],
-      "state": "live",
-      "revisionVersion": 0
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|familyKeys|[string]|true|none|none|
-|implementations|[object]|true|none|none|
-
-<h2 id="tocS_ConfigLineage">ConfigLineage</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfiglineage"></a>
-<a id="schema_ConfigLineage"></a>
-<a id="tocSconfiglineage"></a>
-<a id="tocsconfiglineage"></a>
-
-```json
-{
-  "root": "string",
-  "target": "string",
-  "ancestors": [
-    "string"
-  ],
-  "descendants": [
-    "string"
-  ],
-  "nodes": [
-    {
-      "key": "string",
-      "name": "string",
-      "parent": "string",
-      "extends": [
-        "string"
-      ],
-      "project": "string",
-      "archived": true,
-      "depth": -9007199254740000,
-      "isTarget": true,
-      "incompatibleFields": [
-        "string"
-      ],
-      "orphanedFields": [
-        "string"
-      ]
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|root|string|true|none|The key of the family root (the topmost ancestor).|
-|target|string|true|none|The requested config's key.|
-|ancestors|[string]|true|none|The target's ancestor keys, root-first, ending at its immediate parent.|
-|descendants|[string]|true|none|Keys of every config that descends from the target.|
-|nodes|[object]|true|none|Every config in the family (root plus all descendants), breadth-first.|
-
-<h2 id="tocS_ConfigSchemaExport">ConfigSchemaExport</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigschemaexport"></a>
-<a id="schema_ConfigSchemaExport"></a>
-<a id="tocSconfigschemaexport"></a>
-<a id="tocsconfigschemaexport"></a>
-
-```json
-{
-  "schema": {
-    "type": "json-schema",
-    "value": {
-      "property1": null,
-      "property2": null
-    }
-  },
-  "effective": true,
-  "additionalProperties": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schema|[ConfigSchemaSource](#schemaconfigschemasource)|true|none|The config's schema in the requested format: a JSON Schema document (`{ type: "json-schema", value }`) or rendered TypeScript source (`{ type: "typescript", value }`).|
-|effective|boolean|true|none|True when the schema includes inherited fields accumulated across the lineage; false when it is only this config's own fields.|
-|additionalProperties|boolean|true|none|Whether the config family permits extra keys.|
-
-<h2 id="tocS_ConfigSchemaVerify">ConfigSchemaVerify</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigschemaverify"></a>
-<a id="schema_ConfigSchemaVerify"></a>
-<a id="tocSconfigschemaverify"></a>
-<a id="tocsconfigschemaverify"></a>
-
-```json
-{
-  "inSync": true,
-  "fingerprint": "string",
-  "incomingFingerprint": "string",
-  "drift": {
-    "contract": [
-      {
-        "key": "string",
-        "change": "added"
-      }
-    ],
-    "docs": [
-      {
-        "key": "string",
-        "change": "added"
-      }
-    ]
-  },
-  "ancestorOwnedFields": [
-    {
-      "key": "string",
-      "ownedBy": "string",
-      "identical": true
-    }
-  ],
-  "warnings": [
-    {
-      "code": "dropped-declaration",
-      "message": "string",
-      "path": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|inSync|boolean|true|none|True when the supplied schema is canonically identical to the config's stored schema.|
-|fingerprint|string|true|none|Canonical fingerprint of the config's stored schema.|
-|incomingFingerprint|string|true|none|Canonical fingerprint of the supplied schema.|
-|drift|object|false|none|Present only when `inSync` is false.|
-|ancestorOwnedFields|[object]|false|none|Supplied fields an ancestor config already owns ("base wins"). Subtract these from `drift.contract` adds when round-tripping a full effective schema.|
-|warnings|[[ConfigSchemaWarning](#schemaconfigschemawarning)]|false|none|none|
-
-<h2 id="tocS_SavedGroupReferences">SavedGroupReferences</h2>
-<!-- backwards compatibility -->
-<a id="schemasavedgroupreferences"></a>
-<a id="schema_SavedGroupReferences"></a>
-<a id="tocSsavedgroupreferences"></a>
-<a id="tocssavedgroupreferences"></a>
-
-```json
-{
-  "features": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ],
-  "experiments": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string",
-      "projects": [
-        "string"
-      ]
-    }
-  ],
-  "contextualBandits": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ],
-  "interleavings": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ],
-  "savedGroups": [
-    {
-      "id": "string",
-      "groupName": "string",
-      "projects": [
-        "string"
-      ]
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|experiments|[object]|true|none|none|
-|contextualBandits|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|interleavings|[[SavedGroupReferenceResource](#schemasavedgroupreferenceresource)]|true|none|none|
-|savedGroups|[object]|true|none|none|
-
-<h2 id="tocS_ConstantReferences">ConstantReferences</h2>
-<!-- backwards compatibility -->
-<a id="schemaconstantreferences"></a>
-<a id="schema_ConstantReferences"></a>
-<a id="tocSconstantreferences"></a>
-<a id="tocsconstantreferences"></a>
-
-```json
-{
-  "features": [
-    {
-      "id": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ],
-  "constants": [
-    {
-      "id": "string",
-      "key": "string",
-      "name": "string",
-      "project": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|features|[object]|true|none|none|
-|constants|[object]|true|none|none|
 
 <h2 id="tocS_ApiErrorConflictDetails">ApiErrorConflictDetails</h2>
 <!-- backwards compatibility -->
@@ -133609,215 +140499,6 @@ Map of feature ID to stale status. Only requested features that were found and r
 |table|string|true|none|none|
 |columnCount|number|true|none|none|
 
-<h2 id="tocS_savedGroups">savedGroups</h2>
-<!-- backwards compatibility -->
-<a id="schemasavedgroups"></a>
-<a id="schema_savedGroups"></a>
-<a id="tocSsavedgroups"></a>
-<a id="tocssavedgroups"></a>
-
-```json
-{
-  "id": "string",
-  "groupName": "string",
-  "projects": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|groupName|string|false|none|none|
-|projects|[string]|false|none|none|
-
-<h2 id="tocS_constants">constants</h2>
-<!-- backwards compatibility -->
-<a id="schemaconstants"></a>
-<a id="schema_constants"></a>
-<a id="tocSconstants"></a>
-<a id="tocsconstants"></a>
-
-```json
-{
-  "id": "string",
-  "key": "string",
-  "name": "string",
-  "project": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|key|string|true|none|none|
-|name|string|true|none|none|
-|project|string|false|none|none|
-
-<h2 id="tocS_implementations">implementations</h2>
-<!-- backwards compatibility -->
-<a id="schemaimplementations"></a>
-<a id="schema_implementations"></a>
-<a id="tocSimplementations"></a>
-<a id="tocsimplementations"></a>
-
-```json
-{
-  "featureId": "string",
-  "project": "string",
-  "location": "defaultValue",
-  "ruleType": "string",
-  "ruleId": "string",
-  "experimentId": "string",
-  "experimentName": "string",
-  "experimentStatus": "string",
-  "variationId": "string",
-  "configKey": "string",
-  "relation": "self",
-  "keys": [
-    "string"
-  ],
-  "state": "live",
-  "revisionVersion": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|featureId|string|true|none|none|
-|project|string|false|none|none|
-|location|string|true|none|none|
-|ruleType|string|false|none|none|
-|ruleId|string|false|none|none|
-|experimentId|string|false|none|none|
-|experimentName|string|false|none|none|
-|experimentStatus|string|false|none|none|
-|variationId|string|false|none|none|
-|configKey|string|true|none|none|
-|relation|string|false|none|none|
-|keys|[string]|true|none|none|
-|state|string|true|none|none|
-|revisionVersion|number|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|location|defaultValue|
-|location|rule|
-|relation|self|
-|relation|ancestor|
-|relation|descendant|
-|relation|other|
-|state|live|
-|state|draft|
-
-<h2 id="tocS_nodes">nodes</h2>
-<!-- backwards compatibility -->
-<a id="schemanodes"></a>
-<a id="schema_nodes"></a>
-<a id="tocSnodes"></a>
-<a id="tocsnodes"></a>
-
-```json
-{
-  "key": "string",
-  "name": "string",
-  "parent": "string",
-  "extends": [
-    "string"
-  ],
-  "project": "string",
-  "archived": true,
-  "depth": 0,
-  "isTarget": true,
-  "incompatibleFields": [
-    "string"
-  ],
-  "orphanedFields": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|key|string|true|none|none|
-|name|string|true|none|none|
-|parent|string \| null|true|none|The lineage parent's key (tree spine), or null for the family root.|
-|extends|[string]|false|none|Additional composition bases (mixin config keys) layered on top of `parent`. The tree shape follows `parent`/`depth`; these express composition beyond the parent/child spine.|
-|project|string|false|none|none|
-|archived|boolean|true|none|none|
-|depth|integer|true|none|Distance from the family root along the `parent` spine (root is 0).|
-|isTarget|boolean|true|none|True for the requested config.|
-|incompatibleFields|[string]|false|none|Own value keys whose value no longer conforms to the effective (inherited) field type and must be fixed. Empty when all conform.|
-|orphanedFields|[string]|false|none|Own value keys the effective schema no longer declares (e.g. an ancestor removed the field). They still resolve and are served, but nothing validates them and validation rules read them as null; a non-extensible family rejects them on the next changing publish.|
-
-<h2 id="tocS_drift">drift</h2>
-<!-- backwards compatibility -->
-<a id="schemadrift"></a>
-<a id="schema_drift"></a>
-<a id="tocSdrift"></a>
-<a id="tocsdrift"></a>
-
-```json
-{
-  "contract": [
-    {
-      "key": "string",
-      "change": "added"
-    }
-  ],
-  "docs": [
-    {
-      "key": "string",
-      "change": "added"
-    }
-  ]
-}
-```
-
-Present only when `inSync` is false.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|contract|[object]|true|none|Changes that alter what validates (type/enum/required/nullable/bounds/structure, or an added/removed field).|
-|docs|[object]|true|none|Description-only changes (no effect on validation).|
-
-<h2 id="tocS_ancestorOwnedFields">ancestorOwnedFields</h2>
-<!-- backwards compatibility -->
-<a id="schemaancestorownedfields"></a>
-<a id="schema_ancestorOwnedFields"></a>
-<a id="tocSancestorownedfields"></a>
-<a id="tocsancestorownedfields"></a>
-
-```json
-{
-  "key": "string",
-  "ownedBy": "string",
-  "identical": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|key|string|true|none|none|
-|ownedBy|string|true|none|Key of the ancestor config that owns the field.|
-|identical|boolean|true|none|True when the supplied definition matches the ancestor's contract — a save would strip it harmlessly (with a warning). False means a save would be rejected.|
-
 <h2 id="tocS_results">results</h2>
 <!-- backwards compatibility -->
 <a id="schemaresults"></a>
@@ -133853,6 +140534,7 @@ Present only when `inSync` is false.
 |entityType|saved-group|
 |entityType|config|
 |entityType|constant|
+|entityType|sdk-connection|
 |status|published|
 |status|would-publish|
 
@@ -134006,6 +140688,24 @@ Outcomes the previous state produced too, which Incremental Changes Only would h
         "string"
       ]
     }
+  ],
+  "sdkConnections": [
+    {
+      "required": true,
+      "projects": [
+        "string"
+      ],
+      "resetReviewOnChange": true,
+      "requireMetadataReview": true,
+      "blockSelfApproval": true,
+      "autopublishOnApproval": true,
+      "requiredApproverTeams": [
+        "string"
+      ],
+      "environments": [
+        "string"
+      ]
+    }
   ]
 }
 ```
@@ -134015,6 +140715,7 @@ Outcomes the previous state produced too, which Incremental Changes Only would h
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |savedGroups|[[SavedGroupApprovalRule](#schemasavedgroupapprovalrule)]|true|none|none|
+|sdkConnections|[[SdkConnectionApprovalRule](#schemasdkconnectionapprovalrule)]|true|none|none|
 
 <h2 id="tocS_monitoring">monitoring</h2>
 <!-- backwards compatibility -->
@@ -134142,228 +140843,6 @@ Populated when monitoring is enabled and analysis data is available. Contains th
 |signals|below-min-sample|
 |signals|healthy|
 |signals|awaiting-data|
-
-<h2 id="tocS_targets">targets</h2>
-<!-- backwards compatibility -->
-<a id="schematargets"></a>
-<a id="schema_targets"></a>
-<a id="tocStargets"></a>
-<a id="tocstargets"></a>
-
-```json
-{
-  "id": "string",
-  "entityType": "feature",
-  "entityId": "string",
-  "ruleId": "string",
-  "environment": "string",
-  "status": "pending-join",
-  "activatingRevisionVersion": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|entityType|string|true|none|none|
-|entityId|string|true|none|none|
-|ruleId|string \| null|false|none|none|
-|environment|string \| null|false|none|**Deprecated.** Legacy disambiguator used alongside `ruleId` for pre-v2 ramps. May be null on newer targets.|
-|status|string|true|none|none|
-|activatingRevisionVersion|integer \| null|false|none|Feature revision version that activates this ramp; cleared once published|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|entityType|feature|
-|status|pending-join|
-|status|active|
-
-<h2 id="tocS_startActions">startActions</h2>
-<!-- backwards compatibility -->
-<a id="schemastartactions"></a>
-<a id="schema_startActions"></a>
-<a id="tocSstartactions"></a>
-<a id="tocsstartactions"></a>
-
-```json
-{
-  "targetType": "feature-rule",
-  "targetId": "string",
-  "patch": {
-    "ruleId": "string",
-    "coverage": 0,
-    "condition": "string",
-    "savedGroups": [
-      {
-        "match": "all",
-        "ids": [
-          "string"
-        ]
-      }
-    ],
-    "prerequisites": [
-      {
-        "id": "string",
-        "condition": "string"
-      }
-    ],
-    "allEnvironments": true,
-    "environments": [
-      "string"
-    ],
-    "force": null,
-    "enabled": true,
-    "hashAttribute": "string",
-    "seed": "string",
-    "hashVersion": 1
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|targetType|string|true|none|none|
-|targetId|string|true|none|none|
-|patch|object|true|none|none|
-
-<h2 id="tocS_steps">steps</h2>
-<!-- backwards compatibility -->
-<a id="schemasteps"></a>
-<a id="schema_steps"></a>
-<a id="tocSsteps"></a>
-<a id="tocssteps"></a>
-
-```json
-{
-  "interval": 0.1,
-  "approvalNotes": "string",
-  "monitored": true,
-  "holdConditions": {
-    "minSampleSize": 1,
-    "requiresApproval": true
-  },
-  "actions": [
-    {
-      "targetType": "feature-rule",
-      "targetId": "string",
-      "patch": {
-        "ruleId": "string",
-        "coverage": 0,
-        "condition": "string",
-        "savedGroups": [
-          {
-            "match": "all",
-            "ids": [
-              "string"
-            ]
-          }
-        ],
-        "prerequisites": [
-          {
-            "id": "string",
-            "condition": "string"
-          }
-        ],
-        "allEnvironments": true,
-        "environments": [
-          "string"
-        ],
-        "force": null,
-        "enabled": true
-      }
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|interval|number \| null|true|none|Hold duration in seconds before this step's gates are evaluated. null = no time gate (advance as soon as holdConditions clear).|
-|approvalNotes|string \| null|false|none|none|
-|monitored|boolean|false|none|When true, this step runs A/B traffic analysis while active. Treatment = [0, coverage), control = [0.5, 0.5+coverage). Arms are equal-sized and non-adjacent: step-ups only add users, never reassign existing ones. The UI caps monitored-step coverage at 0.5 so control end never exceeds 1.0. The SDK uses explicit hash ranges on the experiment rule to prevent bucketing shifts across monitored/unmonitored transitions.|
-|holdConditions|object|false|none|none|
-|actions|[object]|true|none|none|
-
-<h2 id="tocS_endActions">endActions</h2>
-<!-- backwards compatibility -->
-<a id="schemaendactions"></a>
-<a id="schema_endActions"></a>
-<a id="tocSendactions"></a>
-<a id="tocsendactions"></a>
-
-```json
-{
-  "targetType": "feature-rule",
-  "targetId": "string",
-  "patch": {
-    "ruleId": "string",
-    "coverage": 0,
-    "condition": "string",
-    "savedGroups": [
-      {
-        "match": "all",
-        "ids": [
-          "string"
-        ]
-      }
-    ],
-    "prerequisites": [
-      {
-        "id": "string",
-        "condition": "string"
-      }
-    ],
-    "allEnvironments": true,
-    "environments": [
-      "string"
-    ],
-    "force": null,
-    "enabled": true
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|targetType|string|true|none|none|
-|targetId|string|true|none|none|
-|patch|object|true|none|none|
-
-<h2 id="tocS_lockdownConfig">lockdownConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemalockdownconfig"></a>
-<a id="schema_lockdownConfig"></a>
-<a id="tocSlockdownconfig"></a>
-<a id="tocslockdownconfig"></a>
-
-```json
-{
-  "mode": "none"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|mode|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|mode|none|
-|mode|locked|
 
 <h2 id="tocS_featureDraftPublishFailures">featureDraftPublishFailures</h2>
 <!-- backwards compatibility -->
@@ -134502,8 +140981,8 @@ Populated when monitoring is enabled and analysis data is available. Contains th
 |id|string|true|none|none|
 |dateCreated|string(date-time)|true|none|none|
 |dateUpdated|string(date-time)|true|none|none|
-|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records)|
-|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user.|
+|owner|string|true|none|The userId of the owner (or raw owner name/email for legacy records). An owner set by email comes back here as its userId; compare against `ownerEmail` instead.|
+|ownerEmail|string|false|none|The email address of the owner, when the owner can be resolved to a known user. Matches an `owner` that was sent as an email address.|
 |authors|[string]|true|none|none|
 |title|string|true|none|none|
 |text|string|true|none|none|
@@ -134522,102 +141001,3 @@ Populated when monitoring is enabled and analysis data is available. Contains th
 |source|ai|
 |source|manual|
 |source|api|
-
-<h2 id="tocS_metadata">metadata</h2>
-<!-- backwards compatibility -->
-<a id="schemametadata"></a>
-<a id="schema_metadata"></a>
-<a id="tocSmetadata"></a>
-<a id="tocsmetadata"></a>
-
-```json
-{
-  "property1": "string",
-  "property2": "string"
-}
-```
-
-What the wizard learned about the environment it ran in — language, packageManager, framework, versions. Open by design; do not rely on any single key being present
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|**additionalProperties**|string \| number \| boolean \| null|false|none|none|
-
-<h2 id="tocS_artifacts">artifacts</h2>
-<!-- backwards compatibility -->
-<a id="schemaartifacts"></a>
-<a id="schema_artifacts"></a>
-<a id="tocSartifacts"></a>
-<a id="tocsartifacts"></a>
-
-```json
-{
-  "kind": "sdk-connection",
-  "id": "string",
-  "label": "string",
-  "by": "developer",
-  "detail": "string",
-  "externalId": "string",
-  "action": "created",
-  "dateCreated": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|kind|string|true|none|none|
-|id|string|true|none|none|
-|label|string|true|none|none|
-|by|string|true|none|none|
-|detail|string \| null|true|none|none|
-|externalId|string \| null|false|none|Id in the system this was imported from, when it was imported|
-|action|string|false|none|What the run did to this object|
-|dateCreated|string(date-time)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|kind|sdk-connection|
-|kind|feature|
-|kind|experiment|
-|kind|attribute|
-|kind|metric|
-|kind|fact-table|
-|kind|saved-group|
-|kind|environment|
-|kind|tag|
-|by|developer|
-|by|growthbook|
-|action|created|
-|action|updated|
-|action|existing|
-|action|deleted|
-|action|failed|
-
-<h2 id="tocS_checks">checks</h2>
-<!-- backwards compatibility -->
-<a id="schemachecks"></a>
-<a id="schema_checks"></a>
-<a id="tocSchecks"></a>
-<a id="tocschecks"></a>
-
-```json
-{
-  "name": "string",
-  "ok": true,
-  "required": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|ok|boolean|true|none|none|
-|required|boolean|true|none|none|

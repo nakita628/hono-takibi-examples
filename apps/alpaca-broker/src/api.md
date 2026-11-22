@@ -323,6 +323,7 @@ To create an account for an existing holder, provide `primary_account_holder_id`
 |» contact|body|[Contact](#schemacontact)|false|Contact is the model for the account owner contact information.<br>|
 |» disclosures|body|[Disclosures](#schemadisclosures)|false|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
 |» documents|body|[[OwnerDocumentUploadRequest](#schemaownerdocumentuploadrequest)]|false|none|
+|» drip|body|[AccountDRIPRequest](#schemaaccountdriprequest)|false|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.<br><br>To turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.<br><br>DRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.<br><br>DRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.<br>|
 |» enabled_assets|body|[[EnabledAssetClass](#schemaenabledassetclass)]|false|Will default to `us_equity`. Alpaca has the ability to update the default value upon request.|
 |» entity_id|body|string(uuid)|false|UUID of an existing legal entity used as the holder of a donor-advised account. Required for donor-advised accounts.|
 |» fpsl|body|[AccountFPSLPost](#schemaaccountfpslpost)|false|The account's Fully Paid Securities Lending (FPSL) configuration.<br>To enroll the account for a market, specify the tier_id. The status should not be specified on enrollment.<br>Currently only the US market is supported.<br>|
@@ -340,7 +341,7 @@ To create an account for an existing holder, provide `primary_account_holder_id`
 |» » given_name|body|string|true|none|
 |» » state|body|string|true|none|
 |» » tax_id|body|string|false|none|
-|» » tax_id_type|body|[TaxIdType](#schemataxidtype)|true|An Enum of the various kinds of Tax ID formats Alpaca supports.<br><br>Possible Values are:<br><br><br>- **USA_SSN**<br>USA Social Security Number<br><br>- **USA_ITIN**<br>USA Individual Taxpayer Identification Number<br><br>- **ARG_AR_CUIT**<br>Argentina CUIT<br><br>- **AUS_TFN**<br>Australian Tax File Number<br><br>- **AUS_ABN**<br>Australian Business Number<br><br>- **BOL_NIT**<br>Bolivia NIT<br><br>- **BRA_CPF**<br>Brazil CPF<br><br>- **CHL_RUT**<br>Chile RUT<br><br>- **COL_NIT**<br>Colombia NIT<br><br>- **CRI_NITE**<br>Costa Rica NITE<br><br>- **DEU_TAX_ID**<br>Germany Tax ID (Identifikationsnummer)<br><br>- **DOM_RNC**<br>Dominican Republic RNC<br><br>- **ECU_RUC**<br>Ecuador RUC<br><br>- **FRA_SPI**<br>France SPI (Reference Tax Number)<br><br>- **GBR_UTR**<br>UK UTR (Unique Taxpayer Reference)<br><br>- **GBR_NINO**<br>UK NINO (National Insurance Number)<br><br>- **GTM_NIT**<br>Guatemala NIT<br><br>- **HND_RTN**<br>Honduras RTN<br><br>- **HUN_TIN**<br>Hungary TIN Number<br><br>- **IDN_KTP**<br>Indonesia KTP<br><br>- **IND_PAN**<br>India PAN Number<br><br>- **ISR_TAX_ID**<br>Israel Tax ID (Teudat Zehut)<br><br>- **ITA_TAX_ID**<br>Italy Tax ID (Codice Fiscale)<br><br>- **JPN_TAX_ID**<br>Japan Tax ID (Kojin Bango)<br><br>- **MEX_RFC**<br>Mexico RFC<br><br>- **NIC_RUC**<br>Nicaragua RUC<br><br>- **NLD_TIN**<br>Netherlands TIN Number<br><br>- **PAN_RUC**<br>Panama RUC<br><br>- **PER_RUC**<br>Peru RUC<br><br>- **PRY_RUC**<br>Paraguay RUC<br><br>- **SGP_NRIC**<br>Singapore NRIC<br><br>- **SGP_FIN**<br>Singapore FIN<br><br>- **SGP_ASGD**<br>Singapore ASGD<br><br>- **SGP_ITR**<br>Singapore ITR<br><br>- **SLV_NIT**<br>El Salvador NIT<br><br>- **SWE_TAX_ID**<br>Sweden Tax ID (Personnummer)<br><br>- **URY_RUT**<br>Uruguay RUT<br><br>- **VEN_RIF**<br>Venezuela RIF<br><br>- **NATIONAL_ID**<br>National ID number, if a tax ID number is not available<br><br>- **PASSPORT**<br>Passport number, if a tax ID number is not available<br><br>- **PERMANENT_RESIDENT**<br>Permanent resident number, if a tax ID number is not available<br><br>- **DRIVER_LICENSE**<br>Driver's license number, if a tax ID number is not available<br><br>- **OTHER_GOV_ID**<br>Other government issued identifier, if a tax ID number is not available<br><br>- **NOT_SPECIFIED**<br>Other Tax IDs|
+|» » tax_id_type|body|[TaxIdType](#schemataxidtype)|true|The type of the tax ID or other government-issued identification number.<br><br>Each country-specific type is meant for accounts whose `country_of_tax_residence` is the country it is named after, and some are also meant for that country's associated jurisdictions, such as its territories. For correspondents with strict tax ID validation, the type must match `country_of_tax_residence` and be supported in the account's booking center, so a listed type can still be rejected when the account is validated. The "for individuals" and "for entities" notes describe who each type is typically issued to, and aren't checked when the account is validated.<br><br>Possible values are:<br><br>- **USA_SSN**: USA SSN (Social Security Number), for individuals<br>- **USA_EIN**: USA EIN (Employer Identification Number), for entities<br>- **USA_ITIN**: USA ITIN (Individual Taxpayer Identification Number), for individuals<br>- **USA_TIN**: USA TIN (Taxpayer Identification Number), for entities<br>- **ABW_PN**: Aruba Persoonsnummer (Aruba TIN), for individuals and entities<br>- **AGO_NIF**: Angola NIF (Número de Identificação Fiscal), for individuals and entities<br>- **ALB_NIPT**: Albania NIPT (Numri i Identifikimit të Personit të Tatueshëm), for individuals and entities<br>- **AND_NRT**: Andorra NRT (Número de Registre Tributari), for individuals and entities<br>- **ARE_EID**: UAE Emirates ID, for individuals<br>- **ARE_TRN**: UAE TRN (Tax Registration Number), for entities<br>- **ARG_AG_CUIT**: Legacy value for an Argentina CUIT. Use `ARG_AR_CUIT` instead.<br>- **ARG_AR_CUIT**: Argentina CUIT (Clave Única de Identificación Tributaria), for individuals and entities<br>- **ARM_SSN**: Armenia SSN (Social Security Number), for individuals<br>- **ARM_TIN**: Armenia TIN (Tax Identification Number), for entities<br>- **AUS_ABN**: Australia ABN (Australian business number), for entities<br>- **AUS_TFN**: Australia TFN (Tax File Number), for individuals and entities<br>- **AUT_UID**: Austria UID-Nummer (VAT Identification Number), for entities<br>- **AUT_VNR**: Austria Versicherungsnummer (Social Insurance Number), for individuals<br>- **AZE_FIN**: Azerbaijan FIN (Fərdi İdentifikasiya Nömrəsi), for individuals<br>- **AZE_VOEN**: Azerbaijan VÖEN (Tax Identification Number), for entities<br>- **BEL_BCE**: Belgium BCE/KBO (Enterprise Number), for entities<br>- **BEL_NN**: Belgium NN (Numéro National / Rijksregisternummer), for individuals<br>- **BEN_IFU**: Benin IFU (Identifiant Fiscal Unique), for individuals and entities<br>- **BFA_IFU**: Burkina Faso IFU (Identifiant Financier Unique), for individuals and entities<br>- **BGD_TIN**: Bangladesh TIN (Tax Identification Number), for individuals and entities<br>- **BGR_EGN**: Bulgaria EGN (Edinen Grazhdanski Nomer), for individuals<br>- **BGR_EIK**: Bulgaria EIK/BULSTAT (Entity Identification Code), for entities<br>- **BHR_CPR**: Bahrain CPR (Central Population Registry), for individuals<br>- **BIH_JMBG**: Bosnia and Herzegovina JMBG (Jedinstveni Matični Broj Građana), for individuals<br>- **BLR_ID**: Belarus Personal Identification Number, for individuals<br>- **BLR_UNP**: Belarus UNP (Uchyotny Nomer Platelshchika), for entities<br>- **BLZ_TIN**: Belize TIN (Tax Identification Number), for individuals and entities<br>- **BOL_NIT**: Bolivia NIT (Número de Identificación Tributaria), for individuals and entities<br>- **BRA_CNPJ**: Brazil CNPJ (Cadastro Nacional da Pessoa Jurídica), for entities<br>- **BRA_CPF**: Brazil CPF (Cadastro de Pessoas Físicas), for individuals<br>- **BRB_TIN**: Barbados TIN (Tax Identification Number), for individuals and entities<br>- **BTN_TPN**: Bhutan TPN (Taxpayer Number), for individuals and entities<br>- **BWA_TIN**: Botswana TIN (Tax Identification Number), for individuals and entities<br>- **CAN_BN**: Canada BN (Business Number), for entities<br>- **CAN_SIN**: Canada SIN (Social Insurance Number), for individuals<br>- **CHE_AHV**: Switzerland AHV/AVS (Social Insurance Number), for individuals<br>- **CHE_UID**: Switzerland UID (Unternehmens-Identifikationsnummer), for entities<br>- **CHL_RUT**: Chile RUT (Rol Único Tributario), for individuals and entities<br>- **CHN_RID**: China Resident Identity Card Number (居民身份证号码), for individuals<br>- **CHN_USCC**: China USCC (Unified Social Credit Code / 统一社会信用代码), for entities<br>- **CIV_NCC**: Côte d'Ivoire NCC (Numéro de Compte Contribuable), for individuals and entities<br>- **CMR_NIU**: Cameroon NIU (Numéro d'Identifiant Unique), for individuals and entities<br>- **COK_RMD**: Cook Islands RMD Number (Revenue Management Division), for individuals and entities<br>- **COL_CC**: Colombia CC (Cédula de Ciudadanía), for individuals<br>- **COL_CE**: Colombia CE (Cédula de Extranjería), for individuals<br>- **COL_NIT**: Colombia NIT (Número de Identificación Tributaria), for individuals and entities<br>- **COL_NUIP**: Colombia NUIP (Número Único de Identificación Personal), for individuals<br>- **COL_PPT**: Colombia PPT (Permiso por Protección Temporal), for individuals<br>- **CPV_NIF**: Cabo Verde NIF (Número de Identificação Fiscal), for individuals and entities<br>- **CRI_CJ**: Costa Rica Cédula Jurídica (Legal Entity ID), for entities<br>- **CRI_DIMEX**: Costa Rica DIMEX (Documento de Identificación Migratorio para Extranjeros), for individuals<br>- **CRI_NITE**: Costa Rica NITE (Número de Identificación Tributaria Especial), for individuals and entities<br>- **CRI_PIN**: Costa Rica Personal Identification Number (PIN), for individuals<br>- **CUW_CRIB**: Curaçao CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities<br>- **CYP_TIC**: Cyprus TIC (Tax Identification Code), for individuals and entities<br>- **CZE_TIN**: Czech Republic TIN (Tax Identification Number), for individuals and entities<br>- **DEU_TAX_ID**: Germany Tax ID (Identifikationsnummer), for individuals<br>- **DEU_UST_ID**: Germany USt-IdNr (Umsatzsteuer-Identifikationsnummer), for entities<br>- **DNK_CPR**: Denmark CPR-nummer (Det Centrale Personregister), for individuals<br>- **DNK_CVR**: Denmark CVR-nummer (Det Centrale Virksomhedsregister), for entities<br>- **DOM_CED**: Dominican Republic Cédula de Identidad y Electoral, for individuals<br>- **DOM_RNC**: Dominican Republic RNC (Registro Nacional del Contribuyente), for entities<br>- **DZA_NIF**: Algeria NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **ECU_RUC**: Ecuador RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **EGY_NID**: Egypt National ID Number, for individuals<br>- **EGY_TRN**: Egypt Tax Registration Number, for entities<br>- **ESP_DNI**: Spain DNI (Documento Nacional de Identidad), for individuals<br>- **ESP_NIE**: Spain NIE (Número de Identidad de Extranjero), for individuals<br>- **ESP_NIF**: Spain NIF (Número de Identificación Fiscal), for individuals and entities<br>- **EST_IK**: Estonia Isikukood (Personal Identification Code), for individuals<br>- **EST_RC**: Estonia Registrikood (Registry Code), for entities<br>- **ETH_TIN**: Ethiopia TIN (Tax Identification Number), for individuals and entities<br>- **FIN_HETU**: Finland HETU (Henkilötunnus), for individuals<br>- **FIN_YTU**: Finland Y-tunnus (Business ID), for entities<br>- **FJI_TIN**: Fiji TIN (Tax Identification Number), for individuals and entities<br>- **FRA_SIREN**: France SIREN (Business tax ID), for entities<br>- **FRA_SPI**: France SPI (Reference tax number), for individuals<br>- **GAB_NIF**: Gabon NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **GBR_CRN**: UK CRN (Companies House Registration Number), for entities<br>- **GBR_NINO**: UK NINO (National Insurance Number), for individuals<br>- **GBR_UTR**: UK UTR (Unique Taxpayer Reference), for individuals and entities<br>- **GEO_PID**: Georgia Personal Identification Number, for individuals<br>- **GEO_TIN**: Georgia TIN (Tax Identification Number), for entities<br>- **GHA_TIN**: Ghana TIN (Tax Identification Number), for individuals and entities<br>- **GRC_AFM**: Greece AFM (Arithmos Forologikou Mitroou), for individuals and entities<br>- **GTM_NIT**: Guatemala NIT (Número de Identificación Tributaria), for individuals and entities<br>- **HKG_BRN**: Hong Kong BRN (Business Registration Number), for entities<br>- **HKG_HKID**: Hong Kong HKID (Hong Kong Identity Card), for individuals<br>- **HND_RTN**: Honduras RTN (Registro Tributario Nacional), for individuals and entities<br>- **HRV_OIB**: Croatia OIB (Osobni Identifikacijski Broj), for individuals<br>- **HTI_NIF**: Haiti NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **HUN_ENT**: Hungary Adószám (Entity Tax Number), for entities<br>- **HUN_TIN**: Hungary TIN (Tax Identification Number), for individuals<br>- **IDN_KTP**: Indonesia KTP (Indonesian Identity Card), for individuals<br>- **IDN_NWPW**: Indonesia NPWP (Nomor Pokok Wajib Pajak), for individuals and entities. The code is spelled `IDN_NWPW`, not `IDN_NPWP`.<br>- **IND_GSTIN**: India GSTIN (Goods and Services Tax Identification Number), for entities<br>- **IND_PAN**: India PAN (Permanent Account Number), for individuals<br>- **IRL_CRO**: Ireland CRO (Companies Registration Office Number), for entities<br>- **IRL_PPS**: Ireland PPS (Personal Public Service Number), for individuals<br>- **IRN_NID**: Iran National ID (Kode Melli), for individuals<br>- **ISL_KT**: Iceland Kennitala (National Identification Number), for individuals<br>- **ISR_CORP**: Israel Company Number (Mispar Chevra), for entities<br>- **ISR_TAX_ID**: Israel Tax ID (Teudat Zehut), for individuals<br>- **ITA_PIVA**: Italy Partita IVA (VAT Number), for entities<br>- **ITA_TAX_ID**: Italy Tax ID (Codice fiscale), for individuals<br>- **JAM_TRN**: Jamaica TRN (Taxpayer Registration Number), for individuals and entities<br>- **JOR_NID**: Jordan National ID Number, for individuals<br>- **JPN_CORP**: Japan Corporate Number (法人番号), for entities<br>- **JPN_TAX_ID**: Japan Tax ID (kojin bango), for individuals<br>- **KAZ_BIN**: Kazakhstan BIN (Business Identification Number), for entities<br>- **KAZ_IIN**: Kazakhstan IIN (Individual Identification Number), for individuals<br>- **KEN_KRA_PIN**: Kenya KRA PIN (Kenya Revenue Authority PIN), for individuals and entities<br>- **KGZ_INN**: Kyrgyzstan INN (Individual Tax Number), for individuals<br>- **KHM_NID**: Cambodia National ID Number, for individuals<br>- **KOR_BRN**: South Korea BRN (Business Registration Number), for entities<br>- **KOR_RRN**: South Korea RRN (Resident Registration Number), for individuals<br>- **KWT_CID**: Kuwait Civil ID Number, for individuals<br>- **LBN_TIN**: Lebanon TIN (Tax Identification Number), for individuals and entities<br>- **LKA_NIC**: Sri Lanka NIC (National Identity Card), for individuals<br>- **LKA_TIN**: Sri Lanka TIN (Tax Identification Number), for entities<br>- **LTU_AK**: Lithuania Asmens Kodas (Personal Code), for individuals<br>- **LTU_JAK**: Lithuania Juridinio Asmens Kodas (Legal Entity Code), for entities<br>- **LUX_NIN**: Luxembourg Matricule (National Identification Number), for individuals<br>- **LUX_TVA**: Luxembourg Numéro TVA (VAT Number), for entities<br>- **LVA_PK**: Latvia Personas Kods (Personal Code), for individuals<br>- **LVA_REG**: Latvia Reģistrācijas Numurs (Registration Number), for entities<br>- **MAC_TIN**: Macao Taxpayer Number, for individuals and entities<br>- **MAR_CIN**: Morocco CIN (Carte d'Identité Nationale), for individuals<br>- **MAR_ICE**: Morocco ICE (Identifiant Commun de l'Entreprise), for entities<br>- **MDA_IDNO**: Moldova IDNO (State Identification Number of Entity), for entities<br>- **MDA_IDNP**: Moldova IDNP (Personal Identification Number), for individuals<br>- **MEX_CURP**: Mexico CURP (Clave Única de Registro de Población), for individuals<br>- **MEX_RFC**: Mexico RFC (Registro Federal de Contribuyentes), for individuals and entities<br>- **MKD_EDB**: North Macedonia EDB (Unique Tax Number), for entities<br>- **MKD_EMBG**: North Macedonia EMBG (Unique Master Citizen Number), for individuals<br>- **MLI_NIF**: Mali NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **MLT_ID**: Malta Identity Card Number, for individuals<br>- **MLT_VAT**: Malta VAT Number, for entities<br>- **MNE_JMBG**: Montenegro Unique Master Citizen Number, for individuals<br>- **MNE_PIB**: Montenegro PIB (Tax Identification Number), for entities<br>- **MNG_RD**: Mongolia Register Number, for individuals<br>- **MOZ_NUIT**: Mozambique NUIT (Tax Identification Number), for individuals and entities<br>- **MUS_NID**: Mauritius National Identity Card Number, for individuals<br>- **MUS_TAN_ENT**: Mauritius TAN (Entity Tax Account Number), for entities<br>- **MUS_TAN_IND**: Mauritius TAN (Individual Tax Account Number), for individuals<br>- **MWI_TPIN**: Malawi TPIN (Taxpayer Identification Number), for individuals and entities<br>- **MYS_MYKAD**: Malaysia MyKad (National Registration Identity Card), for individuals<br>- **MYS_ROC**: Malaysia ROC (Companies Commission Registration Number), for entities<br>- **NAM_TIN**: Namibia TIN (Tax Identification Number), for individuals and entities<br>- **NGA_NIN**: Nigeria NIN (National Identification Number), for individuals<br>- **NGA_TIN**: Nigeria TIN (Tax Identification Number), for entities<br>- **NIC_RUC**: Nicaragua RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **NLD_BTW**: Netherlands Btw-identificatienummer (btw-id), for entities<br>- **NLD_KVK**: Netherlands KVK (Kamer van Koophandel), for entities<br>- **NLD_OBN**: Netherlands Omzetbelastingnummer (ob-nummer), for entities<br>- **NLD_TIN**: Netherlands BSN (Burgerservicenummer), for individuals<br>- **NOR_FNR**: Norway Fødselsnummer (National Identity Number), for individuals<br>- **NOR_ORG**: Norway Organisasjonsnummer (Organisation Number), for entities<br>- **NPL_PAN**: Nepal PAN (Permanent Account Number), for individuals and entities<br>- **NZL_IRD**: New Zealand IRD Number (Inland Revenue Department), for individuals and entities<br>- **NZL_NZBN**: New Zealand NZBN (New Zealand Business Number), for entities<br>- **OMN_CID**: Oman Civil ID Number, for individuals<br>- **PAK_NIC**: Pakistan NIC (National Identity Card), for individuals<br>- **PAK_NTN**: Pakistan NTN (National Tax Number), for individuals and entities<br>- **PAN_RUC**: Panama RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **PER_RUC**: Peru RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **PHL_TIN**: Philippines TIN (Tax Identification Number), for individuals and entities<br>- **POL_NIP**: Poland NIP (Numer Identyfikacji Podatkowej), for entities<br>- **POL_PESEL**: Poland PESEL (Polish National Identification Number), for individuals<br>- **PRT_NIF**: Portugal NIF (Número de Identificação Fiscal), for individuals and entities<br>- **PRY_RUC**: Paraguay RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **QAT_QID**: Qatar QID (Qatar Identity Number), for individuals<br>- **ROU_CNP**: Romania CNP (Cod Numeric Personal), for individuals<br>- **ROU_CUI**: Romania CUI (Cod Unic de Înregistrare), for entities<br>- **RUS_INN_ENT**: Russia INN (Entity Tax Number), for entities<br>- **RUS_INN_IND**: Russia INN (Individual Tax Number), for individuals<br>- **RWA_TIN**: Rwanda TIN (Tax Identification Number), for individuals and entities<br>- **SAU_TIN**: Saudi Arabia TIN (Tax Identification Number), for individuals and entities<br>- **SAU_VAT**: Saudi Arabia VAT Registration Number, for entities<br>- **SEN_NINEA**: Senegal NINEA (Numéro d'Identification Nationale des Entreprises), for entities<br>- **SGP_ASGD**: Singapore ASGD, for individuals<br>- **SGP_FIN**: Singapore FIN, for individuals<br>- **SGP_ITR**: Singapore ITR, for individuals and entities<br>- **SGP_NRIC**: Singapore NRIC, for individuals<br>- **SGP_UEN**: Singapore UEN (Unique Entity Number), for entities<br>- **SLV_NIT**: El Salvador NIT (Número de Identificación Tributaria), for individuals and entities<br>- **SRB_JMBG**: Serbia JMBG (Unique Master Citizen Number), for individuals<br>- **SRB_PIB**: Serbia PIB (Tax Identification Number), for entities<br>- **SVK_ICO**: Slovakia IČO (Identification Number of Organisation), for entities<br>- **SVK_TIN**: Slovakia TIN (Tax Identification Number), for individuals<br>- **SVN_DAS**: Slovenia Davčna Številka (Tax Number), for individuals and entities<br>- **SVN_MS**: Slovenia Matična Številka (Registration Number), for entities<br>- **SWE_ORG**: Sweden Organisationsnummer (Organisation Number), for entities<br>- **SWE_TAX_ID**: Sweden Tax ID (Personnummer), for individuals<br>- **SWZ_TIN**: Eswatini TIN (Tax Identification Number), for individuals and entities<br>- **SXM_CRIB**: Sint Maarten CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities<br>- **SYR_TIN**: Syria TIN (Tax Identification Number), for individuals and entities<br>- **THA_NID**: Thailand National ID Card Number (เลขประจำตัวประชาชน), for individuals<br>- **THA_TIN**: Thailand Tax ID (เลขประจำตัวผู้เสียภาษี), for entities<br>- **TJK_TIN**: Tajikistan TIN (Tax Identification Number), for individuals and entities<br>- **TTO_BIR**: Trinidad and Tobago BIR (Board of Inland Revenue File Number), for individuals and entities<br>- **TUN_CIN**: Tunisia CIN (Carte d'Identité Nationale), for individuals<br>- **TUN_MF**: Tunisia Matricule Fiscal (Tax Identification Number), for entities<br>- **TUR_TIN**: Turkey TIN (Tax Identification Number), for individuals and entities<br>- **TWN_GUI**: Taiwan GUI (Unified Business Number / 統一編號), for entities<br>- **TWN_NID**: Taiwan National ID Number (身分證字號), for individuals<br>- **TZA_TIN**: Tanzania TIN (Tax Identification Number), for individuals and entities<br>- **UGA_TIN**: Uganda TIN (Tax Identification Number), for individuals and entities<br>- **UKR_EDRPOU**: Ukraine EDRPOU (Entity Identification Code), for entities<br>- **UKR_RNTRC**: Ukraine RNTRC (Individual Tax Number), for individuals<br>- **URY_CI**: Uruguay CI (Cédula de Identidad), for individuals<br>- **URY_RUT**: Uruguay RUT (Rol Único Tributario), for entities<br>- **UZB_INN**: Uzbekistan INN (Entity Tax Number), for entities<br>- **UZB_PINFL**: Uzbekistan PINFL (Personal Identification Number), for individuals<br>- **VEN_RIF**: Venezuela RIF (Registro de Información Fiscal), for individuals and entities<br>- **VNM_MST_BRN**: Vietnam MST Branch (Mã số thuế đơn vị phụ thuộc), for entities<br>- **VNM_MST_CORP**: Vietnam MST Enterprise (Mã số thuế doanh nghiệp), for individuals and entities<br>- **VNM_MST_PIN**: Vietnam PIN (Personal identification number / Số định danh cá nhân), for individuals<br>- **WSM_TIN**: Samoa TIN (Tax Identification Number), for individuals and entities<br>- **XXK_PID**: Kosovo Personal Identification Number, for individuals<br>- **ZAF_CRN**: South Africa Company Registration Number, for entities<br>- **ZAF_ID**: South African ID Number, for individuals<br>- **ZMB_TPIN**: Zambia TPIN (Taxpayer Identification Number), for individuals and entities<br>- **ZWE_TIN**: Zimbabwe TIN (Tax Identification Number), for individuals and entities<br>- **NATIONAL_ID**: National ID number, if a tax ID number is not available<br>- **PASSPORT**: Passport number, if a tax ID number is not available<br>- **PERMANENT_RESIDENT**: Permanent resident number, if a tax ID number is not available<br>- **DRIVER_LICENSE**: Driver's license number, if a tax ID number is not available<br>- **OTHER_GOV_ID**: Other government issued identifier, if a tax ID number is not available<br>- **NOT_SPECIFIED**: Other Tax IDs|
 |» primary_account_holder_id|body|string(uuid)|false|UUID of an existing party to use as the primary account holder. Among the documented account types, existing holders are supported for trading and IRA accounts.<br><br>When provided, omit inline holder fields such as `contact`, `identity`, `disclosures`, and `minor_identity`. The server validates the referenced party, account-type compatibility, eligibility, and required agreements.<br>|
 |» risk_tolerance|body|string|false|The user's investment risk tolerance. This field should be used instead of the deprecated `risk_tolerance` under identity.<br>|
 |» trading_configurations|body|[AccountConfigurations](#schemaaccountconfigurations)|false|Represents additional configuration settings for an account|
@@ -368,43 +369,234 @@ To create an account for an existing holder, provide `primary_account_holder_id`
 |» liquidity_needs|somewhat_important|
 |» liquidity_needs|does_not_matter|
 |» » tax_id_type|USA_SSN|
+|» » tax_id_type|USA_EIN|
 |» » tax_id_type|USA_ITIN|
+|» » tax_id_type|USA_TIN|
+|» » tax_id_type|ABW_PN|
+|» » tax_id_type|AGO_NIF|
+|» » tax_id_type|ALB_NIPT|
+|» » tax_id_type|AND_NRT|
+|» » tax_id_type|ARE_EID|
+|» » tax_id_type|ARE_TRN|
 |» » tax_id_type|ARG_AG_CUIT|
-|» » tax_id_type|AUS_TFN|
+|» » tax_id_type|ARG_AR_CUIT|
+|» » tax_id_type|ARM_SSN|
+|» » tax_id_type|ARM_TIN|
 |» » tax_id_type|AUS_ABN|
+|» » tax_id_type|AUS_TFN|
+|» » tax_id_type|AUT_UID|
+|» » tax_id_type|AUT_VNR|
+|» » tax_id_type|AZE_FIN|
+|» » tax_id_type|AZE_VOEN|
+|» » tax_id_type|BEL_BCE|
+|» » tax_id_type|BEL_NN|
+|» » tax_id_type|BEN_IFU|
+|» » tax_id_type|BFA_IFU|
+|» » tax_id_type|BGD_TIN|
+|» » tax_id_type|BGR_EGN|
+|» » tax_id_type|BGR_EIK|
+|» » tax_id_type|BHR_CPR|
+|» » tax_id_type|BIH_JMBG|
+|» » tax_id_type|BLR_ID|
+|» » tax_id_type|BLR_UNP|
+|» » tax_id_type|BLZ_TIN|
 |» » tax_id_type|BOL_NIT|
+|» » tax_id_type|BRA_CNPJ|
 |» » tax_id_type|BRA_CPF|
+|» » tax_id_type|BRB_TIN|
+|» » tax_id_type|BTN_TPN|
+|» » tax_id_type|BWA_TIN|
+|» » tax_id_type|CAN_BN|
+|» » tax_id_type|CAN_SIN|
+|» » tax_id_type|CHE_AHV|
+|» » tax_id_type|CHE_UID|
 |» » tax_id_type|CHL_RUT|
+|» » tax_id_type|CHN_RID|
+|» » tax_id_type|CHN_USCC|
+|» » tax_id_type|CIV_NCC|
+|» » tax_id_type|CMR_NIU|
+|» » tax_id_type|COK_RMD|
+|» » tax_id_type|COL_CC|
+|» » tax_id_type|COL_CE|
 |» » tax_id_type|COL_NIT|
+|» » tax_id_type|COL_NUIP|
+|» » tax_id_type|COL_PPT|
+|» » tax_id_type|CPV_NIF|
+|» » tax_id_type|CRI_CJ|
+|» » tax_id_type|CRI_DIMEX|
 |» » tax_id_type|CRI_NITE|
+|» » tax_id_type|CRI_PIN|
+|» » tax_id_type|CUW_CRIB|
+|» » tax_id_type|CYP_TIC|
+|» » tax_id_type|CZE_TIN|
 |» » tax_id_type|DEU_TAX_ID|
+|» » tax_id_type|DEU_UST_ID|
+|» » tax_id_type|DNK_CPR|
+|» » tax_id_type|DNK_CVR|
+|» » tax_id_type|DOM_CED|
 |» » tax_id_type|DOM_RNC|
+|» » tax_id_type|DZA_NIF|
 |» » tax_id_type|ECU_RUC|
+|» » tax_id_type|EGY_NID|
+|» » tax_id_type|EGY_TRN|
+|» » tax_id_type|ESP_DNI|
+|» » tax_id_type|ESP_NIE|
+|» » tax_id_type|ESP_NIF|
+|» » tax_id_type|EST_IK|
+|» » tax_id_type|EST_RC|
+|» » tax_id_type|ETH_TIN|
+|» » tax_id_type|FIN_HETU|
+|» » tax_id_type|FIN_YTU|
+|» » tax_id_type|FJI_TIN|
+|» » tax_id_type|FRA_SIREN|
 |» » tax_id_type|FRA_SPI|
-|» » tax_id_type|GBR_UTR|
+|» » tax_id_type|GAB_NIF|
+|» » tax_id_type|GBR_CRN|
 |» » tax_id_type|GBR_NINO|
+|» » tax_id_type|GBR_UTR|
+|» » tax_id_type|GEO_PID|
+|» » tax_id_type|GEO_TIN|
+|» » tax_id_type|GHA_TIN|
+|» » tax_id_type|GRC_AFM|
 |» » tax_id_type|GTM_NIT|
+|» » tax_id_type|HKG_BRN|
+|» » tax_id_type|HKG_HKID|
 |» » tax_id_type|HND_RTN|
+|» » tax_id_type|HRV_OIB|
+|» » tax_id_type|HTI_NIF|
+|» » tax_id_type|HUN_ENT|
 |» » tax_id_type|HUN_TIN|
 |» » tax_id_type|IDN_KTP|
+|» » tax_id_type|IDN_NWPW|
+|» » tax_id_type|IND_GSTIN|
 |» » tax_id_type|IND_PAN|
+|» » tax_id_type|IRL_CRO|
+|» » tax_id_type|IRL_PPS|
+|» » tax_id_type|IRN_NID|
+|» » tax_id_type|ISL_KT|
+|» » tax_id_type|ISR_CORP|
 |» » tax_id_type|ISR_TAX_ID|
+|» » tax_id_type|ITA_PIVA|
 |» » tax_id_type|ITA_TAX_ID|
+|» » tax_id_type|JAM_TRN|
+|» » tax_id_type|JOR_NID|
+|» » tax_id_type|JPN_CORP|
 |» » tax_id_type|JPN_TAX_ID|
+|» » tax_id_type|KAZ_BIN|
+|» » tax_id_type|KAZ_IIN|
+|» » tax_id_type|KEN_KRA_PIN|
+|» » tax_id_type|KGZ_INN|
+|» » tax_id_type|KHM_NID|
+|» » tax_id_type|KOR_BRN|
+|» » tax_id_type|KOR_RRN|
+|» » tax_id_type|KWT_CID|
+|» » tax_id_type|LBN_TIN|
+|» » tax_id_type|LKA_NIC|
+|» » tax_id_type|LKA_TIN|
+|» » tax_id_type|LTU_AK|
+|» » tax_id_type|LTU_JAK|
+|» » tax_id_type|LUX_NIN|
+|» » tax_id_type|LUX_TVA|
+|» » tax_id_type|LVA_PK|
+|» » tax_id_type|LVA_REG|
+|» » tax_id_type|MAC_TIN|
+|» » tax_id_type|MAR_CIN|
+|» » tax_id_type|MAR_ICE|
+|» » tax_id_type|MDA_IDNO|
+|» » tax_id_type|MDA_IDNP|
+|» » tax_id_type|MEX_CURP|
 |» » tax_id_type|MEX_RFC|
+|» » tax_id_type|MKD_EDB|
+|» » tax_id_type|MKD_EMBG|
+|» » tax_id_type|MLI_NIF|
+|» » tax_id_type|MLT_ID|
+|» » tax_id_type|MLT_VAT|
+|» » tax_id_type|MNE_JMBG|
+|» » tax_id_type|MNE_PIB|
+|» » tax_id_type|MNG_RD|
+|» » tax_id_type|MOZ_NUIT|
+|» » tax_id_type|MUS_NID|
+|» » tax_id_type|MUS_TAN_ENT|
+|» » tax_id_type|MUS_TAN_IND|
+|» » tax_id_type|MWI_TPIN|
+|» » tax_id_type|MYS_MYKAD|
+|» » tax_id_type|MYS_ROC|
+|» » tax_id_type|NAM_TIN|
+|» » tax_id_type|NGA_NIN|
+|» » tax_id_type|NGA_TIN|
 |» » tax_id_type|NIC_RUC|
+|» » tax_id_type|NLD_BTW|
+|» » tax_id_type|NLD_KVK|
+|» » tax_id_type|NLD_OBN|
 |» » tax_id_type|NLD_TIN|
+|» » tax_id_type|NOR_FNR|
+|» » tax_id_type|NOR_ORG|
+|» » tax_id_type|NPL_PAN|
+|» » tax_id_type|NZL_IRD|
+|» » tax_id_type|NZL_NZBN|
+|» » tax_id_type|OMN_CID|
+|» » tax_id_type|PAK_NIC|
+|» » tax_id_type|PAK_NTN|
 |» » tax_id_type|PAN_RUC|
 |» » tax_id_type|PER_RUC|
+|» » tax_id_type|PHL_TIN|
+|» » tax_id_type|POL_NIP|
+|» » tax_id_type|POL_PESEL|
+|» » tax_id_type|PRT_NIF|
 |» » tax_id_type|PRY_RUC|
-|» » tax_id_type|SGP_NRIC|
-|» » tax_id_type|SGP_FIN|
+|» » tax_id_type|QAT_QID|
+|» » tax_id_type|ROU_CNP|
+|» » tax_id_type|ROU_CUI|
+|» » tax_id_type|RUS_INN_ENT|
+|» » tax_id_type|RUS_INN_IND|
+|» » tax_id_type|RWA_TIN|
+|» » tax_id_type|SAU_TIN|
+|» » tax_id_type|SAU_VAT|
+|» » tax_id_type|SEN_NINEA|
 |» » tax_id_type|SGP_ASGD|
+|» » tax_id_type|SGP_FIN|
 |» » tax_id_type|SGP_ITR|
+|» » tax_id_type|SGP_NRIC|
+|» » tax_id_type|SGP_UEN|
 |» » tax_id_type|SLV_NIT|
+|» » tax_id_type|SRB_JMBG|
+|» » tax_id_type|SRB_PIB|
+|» » tax_id_type|SVK_ICO|
+|» » tax_id_type|SVK_TIN|
+|» » tax_id_type|SVN_DAS|
+|» » tax_id_type|SVN_MS|
+|» » tax_id_type|SWE_ORG|
 |» » tax_id_type|SWE_TAX_ID|
+|» » tax_id_type|SWZ_TIN|
+|» » tax_id_type|SXM_CRIB|
+|» » tax_id_type|SYR_TIN|
+|» » tax_id_type|THA_NID|
+|» » tax_id_type|THA_TIN|
+|» » tax_id_type|TJK_TIN|
+|» » tax_id_type|TTO_BIR|
+|» » tax_id_type|TUN_CIN|
+|» » tax_id_type|TUN_MF|
+|» » tax_id_type|TUR_TIN|
+|» » tax_id_type|TWN_GUI|
+|» » tax_id_type|TWN_NID|
+|» » tax_id_type|TZA_TIN|
+|» » tax_id_type|UGA_TIN|
+|» » tax_id_type|UKR_EDRPOU|
+|» » tax_id_type|UKR_RNTRC|
+|» » tax_id_type|URY_CI|
 |» » tax_id_type|URY_RUT|
+|» » tax_id_type|UZB_INN|
+|» » tax_id_type|UZB_PINFL|
 |» » tax_id_type|VEN_RIF|
+|» » tax_id_type|VNM_MST_BRN|
+|» » tax_id_type|VNM_MST_CORP|
+|» » tax_id_type|VNM_MST_PIN|
+|» » tax_id_type|WSM_TIN|
+|» » tax_id_type|XXK_PID|
+|» » tax_id_type|ZAF_CRN|
+|» » tax_id_type|ZAF_ID|
+|» » tax_id_type|ZMB_TPIN|
+|» » tax_id_type|ZWE_TIN|
 |» » tax_id_type|NATIONAL_ID|
 |» » tax_id_type|PASSPORT|
 |» » tax_id_type|PERMANENT_RESIDENT|
@@ -731,6 +923,7 @@ If all parameters are valid and updates have been made, it returns with status c
 |» cash_interest|body|[AccountCashInterestPatch](#schemaaccountcashinterestpatch)|false|Use this property to change the account's configuration for the USD cash interest program.<br>To enroll the account, specify the apr_tier_name. The status should not be specified on enrollment.<br>To change the APR tier, specify the new apr_tier_name. The status should not be specified on tier changes.<br>The unenroll, set the status to INACTIVE.<br>After any change, the response will contain a status of PENDING_CHANGE.<br>An event showing the status change to ACTIVE (for enrollment or tier changes) or INACTIVE (for unenrollment) will be generated when the change is complete.<br>|
 |» contact|body|[Contact](#schemacontact)|false|Contact is the model for the account owner contact information.<br>|
 |» disclosures|body|[Disclosures](#schemadisclosures)|false|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
+|» drip|body|[AccountDRIPRequest](#schemaaccountdriprequest)|false|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.<br><br>To turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.<br><br>DRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.<br><br>DRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.<br>|
 |» enabled_assets|body|[[EnabledAssetClass](#schemaenabledassetclass)]|false|The asset classes enabled on the account. Omit this field to leave the<br>account's enabled assets unchanged. Updates are additive only: the<br>submitted list must contain every asset class already enabled on the account,<br>because asset removal is not supported. For example, to enable<br>crypto for an account that currently trades only equities, submit<br>`["us_equity", "crypto"]` together with the signed crypto agreement.<br>`us_option` may appear in this list for options-enabled accounts and<br>must be re-listed on additive updates, but options cannot be enabled<br>through this endpoint.<br>|
 |» fpsl|body|[AccountFPSLPatch](#schemaaccountfpslpatch)|false|The account's Fully Paid Securities Lending (FPSL) configuration.<br>Use this property to change the account's configuration for the FPSL program.<br>To enroll the account for a market, specify the tier_id. The status should not be specified on enrollment.<br>To change the tier, specify the new tier_id. The status should not be specified on tier changes.<br>To unenroll, set the status to INACTIVE.<br>To re-enroll the account, set the status to ACTIVE. You can also specify the tier_id in case you want to change it.<br>Currently only US market is supported.<br>|
 |» identity|body|[Identity](#schemaidentity)|false|Identity is the model to provide account owner's identity information.<br>|
@@ -1043,7 +1236,7 @@ Notes:
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|query|string(uuid)|false|id of a single account to filter by|
-|activity_types|query|[[ActivityType](#schemaactivitytype)]|false|A comma-separated list of activity types used to filter the results.|
+|activity_types|query|[[ActivityTypeFilter](#schemaactivitytypefilter)]|false|A comma-separated list of activity types used to filter the results.|
 |category|query|string|false|The activity category. Cannot be used with "activity_types" parameter.|
 |order_id|query|string(uuid)|false|Filter activities associated with a specific order. Useful for retrieving the fills that make up a completely filled order.|
 |date|query|string(date-time)|false|Filter activities by their creation date (created_at), not the activity's settlement date. For non-trade activities such as fees, the creation date is typically the day after the trade date (in UTC). Both formats YYYY-MM-DD and YYYY-MM-DDTHH:MM:SSZ are supported.|
@@ -1057,24 +1250,43 @@ Notes:
 
 |Parameter|Value|
 |---|---|
-|activity_types|FILL|
 |activity_types|ACATC|
 |activity_types|ACATS|
+|activity_types|ALLOC|
+|activity_types|CFEE|
 |activity_types|CGD|
 |activity_types|CIL|
 |activity_types|CSD|
+|activity_types|CSR|
 |activity_types|CSW|
 |activity_types|DIV|
 |activity_types|DIVCGL|
 |activity_types|DIVCGS|
+|activity_types|DIVFEE|
+|activity_types|DIVFT|
 |activity_types|DIVNRA|
 |activity_types|DIVROC|
+|activity_types|DIVTW|
 |activity_types|DIVTXEX|
+|activity_types|DIVWH|
+|activity_types|DVF|
+|activity_types|ECEXP|
+|activity_types|EXTRD|
 |activity_types|FEE|
+|activity_types|FIMAT|
+|activity_types|FXCNV|
+|activity_types|FXTRD|
 |activity_types|INT|
+|activity_types|INTNRA|
+|activity_types|INTTW|
+|activity_types|INVPNL|
+|activity_types|JNL|
 |activity_types|JNLC|
 |activity_types|JNLS|
 |activity_types|MA|
+|activity_types|MEM|
+|activity_types|NC|
+|activity_types|OCT|
 |activity_types|OPASN|
 |activity_types|OPCA|
 |activity_types|OPCSH|
@@ -1082,12 +1294,21 @@ Notes:
 |activity_types|OPEXP|
 |activity_types|OPTRD|
 |activity_types|PTC|
+|activity_types|PTR|
 |activity_types|REO|
 |activity_types|REORG|
+|activity_types|SC|
 |activity_types|SPIN|
 |activity_types|SPLIT|
+|activity_types|SUB|
+|activity_types|SWP|
+|activity_types|TRD|
+|activity_types|VOF|
+|activity_types|WH|
 |activity_types|FOPT|
-|activity_types|OCT|
+|activity_types|FILL|
+|activity_types|MISC|
+|activity_types|TRANS|
 |category|trade_activity|
 |category|non_trade_activity|
 |direction|asc|
@@ -1143,7 +1364,7 @@ BasicAuth
 > Code samples
 
 ```bash
-curl https://broker-api.sandbox.alpaca.markets/v1/accounts/activities/FILL \
+curl https://broker-api.sandbox.alpaca.markets/v1/accounts/activities/ACATC \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}"
 ```
@@ -1177,7 +1398,7 @@ Notes:
 |direction|query|string|false|The chronological order of response based on the submission time. asc or desc. Defaults to desc.|
 |page_size|query|integer|false|The maximum number of entries to return in the response.|
 |page_token|query|string|false|Token used for pagination. Provide the ID of the last activity from the last page to retrieve the next set of results.|
-|activity_type|path|string|true|see ActivityType model for details about what the different types mean|
+|activity_type|path|[ActivityTypeFilter](#schemaactivitytypefilter)|true|Activity type to filter by. Accepted values are the activity types recognized by the backend.|
 
 #### Enumerated Values
 
@@ -1185,25 +1406,43 @@ Notes:
 |---|---|
 |direction|asc|
 |direction|desc|
-|activity_type|FILL|
 |activity_type|ACATC|
 |activity_type|ACATS|
+|activity_type|ALLOC|
+|activity_type|CFEE|
 |activity_type|CGD|
 |activity_type|CIL|
 |activity_type|CSD|
+|activity_type|CSR|
 |activity_type|CSW|
 |activity_type|DIV|
 |activity_type|DIVCGL|
 |activity_type|DIVCGS|
+|activity_type|DIVFEE|
+|activity_type|DIVFT|
 |activity_type|DIVNRA|
 |activity_type|DIVROC|
+|activity_type|DIVTW|
 |activity_type|DIVTXEX|
+|activity_type|DIVWH|
+|activity_type|DVF|
+|activity_type|ECEXP|
+|activity_type|EXTRD|
 |activity_type|FEE|
+|activity_type|FIMAT|
+|activity_type|FXCNV|
+|activity_type|FXTRD|
 |activity_type|INT|
-|activity_type|MEM|
+|activity_type|INTNRA|
+|activity_type|INTTW|
+|activity_type|INVPNL|
+|activity_type|JNL|
 |activity_type|JNLC|
 |activity_type|JNLS|
 |activity_type|MA|
+|activity_type|MEM|
+|activity_type|NC|
+|activity_type|OCT|
 |activity_type|OPASN|
 |activity_type|OPCA|
 |activity_type|OPCSH|
@@ -1211,12 +1450,21 @@ Notes:
 |activity_type|OPEXP|
 |activity_type|OPTRD|
 |activity_type|PTC|
+|activity_type|PTR|
 |activity_type|REO|
 |activity_type|REORG|
+|activity_type|SC|
 |activity_type|SPIN|
 |activity_type|SPLIT|
+|activity_type|SUB|
+|activity_type|SWP|
+|activity_type|TRD|
+|activity_type|VOF|
+|activity_type|WH|
 |activity_type|FOPT|
-|activity_type|OCT|
+|activity_type|FILL|
+|activity_type|MISC|
+|activity_type|TRANS|
 
 > Example responses
 
@@ -1548,7 +1796,7 @@ for the party-first onboarding flow.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[CreateAgreementRequest](#schemacreateagreementrequest)|true|none|
+|body|body|[CreateAgreementRequest](#schemacreateagreementrequest)|true|The signed agreement to record for the party. Include `account_id` for per-account agreements.|
 |» *oneOf*|body|[CreatePartyAgreementRequest](#schemacreatepartyagreementrequest)|false|Request to create a per-party agreement. Per-party agreements are signed at the<br>party level and do not require an `account_id`. The `account_id` field is not allowed.<br>|
 |» *oneOf*|body|[CreateAccountAgreementRequest](#schemacreateaccountagreementrequest)|false|Request to create a per-account agreement. Per-account agreements are tied to a<br>specific trading account and require an `account_id`.<br>|
 
@@ -2299,6 +2547,7 @@ Creating an order for your end customer. Each trading request must pass in the a
 - Note that when submitting crypto orders, `market`, `limit` and `stop_limit` orders are supported while the supported `time_in_force` values are `gtc`, and `ioc`.
 - For equities and crypto we accept fractional orders as well with either `notional` or `qty` provided.
 - Note that submitting an options order is only available for partners who have been enabled for Options BETA.
+- For multi-leg options orders (`order_class: mleg`), `commission` is a per-contract rate charged on the option contracts in the strategy, and `commission_type: qty` is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission.
 - In case of Fixed Income, only `market` and `limit` order types with `day` `time_in_force` are supported, and order replacement is not supported.
 Note that submitting Fixed Income orders is only available for partners who have been enabled for Fixed Income.
 - Note that submitting DMA orders (using `advanced_instructions` with `algorithm: DMA`) is only available for partners/correspondents who have been enabled for DMA.
@@ -2326,8 +2575,8 @@ Note that submitting Fixed Income orders is only available for partners who have
 |» advanced_instructions|body|[AdvancedInstructions](#schemaadvancedinstructions)|false|Advanced instructions for Direct Market Access (DMA) routing. When `algorithm` is `DMA`,<br>the order is routed directly to the exchange specified in `destination`. Note that this feature is only<br>available to partners/correspondents who have been enabled for DMA.|
 |» client_order_id|body|string|false|A unique identifier for the order. Automatically generated if not sent. (<= 128 characters)|
 |» commission|body|string(decimal)|false|The commission you want to collect from the user.|
-|» commission_bps|body|string(decimal)|false|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>|
-|» commission_type|body|[CommissionType](#schemacommissiontype)|false|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.|
+|» commission_bps|body|string(decimal)|false|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Not supported for `mleg` orders.<br>|
+|» commission_type|body|[CommissionType](#schemacommissiontype)|false|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)<br>Not supported for `mleg` orders.<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br>For `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.<br>Not supported for `mleg` orders.|
 |» extended_hours|body|boolean|false|Defaults to false. If true, order will be eligible for execution in the pre-market, after-hours, and overnight sessions. Only works with type `limit` and time_in_force set to either `day` or `gtc`.|
 |» instructions|body|string|false|none|
 |» legs|body|[[MLegOrderLeg](#schemamlegorderleg)]|false|list of order legs (<= 4)|
@@ -3401,7 +3650,7 @@ curl https://broker-api.sandbox.alpaca.markets/v1/trading/accounts/497f6eca-6276
 
 `DELETE /v1/trading/accounts/{account_id}/positions`
 
-Closes (liquidates) all of the account's open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request.
+Closes (liquidates) all of the account's open long and short positions. The 207 response contains one result per position: `body` is the closing Order when `status` is 200, otherwise the error describing why that position was not closed.
 
 <h3 id="close-all-positions-for-an-account-parameters">Parameters</h3>
 
@@ -3454,8 +3703,38 @@ Closes (liquidates) all of the account's open long and short positions. A respon
     },
     "status": 200,
     "symbol": "TSLA"
+  },
+  {
+    "body": {
+      "available": "2",
+      "code": 40310000,
+      "existing_qty": "2",
+      "held_for_orders": "0",
+      "message": "insufficient qty available for order (requested: 10, available: 2)",
+      "symbol": "NVDA"
+    },
+    "status": 403,
+    "symbol": "NVDA"
   }
 ]
+```
+
+> 422 Response
+
+```json
+{
+  "code": 40010001,
+  "message": "cancel_orders must be true or false"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 50010000,
+  "message": "internal server error occurred"
+}
 ```
 
 <h3 id="close-all-positions-for-an-account-responses">Responses</h3>
@@ -3463,7 +3742,8 @@ Closes (liquidates) all of the account's open long and short positions. A respon
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |207|Multi-Status|HTTP 207 Multi-Status with body; an array of objects that include the order id and http status code for each status request.|Inline|
-|500|Internal Server Error|Failed to liquidate some positions|None|
+|422|Unprocessable Entity|Invalid Parameters.<br><br>One or more parameters provided are invalid.|[Error](#schemaerror)|
+|500|Internal Server Error|Request-level failure; no per-position results are returned. Positions that fail to close are reported in the 207 response.|[Error](#schemaerror)|
 
 <h3 id="close-all-positions-for-an-account-responseschema">Response Schema</h3>
 
@@ -5694,6 +5974,132 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
+## Subscribe to Rebalancer Events (SSE)
+
+<a id="opIdsubscribeToRebalancerEventsSSE"></a>
+
+> Code samples
+
+```bash
+curl https://broker-api.sandbox.alpaca.markets/v2/events/rebalancer \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v2/events/rebalancer`
+
+The Events API provides event push as well as historical queries via SSE (server sent events).
+
+This stream is correspondent-scoped and v2-only. A subscriber receives rebalancer events for their own correspondent. Every `event_id` is a ULID.
+
+You can listen to portfolio status changes, portfolio run creation, and portfolio run status changes.
+
+Historical events are streamed immediately if queried, and updates are pushed as events occur.
+
+Query Params Rules:
+- `since` required if `until` specified
+- `since_id` required if `until_id` specified
+- `since` and `since_id` can't be used at the same time
+- `until` and `until_id` can't be used at the same time
+
+Behavior:
+- if `since` or `since_id` not specified this will not return any historic data
+- if `until` or `until_id` reached stream will end (status 200)
+- the `Last-Event-Id` request header, when present, is used as `since_id` and takes precedence over the `since_id` query parameter. Combining it with `since` returns an error, the same as sending `since` and `since_id` together.
+- `since` and `until` select events by the time encoded in `event_id` (when the event was emitted), not by `at`. To resume reliably, use `since_id` or `Last-Event-Id`.
+
+---
+
+**Event types**
+
+`event_type` selects the payload:
+
+- `portfolio.status_changed` carries the portfolio snapshot. Weights and rebalance conditions are included. `symbol` is always present on a weight and is `null` for cash.
+- `run.created` and `run.status_changed` both carry the full run snapshot: `id`, `account_id`, `portfolio_id`, `type`, `initiated_from`, `status`, `reason`, `created_at`, `updated_at`, `completed_at`, and `canceled_at`. `weights`, `orders`, `failed_orders`, and `skipped_orders` are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.
+- Run `status` on this stream is `QUEUED`, `IN_PROGRESS`, `CANCELED`, `ERROR`, `TIMEOUT`, `COMPLETED_ADJUSTED`, or `COMPLETED_SUCCESS`. `CANCELED_MID_RUN` is not sent.
+
+`correspondent` is not included in the event JSON.
+
+---
+
+Note for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.
+
+If you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correctly in OAS-3.
+
+
+<h3 id="subscribe-to-rebalancer-events-sse-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|since|query|string(date-time)|false|Format: RFC3339 or YYYY-MM-DD|
+|until|query|string(date-time)|false|Format: RFC3339 or YYYY-MM-DD|
+|since_id|query|string(ulid)|false|ULID `event_id` to resume the stream from. The first event returned will be the one immediately after `since_id`.|
+|until_id|query|string(ulid)|false|ULID `event_id` at which the stream will end (inclusive). Useful for backfills.|
+|Last-Event-Id|header|string(ulid)|false|Used as `since_id`, taking precedence over the `since_id` query parameter. Can't be combined with `since`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "at": "2026-10-05T14:30:00.123456Z",
+  "event_id": "01K6Q6ZJ7M2X3T0E4B9N8RCW5D",
+  "event_type": "portfolio.status_changed",
+  "portfolio": {
+    "cooldown_days": 7,
+    "created_at": "2026-09-01T12:00:00Z",
+    "description": "60/40 with a cash sleeve",
+    "id": "2d49d00e-ab1c-4014-89d8-70c5f64df2fc",
+    "name": "Balanced",
+    "rebalance_conditions": [
+      {
+        "percent": "5",
+        "sub_type": "absolute",
+        "type": "drift_band"
+      },
+      {
+        "day": "15",
+        "sub_type": "monthly",
+        "type": "calendar"
+      }
+    ],
+    "status": "active",
+    "updated_at": "2026-10-05T14:30:00.123456Z",
+    "weights": [
+      {
+        "percent": "60",
+        "symbol": "SPY",
+        "type": "asset"
+      },
+      {
+        "percent": "40",
+        "symbol": null,
+        "type": "cash"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="subscribe-to-rebalancer-events-sse-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Connected. Events will now start streaming as long as you keep the connection open.|Inline|
+
+<h3 id="subscribe-to-rebalancer-events-sse-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[RebalancerEvent](#schemarebalancerevent)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
 ## Subscribe to System Events (SSE)
 
 <a id="opIdsubscribeToSystemEventV2SSE"></a>
@@ -6513,7 +6919,7 @@ Two `transfer_type` values are accepted, and both are available in sandbox and p
 - **`ach`** — supports both `INCOMING` (deposit) and `OUTGOING` (withdrawal) directions. A `relationship_id` from a previously created [ACH Relationship](https://docs.alpaca.markets/reference/createachrelationshipforaccount) is required.
 - **`wire`** — supports the `OUTGOING` (withdrawal) direction only. Incoming wires cannot be initiated through this endpoint; they are pushed in by the sending bank and recorded automatically. A `bank_id` from a previously created [Bank Relationship](https://docs.alpaca.markets/reference/createrecipientbank) is required, and the bank must be in `APPROVED` status before the transfer will progress past `QUEUED`.
 
-In the sandbox environment, ACH deposits and withdrawals settle instantly against virtual funds. Outgoing wire withdrawals are accepted and simulated end-to-end — no funds are transmitted to a bank, but the transfer progresses to `COMPLETE` and the account is debited against virtual funds. Sandbox wire withdrawals are asynchronous (not instant) and auto-complete on weekdays only; transfers submitted on a weekend will not progress until Monday. For more on funding accounts in sandbox, see [this tutorial](https://alpaca.markets/learn/fund-broker-api/).
+In the sandbox environment, ACH deposits and withdrawals settle instantly against virtual funds. Outgoing wire withdrawals are accepted and simulated end-to-end — no funds are transmitted to a bank, but the transfer progresses to `COMPLETE` and the account is debited against virtual funds. Sandbox wire withdrawals are asynchronous (not instant) and auto-complete on weekdays only; transfers submitted on a weekend will not progress until Monday. To fund an account with an incoming wire in sandbox, use [Simulate an Incoming Wire Transfer](https://docs.alpaca.markets/reference/createincomingwire) (`POST /v1/testing/incoming_wires`). For more on funding accounts in sandbox, see [this tutorial](https://alpaca.markets/learn/fund-broker-api/).
 
 > Body parameter
 
@@ -6920,6 +7326,137 @@ Returns the JIT settlement specified by the path parameter.
 |---|---|---|---|
 |200|OK|Successful response.|[SettlementResponse](#schemasettlementresponse)|
 |default|Default|Error response.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## Simulate an Incoming Wire Transfer
+
+<a id="opIdcreateIncomingWire"></a>
+
+> Code samples
+
+```bash
+curl https://broker-api.sandbox.alpaca.markets/v1/testing/incoming_wires \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "amount": "250.50",
+    "currency": "EUR",
+    "wire_instructions": "FFC TEST-987654321"
+  }'
+```
+
+`POST /v1/testing/incoming_wires`
+
+Simulate an incoming wire transfer to fund one of your accounts, without a real sending bank.
+
+This endpoint is **only available in the sandbox environment**. Calling it in production returns `403`. In production, incoming wires are sent by the customer's bank and cannot be created through the API.
+
+Identify the destination account by including an FFC (For Further Credit) string `FFC <correspondent>-<account_number>` in `wire_instructions`, where `<correspondent>` is your 4-character correspondent code and `<account_number>` is the account's 9-character account number.
+
+`currency` defaults to `USD` and must match the account's base currency. Supported currencies are `AUD`, `CAD`, `CHF`, `EUR`, `GBP`, `JPY`, `NZD`, `SGD`, `TRY`, and `USD`.
+
+The wire is created with status `QUEUED` and processed asynchronously on the next worker run.
+
+> Body parameter
+
+```json
+{
+  "amount": "250.50",
+  "currency": "EUR",
+  "wire_instructions": "FFC TEST-987654321"
+}
+```
+
+<h3 id="simulate-an-incoming-wire-transfer-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CreateSimulatedIncomingWireRequest](#schemacreatesimulatedincomingwirerequest)|true|The amount, currency, and destination account of the simulated incoming wire.|
+|» amount|body|string(decimal)|true|Amount of the incoming wire. Must be greater than 0.|
+|» currency|body|[Currency](#schemacurrency)|false|"USD" // US Dollar<br>"JPY" // Japanese Yen<br>"EUR" // Euro<br>"CAD" // Canadian Dollar<br>"GBP" // British Pound Sterling<br>"CHF" // Swiss Franc<br>"TRY" // Turkish Lira<br>"AUD" // Australian Dollar<br>"CZK" // Czech Koruna<br>"SEK" // Swedish Krona<br>"DKK" // Danish Krone<br>"SGD" // Singapore Dollar<br>"HKD" // Hong Kong Dollar<br>"HUF" // Hungarian Forint<br>"NZD" // New Zealand Dollar<br>"NOK" // Norwegian Krone<br>"PLN" // Poland Złoty|
+|» delay_until|body|string \| null(date-time)|false|Accepted and returned in the response, but not currently used. The wire is processed on the next worker run regardless of this value.|
+|» wire_instructions|body|string|true|Must contain an FFC (For Further Credit) string identifying the destination account, in the form `FFC <correspondent>-<account_number>`. The hyphen can also be a space or omitted. Text before or after the FFC string is ignored.<br><br>`<correspondent>` must be your 4-character correspondent code, and `<account_number>` must be the 9-character account number of one of your accounts. Only the first 9 characters after the correspondent code are read as the account number.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "account_number": "123456789",
+  "amount": "1000",
+  "batch_processed_at": "0001-01-01T00:00:00Z",
+  "correspondent": "TEST",
+  "create_at": "2026-11-09T17:45:12.123456Z",
+  "currency": "USD",
+  "delay_until": null,
+  "id": "0b6c4a9e-2f4d-4b8a-9c1e-7f3d2a1b5c6d",
+  "status": "QUEUED",
+  "wire_instructions": "FFC TEST-123456789"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 40010000,
+  "message": "request body format is invalid"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 40310000,
+  "message": "testing incoming wires is only available to sandbox environments"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 40410000,
+  "message": "account number 123456789 does not exist"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 40010001,
+  "message": "invalid wire instructions: must be in format FFC TEST-987654321"
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 50010000,
+  "message": "internal server error occurred"
+}
+```
+
+<h3 id="simulate-an-incoming-wire-transfer-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The simulated incoming wire was created.|[SimulatedIncomingWire](#schemasimulatedincomingwire)|
+|400|Bad Request|The request body is malformed, for example invalid JSON.|[Error](#schemaerror)|
+|403|Forbidden|The endpoint was called in production. It is only available in the sandbox environment.|[Error](#schemaerror)|
+|404|Not Found|No account with the account number in `wire_instructions` exists for your correspondent.|[Error](#schemaerror)|
+|422|Unprocessable Entity|The request was rejected by validation. Common reasons include:<br><br>- `invalid wire instructions: must be in format FFC TEST-987654321`: `wire_instructions` does not contain an FFC string.<br>- `invalid correspondent used in wire instructions`: the correspondent in `wire_instructions` is not yours.<br>- `currency does not match account's base currency`: `currency`, or the `USD` default, differs from the account's base currency.<br>- `please contact support. currency is not supported for incoming_wire: <currency>`: `currency` is not a supported incoming wire currency.<br>- `currency is not a valid currency`: `currency` is not a recognized currency code.<br>- `amount should be greater than or equal to zero`: `amount` is 0 or negative. The amount must be greater than 0.<br>|[Error](#schemaerror)|
+|default|Default|Unexpected error.|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -7646,7 +8183,7 @@ Returns all funding wallet transfers (deposits and withdrawals) associated with 
       "fees": [
         {
           "amount": "string",
-          "currency": "string",
+          "currency": "USD",
           "payment_type": "invoice",
           "type": "withdrawal_fee"
         }
@@ -7723,7 +8260,7 @@ Returns a single funding wallet transfer for the specified account by `transfer_
   "fees": [
     {
       "amount": "string",
-      "currency": "string",
+      "currency": "USD",
       "payment_type": "invoice",
       "type": "withdrawal_fee"
     }
@@ -7829,7 +8366,7 @@ Creates a withdrawal
   "fees": [
     {
       "amount": "string",
-      "currency": "string",
+      "currency": "USD",
       "payment_type": "invoice",
       "type": "withdrawal_fee"
     }
@@ -9311,8 +9848,8 @@ a different request returns `422 Unprocessable Entity`.
 
 ```json
 {
-  "code": 0,
-  "message": "string"
+  "code": 42210000,
+  "message": "idempotency key reused with a different request body"
 }
 ```
 
@@ -9388,7 +9925,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
-## Cancel a Pending Journal
+## Cancel a Journal
 
 <a id="opIddeleteJournalById"></a>
 
@@ -9402,21 +9939,21 @@ curl https://broker-api.sandbox.alpaca.markets/v1/journals/497f6eca-6276-4993-bf
 
 `DELETE /v1/journals/{journal_id}`
 
-You can only delete a journal if the journal is still in a pending state, if a journal is executed you will not be able to delete. The alternative is to create a mirror journal entry to reverse the flow of funds.
+You can delete a journal only while it is `pending` or `queued`. A journal that has moved past those statuses, including one that has been executed, cannot be deleted. To reverse an executed journal, create a mirror journal entry.
 
-<h3 id="cancel-a-pending-journal-parameters">Parameters</h3>
+<h3 id="cancel-a-journal-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |journal_id|path|string(uuid)|true|none|
 
-<h3 id="cancel-a-pending-journal-responses">Responses</h3>
+<h3 id="cancel-a-journal-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|The cancel request succeeded. (No-content)<br>|None|
 |404|Not Found|The journal is not found.<br>|None|
-|422|Unprocessable Entity|The journal is not in the pending status.<br>|None|
+|422|Unprocessable Entity|The journal is not pending or queued.<br>|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -12165,7 +12702,8 @@ Lists subscriptions
       "created_at": "1970-01-01T00:00:00Z",
       "id": "string",
       "last_rebalanced_at": "string",
-      "portfolio_id": "string"
+      "portfolio_id": "string",
+      "trade_marker": "discretionary"
     }
   ]
 }
@@ -12252,7 +12790,8 @@ curl https://broker-api.sandbox.alpaca.markets/v1/rebalancing/subscriptions \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
     "account_id": "string",
-    "portfolio_id": "string"
+    "portfolio_id": "string",
+    "trade_marker": "discretionary"
   }'
 ```
 
@@ -12260,12 +12799,15 @@ curl https://broker-api.sandbox.alpaca.markets/v1/rebalancing/subscriptions \
 
 Creates a subscription between an account and a portfolio.
 
+`trade_marker` is optional. Omitting it means `discretionary`. A discretionary subscription is rejected with 422 unless the correspondent's advisor is marked discretionary. Send `unsolicited` to create the subscription without that advisor flag. Existing subscriptions created before trade markers return `trade_marker: null` and their orders stay unmarked.
+
 > Body parameter
 
 ```json
 {
   "account_id": "string",
-  "portfolio_id": "string"
+  "portfolio_id": "string",
+  "trade_marker": "discretionary"
 }
 ```
 
@@ -12276,6 +12818,7 @@ Creates a subscription between an account and a portfolio.
 |body|body|object|false|none|
 |» account_id|body|string|false|Account ID. Account must be active and the account must not have any active subscriptions already (only 1 is permitted at a time)|
 |» portfolio_id|body|string|false|Portfolio ID. Portfolio must be active|
+|» trade_marker|body|object|false|How trades for this subscription are marked. Omitted means discretionary. Discretionary requires the correspondent's advisor to be marked discretionary. Send unsolicited when that flag is not set.|
 
 > Example responses
 
@@ -12287,7 +12830,8 @@ Creates a subscription between an account and a portfolio.
   "created_at": "1970-01-01T00:00:00Z",
   "id": "string",
   "last_rebalanced_at": "string",
-  "portfolio_id": "string"
+  "portfolio_id": "string",
+  "trade_marker": "discretionary"
 }
 ```
 
@@ -12413,7 +12957,8 @@ Get a subscription by its ID.
   "created_at": "1970-01-01T00:00:00Z",
   "id": "string",
   "last_rebalanced_at": "string",
-  "portfolio_id": "string"
+  "portfolio_id": "string",
+  "trade_marker": "discretionary"
 }
 ```
 
@@ -12986,7 +13531,7 @@ Lists wallets for the account given in the path parameter. If an asset is specif
 |account_id|path|string(uuid)|true|Account identifier.|
 |asset|query|string|false|none|
 |chain|query|string|false|Optional chain identifier. Use to request wallets for a specific chain when asset is a multi-chain crypto asset. If not specified, network is considered.|
-|network|query|string|false|Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.|
+|network|query|string|false|**Deprecated.** **Deprecation notice:**<br>Use `chain` instead.<br><br>Since: 2026-11-02<br>Sunset: 2027-02-02<br><br>---<br><br>Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.|
 
 #### Enumerated Values
 
@@ -14007,8 +14552,8 @@ The `{account_id}` path parameter accepts a account UUID (aggregation for that a
   "account_number": "286873545",
   "in_progress_lending_activities": 2,
   "interest": {
-    "customer": 1.23,
-    "partner": 1.65
+    "customer": "8.61",
+    "partner": "11.55"
   },
   "total_lending_activities": 7
 }
@@ -14097,20 +14642,20 @@ Returns a list of all FPSL loans that match the specified filter criteria, order
     {
       "account_id": "06d83e79-5bea-4ce9-a362-a25251a700ec",
       "account_number": "286873545",
-      "collateral": 1161.015,
+      "collateral": "1161.015",
       "correspondent": "LPCA",
-      "date": "2006-01-02",
+      "date": "2025-03-21",
       "interest": {
-        "customer": 1.23,
-        "partner": 1.65
+        "customer": "1.23",
+        "partner": "1.65"
       },
-      "market_value": 1138.25,
+      "market_value": "1138.25",
       "quantity": 5,
       "symbol": "AAPL",
       "updated_at": "2025-03-21T15:54:19.857034+01:00"
     }
   ],
-  "next_page_token": "string"
+  "next_page_token": null
 }
 ```
 
@@ -14567,6 +15112,7 @@ curl https://broker-api.sandbox.alpaca.markets/v1/accounts/497f6eca-6276-4993-bf
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
+    "client_request_id": "string",
     "issuer": "xstocks",
     "network": "solana",
     "qty": "string",
@@ -14593,6 +15139,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 
 ```json
 {
+  "client_request_id": "string",
   "issuer": "xstocks",
   "network": "solana",
   "qty": "string",
@@ -14608,6 +15155,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 |account_id|path|string(uuid)|true|Account identifier.|
 |Idempotency-Key|header|string|false|Optional client-generated key for safe retries and duplicate request detection.<br>This endpoint currently accepts keys up to 128 characters. Alpaca is moving toward<br>a 36-character maximum; new implementations should generate a unique UUIDv7 or<br>UUIDv4 value (36 characters including hyphens) for each logical operation. Do not<br>reuse a key across operations.<br>|
 |body|body|[TokenizationMintRequest](#schematokenizationmintrequest)|true|none|
+|» client_request_id|body|string|false|Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.<br><br>Must be at most 128 printable ASCII characters with no leading or trailing whitespace.|
 |» issuer|body|[TokenizationIssuer](#schematokenizationissuer)|true|The tokenized asset's issuer|
 |» network|body|[TokenizationNetwork](#schematokenizationnetwork)|true|The token's blockchain network|
 |» qty|body|string|true|The underlying quantity to convert into the tokenized asset. It can be fractional.|
@@ -14619,8 +15167,10 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 |Parameter|Value|
 |---|---|
 |» issuer|binance|
+|» issuer|bitget|
 |» issuer|coinbase|
 |» issuer|ondo|
+|» issuer|robinhood|
 |» issuer|st0x|
 |» issuer|xstocks|
 |» network|arbitrum|
@@ -14642,6 +15192,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 
 ```json
 {
+  "client_request_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "issuer": "xstocks",
   "network": "solana",
@@ -14743,8 +15294,10 @@ Retrieve tokenization requests for the account. This endpoint may be used by the
 |status|rejected|
 |status|completed|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -16641,8 +17194,8 @@ A page of ACATS transfers, with optional pagination tokens.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page_token_next|object|false|none|none|
-|page_token_previous|object|false|none|none|
+|page_token_next|object|false|none|Page token for the next page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the last page.|
+|page_token_previous|object|false|none|Page token for the previous page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the first page.|
 |pending_transfers|integer(int32)|false|none|The count of ACATS transfers pending review|
 |transfers|[[AcatsTransfer](#schemaacatstransfer)]|true|none|none|
 
@@ -16992,6 +17545,7 @@ Represents high level account info. Used when returning entire account informati
 |currency|[Currency](#schemacurrency)|true|none|"USD" // US Dollar<br>"JPY" // Japanese Yen<br>"EUR" // Euro<br>"CAD" // Canadian Dollar<br>"GBP" // British Pound Sterling<br>"CHF" // Swiss Franc<br>"TRY" // Turkish Lira<br>"AUD" // Australian Dollar<br>"CZK" // Czech Koruna<br>"SEK" // Swedish Krona<br>"DKK" // Danish Krone<br>"SGD" // Singapore Dollar<br>"HKD" // Hong Kong Dollar<br>"HUF" // Hungarian Forint<br>"NZD" // New Zealand Dollar<br>"NOK" // Norwegian Krone<br>"PLN" // Poland Złoty|
 |disclosures|[Disclosures](#schemadisclosures)|false|none|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
 |documents|[[OwnerDocument](#schemaownerdocument)]|false|none|The documents associated with the primary owner of the account|
+|drip|[AccountDRIPResponse](#schemaaccountdripresponse)|false|none|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting.<br>This field is returned only when DRIP was turned on for the account at least once.<br>|
 |enabled_assets|[[EnabledAssetClass](#schemaenabledassetclass)]|false|none|Assets the user has enabled and is able to trade once status and/or crypto_status are ACTIVE|
 |fpsl|[AccountFPSLResponse](#schemaaccountfpslresponse)|false|none|The account's Fully Paid Securities Lending (FPSL) configuration.<br>This is only returned for accounts that have FPSL enabled.<br>|
 |id|string(uuid)|true|none|UUID that identifies the account for later reference|
@@ -17228,7 +17782,7 @@ Represents additional configuration settings for an account
 
 ```json
 {
-  "account_sub_type": {},
+  "account_sub_type": "traditional",
   "account_type": "trading",
   "agreements": [
     {
@@ -17284,6 +17838,9 @@ Represents additional configuration settings for an account
       "mime_type": "image/jpeg"
     }
   ],
+  "drip": {
+    "equities_dividend_reinvestments": true
+  },
   "enabled_assets": [
     "us_equity"
   ],
@@ -17362,6 +17919,7 @@ Account-specific requirements:
 |contact|[Contact](#schemacontact)|false|none|Contact is the model for the account owner contact information.<br>|
 |disclosures|[Disclosures](#schemadisclosures)|false|none|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
 |documents|[[OwnerDocumentUploadRequest](#schemaownerdocumentuploadrequest)]|false|none|none|
+|drip|[AccountDRIPRequest](#schemaaccountdriprequest)|false|none|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.<br><br>To turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.<br><br>DRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.<br><br>DRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.<br>|
 |enabled_assets|[[EnabledAssetClass](#schemaenabledassetclass)]|false|none|Will default to `us_equity`. Alpaca has the ability to update the default value upon request.|
 |entity_id|string(uuid)|false|none|UUID of an existing legal entity used as the holder of a donor-advised account. Required for donor-advised accounts.|
 |fpsl|[AccountFPSLPost](#schemaaccountfpslpost)|false|none|The account's Fully Paid Securities Lending (FPSL) configuration.<br>To enroll the account for a market, specify the tier_id. The status should not be specified on enrollment.<br>Currently only the US market is supported.<br>|
@@ -17412,6 +17970,59 @@ Account-specific requirements:
 ```
 
 The account type to create.
+
+<h2 id="tocS_AccountDRIPRequest">AccountDRIPRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountdriprequest"></a>
+<a id="schema_AccountDRIPRequest"></a>
+<a id="tocSaccountdriprequest"></a>
+<a id="tocsaccountdriprequest"></a>
+
+```json
+{
+  "equities_dividend_reinvestments": true
+}
+```
+
+This feature is available in sandbox for beta partners only.
+
+The account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.
+
+To turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.
+
+DRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.
+
+DRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|equities_dividend_reinvestments|boolean|false|none|If true, Alpaca reinvests eligible cash dividends on US equities in the same security.|
+
+<h2 id="tocS_AccountDRIPResponse">AccountDRIPResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountdripresponse"></a>
+<a id="schema_AccountDRIPResponse"></a>
+<a id="tocSaccountdripresponse"></a>
+<a id="tocsaccountdripresponse"></a>
+
+```json
+{
+  "equities_dividend_reinvestments": true
+}
+```
+
+This feature is available in sandbox for beta partners only.
+
+The account's dividend reinvestment (DRIP) setting.
+This field is returned only when DRIP was turned on for the account at least once.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|equities_dividend_reinvestments|boolean|true|none|If true, Alpaca reinvests eligible cash dividends on US equities in the same security.|
 
 <h2 id="tocS_AccountDocument">AccountDocument</h2>
 <!-- backwards compatibility -->
@@ -17579,6 +18190,7 @@ Represents an account with all data available. If your api response is missing s
 |custodial_account_type|[CustodialAccountType](#schemacustodialaccounttype)|false|none|Represents the type of custodial account based on the state where the beneficiary resides.<br>This value is returned only when the `country_of_tax_residence` is `USA`. For other countries, this property is not included in the response.<br><br>**Possible Return Values**<br><br>`CustodianTypeUTMA` - Indicates that the custodial account is governed by the Uniform Transfers to Minors Act.<br>`CustodianTypeUGMA` - Indicates that the custodial account is governed by the Uniform Gifts to Minors Act.|
 |disclosures|[Disclosures](#schemadisclosures)|false|none|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
 |documents|[[OwnerDocument](#schemaownerdocument)]|false|none|The documents associated with the primary owner of the account|
+|drip|[AccountDRIPResponse](#schemaaccountdripresponse)|false|none|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting.<br>This field is returned only when DRIP was turned on for the account at least once.<br>|
 |enabled_assets|[[EnabledAssetClass](#schemaenabledassetclass)]|false|none|none|
 |fpsl|[AccountFPSLResponse](#schemaaccountfpslresponse)|false|none|The account's Fully Paid Securities Lending (FPSL) configuration.<br>This is only returned for accounts that have FPSL enabled.<br>|
 |id|string(uuid)|true|none|none|
@@ -18049,6 +18661,7 @@ The account type returned for the account.
 |cash_interest|[AccountCashInterestPatch](#schemaaccountcashinterestpatch)|false|none|Use this property to change the account's configuration for the USD cash interest program.<br>To enroll the account, specify the apr_tier_name. The status should not be specified on enrollment.<br>To change the APR tier, specify the new apr_tier_name. The status should not be specified on tier changes.<br>The unenroll, set the status to INACTIVE.<br>After any change, the response will contain a status of PENDING_CHANGE.<br>An event showing the status change to ACTIVE (for enrollment or tier changes) or INACTIVE (for unenrollment) will be generated when the change is complete.<br>|
 |contact|[Contact](#schemacontact)|false|none|Contact is the model for the account owner contact information.<br>|
 |disclosures|[Disclosures](#schemadisclosures)|false|none|Disclosures fields denote if the account owner falls under<br>each category defined by FINRA rule. The client has to ask<br>questions for the end user and the values should reflect<br>their answers.<br>If one of the answers is true (yes), the account goes into<br>ACTION_REQUIRED status.<br>|
+|drip|[AccountDRIPRequest](#schemaaccountdriprequest)|false|none|This feature is available in sandbox for beta partners only.<br><br>The account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.<br><br>To turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.<br><br>DRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.<br><br>DRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.<br>|
 |enabled_assets|[[EnabledAssetClass](#schemaenabledassetclass)]|false|none|The asset classes enabled on the account. Omit this field to leave the<br>account's enabled assets unchanged. Updates are additive only: the<br>submitted list must contain every asset class already enabled on the account,<br>because asset removal is not supported. For example, to enable<br>crypto for an account that currently trades only equities, submit<br>`["us_equity", "crypto"]` together with the signed crypto agreement.<br>`us_option` may appear in this list for options-enabled accounts and<br>must be re-listed on additive updates, but options cannot be enabled<br>through this endpoint.<br>|
 |fpsl|[AccountFPSLPatch](#schemaaccountfpslpatch)|false|none|The account's Fully Paid Securities Lending (FPSL) configuration.<br>Use this property to change the account's configuration for the FPSL program.<br>To enroll the account for a market, specify the tier_id. The status should not be specified on enrollment.<br>To change the tier, specify the new tier_id. The status should not be specified on tier changes.<br>To unenroll, set the status to INACTIVE.<br>To re-enroll the account, set the status to ACTIVE. You can also specify the tier_id in case you want to change it.<br>Currently only US market is supported.<br>|
 |identity|[Identity](#schemaidentity)|false|none|Identity is the model to provide account owner's identity information.<br>|
@@ -18095,7 +18708,7 @@ Base for activity types
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string(uuid)|false|none|none|
-|activity_type|[ActivityType](#schemaactivitytype)|true|none|Represents the various kinds of activity.<br><br>TradeActivity's will always have the type `FILL`<br><br>- **FILL**<br>  Order Fills (Partial/Full)<br>- **ACATC**<br>  ACATS IN/OUT (Cash)<br>- **ACATS**<br>  ACATS IN/OUT (Securities)<br>- **CGD**<br>  Capital Gains Distribution<br>- **CIL**<br>  Cash in Lieu of Stock<br>- **CSD**<br>  Cash Disbursement (+)<br>- **CSW**<br>  Cash Withdrawable<br>- **DIV**<br>  Dividend<br>- **DIVCGL**<br>  Dividend (Capital Gains Long Term)<br>- **DIVCGS**<br>  Dividend (Capital Gains Short Term)<br>- **DIVNRA**<br>  Dividend Adjusted (NRA Withheld)<br>- **DIVROC**<br>  Dividend Return of Capital<br>- **DIVTXEX**<br>  Dividend (Tax Exempt)<br>- **FEE**<br>  REG and TAF Fees<br>- **INT**<br>  Interest (Credit/Margin)<br>- **JNLC**<br>  Journal Entry (Cash)<br>- **JNLS**<br>  Journal Entry (Stock)<br>- **OPASN**<br>   Option Assignment<br>- **OPCA**<br>  Option Corporate Action<br>- **OPCSH**<br>   Option cash deliverable for non-standard contracts<br>- **OPEXC**<br>  Option Exercise<br>- **OPEXP**<br>  Option Expiration<br>- **OPTRD**<br>  Option Trade<br>- **MA**<br>  Merger/Acquisition<br>- **PTC**<br>  Pass Thru Change<br>- **REO**<br>  Reorganization<br>- **REORG**<br>  Worthless removal CA<br>- **SPIN**<br>  Stock Spinoff<br>- **SPLIT**<br>  Stock Split<br>- **FOPT**<br>  Free of Payment Transfers<br>- **OCT**<br>  On Chain Transactions (blockchain deposits/withdrawals)|
+|activity_type|[ActivityType](#schemaactivitytype)|true|none|Entry type returned on an activity. The listing returns the stored entry type.<br>It omits `ECJL`, crypto-deposit `JNLC`, and `SWP`.<br><br>`TRANS` and `MISC` are filter aliases. They are not returned as `activity_type`.<br>This is the known set. A new clearing code can appear without an API change.<br><br>Trade activities always have the type `FILL`.<br><br>- **FILL**<br>  Order Fills (Partial/Full)<br>- **ACATC**<br>  ACATS IN/OUT (Cash)<br>- **ACATS**<br>  ACATS IN/OUT (Securities)<br>- **ALLOC**<br>  Allocation<br>- **CFEE**<br>  Crypto fee<br>- **CGD**<br>  Capital Gains Distribution<br>- **CIL**<br>  Cash in Lieu of Stock<br>- **CORR**<br>  Correction<br>- **CSD**<br>  Cash deposit (+), including returned withdrawals<br>- **CSR**<br>  Cash receipt (-)<br>- **CSW**<br>  Cash withdrawal (-), including returned deposits<br>- **DIV**<br>  Dividend<br>- **DIVCGL**<br>  Dividend (Capital Gains Long Term)<br>- **DIVCGS**<br>  Dividend (Capital Gains Short Term)<br>- **DIVFEE**<br>  Dividend fee<br>- **DIVFT**<br>  Dividend adjusted (Foreign Tax Withheld)<br>- **DIVNRA**<br>  Dividend Adjusted (NRA Withheld)<br>- **DIVROC**<br>  Dividend Return of Capital<br>- **DIVTW**<br>  Dividend adjusted (Tefra Withheld)<br>- **DIVTXEX**<br>  Dividend (Tax Exempt)<br>- **DIVWH**<br>  Dividend withholding<br>- **DTCS**<br>  DTC security settlement<br>- **DVF**<br>  DVP flip<br>- **ECEXP**<br>  Event contract expiration<br>- **EXTRD**<br>  External trade<br>- **FEE**<br>  Fee denominated in USD. See `activity_sub_type` for the specific fee.<br>- **FIMAT**<br>  Fixed income maturity<br>- **FXCNV**<br>  FX conversion<br>- **FXTRD**<br>  FX trade<br>- **INT**<br>  Interest (Credit/Margin)<br>- **INTNRA**<br>  Interest adjusted (NRA Withheld)<br>- **INTTW**<br>  Interest adjusted (Tefra Withheld)<br>- **INVPNL**<br>  Inventory profit and loss<br>- **JNL**<br>  Journal entry<br>- **JNLC**<br>  Journal Entry (Cash)<br>- **JNLS**<br>  Journal Entry (Stock)<br>- **MA**<br>  Merger/Acquisition<br>- **MEM**<br>  Memopost<br>- **NC**<br>  Name change<br>- **OPASN**<br>   Option Assignment<br>- **OPCA**<br>  Option Corporate Action<br>- **OPCSH**<br>   Option cash deliverable for non-standard contracts<br>- **OPEXC**<br>  Option Exercise<br>- **OPEXP**<br>  Option Expiration<br>- **OPTRD**<br>  Option Trade<br>- **PTC**<br>  Pass Thru Change<br>- **PTR**<br>  Pass Thru Rebate<br>- **REO**<br>  Reorganization<br>- **REORG**<br>  Worthless removal CA<br>- **SC**<br>  Symbol change<br>- **SEG**<br>  Segregation<br>- **SPIN**<br>  Stock Spinoff<br>- **SPLIT**<br>  Stock Split<br>- **SSO**<br>  Former stock spin-off code. Current spin-offs use `SPIN`.<br>- **SSP**<br>  Former stock split code. Current splits use `SPLIT`.<br>- **SUB**<br>  Subscription<br>- **VOF**<br>  Voluntary Offering (tender, warrant, rights, or exchange offers)<br>- **WH**<br>  Withholding<br>- **FOPT**<br>  Free of Payment Transfers<br>- **OCT**<br>  On Chain Transactions (blockchain deposits/withdrawals)|
 |id|string|true|none|none|
 |*oneOf*|[TradeActivity](#schematradeactivity)|false|none|none|
 |*oneOf*|[NonTradeActivity](#schemanontradeactivity)|false|none|none|
@@ -18107,21 +18720,42 @@ Base for activity types
 |activity_type|FILL|
 |activity_type|ACATC|
 |activity_type|ACATS|
+|activity_type|ALLOC|
+|activity_type|CFEE|
 |activity_type|CGD|
 |activity_type|CIL|
+|activity_type|CORR|
 |activity_type|CSD|
+|activity_type|CSR|
 |activity_type|CSW|
 |activity_type|DIV|
 |activity_type|DIVCGL|
 |activity_type|DIVCGS|
+|activity_type|DIVFEE|
+|activity_type|DIVFT|
 |activity_type|DIVNRA|
 |activity_type|DIVROC|
+|activity_type|DIVTW|
 |activity_type|DIVTXEX|
+|activity_type|DIVWH|
+|activity_type|DTCS|
+|activity_type|DVF|
+|activity_type|ECEXP|
+|activity_type|EXTRD|
 |activity_type|FEE|
+|activity_type|FIMAT|
+|activity_type|FXCNV|
+|activity_type|FXTRD|
 |activity_type|INT|
+|activity_type|INTNRA|
+|activity_type|INTTW|
+|activity_type|INVPNL|
+|activity_type|JNL|
 |activity_type|JNLC|
 |activity_type|JNLS|
 |activity_type|MA|
+|activity_type|MEM|
+|activity_type|NC|
 |activity_type|OPASN|
 |activity_type|OPCA|
 |activity_type|OPCSH|
@@ -18129,10 +18763,18 @@ Base for activity types
 |activity_type|OPEXP|
 |activity_type|OPTRD|
 |activity_type|PTC|
+|activity_type|PTR|
 |activity_type|REO|
 |activity_type|REORG|
+|activity_type|SC|
+|activity_type|SEG|
 |activity_type|SPIN|
 |activity_type|SPLIT|
+|activity_type|SSO|
+|activity_type|SSP|
+|activity_type|SUB|
+|activity_type|VOF|
+|activity_type|WH|
 |activity_type|FOPT|
 |activity_type|OCT|
 
@@ -18306,6 +18948,12 @@ Represents a more specific classification to the `activity_type`.
 This field is optional and may not always be populated, depending on the activity type and the available data.
 Each `activity_type` has a set of valid `activity_sub_type` values.
 
+This field is a free-form string rather than a closed enum: sub-type codes
+originate from several upstream clearing, corporate-action, and international-fee
+systems, and new codes can appear without a corresponding API change. The mapping
+below documents the sub-types known at the time of writing; it is not guaranteed
+to be exhaustive.
+
 Full mapping of `activity_type` to `activity_sub_type`:
 
 - **CGD**: Capital Gains Distribution activity sub-types:
@@ -18328,6 +18976,8 @@ Full mapping of `activity_type` to `activity_sub_type`:
   - **NRV**: Non-Retail Venue Fee
   - **COM**: Commission
   - **CAT**: Consolidated Audit Trail Fee
+  - **ICF**: Index Contract Fee
+  - **EPI**: Exchange Proprietary Fee
 
 - **INT**: Interest-related activity sub-types:
   - **MGN**: Margin Interest
@@ -18396,9 +19046,13 @@ Full mapping of `activity_type` to `activity_sub_type`:
 "FILL"
 ```
 
-Represents the various kinds of activity.
+Entry type returned on an activity. The listing returns the stored entry type.
+It omits `ECJL`, crypto-deposit `JNLC`, and `SWP`.
 
-TradeActivity's will always have the type `FILL`
+`TRANS` and `MISC` are filter aliases. They are not returned as `activity_type`.
+This is the known set. A new clearing code can appear without an API change.
+
+Trade activities always have the type `FILL`.
 
 - **FILL**
   Order Fills (Partial/Full)
@@ -18406,34 +19060,78 @@ TradeActivity's will always have the type `FILL`
   ACATS IN/OUT (Cash)
 - **ACATS**
   ACATS IN/OUT (Securities)
+- **ALLOC**
+  Allocation
+- **CFEE**
+  Crypto fee
 - **CGD**
   Capital Gains Distribution
 - **CIL**
   Cash in Lieu of Stock
+- **CORR**
+  Correction
 - **CSD**
-  Cash Disbursement (+)
+  Cash deposit (+), including returned withdrawals
+- **CSR**
+  Cash receipt (-)
 - **CSW**
-  Cash Withdrawable
+  Cash withdrawal (-), including returned deposits
 - **DIV**
   Dividend
 - **DIVCGL**
   Dividend (Capital Gains Long Term)
 - **DIVCGS**
   Dividend (Capital Gains Short Term)
+- **DIVFEE**
+  Dividend fee
+- **DIVFT**
+  Dividend adjusted (Foreign Tax Withheld)
 - **DIVNRA**
   Dividend Adjusted (NRA Withheld)
 - **DIVROC**
   Dividend Return of Capital
+- **DIVTW**
+  Dividend adjusted (Tefra Withheld)
 - **DIVTXEX**
   Dividend (Tax Exempt)
+- **DIVWH**
+  Dividend withholding
+- **DTCS**
+  DTC security settlement
+- **DVF**
+  DVP flip
+- **ECEXP**
+  Event contract expiration
+- **EXTRD**
+  External trade
 - **FEE**
-  REG and TAF Fees
+  Fee denominated in USD. See `activity_sub_type` for the specific fee.
+- **FIMAT**
+  Fixed income maturity
+- **FXCNV**
+  FX conversion
+- **FXTRD**
+  FX trade
 - **INT**
   Interest (Credit/Margin)
+- **INTNRA**
+  Interest adjusted (NRA Withheld)
+- **INTTW**
+  Interest adjusted (Tefra Withheld)
+- **INVPNL**
+  Inventory profit and loss
+- **JNL**
+  Journal entry
 - **JNLC**
   Journal Entry (Cash)
 - **JNLS**
   Journal Entry (Stock)
+- **MA**
+  Merger/Acquisition
+- **MEM**
+  Memopost
+- **NC**
+  Name change
 - **OPASN**
    Option Assignment
 - **OPCA**
@@ -18446,22 +19144,58 @@ TradeActivity's will always have the type `FILL`
   Option Expiration
 - **OPTRD**
   Option Trade
-- **MA**
-  Merger/Acquisition
 - **PTC**
   Pass Thru Change
+- **PTR**
+  Pass Thru Rebate
 - **REO**
   Reorganization
 - **REORG**
   Worthless removal CA
+- **SC**
+  Symbol change
+- **SEG**
+  Segregation
 - **SPIN**
   Stock Spinoff
 - **SPLIT**
   Stock Split
+- **SSO**
+  Former stock spin-off code. Current spin-offs use `SPIN`.
+- **SSP**
+  Former stock split code. Current splits use `SPLIT`.
+- **SUB**
+  Subscription
+- **VOF**
+  Voluntary Offering (tender, warrant, rights, or exchange offers)
+- **WH**
+  Withholding
 - **FOPT**
   Free of Payment Transfers
 - **OCT**
   On Chain Transactions (blockchain deposits/withdrawals)
+
+<h2 id="tocS_ActivityTypeFilter">ActivityTypeFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaactivitytypefilter"></a>
+<a id="schema_ActivityTypeFilter"></a>
+<a id="tocSactivitytypefilter"></a>
+<a id="tocsactivitytypefilter"></a>
+
+```json
+"ACATC"
+```
+
+Activity type used to filter results. These are the values the backend accepts.
+
+`TRANS` and `MISC` are aliases. A response uses the expanded entry type, not the alias.
+
+`SWP` is accepted and then omitted from public results.
+
+- **TRANS**
+  Cash transactions (`CSD`, `CSR`, and `CSW`). Filter value only; not returned as an activity type.
+- **MISC**
+  A fixed group of less common activity types, such as `ACATC`, `INT`, and `JNLC`. `FEE`, `CFEE`, `DIV`, `SPLIT`, `SPIN`, `OPCA`, `VOF`, `WH`, `OCT`, and a few others are not included, so filter by those types directly. Filter value only; not returned as an activity type.
 
 <h2 id="tocS_ActivityV2DetailNTA">ActivityV2DetailNTA</h2>
 <!-- backwards compatibility -->
@@ -18524,6 +19258,7 @@ TradeActivity's will always have the type `FILL`
 |*oneOf*|[OpcaFSPLITActivityV2](#schemaopcafsplitactivityv2)|false|none|Options corporate action of forward-splits|
 |*oneOf*|[OpcaRSPLITActivityV2](#schemaopcarsplitactivityv2)|false|none|Options corporate action of reverse-splits|
 |*oneOf*|[OpcaUSPLITActivityV2](#schemaopcausplitactivityv2)|false|none|Options corporate action of unit-splits|
+|*oneOf*|[OpcaCGDActivityV2](#schemaopcacgdactivityv2)|false|none|Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.|
 |*oneOf*|[OPASNActivityV2](#schemaopasnactivityv2)|false|none|Option assignment|
 |*oneOf*|[OPEXCActivityV2](#schemaopexcactivityv2)|false|none|Option exercise|
 |*oneOf*|[OPEXPActivityV2](#schemaopexpactivityv2)|false|none|Option expiry|
@@ -18590,6 +19325,7 @@ Activity details for a fill or partial_fill event
 |Property|Value|
 |---|---|
 |execution_type|fill|
+|execution_type|partial_fill|
 |execution_type|trade_correct|
 |execution_type|trade_bust|
 |side|buy|
@@ -18643,12 +19379,12 @@ The same status may be delivered more than once for a transfer. Use `context.aca
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |at|string(date-time)|true|none|Timestamp of event|
-|belongs_to|object|false|none|none|
+|belongs_to|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |belongs_to_id_reference|string|true|none|The ID of the entity that this event belongs to|
 |belongs_to_kind|[AdminActionBelongsToKind](#schemaadminactionbelongstokind)|true|none|none|
 |category|[AdminActionCategory](#schemaadminactioncategory)|true|none|Category of the Admin Action|
 |correspondent|string|true|none|Related correspondent|
-|created_by|object|false|none|none|
+|created_by|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use created_by_kind and created_by_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |created_by_id_reference|string|true|none|The ID of the entity that created this event|
 |created_by_kind|[AdminActionCreatedByKind](#schemaadminactioncreatedbykind)|true|none|none|
 |event_id|string(ulid)|true|none|Lexically sortable, monotonically increasing character array|
@@ -18890,12 +19626,12 @@ Represents general fields for all AdminAction type
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |at|string(date-time)|true|none|Timestamp of event|
-|belongs_to|object|false|none|none|
+|belongs_to|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |belongs_to_id_reference|string|true|none|The ID of the entity that this event belongs to|
 |belongs_to_kind|[AdminActionBelongsToKind](#schemaadminactionbelongstokind)|true|none|none|
 |category|[AdminActionCategory](#schemaadminactioncategory)|true|none|Category of the Admin Action|
 |correspondent|string|true|none|Related correspondent|
-|created_by|object|false|none|none|
+|created_by|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use created_by_kind and created_by_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |created_by_id_reference|string|true|none|The ID of the entity that created this event|
 |created_by_kind|[AdminActionCreatedByKind](#schemaadminactioncreatedbykind)|true|none|none|
 |event_id|string(ulid)|true|none|Lexically sortable, monotonically increasing character array|
@@ -18957,12 +19693,12 @@ Represents structure of a LegacyNote type AdminAction
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |at|string(date-time)|true|none|Timestamp of event|
-|belongs_to|object|false|none|none|
+|belongs_to|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |belongs_to_id_reference|string|true|none|The ID of the entity that this event belongs to|
 |belongs_to_kind|[AdminActionBelongsToKind](#schemaadminactionbelongstokind)|true|none|none|
 |category|[AdminActionCategory](#schemaadminactioncategory)|true|none|Category of the Admin Action|
 |correspondent|string|true|none|Related correspondent|
-|created_by|object|false|none|none|
+|created_by|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use created_by_kind and created_by_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |created_by_id_reference|string|true|none|The ID of the entity that created this event|
 |created_by_kind|[AdminActionCreatedByKind](#schemaadminactioncreatedbykind)|true|none|none|
 |event_id|string(ulid)|true|none|Lexically sortable, monotonically increasing character array|
@@ -19034,12 +19770,12 @@ Represents structure of a Liquidation type AdminAction
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |at|string(date-time)|true|none|Timestamp of event|
-|belongs_to|object|false|none|none|
+|belongs_to|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |belongs_to_id_reference|string|true|none|The ID of the entity that this event belongs to|
 |belongs_to_kind|[AdminActionBelongsToKind](#schemaadminactionbelongstokind)|true|none|none|
 |category|[AdminActionCategory](#schemaadminactioncategory)|true|none|Category of the Admin Action|
 |correspondent|string|true|none|Related correspondent|
-|created_by|object|false|none|none|
+|created_by|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use created_by_kind and created_by_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |created_by_id_reference|string|true|none|The ID of the entity that created this event|
 |created_by_kind|[AdminActionCreatedByKind](#schemaadminactioncreatedbykind)|true|none|none|
 |event_id|string(ulid)|true|none|Lexically sortable, monotonically increasing character array|
@@ -19108,12 +19844,12 @@ Represents structure of a TransactionCancel type AdminAction
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |at|string(date-time)|true|none|Timestamp of event|
-|belongs_to|object|false|none|none|
+|belongs_to|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |belongs_to_id_reference|string|true|none|The ID of the entity that this event belongs to|
 |belongs_to_kind|[AdminActionBelongsToKind](#schemaadminactionbelongstokind)|true|none|none|
 |category|[AdminActionCategory](#schemaadminactioncategory)|true|none|Category of the Admin Action|
 |correspondent|string|true|none|Related correspondent|
-|created_by|object|false|none|none|
+|created_by|object|false|none|**Deprecated.** **Deprecation notice:**<br>Never sent by the stream. Use created_by_kind and created_by_id_reference instead.<br><br>Since: 2026-09-30<br>Sunset: 2027-01-13|
 |created_by_id_reference|string|true|none|The ID of the entity that created this event|
 |created_by_kind|[AdminActionCreatedByKind](#schemaadminactioncreatedbykind)|true|none|none|
 |event_id|string(ulid)|true|none|Lexically sortable, monotonically increasing character array|
@@ -19426,7 +20162,7 @@ available to partners/correspondents who have been enabled for DMA.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|agreement|[AgreementType](#schemaagreementtype)|true|none|- margin_agreement: Alpaca Margin Agreement<br>- account_agreement: Alpaca Account Agreement<br>- customer_agreement: Alpaca Customer Agreement<br>- crypto_agreement: Alpaca Crypto agreement<br>- options_agreement: Alpaca Option agreement<br>- custodial_customer_agreement: Alpaca Custodial Customer agreement<br>|
+|agreement|[AgreementType](#schemaagreementtype)|true|none|The type of agreement the customer signed.|
 |ip_address|string(ipv4)|true|none|The ip_address the signed agreements were sent from by the user.|
 |revision|string|false|none|The agreement revision.<br>The format is XX.YYYY.MM where XX is an incrementing revision number, YYYY is the year and MM is the month.<br>If the revision is not specified in a POST or PATCH request, the active revision will be used, which will align with the [Alpaca Documents Library](https://alpaca.markets/disclosures).<br>|
 |signed_at|string(date-time)|true|none|The timestamp the agreement was signed.|
@@ -19440,6 +20176,12 @@ available to partners/correspondents who have been enabled for DMA.
 |agreement|customer_agreement|
 |agreement|crypto_agreement|
 |agreement|options_agreement|
+|agreement|custodian_customer_agreement|
+|agreement|trusted_contact_consent|
+|agreement|master_securities_lending_agreement|
+|agreement|certifications_and_resolutions_statement|
+|agreement|joint_account_agreement|
+|agreement|foreign_markets_addendum|
 
 <h2 id="tocS_AgreementType">AgreementType</h2>
 <!-- backwards compatibility -->
@@ -19452,12 +20194,7 @@ available to partners/correspondents who have been enabled for DMA.
 "customer_agreement"
 ```
 
-- margin_agreement: Alpaca Margin Agreement
-- account_agreement: Alpaca Account Agreement
-- customer_agreement: Alpaca Customer Agreement
-- crypto_agreement: Alpaca Crypto agreement
-- options_agreement: Alpaca Option agreement
-- custodial_customer_agreement: Alpaca Custodial Customer agreement
+The type of agreement the customer signed.
 
 <h2 id="tocS_Announcement">Announcement</h2>
 <!-- backwards compatibility -->
@@ -20649,6 +21386,42 @@ Cash withdrawal
 |system_date|string(date)|true|none|The date when the activity was booked|
 |bank_transaction_id|string(uuid)|false|none|The bank transaction's ID|
 
+<h2 id="tocS_ClosePositionError">ClosePositionError</h2>
+<!-- backwards compatibility -->
+<a id="schemaclosepositionerror"></a>
+<a id="schema_ClosePositionError"></a>
+<a id="tocSclosepositionerror"></a>
+<a id="tocsclosepositionerror"></a>
+
+```json
+{
+  "available": "string",
+  "code": "string",
+  "existing_qty": "string",
+  "held_for_options": "string",
+  "held_for_orders": "string",
+  "message": "string",
+  "symbol": "string",
+  "property1": "string",
+  "property2": "string"
+}
+```
+
+The per-position error reported inside a close-all-positions 207 response when a position's `status` is not 200. Other rejection-specific string fields may appear.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|string|false|none|Quantity available. On insufficient-quantity rejections, the position quantity available to close.|
+|code|string|true|none|Alpaca error code, such as `"40310000"`. Usually the HTTP status code followed by a five-digit suffix. Several rejections can share the same code, so check `message` and the other fields for the specific reason.|
+|existing_qty|string|false|none|Absolute quantity of the existing position. Present only on insufficient-quantity rejections.|
+|held_for_options|string|false|none|Position quantity held for options. Present only on insufficient-quantity rejections, and only when that hold is positive.|
+|held_for_orders|string|false|none|Position quantity held by open orders. Present only on insufficient-quantity rejections.|
+|message|string|true|none|Human-readable reason for the rejection.|
+|symbol|string|false|none|Symbol the rejection applies to. Set on insufficient-quantity rejections and on some other order rejections, such as admin trading restrictions.|
+|**additionalProperties**|string|false|none|none|
+
 <h2 id="tocS_CommissionType">CommissionType</h2>
 <!-- backwards compatibility -->
 <a id="schemacommissiontype"></a>
@@ -20663,14 +21436,17 @@ Cash withdrawal
 An enum to select how to interpret the value provided in the commission field.
 
 - notional:
-Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).
+Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)
+Not supported for `mleg` orders.
 
 - qty:
 Charge commission on a per qty/contract basis, pro rated.
+For `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.
 
 - bps:
 The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.
 Commission value in bps can have up to two decimal places.
+Not supported for `mleg` orders.
 
 <h2 id="tocS_CommonAcatActivityV2">CommonAcatActivityV2</h2>
 <!-- backwards compatibility -->
@@ -20980,11 +21756,11 @@ Shared fields for non-trade (NTA) activity records.
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -20992,11 +21768,11 @@ Shared fields for non-trade (NTA) activity records.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_CommonREOActivityV2">CommonREOActivityV2</h2>
 <!-- backwards compatibility -->
@@ -21798,8 +22574,8 @@ Fixture Rules
 |advanced_instructions|[AdvancedInstructions](#schemaadvancedinstructions)|false|none|Advanced instructions for Direct Market Access (DMA) routing. When `algorithm` is `DMA`,<br>the order is routed directly to the exchange specified in `destination`. Note that this feature is only<br>available to partners/correspondents who have been enabled for DMA.|
 |client_order_id|string|false|none|A unique identifier for the order. Automatically generated if not sent. (<= 128 characters)|
 |commission|string(decimal)|false|none|The commission you want to collect from the user.|
-|commission_bps|string(decimal)|false|none|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>|
-|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.|
+|commission_bps|string(decimal)|false|none|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Not supported for `mleg` orders.<br>|
+|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)<br>Not supported for `mleg` orders.<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br>For `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.<br>Not supported for `mleg` orders.|
 |extended_hours|boolean|false|none|Defaults to false. If true, order will be eligible for execution in the pre-market, after-hours, and overnight sessions. Only works with type `limit` and time_in_force set to either `day` or `gtc`.|
 |instructions|string|false|none|none|
 |legs|[[MLegOrderLeg](#schemamlegorderleg)]|false|none|list of order legs (<= 4)|
@@ -21934,6 +22710,35 @@ Request to create a new settlement. All transfers included must use the same sou
 |---|---|---|---|---|
 |additional_info|string|false|none|Additional remittance information. Include if the funding source may require additional information to associate to the source account or settlement.<br>|
 |transfers|[[SettlementTransfer](#schemasettlementtransfer)]|true|none|none|
+
+<h2 id="tocS_CreateSimulatedIncomingWireRequest">CreateSimulatedIncomingWireRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatesimulatedincomingwirerequest"></a>
+<a id="schema_CreateSimulatedIncomingWireRequest"></a>
+<a id="tocScreatesimulatedincomingwirerequest"></a>
+<a id="tocscreatesimulatedincomingwirerequest"></a>
+
+```json
+{
+  "amount": "1000.00",
+  "currency": "USD",
+  "delay_until": "2026-11-10T14:00:00Z",
+  "wire_instructions": "FFC TEST-123456789"
+}
+```
+
+Request body for simulating an incoming wire transfer in the sandbox environment.
+
+`currency` defaults to `USD` when omitted and must match the base currency of the destination account. Supported currencies are `AUD`, `CAD`, `CHF`, `EUR`, `GBP`, `JPY`, `NZD`, `SGD`, `TRY`, and `USD`. Other currencies are rejected with `422`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|string(decimal)|true|none|Amount of the incoming wire. Must be greater than 0.|
+|currency|[Currency](#schemacurrency)|false|none|"USD" // US Dollar<br>"JPY" // Japanese Yen<br>"EUR" // Euro<br>"CAD" // Canadian Dollar<br>"GBP" // British Pound Sterling<br>"CHF" // Swiss Franc<br>"TRY" // Turkish Lira<br>"AUD" // Australian Dollar<br>"CZK" // Czech Koruna<br>"SEK" // Swedish Krona<br>"DKK" // Danish Krone<br>"SGD" // Singapore Dollar<br>"HKD" // Hong Kong Dollar<br>"HUF" // Hungarian Forint<br>"NZD" // New Zealand Dollar<br>"NOK" // Norwegian Krone<br>"PLN" // Poland Złoty|
+|delay_until|string \| null(date-time)|false|none|Accepted and returned in the response, but not currently used. The wire is processed on the next worker run regardless of this value.|
+|wire_instructions|string|true|none|Must contain an FFC (For Further Credit) string identifying the destination account, in the form `FFC <correspondent>-<account_number>`. The hyphen can also be a space or omitted. Text before or after the FFC string is ignored.<br><br>`<correspondent>` must be your 4-character correspondent code, and `<account_number>` must be the 9-character account number of one of your accounts. Only the first 9 characters after the correspondent code are read as the account number.|
 
 <h2 id="tocS_CreateTransferRequest">CreateTransferRequest</h2>
 <!-- backwards compatibility -->
@@ -22108,7 +22913,7 @@ Transfers allow you to transfer assets into your end customer's account (deposit
 <a id="tocscurrency"></a>
 
 ```json
-"string"
+"USD"
 ```
 
 "USD" // US Dollar
@@ -22166,50 +22971,241 @@ Represents Identity information for a minor that an account of type "custodial" 
 |given_name|string|true|none|none|
 |state|string|true|none|none|
 |tax_id|string|false|none|none|
-|tax_id_type|[TaxIdType](#schemataxidtype)|true|none|An Enum of the various kinds of Tax ID formats Alpaca supports.<br><br>Possible Values are:<br><br><br>- **USA_SSN**<br>USA Social Security Number<br><br>- **USA_ITIN**<br>USA Individual Taxpayer Identification Number<br><br>- **ARG_AR_CUIT**<br>Argentina CUIT<br><br>- **AUS_TFN**<br>Australian Tax File Number<br><br>- **AUS_ABN**<br>Australian Business Number<br><br>- **BOL_NIT**<br>Bolivia NIT<br><br>- **BRA_CPF**<br>Brazil CPF<br><br>- **CHL_RUT**<br>Chile RUT<br><br>- **COL_NIT**<br>Colombia NIT<br><br>- **CRI_NITE**<br>Costa Rica NITE<br><br>- **DEU_TAX_ID**<br>Germany Tax ID (Identifikationsnummer)<br><br>- **DOM_RNC**<br>Dominican Republic RNC<br><br>- **ECU_RUC**<br>Ecuador RUC<br><br>- **FRA_SPI**<br>France SPI (Reference Tax Number)<br><br>- **GBR_UTR**<br>UK UTR (Unique Taxpayer Reference)<br><br>- **GBR_NINO**<br>UK NINO (National Insurance Number)<br><br>- **GTM_NIT**<br>Guatemala NIT<br><br>- **HND_RTN**<br>Honduras RTN<br><br>- **HUN_TIN**<br>Hungary TIN Number<br><br>- **IDN_KTP**<br>Indonesia KTP<br><br>- **IND_PAN**<br>India PAN Number<br><br>- **ISR_TAX_ID**<br>Israel Tax ID (Teudat Zehut)<br><br>- **ITA_TAX_ID**<br>Italy Tax ID (Codice Fiscale)<br><br>- **JPN_TAX_ID**<br>Japan Tax ID (Kojin Bango)<br><br>- **MEX_RFC**<br>Mexico RFC<br><br>- **NIC_RUC**<br>Nicaragua RUC<br><br>- **NLD_TIN**<br>Netherlands TIN Number<br><br>- **PAN_RUC**<br>Panama RUC<br><br>- **PER_RUC**<br>Peru RUC<br><br>- **PRY_RUC**<br>Paraguay RUC<br><br>- **SGP_NRIC**<br>Singapore NRIC<br><br>- **SGP_FIN**<br>Singapore FIN<br><br>- **SGP_ASGD**<br>Singapore ASGD<br><br>- **SGP_ITR**<br>Singapore ITR<br><br>- **SLV_NIT**<br>El Salvador NIT<br><br>- **SWE_TAX_ID**<br>Sweden Tax ID (Personnummer)<br><br>- **URY_RUT**<br>Uruguay RUT<br><br>- **VEN_RIF**<br>Venezuela RIF<br><br>- **NATIONAL_ID**<br>National ID number, if a tax ID number is not available<br><br>- **PASSPORT**<br>Passport number, if a tax ID number is not available<br><br>- **PERMANENT_RESIDENT**<br>Permanent resident number, if a tax ID number is not available<br><br>- **DRIVER_LICENSE**<br>Driver's license number, if a tax ID number is not available<br><br>- **OTHER_GOV_ID**<br>Other government issued identifier, if a tax ID number is not available<br><br>- **NOT_SPECIFIED**<br>Other Tax IDs|
+|tax_id_type|[TaxIdType](#schemataxidtype)|true|none|The type of the tax ID or other government-issued identification number.<br><br>Each country-specific type is meant for accounts whose `country_of_tax_residence` is the country it is named after, and some are also meant for that country's associated jurisdictions, such as its territories. For correspondents with strict tax ID validation, the type must match `country_of_tax_residence` and be supported in the account's booking center, so a listed type can still be rejected when the account is validated. The "for individuals" and "for entities" notes describe who each type is typically issued to, and aren't checked when the account is validated.<br><br>Possible values are:<br><br>- **USA_SSN**: USA SSN (Social Security Number), for individuals<br>- **USA_EIN**: USA EIN (Employer Identification Number), for entities<br>- **USA_ITIN**: USA ITIN (Individual Taxpayer Identification Number), for individuals<br>- **USA_TIN**: USA TIN (Taxpayer Identification Number), for entities<br>- **ABW_PN**: Aruba Persoonsnummer (Aruba TIN), for individuals and entities<br>- **AGO_NIF**: Angola NIF (Número de Identificação Fiscal), for individuals and entities<br>- **ALB_NIPT**: Albania NIPT (Numri i Identifikimit të Personit të Tatueshëm), for individuals and entities<br>- **AND_NRT**: Andorra NRT (Número de Registre Tributari), for individuals and entities<br>- **ARE_EID**: UAE Emirates ID, for individuals<br>- **ARE_TRN**: UAE TRN (Tax Registration Number), for entities<br>- **ARG_AG_CUIT**: Legacy value for an Argentina CUIT. Use `ARG_AR_CUIT` instead.<br>- **ARG_AR_CUIT**: Argentina CUIT (Clave Única de Identificación Tributaria), for individuals and entities<br>- **ARM_SSN**: Armenia SSN (Social Security Number), for individuals<br>- **ARM_TIN**: Armenia TIN (Tax Identification Number), for entities<br>- **AUS_ABN**: Australia ABN (Australian business number), for entities<br>- **AUS_TFN**: Australia TFN (Tax File Number), for individuals and entities<br>- **AUT_UID**: Austria UID-Nummer (VAT Identification Number), for entities<br>- **AUT_VNR**: Austria Versicherungsnummer (Social Insurance Number), for individuals<br>- **AZE_FIN**: Azerbaijan FIN (Fərdi İdentifikasiya Nömrəsi), for individuals<br>- **AZE_VOEN**: Azerbaijan VÖEN (Tax Identification Number), for entities<br>- **BEL_BCE**: Belgium BCE/KBO (Enterprise Number), for entities<br>- **BEL_NN**: Belgium NN (Numéro National / Rijksregisternummer), for individuals<br>- **BEN_IFU**: Benin IFU (Identifiant Fiscal Unique), for individuals and entities<br>- **BFA_IFU**: Burkina Faso IFU (Identifiant Financier Unique), for individuals and entities<br>- **BGD_TIN**: Bangladesh TIN (Tax Identification Number), for individuals and entities<br>- **BGR_EGN**: Bulgaria EGN (Edinen Grazhdanski Nomer), for individuals<br>- **BGR_EIK**: Bulgaria EIK/BULSTAT (Entity Identification Code), for entities<br>- **BHR_CPR**: Bahrain CPR (Central Population Registry), for individuals<br>- **BIH_JMBG**: Bosnia and Herzegovina JMBG (Jedinstveni Matični Broj Građana), for individuals<br>- **BLR_ID**: Belarus Personal Identification Number, for individuals<br>- **BLR_UNP**: Belarus UNP (Uchyotny Nomer Platelshchika), for entities<br>- **BLZ_TIN**: Belize TIN (Tax Identification Number), for individuals and entities<br>- **BOL_NIT**: Bolivia NIT (Número de Identificación Tributaria), for individuals and entities<br>- **BRA_CNPJ**: Brazil CNPJ (Cadastro Nacional da Pessoa Jurídica), for entities<br>- **BRA_CPF**: Brazil CPF (Cadastro de Pessoas Físicas), for individuals<br>- **BRB_TIN**: Barbados TIN (Tax Identification Number), for individuals and entities<br>- **BTN_TPN**: Bhutan TPN (Taxpayer Number), for individuals and entities<br>- **BWA_TIN**: Botswana TIN (Tax Identification Number), for individuals and entities<br>- **CAN_BN**: Canada BN (Business Number), for entities<br>- **CAN_SIN**: Canada SIN (Social Insurance Number), for individuals<br>- **CHE_AHV**: Switzerland AHV/AVS (Social Insurance Number), for individuals<br>- **CHE_UID**: Switzerland UID (Unternehmens-Identifikationsnummer), for entities<br>- **CHL_RUT**: Chile RUT (Rol Único Tributario), for individuals and entities<br>- **CHN_RID**: China Resident Identity Card Number (居民身份证号码), for individuals<br>- **CHN_USCC**: China USCC (Unified Social Credit Code / 统一社会信用代码), for entities<br>- **CIV_NCC**: Côte d'Ivoire NCC (Numéro de Compte Contribuable), for individuals and entities<br>- **CMR_NIU**: Cameroon NIU (Numéro d'Identifiant Unique), for individuals and entities<br>- **COK_RMD**: Cook Islands RMD Number (Revenue Management Division), for individuals and entities<br>- **COL_CC**: Colombia CC (Cédula de Ciudadanía), for individuals<br>- **COL_CE**: Colombia CE (Cédula de Extranjería), for individuals<br>- **COL_NIT**: Colombia NIT (Número de Identificación Tributaria), for individuals and entities<br>- **COL_NUIP**: Colombia NUIP (Número Único de Identificación Personal), for individuals<br>- **COL_PPT**: Colombia PPT (Permiso por Protección Temporal), for individuals<br>- **CPV_NIF**: Cabo Verde NIF (Número de Identificação Fiscal), for individuals and entities<br>- **CRI_CJ**: Costa Rica Cédula Jurídica (Legal Entity ID), for entities<br>- **CRI_DIMEX**: Costa Rica DIMEX (Documento de Identificación Migratorio para Extranjeros), for individuals<br>- **CRI_NITE**: Costa Rica NITE (Número de Identificación Tributaria Especial), for individuals and entities<br>- **CRI_PIN**: Costa Rica Personal Identification Number (PIN), for individuals<br>- **CUW_CRIB**: Curaçao CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities<br>- **CYP_TIC**: Cyprus TIC (Tax Identification Code), for individuals and entities<br>- **CZE_TIN**: Czech Republic TIN (Tax Identification Number), for individuals and entities<br>- **DEU_TAX_ID**: Germany Tax ID (Identifikationsnummer), for individuals<br>- **DEU_UST_ID**: Germany USt-IdNr (Umsatzsteuer-Identifikationsnummer), for entities<br>- **DNK_CPR**: Denmark CPR-nummer (Det Centrale Personregister), for individuals<br>- **DNK_CVR**: Denmark CVR-nummer (Det Centrale Virksomhedsregister), for entities<br>- **DOM_CED**: Dominican Republic Cédula de Identidad y Electoral, for individuals<br>- **DOM_RNC**: Dominican Republic RNC (Registro Nacional del Contribuyente), for entities<br>- **DZA_NIF**: Algeria NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **ECU_RUC**: Ecuador RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **EGY_NID**: Egypt National ID Number, for individuals<br>- **EGY_TRN**: Egypt Tax Registration Number, for entities<br>- **ESP_DNI**: Spain DNI (Documento Nacional de Identidad), for individuals<br>- **ESP_NIE**: Spain NIE (Número de Identidad de Extranjero), for individuals<br>- **ESP_NIF**: Spain NIF (Número de Identificación Fiscal), for individuals and entities<br>- **EST_IK**: Estonia Isikukood (Personal Identification Code), for individuals<br>- **EST_RC**: Estonia Registrikood (Registry Code), for entities<br>- **ETH_TIN**: Ethiopia TIN (Tax Identification Number), for individuals and entities<br>- **FIN_HETU**: Finland HETU (Henkilötunnus), for individuals<br>- **FIN_YTU**: Finland Y-tunnus (Business ID), for entities<br>- **FJI_TIN**: Fiji TIN (Tax Identification Number), for individuals and entities<br>- **FRA_SIREN**: France SIREN (Business tax ID), for entities<br>- **FRA_SPI**: France SPI (Reference tax number), for individuals<br>- **GAB_NIF**: Gabon NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **GBR_CRN**: UK CRN (Companies House Registration Number), for entities<br>- **GBR_NINO**: UK NINO (National Insurance Number), for individuals<br>- **GBR_UTR**: UK UTR (Unique Taxpayer Reference), for individuals and entities<br>- **GEO_PID**: Georgia Personal Identification Number, for individuals<br>- **GEO_TIN**: Georgia TIN (Tax Identification Number), for entities<br>- **GHA_TIN**: Ghana TIN (Tax Identification Number), for individuals and entities<br>- **GRC_AFM**: Greece AFM (Arithmos Forologikou Mitroou), for individuals and entities<br>- **GTM_NIT**: Guatemala NIT (Número de Identificación Tributaria), for individuals and entities<br>- **HKG_BRN**: Hong Kong BRN (Business Registration Number), for entities<br>- **HKG_HKID**: Hong Kong HKID (Hong Kong Identity Card), for individuals<br>- **HND_RTN**: Honduras RTN (Registro Tributario Nacional), for individuals and entities<br>- **HRV_OIB**: Croatia OIB (Osobni Identifikacijski Broj), for individuals<br>- **HTI_NIF**: Haiti NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **HUN_ENT**: Hungary Adószám (Entity Tax Number), for entities<br>- **HUN_TIN**: Hungary TIN (Tax Identification Number), for individuals<br>- **IDN_KTP**: Indonesia KTP (Indonesian Identity Card), for individuals<br>- **IDN_NWPW**: Indonesia NPWP (Nomor Pokok Wajib Pajak), for individuals and entities. The code is spelled `IDN_NWPW`, not `IDN_NPWP`.<br>- **IND_GSTIN**: India GSTIN (Goods and Services Tax Identification Number), for entities<br>- **IND_PAN**: India PAN (Permanent Account Number), for individuals<br>- **IRL_CRO**: Ireland CRO (Companies Registration Office Number), for entities<br>- **IRL_PPS**: Ireland PPS (Personal Public Service Number), for individuals<br>- **IRN_NID**: Iran National ID (Kode Melli), for individuals<br>- **ISL_KT**: Iceland Kennitala (National Identification Number), for individuals<br>- **ISR_CORP**: Israel Company Number (Mispar Chevra), for entities<br>- **ISR_TAX_ID**: Israel Tax ID (Teudat Zehut), for individuals<br>- **ITA_PIVA**: Italy Partita IVA (VAT Number), for entities<br>- **ITA_TAX_ID**: Italy Tax ID (Codice fiscale), for individuals<br>- **JAM_TRN**: Jamaica TRN (Taxpayer Registration Number), for individuals and entities<br>- **JOR_NID**: Jordan National ID Number, for individuals<br>- **JPN_CORP**: Japan Corporate Number (法人番号), for entities<br>- **JPN_TAX_ID**: Japan Tax ID (kojin bango), for individuals<br>- **KAZ_BIN**: Kazakhstan BIN (Business Identification Number), for entities<br>- **KAZ_IIN**: Kazakhstan IIN (Individual Identification Number), for individuals<br>- **KEN_KRA_PIN**: Kenya KRA PIN (Kenya Revenue Authority PIN), for individuals and entities<br>- **KGZ_INN**: Kyrgyzstan INN (Individual Tax Number), for individuals<br>- **KHM_NID**: Cambodia National ID Number, for individuals<br>- **KOR_BRN**: South Korea BRN (Business Registration Number), for entities<br>- **KOR_RRN**: South Korea RRN (Resident Registration Number), for individuals<br>- **KWT_CID**: Kuwait Civil ID Number, for individuals<br>- **LBN_TIN**: Lebanon TIN (Tax Identification Number), for individuals and entities<br>- **LKA_NIC**: Sri Lanka NIC (National Identity Card), for individuals<br>- **LKA_TIN**: Sri Lanka TIN (Tax Identification Number), for entities<br>- **LTU_AK**: Lithuania Asmens Kodas (Personal Code), for individuals<br>- **LTU_JAK**: Lithuania Juridinio Asmens Kodas (Legal Entity Code), for entities<br>- **LUX_NIN**: Luxembourg Matricule (National Identification Number), for individuals<br>- **LUX_TVA**: Luxembourg Numéro TVA (VAT Number), for entities<br>- **LVA_PK**: Latvia Personas Kods (Personal Code), for individuals<br>- **LVA_REG**: Latvia Reģistrācijas Numurs (Registration Number), for entities<br>- **MAC_TIN**: Macao Taxpayer Number, for individuals and entities<br>- **MAR_CIN**: Morocco CIN (Carte d'Identité Nationale), for individuals<br>- **MAR_ICE**: Morocco ICE (Identifiant Commun de l'Entreprise), for entities<br>- **MDA_IDNO**: Moldova IDNO (State Identification Number of Entity), for entities<br>- **MDA_IDNP**: Moldova IDNP (Personal Identification Number), for individuals<br>- **MEX_CURP**: Mexico CURP (Clave Única de Registro de Población), for individuals<br>- **MEX_RFC**: Mexico RFC (Registro Federal de Contribuyentes), for individuals and entities<br>- **MKD_EDB**: North Macedonia EDB (Unique Tax Number), for entities<br>- **MKD_EMBG**: North Macedonia EMBG (Unique Master Citizen Number), for individuals<br>- **MLI_NIF**: Mali NIF (Numéro d'Identification Fiscale), for individuals and entities<br>- **MLT_ID**: Malta Identity Card Number, for individuals<br>- **MLT_VAT**: Malta VAT Number, for entities<br>- **MNE_JMBG**: Montenegro Unique Master Citizen Number, for individuals<br>- **MNE_PIB**: Montenegro PIB (Tax Identification Number), for entities<br>- **MNG_RD**: Mongolia Register Number, for individuals<br>- **MOZ_NUIT**: Mozambique NUIT (Tax Identification Number), for individuals and entities<br>- **MUS_NID**: Mauritius National Identity Card Number, for individuals<br>- **MUS_TAN_ENT**: Mauritius TAN (Entity Tax Account Number), for entities<br>- **MUS_TAN_IND**: Mauritius TAN (Individual Tax Account Number), for individuals<br>- **MWI_TPIN**: Malawi TPIN (Taxpayer Identification Number), for individuals and entities<br>- **MYS_MYKAD**: Malaysia MyKad (National Registration Identity Card), for individuals<br>- **MYS_ROC**: Malaysia ROC (Companies Commission Registration Number), for entities<br>- **NAM_TIN**: Namibia TIN (Tax Identification Number), for individuals and entities<br>- **NGA_NIN**: Nigeria NIN (National Identification Number), for individuals<br>- **NGA_TIN**: Nigeria TIN (Tax Identification Number), for entities<br>- **NIC_RUC**: Nicaragua RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **NLD_BTW**: Netherlands Btw-identificatienummer (btw-id), for entities<br>- **NLD_KVK**: Netherlands KVK (Kamer van Koophandel), for entities<br>- **NLD_OBN**: Netherlands Omzetbelastingnummer (ob-nummer), for entities<br>- **NLD_TIN**: Netherlands BSN (Burgerservicenummer), for individuals<br>- **NOR_FNR**: Norway Fødselsnummer (National Identity Number), for individuals<br>- **NOR_ORG**: Norway Organisasjonsnummer (Organisation Number), for entities<br>- **NPL_PAN**: Nepal PAN (Permanent Account Number), for individuals and entities<br>- **NZL_IRD**: New Zealand IRD Number (Inland Revenue Department), for individuals and entities<br>- **NZL_NZBN**: New Zealand NZBN (New Zealand Business Number), for entities<br>- **OMN_CID**: Oman Civil ID Number, for individuals<br>- **PAK_NIC**: Pakistan NIC (National Identity Card), for individuals<br>- **PAK_NTN**: Pakistan NTN (National Tax Number), for individuals and entities<br>- **PAN_RUC**: Panama RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **PER_RUC**: Peru RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **PHL_TIN**: Philippines TIN (Tax Identification Number), for individuals and entities<br>- **POL_NIP**: Poland NIP (Numer Identyfikacji Podatkowej), for entities<br>- **POL_PESEL**: Poland PESEL (Polish National Identification Number), for individuals<br>- **PRT_NIF**: Portugal NIF (Número de Identificação Fiscal), for individuals and entities<br>- **PRY_RUC**: Paraguay RUC (Registro Unico de Contribuyentes), for individuals and entities<br>- **QAT_QID**: Qatar QID (Qatar Identity Number), for individuals<br>- **ROU_CNP**: Romania CNP (Cod Numeric Personal), for individuals<br>- **ROU_CUI**: Romania CUI (Cod Unic de Înregistrare), for entities<br>- **RUS_INN_ENT**: Russia INN (Entity Tax Number), for entities<br>- **RUS_INN_IND**: Russia INN (Individual Tax Number), for individuals<br>- **RWA_TIN**: Rwanda TIN (Tax Identification Number), for individuals and entities<br>- **SAU_TIN**: Saudi Arabia TIN (Tax Identification Number), for individuals and entities<br>- **SAU_VAT**: Saudi Arabia VAT Registration Number, for entities<br>- **SEN_NINEA**: Senegal NINEA (Numéro d'Identification Nationale des Entreprises), for entities<br>- **SGP_ASGD**: Singapore ASGD, for individuals<br>- **SGP_FIN**: Singapore FIN, for individuals<br>- **SGP_ITR**: Singapore ITR, for individuals and entities<br>- **SGP_NRIC**: Singapore NRIC, for individuals<br>- **SGP_UEN**: Singapore UEN (Unique Entity Number), for entities<br>- **SLV_NIT**: El Salvador NIT (Número de Identificación Tributaria), for individuals and entities<br>- **SRB_JMBG**: Serbia JMBG (Unique Master Citizen Number), for individuals<br>- **SRB_PIB**: Serbia PIB (Tax Identification Number), for entities<br>- **SVK_ICO**: Slovakia IČO (Identification Number of Organisation), for entities<br>- **SVK_TIN**: Slovakia TIN (Tax Identification Number), for individuals<br>- **SVN_DAS**: Slovenia Davčna Številka (Tax Number), for individuals and entities<br>- **SVN_MS**: Slovenia Matična Številka (Registration Number), for entities<br>- **SWE_ORG**: Sweden Organisationsnummer (Organisation Number), for entities<br>- **SWE_TAX_ID**: Sweden Tax ID (Personnummer), for individuals<br>- **SWZ_TIN**: Eswatini TIN (Tax Identification Number), for individuals and entities<br>- **SXM_CRIB**: Sint Maarten CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities<br>- **SYR_TIN**: Syria TIN (Tax Identification Number), for individuals and entities<br>- **THA_NID**: Thailand National ID Card Number (เลขประจำตัวประชาชน), for individuals<br>- **THA_TIN**: Thailand Tax ID (เลขประจำตัวผู้เสียภาษี), for entities<br>- **TJK_TIN**: Tajikistan TIN (Tax Identification Number), for individuals and entities<br>- **TTO_BIR**: Trinidad and Tobago BIR (Board of Inland Revenue File Number), for individuals and entities<br>- **TUN_CIN**: Tunisia CIN (Carte d'Identité Nationale), for individuals<br>- **TUN_MF**: Tunisia Matricule Fiscal (Tax Identification Number), for entities<br>- **TUR_TIN**: Turkey TIN (Tax Identification Number), for individuals and entities<br>- **TWN_GUI**: Taiwan GUI (Unified Business Number / 統一編號), for entities<br>- **TWN_NID**: Taiwan National ID Number (身分證字號), for individuals<br>- **TZA_TIN**: Tanzania TIN (Tax Identification Number), for individuals and entities<br>- **UGA_TIN**: Uganda TIN (Tax Identification Number), for individuals and entities<br>- **UKR_EDRPOU**: Ukraine EDRPOU (Entity Identification Code), for entities<br>- **UKR_RNTRC**: Ukraine RNTRC (Individual Tax Number), for individuals<br>- **URY_CI**: Uruguay CI (Cédula de Identidad), for individuals<br>- **URY_RUT**: Uruguay RUT (Rol Único Tributario), for entities<br>- **UZB_INN**: Uzbekistan INN (Entity Tax Number), for entities<br>- **UZB_PINFL**: Uzbekistan PINFL (Personal Identification Number), for individuals<br>- **VEN_RIF**: Venezuela RIF (Registro de Información Fiscal), for individuals and entities<br>- **VNM_MST_BRN**: Vietnam MST Branch (Mã số thuế đơn vị phụ thuộc), for entities<br>- **VNM_MST_CORP**: Vietnam MST Enterprise (Mã số thuế doanh nghiệp), for individuals and entities<br>- **VNM_MST_PIN**: Vietnam PIN (Personal identification number / Số định danh cá nhân), for individuals<br>- **WSM_TIN**: Samoa TIN (Tax Identification Number), for individuals and entities<br>- **XXK_PID**: Kosovo Personal Identification Number, for individuals<br>- **ZAF_CRN**: South Africa Company Registration Number, for entities<br>- **ZAF_ID**: South African ID Number, for individuals<br>- **ZMB_TPIN**: Zambia TPIN (Taxpayer Identification Number), for individuals and entities<br>- **ZWE_TIN**: Zimbabwe TIN (Tax Identification Number), for individuals and entities<br>- **NATIONAL_ID**: National ID number, if a tax ID number is not available<br>- **PASSPORT**: Passport number, if a tax ID number is not available<br>- **PERMANENT_RESIDENT**: Permanent resident number, if a tax ID number is not available<br>- **DRIVER_LICENSE**: Driver's license number, if a tax ID number is not available<br>- **OTHER_GOV_ID**: Other government issued identifier, if a tax ID number is not available<br>- **NOT_SPECIFIED**: Other Tax IDs|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |tax_id_type|USA_SSN|
+|tax_id_type|USA_EIN|
 |tax_id_type|USA_ITIN|
+|tax_id_type|USA_TIN|
+|tax_id_type|ABW_PN|
+|tax_id_type|AGO_NIF|
+|tax_id_type|ALB_NIPT|
+|tax_id_type|AND_NRT|
+|tax_id_type|ARE_EID|
+|tax_id_type|ARE_TRN|
 |tax_id_type|ARG_AG_CUIT|
-|tax_id_type|AUS_TFN|
+|tax_id_type|ARG_AR_CUIT|
+|tax_id_type|ARM_SSN|
+|tax_id_type|ARM_TIN|
 |tax_id_type|AUS_ABN|
+|tax_id_type|AUS_TFN|
+|tax_id_type|AUT_UID|
+|tax_id_type|AUT_VNR|
+|tax_id_type|AZE_FIN|
+|tax_id_type|AZE_VOEN|
+|tax_id_type|BEL_BCE|
+|tax_id_type|BEL_NN|
+|tax_id_type|BEN_IFU|
+|tax_id_type|BFA_IFU|
+|tax_id_type|BGD_TIN|
+|tax_id_type|BGR_EGN|
+|tax_id_type|BGR_EIK|
+|tax_id_type|BHR_CPR|
+|tax_id_type|BIH_JMBG|
+|tax_id_type|BLR_ID|
+|tax_id_type|BLR_UNP|
+|tax_id_type|BLZ_TIN|
 |tax_id_type|BOL_NIT|
+|tax_id_type|BRA_CNPJ|
 |tax_id_type|BRA_CPF|
+|tax_id_type|BRB_TIN|
+|tax_id_type|BTN_TPN|
+|tax_id_type|BWA_TIN|
+|tax_id_type|CAN_BN|
+|tax_id_type|CAN_SIN|
+|tax_id_type|CHE_AHV|
+|tax_id_type|CHE_UID|
 |tax_id_type|CHL_RUT|
+|tax_id_type|CHN_RID|
+|tax_id_type|CHN_USCC|
+|tax_id_type|CIV_NCC|
+|tax_id_type|CMR_NIU|
+|tax_id_type|COK_RMD|
+|tax_id_type|COL_CC|
+|tax_id_type|COL_CE|
 |tax_id_type|COL_NIT|
+|tax_id_type|COL_NUIP|
+|tax_id_type|COL_PPT|
+|tax_id_type|CPV_NIF|
+|tax_id_type|CRI_CJ|
+|tax_id_type|CRI_DIMEX|
 |tax_id_type|CRI_NITE|
+|tax_id_type|CRI_PIN|
+|tax_id_type|CUW_CRIB|
+|tax_id_type|CYP_TIC|
+|tax_id_type|CZE_TIN|
 |tax_id_type|DEU_TAX_ID|
+|tax_id_type|DEU_UST_ID|
+|tax_id_type|DNK_CPR|
+|tax_id_type|DNK_CVR|
+|tax_id_type|DOM_CED|
 |tax_id_type|DOM_RNC|
+|tax_id_type|DZA_NIF|
 |tax_id_type|ECU_RUC|
+|tax_id_type|EGY_NID|
+|tax_id_type|EGY_TRN|
+|tax_id_type|ESP_DNI|
+|tax_id_type|ESP_NIE|
+|tax_id_type|ESP_NIF|
+|tax_id_type|EST_IK|
+|tax_id_type|EST_RC|
+|tax_id_type|ETH_TIN|
+|tax_id_type|FIN_HETU|
+|tax_id_type|FIN_YTU|
+|tax_id_type|FJI_TIN|
+|tax_id_type|FRA_SIREN|
 |tax_id_type|FRA_SPI|
-|tax_id_type|GBR_UTR|
+|tax_id_type|GAB_NIF|
+|tax_id_type|GBR_CRN|
 |tax_id_type|GBR_NINO|
+|tax_id_type|GBR_UTR|
+|tax_id_type|GEO_PID|
+|tax_id_type|GEO_TIN|
+|tax_id_type|GHA_TIN|
+|tax_id_type|GRC_AFM|
 |tax_id_type|GTM_NIT|
+|tax_id_type|HKG_BRN|
+|tax_id_type|HKG_HKID|
 |tax_id_type|HND_RTN|
+|tax_id_type|HRV_OIB|
+|tax_id_type|HTI_NIF|
+|tax_id_type|HUN_ENT|
 |tax_id_type|HUN_TIN|
 |tax_id_type|IDN_KTP|
+|tax_id_type|IDN_NWPW|
+|tax_id_type|IND_GSTIN|
 |tax_id_type|IND_PAN|
+|tax_id_type|IRL_CRO|
+|tax_id_type|IRL_PPS|
+|tax_id_type|IRN_NID|
+|tax_id_type|ISL_KT|
+|tax_id_type|ISR_CORP|
 |tax_id_type|ISR_TAX_ID|
+|tax_id_type|ITA_PIVA|
 |tax_id_type|ITA_TAX_ID|
+|tax_id_type|JAM_TRN|
+|tax_id_type|JOR_NID|
+|tax_id_type|JPN_CORP|
 |tax_id_type|JPN_TAX_ID|
+|tax_id_type|KAZ_BIN|
+|tax_id_type|KAZ_IIN|
+|tax_id_type|KEN_KRA_PIN|
+|tax_id_type|KGZ_INN|
+|tax_id_type|KHM_NID|
+|tax_id_type|KOR_BRN|
+|tax_id_type|KOR_RRN|
+|tax_id_type|KWT_CID|
+|tax_id_type|LBN_TIN|
+|tax_id_type|LKA_NIC|
+|tax_id_type|LKA_TIN|
+|tax_id_type|LTU_AK|
+|tax_id_type|LTU_JAK|
+|tax_id_type|LUX_NIN|
+|tax_id_type|LUX_TVA|
+|tax_id_type|LVA_PK|
+|tax_id_type|LVA_REG|
+|tax_id_type|MAC_TIN|
+|tax_id_type|MAR_CIN|
+|tax_id_type|MAR_ICE|
+|tax_id_type|MDA_IDNO|
+|tax_id_type|MDA_IDNP|
+|tax_id_type|MEX_CURP|
 |tax_id_type|MEX_RFC|
+|tax_id_type|MKD_EDB|
+|tax_id_type|MKD_EMBG|
+|tax_id_type|MLI_NIF|
+|tax_id_type|MLT_ID|
+|tax_id_type|MLT_VAT|
+|tax_id_type|MNE_JMBG|
+|tax_id_type|MNE_PIB|
+|tax_id_type|MNG_RD|
+|tax_id_type|MOZ_NUIT|
+|tax_id_type|MUS_NID|
+|tax_id_type|MUS_TAN_ENT|
+|tax_id_type|MUS_TAN_IND|
+|tax_id_type|MWI_TPIN|
+|tax_id_type|MYS_MYKAD|
+|tax_id_type|MYS_ROC|
+|tax_id_type|NAM_TIN|
+|tax_id_type|NGA_NIN|
+|tax_id_type|NGA_TIN|
 |tax_id_type|NIC_RUC|
+|tax_id_type|NLD_BTW|
+|tax_id_type|NLD_KVK|
+|tax_id_type|NLD_OBN|
 |tax_id_type|NLD_TIN|
+|tax_id_type|NOR_FNR|
+|tax_id_type|NOR_ORG|
+|tax_id_type|NPL_PAN|
+|tax_id_type|NZL_IRD|
+|tax_id_type|NZL_NZBN|
+|tax_id_type|OMN_CID|
+|tax_id_type|PAK_NIC|
+|tax_id_type|PAK_NTN|
 |tax_id_type|PAN_RUC|
 |tax_id_type|PER_RUC|
+|tax_id_type|PHL_TIN|
+|tax_id_type|POL_NIP|
+|tax_id_type|POL_PESEL|
+|tax_id_type|PRT_NIF|
 |tax_id_type|PRY_RUC|
-|tax_id_type|SGP_NRIC|
-|tax_id_type|SGP_FIN|
+|tax_id_type|QAT_QID|
+|tax_id_type|ROU_CNP|
+|tax_id_type|ROU_CUI|
+|tax_id_type|RUS_INN_ENT|
+|tax_id_type|RUS_INN_IND|
+|tax_id_type|RWA_TIN|
+|tax_id_type|SAU_TIN|
+|tax_id_type|SAU_VAT|
+|tax_id_type|SEN_NINEA|
 |tax_id_type|SGP_ASGD|
+|tax_id_type|SGP_FIN|
 |tax_id_type|SGP_ITR|
+|tax_id_type|SGP_NRIC|
+|tax_id_type|SGP_UEN|
 |tax_id_type|SLV_NIT|
+|tax_id_type|SRB_JMBG|
+|tax_id_type|SRB_PIB|
+|tax_id_type|SVK_ICO|
+|tax_id_type|SVK_TIN|
+|tax_id_type|SVN_DAS|
+|tax_id_type|SVN_MS|
+|tax_id_type|SWE_ORG|
 |tax_id_type|SWE_TAX_ID|
+|tax_id_type|SWZ_TIN|
+|tax_id_type|SXM_CRIB|
+|tax_id_type|SYR_TIN|
+|tax_id_type|THA_NID|
+|tax_id_type|THA_TIN|
+|tax_id_type|TJK_TIN|
+|tax_id_type|TTO_BIR|
+|tax_id_type|TUN_CIN|
+|tax_id_type|TUN_MF|
+|tax_id_type|TUR_TIN|
+|tax_id_type|TWN_GUI|
+|tax_id_type|TWN_NID|
+|tax_id_type|TZA_TIN|
+|tax_id_type|UGA_TIN|
+|tax_id_type|UKR_EDRPOU|
+|tax_id_type|UKR_RNTRC|
+|tax_id_type|URY_CI|
 |tax_id_type|URY_RUT|
+|tax_id_type|UZB_INN|
+|tax_id_type|UZB_PINFL|
 |tax_id_type|VEN_RIF|
+|tax_id_type|VNM_MST_BRN|
+|tax_id_type|VNM_MST_CORP|
+|tax_id_type|VNM_MST_PIN|
+|tax_id_type|WSM_TIN|
+|tax_id_type|XXK_PID|
+|tax_id_type|ZAF_CRN|
+|tax_id_type|ZAF_ID|
+|tax_id_type|ZMB_TPIN|
+|tax_id_type|ZWE_TIN|
 |tax_id_type|NATIONAL_ID|
 |tax_id_type|PASSPORT|
 |tax_id_type|PERMANENT_RESIDENT|
@@ -22662,8 +23658,8 @@ An asset class that can be enabled on a brokerage account, i.e. a value that may
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|number|true|none|none|
-|message|string|true|none|none|
+|code|number|true|none|Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several errors can share the same code, so check `message` for the specific reason.|
+|message|string|true|none|Human-readable reason for the rejection.|
 
 <h2 id="tocS_Exchange">Exchange</h2>
 <!-- backwards compatibility -->
@@ -22851,8 +23847,8 @@ Free-of-payment (FOP) transfers
   "account_number": "286873545",
   "in_progress_lending_activities": 2,
   "interest": {
-    "customer": 1.23,
-    "partner": 1.65
+    "customer": "8.61",
+    "partner": "11.55"
   },
   "total_lending_activities": 7
 }
@@ -22866,7 +23862,7 @@ Aggregated FPSL interest and loan-activity counts for one account over a date ra
 |---|---|---|---|---|
 |account_number|string|true|none|Account's number at Alpaca|
 |in_progress_lending_activities|integer(int64)|true|none|The number of FPSL lending activities currently in progress for the account.|
-|interest|[FPSLInterest](#schemafpslinterest)|false|none|The interest's details.<br>Please note that the object might not be set if interest has not yet been calculated for the loan.<br>Additionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.<br>The loan's changed `updated_at` field can indicate such an adjustment.<br>|
+|interest|object|true|none|The accumulated interest totals for all loans in the date range.<br>Totals may be adjusted retroactively at any time until interests are finalized for the month.<br>|
 |total_lending_activities|integer(int64)|true|none|The total number of FPSL lending activities for the account within the specified date range.|
 
 <h2 id="tocS_FPSLError">FPSLError</h2>
@@ -22899,22 +23895,20 @@ FPSL API error response
 
 ```json
 {
-  "customer": 1.23,
-  "partner": 1.65
+  "customer": "1.23",
+  "partner": "1.65"
 }
 ```
 
-The interest's details.
-Please note that the object might not be set if interest has not yet been calculated for the loan.
-Additionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.
-The loan's changed `updated_at` field can indicate such an adjustment.
+FPSL interest split between the customer and the partner.
+Interest may be adjusted retroactively at any time until interests are finalized for the month.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|customer|number(double)|true|none|The interest accrued by the customer for this loan.|
-|partner|number(double)|true|none|The interest accrued by the partner for this loan.|
+|customer|string(decimal)|true|none|The interest accrued by the customer.|
+|partner|string(decimal)|true|none|The interest accrued by the partner.|
 
 <h2 id="tocS_FPSLLoan">FPSLLoan</h2>
 <!-- backwards compatibility -->
@@ -22927,14 +23921,14 @@ The loan's changed `updated_at` field can indicate such an adjustment.
 {
   "account_id": "06d83e79-5bea-4ce9-a362-a25251a700ec",
   "account_number": "286873545",
-  "collateral": 1161.015,
+  "collateral": "1161.015",
   "correspondent": "LPCA",
-  "date": "2006-01-02",
+  "date": "2025-03-21",
   "interest": {
-    "customer": 1.23,
-    "partner": 1.65
+    "customer": "1.23",
+    "partner": "1.65"
   },
-  "market_value": 1138.25,
+  "market_value": "1138.25",
   "quantity": 5,
   "symbol": "AAPL",
   "updated_at": "2025-03-21T15:54:19.857034+01:00"
@@ -22949,11 +23943,11 @@ A loan of a security by an account on a date.
 |---|---|---|---|---|
 |account_id|string|true|none|Account's ID at Alpaca|
 |account_number|string|true|none|Account's number at Alpaca|
-|collateral|number(double)|true|none|The collateral posted for the loan.|
+|collateral|string(decimal)|true|none|The collateral posted for the loan.|
 |correspondent|string|true|none|Account's correspondent|
 |date|string(date)|true|none|none|
-|interest|[FPSLInterest](#schemafpslinterest)|false|none|The interest's details.<br>Please note that the object might not be set if interest has not yet been calculated for the loan.<br>Additionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.<br>The loan's changed `updated_at` field can indicate such an adjustment.<br>|
-|market_value|number(double)|true|none|The total market value of the shares on loan.|
+|interest|object|false|none|The loan's interest details.<br>Please note that the object might not be set if interest has not yet been calculated for the loan.<br>Additionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.<br>The loan's changed `updated_at` field can indicate such an adjustment.<br>|
+|market_value|string(decimal)|true|none|The total market value of the shares on loan.|
 |quantity|integer(int64)|true|none|The number of shares in the loan. This may be less than the total number of eligible shares held by the account.|
 |symbol|string|true|none|Stock/Ticker symbol of a stock or security|
 |updated_at|string(date-time)|false|none|Timestamp of the last update to this loan in RFC-3339 format with microsecond precision with timezone.<br>An updated value may indicate adjusted interest values.<br>|
@@ -23463,7 +24457,7 @@ Status:
   "fees": [
     {
       "amount": "string",
-      "currency": "string",
+      "currency": "USD",
       "payment_type": "invoice",
       "type": "withdrawal_fee"
     }
@@ -23811,6 +24805,33 @@ Wrapper response returned by `GET /v1/ipos/{offering_reference}`.
 |---|---|---|---|---|
 |data|[IPOOffering](#schemaipooffering)|true|none|An IPO (Initial Public Offering) offering exposed via the IPO discovery REST API. Returned by `GET /v1/ipos` and `GET /v1/ipos/{offering_reference}`.<br><br>Most IPO lifecycle changes (new offerings, prospectus availability, 60-minute mail, allocations, cancellations) are pushed in real time over the [IPO Events Stream](#operation/subscribeToIPOEventsSSE).<br>|
 
+<h2 id="tocS_Identification">Identification</h2>
+<!-- backwards compatibility -->
+<a id="schemaidentification"></a>
+<a id="schema_Identification"></a>
+<a id="tocSidentification"></a>
+<a id="tocsidentification"></a>
+
+```json
+{
+  "issued_country": "GBR",
+  "number": "5493001KJTIIGC8Y1R12",
+  "type": "LEI"
+}
+```
+
+An identity document or identifier of the account owner. Responses return only `type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expiry_date|string(date)|false|write-only|The expiry date in "YYYY-MM-DD" format. It must be later than today (UTC) and no earlier than `issued_date`.|
+|issued_country|string|false|write-only|Required on write. [ISO 3166-1 alpha-3](https://www.iso.org/iso-3166-country-codes.html) code of the issuing country.<br>|
+|issued_date|string(date)|false|write-only|The issue date in "YYYY-MM-DD" format. It can't be later than today (UTC).|
+|number|string|false|write-only|Required on write. The identification number. An `LEI` number is 20 characters long and must pass the ISO 17442 check digits, or the request fails with 422. Lowercase letters are accepted and stored in uppercase.<br>|
+|type|string|true|none|The identification type, for example `passport`, `national_id` or `LEI`. `LEI` is uppercase.|
+
 <h2 id="tocS_Identity">Identity</h2>
 <!-- backwards compatibility -->
 <a id="schemaidentity"></a>
@@ -23850,6 +24871,7 @@ Identity is the model to provide account owner's identity information.
 |family_name|string|true|none|The last name (surname) of the user.|
 |funding_source|[string]|true|none|Can be one or more of the following: `employment_income`, `investments`, `inheritance`, `business_income`, `savings`, `family`.|
 |given_name|string|true|none|The first/given name of the user.|
+|identifications|[[Identification](#schemaidentification)]|false|none|Identity documents and identifiers other than the tax ID, such as a passport or an LEI. On update, the array replaces every stored identification except the tax ID, which only `tax_id` and `tax_id_type` change.<br><br>Account responses include this field only for natural persons, and each entry has only `type`. Responses also list the tax ID as an entry typed with its tax ID type, for example `USA_SSN`, or `NOT_SPECIFIED` when the type is unknown. Omit that entry on update.<br>|
 |investment_experience_with_options|string|false|none|The user's level of expertise and familiarity with investing in Options.<br>|
 |investment_experience_with_stocks|string|false|none|The user's level of expertise and familiarity with investing in US Equities.<br>|
 |investment_objective|string|false|none|**Deprecated.** The user's investment objective. This field is deprecated. Please use the top level `investment_objective` field.<br>|
@@ -23863,7 +24885,7 @@ Identity is the model to provide account owner's identity information.
 |permanent_resident|boolean|false|none|Only used to collect permanent residence status in the USA.|
 |risk_tolerance|string|false|none|**Deprecated.** The user's investment risk tolerance. This field is deprecated. Please use the top level `risk_tolerance` field.<br>|
 |tax_id|string|false|none|If this is provided, `tax_id_type` is required.|
-|tax_id_type|[TaxIdType](#schemataxidtype) \| null|false|none|Required on write when `tax_id` is set. May be `null` on read when unset or for sparse identity on OmniSub / omnibus-non-disclosed accounts.|
+|tax_id_type|[TaxIdType](#schemataxidtype) \| null|false|none|Required on write when `tax_id` is set. May be `null` on read when unset or for sparse identity on OmniSub / omnibus-non-disclosed accounts.<br><br>An LEI is not a tax ID: a request with `tax_id_type` set to `LEI`, in any case, fails with 422. Send the LEI in `identifications` and the national tax ID in `tax_id`.<br>|
 |total_net_worth_max|string(decimal)|false|none|The upper bound of the user's total net worth.|
 |total_net_worth_min|string(decimal)|false|none|The lower bound of the user's total net worth.|
 |visa_expiration_date|string(date)|false|none|Required if `visa_type` is set.|
@@ -24109,8 +25131,8 @@ Values:
 
 ```json
 {
-  "expires_at": "1970-01-01T00:00:00Z",
-  "filename": "string",
+  "expires_at": "2026-04-14T23:55:00Z",
+  "filename": "ALPC-2026-04-14-common_stock-detail.csv",
   "url": "http://example.com"
 }
 ```
@@ -24781,20 +25803,20 @@ Response to a successful request for a list of APR tiers.
     {
       "account_id": "06d83e79-5bea-4ce9-a362-a25251a700ec",
       "account_number": "286873545",
-      "collateral": 1161.015,
+      "collateral": "1161.015",
       "correspondent": "LPCA",
-      "date": "2006-01-02",
+      "date": "2025-03-21",
       "interest": {
-        "customer": 1.23,
-        "partner": 1.65
+        "customer": "1.23",
+        "partner": "1.65"
       },
-      "market_value": 1138.25,
+      "market_value": "1138.25",
       "quantity": 5,
       "symbol": "AAPL",
       "updated_at": "2025-03-21T15:54:19.857034+01:00"
     }
   ],
-  "next_page_token": "string"
+  "next_page_token": null
 }
 ```
 
@@ -24867,7 +25889,7 @@ Response to a successful request for a list of FPSL loans.
       "fees": [
         {
           "amount": "string",
-          "currency": "string",
+          "currency": "USD",
           "payment_type": "invoice",
           "type": "withdrawal_fee"
         }
@@ -24994,6 +26016,8 @@ Instant funding memopost
 
 Represents an individual leg of a multileg options order.
 
+`commission`, `commission_type`, and `commission_bps` are ignored on a leg and have no effect. Set `commission` and `commission_type` on the parent order.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -25095,7 +26119,7 @@ Use this token in your next API call to paginate through the dataset and retriev
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|activity_sub_type|[ActivitySubType](#schemaactivitysubtype)|false|none|Represents a more specific classification to the `activity_type`.<br>This field is optional and may not always be populated, depending on the activity type and the available data.<br>Each `activity_type` has a set of valid `activity_sub_type` values.<br><br>Full mapping of `activity_type` to `activity_sub_type`:<br><br>- **CGD**: Capital Gains Distribution activity sub-types:<br>  - **LTCG**: Long-Term Capital Gain<br>  - **STCG**: Short-Term Capital Gain<br><br>- **DIV**: Dividend activity sub-types:<br>  - **CDIV**: Cash Dividend<br>  - **ROC**: Return of Capital<br>  - **SDIV**: Stock Dividend<br>  - **SPD**: Substitute Payment In Lieu Of Dividend<br><br>- **FEE**: Fee-related activity sub-types:<br>  - **REG**: Regulatory Fee<br>  - **TAF**: Trading Activity Fee<br>  - **LCT**: Local Currency Trading Fee<br>  - **ORF**: Options Regulatory Fee<br>  - **OCC**: Options Clearing Corporation Fee<br>  - **NRC**: Non-Retail Commission Fee<br>  - **NRV**: Non-Retail Venue Fee<br>  - **COM**: Commission<br>  - **CAT**: Consolidated Audit Trail Fee<br><br>- **INT**: Interest-related activity sub-types:<br>  - **MGN**: Margin Interest<br>  - **CDT**: Credit Interest<br>  - **SWP**: Sweep Interest<br>  - **QII**: Qualified Interest<br>  - **FI**: Fixed Income Interest (coupon or accrued)<br><br>- **MA**: Merger and Acquisition activity sub-types:<br>  - **CMA**: Cash Merger<br>  - **SMA**: Stock Merger<br>  - **SCMA**: Stock & Cash Merger<br><br>- **NC**: Name Change activity sub types<br>  - **SNC**: Symbol Name Change<br>  - **CNC**: CUSIP Name Change<br>  - **SCNC**: Symbol & CUSIP Name Change<br><br>- **OPCA**: Option Corporate Action activity sub-types:<br>  - **DIV.CDIV**: Cash Dividend<br>  - **DIV.ROC**: Return of Capital<br>  - **DIV.SDIV**: Stock Dividend<br>  - **MA.CMA**: Cash Merger<br>  - **MA.SMA**: Stock Merger<br>  - **MA.SCMA**: Stock & Cash Merger<br>  - **NC.CNC**: CUSIP Name Change<br>  - **NC.SNC**: Symbol Name Change<br>  - **NC.SCNC**: Symbol & CUSIP Name Change<br>  - **SPIN**: Spin-off<br>  - **SPLIT.FSPLIT**: Forward Stock Split<br>  - **SPLIT.RSPLIT**: Reverse Stock Split<br>  - **SPLIT.USPLIT**: Unit Split<br><br>- **REO**: Reorganization activity sub-types:<br>  - **REOS**: Stock only (1 or more stock legs)<br>  - **REOC**: Cash only (one cash leg)<br>  - **REOSC**: Stock and cash<br><br>- **REORG**: Activity sub-types:<br>  - **WRM**: Worthless Removal<br><br>- **SPLIT**: Stock Split activity sub-types:<br>  - **FSPLIT**: Forward Stock Split<br>  - **RSPLIT**: Reverse Stock Split<br>  - **USPLIT**: Unit Split<br><br>- **VOF**: Voluntary Offering activity sub-types:<br>  - **VTND**: Tender Offer<br>  - **VWRT**: Warrant Exercise<br>  - **VRGT**: Rights Offer<br>  - **VEXH**: Exchange Offer<br><br>- **WH**: Withholding activity sub-types:<br>  - **SWH**: State Withholding<br>  - **FWH**: Federal Withholding<br>  - **SLWH**: Sales Withholding|
+|activity_sub_type|[ActivitySubType](#schemaactivitysubtype)|false|none|Represents a more specific classification to the `activity_type`.<br>This field is optional and may not always be populated, depending on the activity type and the available data.<br>Each `activity_type` has a set of valid `activity_sub_type` values.<br><br>This field is a free-form string rather than a closed enum: sub-type codes<br>originate from several upstream clearing, corporate-action, and international-fee<br>systems, and new codes can appear without a corresponding API change. The mapping<br>below documents the sub-types known at the time of writing; it is not guaranteed<br>to be exhaustive.<br><br>Full mapping of `activity_type` to `activity_sub_type`:<br><br>- **CGD**: Capital Gains Distribution activity sub-types:<br>  - **LTCG**: Long-Term Capital Gain<br>  - **STCG**: Short-Term Capital Gain<br><br>- **DIV**: Dividend activity sub-types:<br>  - **CDIV**: Cash Dividend<br>  - **ROC**: Return of Capital<br>  - **SDIV**: Stock Dividend<br>  - **SPD**: Substitute Payment In Lieu Of Dividend<br><br>- **FEE**: Fee-related activity sub-types:<br>  - **REG**: Regulatory Fee<br>  - **TAF**: Trading Activity Fee<br>  - **LCT**: Local Currency Trading Fee<br>  - **ORF**: Options Regulatory Fee<br>  - **OCC**: Options Clearing Corporation Fee<br>  - **NRC**: Non-Retail Commission Fee<br>  - **NRV**: Non-Retail Venue Fee<br>  - **COM**: Commission<br>  - **CAT**: Consolidated Audit Trail Fee<br>  - **ICF**: Index Contract Fee<br>  - **EPI**: Exchange Proprietary Fee<br><br>- **INT**: Interest-related activity sub-types:<br>  - **MGN**: Margin Interest<br>  - **CDT**: Credit Interest<br>  - **SWP**: Sweep Interest<br>  - **QII**: Qualified Interest<br>  - **FI**: Fixed Income Interest (coupon or accrued)<br><br>- **MA**: Merger and Acquisition activity sub-types:<br>  - **CMA**: Cash Merger<br>  - **SMA**: Stock Merger<br>  - **SCMA**: Stock & Cash Merger<br><br>- **NC**: Name Change activity sub types<br>  - **SNC**: Symbol Name Change<br>  - **CNC**: CUSIP Name Change<br>  - **SCNC**: Symbol & CUSIP Name Change<br><br>- **OPCA**: Option Corporate Action activity sub-types:<br>  - **DIV.CDIV**: Cash Dividend<br>  - **DIV.ROC**: Return of Capital<br>  - **DIV.SDIV**: Stock Dividend<br>  - **MA.CMA**: Cash Merger<br>  - **MA.SMA**: Stock Merger<br>  - **MA.SCMA**: Stock & Cash Merger<br>  - **NC.CNC**: CUSIP Name Change<br>  - **NC.SNC**: Symbol Name Change<br>  - **NC.SCNC**: Symbol & CUSIP Name Change<br>  - **SPIN**: Spin-off<br>  - **SPLIT.FSPLIT**: Forward Stock Split<br>  - **SPLIT.RSPLIT**: Reverse Stock Split<br>  - **SPLIT.USPLIT**: Unit Split<br><br>- **REO**: Reorganization activity sub-types:<br>  - **REOS**: Stock only (1 or more stock legs)<br>  - **REOC**: Cash only (one cash leg)<br>  - **REOSC**: Stock and cash<br><br>- **REORG**: Activity sub-types:<br>  - **WRM**: Worthless Removal<br><br>- **SPLIT**: Stock Split activity sub-types:<br>  - **FSPLIT**: Forward Stock Split<br>  - **RSPLIT**: Reverse Stock Split<br>  - **USPLIT**: Unit Split<br><br>- **VOF**: Voluntary Offering activity sub-types:<br>  - **VTND**: Tender Offer<br>  - **VWRT**: Warrant Exercise<br>  - **VRGT**: Rights Offer<br>  - **VEXH**: Exchange Offer<br><br>- **WH**: Withholding activity sub-types:<br>  - **SWH**: State Withholding<br>  - **FWH**: Federal Withholding<br>  - **SLWH**: Sales Withholding|
 |created_at|string(date-time)|false|none|Valid only for non-trading activity types. Null for trading activities.|
 |currency|string|false|none|Currency denomination of the activity. USD by default.|
 |cusip|string|false|none|Valid only for non-trading activity types. Null for trading activities.|
@@ -25238,11 +26262,11 @@ On chain transaction (blockchain deposit/withdrawal)
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -25252,11 +26276,11 @@ Option assignment
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPCSHActivityV2">OPCSHActivityV2</h2>
 <!-- backwards compatibility -->
@@ -25267,11 +26291,11 @@ Option assignment
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -25281,11 +26305,11 @@ Option cash deliverable for non-standard contracts
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPEXCActivityV2">OPEXCActivityV2</h2>
 <!-- backwards compatibility -->
@@ -25296,11 +26320,11 @@ Option cash deliverable for non-standard contracts
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -25310,11 +26334,11 @@ Option exercise
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPEXPActivityV2">OPEXPActivityV2</h2>
 <!-- backwards compatibility -->
@@ -25325,11 +26349,11 @@ Option exercise
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -25339,11 +26363,11 @@ Option expiry
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPTRDActivityV2">OPTRDActivityV2</h2>
 <!-- backwards compatibility -->
@@ -25354,11 +26378,11 @@ Option expiry
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -25368,11 +26392,11 @@ Trading activity that is paired with the assignment/exercise
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OathClientResponse">OathClientResponse</h2>
 <!-- backwards compatibility -->
@@ -25503,6 +26527,63 @@ Options corporate action of cash dividend or return of capital
 |foreign|false|
 |special|true|
 |special|false|
+
+<h2 id="tocS_OpcaCGDActivityV2">OpcaCGDActivityV2</h2>
+<!-- backwards compatibility -->
+<a id="schemaopcacgdactivityv2"></a>
+<a id="schema_OpcaCGDActivityV2"></a>
+<a id="tocSopcacgdactivityv2"></a>
+<a id="tocsopcacgdactivityv2"></a>
+
+```json
+{
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
+  "ca_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "position_date": "1970-01-01",
+  "reorg_id": "string",
+  "new_contract_symbol": "string",
+  "new_qty": "string",
+  "old_contract_symbol": "string",
+  "old_qty": "string",
+  "qty": "string",
+  "cusip": "string",
+  "ex_date": "1970-01-01",
+  "isin": "string",
+  "long_term_rate": "string",
+  "payable_date": "1970-01-01",
+  "rate": "string",
+  "record_date": "1970-01-01",
+  "short_term_rate": "string",
+  "symbol": "string"
+}
+```
+
+Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|group_id|string(uuid)|false|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
+|ca_id|string(uuid)|false|none|The unique identifier for this corporate action|
+|position_date|string(date)|true|none|The position_date for this corporate action|
+|reorg_id|string|false|none|The reorg identifier, if present in the source corporate action definition|
+|new_contract_symbol|string|true|none|The new contract symbol|
+|new_qty|string|false|none|used when the old contract's quantity is not equal to the new contract's quantity. Mutually exclusive with 'qty'.|
+|old_contract_symbol|string|true|none|The old contract symbol|
+|old_qty|string|false|none|used when the old contract's quantity is not equal to the new contract's quantity. Mutually exclusive with 'qty'.|
+|qty|string|false|none|used when the old contract's quantity is equal to the new contract's quantity. Mutually exclusive with 'old_qty' and 'new_qty'|
+|cusip|string|true|none|The CUSIP of the underlying security|
+|ex_date|string(date)|false|none|The ex_date for the underlying capital gains distribution|
+|isin|string|false|none|The ISIN of the underlying security, when applicable|
+|long_term_rate|string|false|none|Long-term capital gains distribution rate per share, when applicable|
+|payable_date|string(date)|false|none|The payable_date for the underlying capital gains distribution|
+|rate|string|true|none|Combined per-share capital-gains rate (LTCG + STCG). By default this is the strike reduction applied to the option contract; the adjusted strike is reflected in `new_contract_symbol`.|
+|record_date|string(date)|false|none|The record_date for the underlying capital gains distribution|
+|short_term_rate|string|false|none|Short-term capital gains distribution rate per share, when applicable|
+|symbol|string|true|none|The symbol of the underlying security|
 
 <h2 id="tocS_OpcaFSPLITActivityV2">OpcaFSPLITActivityV2</h2>
 <!-- backwards compatibility -->
@@ -26310,7 +27391,7 @@ A list of options approval requests.
 |client_order_id|string|false|none|Client unique order ID|
 |commission|string(decimal)|false|none|The dollar value commission for this order.|
 |commission_bps|string(decimal)|false|none|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>|
-|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.|
+|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)<br>Not supported for `mleg` orders.<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br>For `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.<br>Not supported for `mleg` orders.|
 |created_at|string(date-time)|false|none|Time when order was entered|
 |expired_at|string \| null(date-time)|false|none|Can be null|
 |extended_hours|boolean|false|none|none|
@@ -26622,7 +27703,7 @@ Omitted whenever `group_id` is omitted.
 |client_order_id|string|false|none|Client unique order ID|
 |commission|string(decimal)|false|none|The dollar value commission you want to charge the end user.|
 |commission_bps|string(decimal)|false|none|**Deprecated.** **deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>|
-|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.|
+|commission_type|[CommissionType](#schemacommissiontype)|false|none|An enum to select how to interpret the value provided in the commission field.<br><br>- notional:<br>Charge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)<br>Not supported for `mleg` orders.<br><br>- qty:<br>Charge commission on a per qty/contract basis, pro rated.<br>For `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.<br><br>- bps:<br>The percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.<br>Commission value in bps can have up to two decimal places.<br>Not supported for `mleg` orders.|
 |created_at|string(date-time)|false|none|Time when order was entered|
 |expired_at|string \| null(date-time)|false|none|Can be null|
 |extended_hours|boolean|false|none|none|
@@ -27127,10 +28208,12 @@ Timeseries data for equity and profit loss information of the account.
 
 ```json
 {
-  "code": 0,
-  "message": "string"
+  "code": 40010001,
+  "message": "query: \"timeframe\": invalid value: \"2Min\""
 }
 ```
+
+Error returned by the portfolio history endpoint.
 
 ### Properties
 
@@ -27384,13 +28467,13 @@ An interval, duration, or window of time.
 |completed_at|string|false|none|RFC3339 format|
 |failed_orders|[[Order](#schemaorder)]|false|none|Array of failed orders for this run|
 |id|string|false|none|Run ID|
-|initiated_from|string|false|none|system or api|
+|initiated_from|[PortfolioRunInitiator](#schemaportfolioruninitiator)|false|none|Who created the run: `system` for runs Alpaca creates (scheduled rebalancing and subscription creation), `api` for runs created with `POST /v1/rebalancing/runs`, or `dashboard` for runs created by a user in the Broker API dashboard.|
 |orders|[[Order](#schemaorder)]|false|none|Array of executed orders for this run|
 |portfolio_id|string|false|none|Portfolio ID for given run|
 |reason|string|false|none|Explainer text in case of failed runs|
 |skipped_orders|[[SkippedOrder](#schemaskippedorder)]|false|none|Array of skipped order for this run|
 |status|[PortfolioRunStatus](#schemaportfoliorunstatus)|false|none|\|       Status       \| Final \|                                 Represented State                                \|                                                         Notes                                                        \|<br>\|:------------------:\|:-----:\|:--------------------------------------------------------------------------------:\|:--------------------------------------------------------------------------------------------------------------------:\|<br>\| QUEUED             \| No    \| The run has been queued, waiting for our system to process it.                   \| Runs only executed when the US market is open and there's at least 15 minutes before the market closes.              \|<br>\| IN_PROGRESS        \| No    \| Portfolio adjustment is in progress.                                             \|                                                                                                                      \|<br>\| CANCELED           \| Yes, unless the run was already placing orders \| Portfolio run canceled before it started, or while waiting to be retried \| If the run was already placing orders, those orders are not canceled and the run's final status can replace CANCELED. \|<br>\| CANCELED_MID_RUN   \| Yes   \| Portfolio run canceled while executing.                                          \| The portfolio's state is in between the pre-run and post-run state, manual remediation or job re-run is recommended. \|<br>\| ERROR              \| Yes   \| There was an error while rebalancing the portfolio.                              \| The portfolio's state is in between the pre-run and post-run state, manual remediation or job re-run is recommended. \|<br>\| TIMEOUT            \| Yes   \| A timeout occurred while rebalancing the portfolio.                               \| The portfolio's state is in between the pre-run and post-run state, manual remediation or job re-run is recommended. \|<br>\| COMPLETED_ADJUSTED \| Yes   \| The portfolio has been adjusted                                                  \| The adjustments have been prepared, but the run details haven't yet updated with the list of resulting orders        \|<br>\| COMPLETED_SUCCESS  \| Yes   \| The portfolio has been adjusted, run status updated                              \|                                                                                                                      \||
-|type|string|false|none|full_rebalance or invest_cash|
+|type|[PortfolioRunType](#schemaportfolioruntype)|false|none|full_rebalance, partial_liquidation, or invest_cash. partial_liquidation is emitted when a run has that type. Creating one through the REST API is rejected today.|
 |updated_at|string|false|none|RFC3339 format|
 |weights|[[PortfolioWeights](#schemaportfolioweights)]|false|none|Considered weighting for this run|
 
@@ -27400,6 +28483,7 @@ An interval, duration, or window of time.
 |---|---|
 |initiated_from|system|
 |initiated_from|api|
+|initiated_from|dashboard|
 |status|QUEUED|
 |status|IN_PROGRESS|
 |status|CANCELED|
@@ -27409,7 +28493,21 @@ An interval, duration, or window of time.
 |status|COMPLETED_ADJUSTED|
 |status|COMPLETED_SUCCESS|
 |type|full_rebalance|
+|type|partial_liquidation|
 |type|invest_cash|
+
+<h2 id="tocS_PortfolioRunInitiator">PortfolioRunInitiator</h2>
+<!-- backwards compatibility -->
+<a id="schemaportfolioruninitiator"></a>
+<a id="schema_PortfolioRunInitiator"></a>
+<a id="tocSportfolioruninitiator"></a>
+<a id="tocsportfolioruninitiator"></a>
+
+```json
+"system"
+```
+
+Who created the run: `system` for runs Alpaca creates (scheduled rebalancing and subscription creation), `api` for runs created with `POST /v1/rebalancing/runs`, or `dashboard` for runs created by a user in the Broker API dashboard.
 
 <h2 id="tocS_PortfolioRunStatus">PortfolioRunStatus</h2>
 <!-- backwards compatibility -->
@@ -27433,6 +28531,19 @@ An interval, duration, or window of time.
 | COMPLETED_ADJUSTED | Yes   | The portfolio has been adjusted                                                  | The adjustments have been prepared, but the run details haven't yet updated with the list of resulting orders        |
 | COMPLETED_SUCCESS  | Yes   | The portfolio has been adjusted, run status updated                              |                                                                                                                      |
 
+<h2 id="tocS_PortfolioRunType">PortfolioRunType</h2>
+<!-- backwards compatibility -->
+<a id="schemaportfolioruntype"></a>
+<a id="schema_PortfolioRunType"></a>
+<a id="tocSportfolioruntype"></a>
+<a id="tocsportfolioruntype"></a>
+
+```json
+"full_rebalance"
+```
+
+full_rebalance, partial_liquidation, or invest_cash. partial_liquidation is emitted when a run has that type. Creating one through the REST API is rejected today.
+
 <h2 id="tocS_PortfolioSubscription">PortfolioSubscription</h2>
 <!-- backwards compatibility -->
 <a id="schemaportfoliosubscription"></a>
@@ -27446,7 +28557,8 @@ An interval, duration, or window of time.
   "created_at": "1970-01-01T00:00:00Z",
   "id": "string",
   "last_rebalanced_at": "string",
-  "portfolio_id": "string"
+  "portfolio_id": "string",
+  "trade_marker": "discretionary"
 }
 ```
 
@@ -27454,11 +28566,12 @@ An interval, duration, or window of time.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|account_id|string|false|none|Account ID subscribing to portfolio|
-|created_at|string(date-time)|false|none|Subscription creation timestamp|
-|id|string|false|none|Subscription ID|
+|account_id|string|true|none|Account ID subscribing to portfolio|
+|created_at|string(date-time)|true|none|Subscription creation timestamp|
+|id|string|true|none|Subscription ID|
 |last_rebalanced_at|string|false|none|Last rebalancing event for this subscription. Can be null.|
-|portfolio_id|string|false|none|Portfolio ID for subscription|
+|portfolio_id|string|true|none|Portfolio ID for subscription|
+|trade_marker|[TradeMarker](#schematrademarker) \| null|true|none|How trades for this subscription are marked. `null` on subscriptions created before trade markers.|
 
 <h2 id="tocS_PortfolioWeightAssetEntry">PortfolioWeightAssetEntry</h2>
 <!-- backwards compatibility -->
@@ -27735,13 +28848,13 @@ Shared fields for a portfolio weight in a create or update request.
 
 Represents the result of asking the api to close a position.
 
-`body` is the Order used to close out the position.
+When `status` is 200, `body` is the Order used to close out the position. For any other `status`, `body` is the error object describing why the close was rejected.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|body|[Order](#schemaorder)|false|none|none|
+|body|[Order](#schemaorder) \| [ClosePositionError](#schemaclosepositionerror)|false|none|The Order used to close out the position when `status` is 200; otherwise the error object.|
 |status|integer|true|none|Http status code for the attempt to close this position|
 |symbol|string|true|none|Symbol name of the asset|
 
@@ -27816,6 +28929,361 @@ Reorganization (REO)
 |source_rate|string(decimal)|false|none|Source ratio for this stock leg|
 |source_symbol|string|true|none|Symbol of the source security|
 |symbol|string|false|none|Symbol received on this stock leg|
+
+<h2 id="tocS_RebalancerEvent">RebalancerEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancerevent"></a>
+<a id="schema_RebalancerEvent"></a>
+<a id="tocSrebalancerevent"></a>
+<a id="tocsrebalancerevent"></a>
+
+```json
+{
+  "at": "1970-01-01T00:00:00Z",
+  "event_id": "string",
+  "event_type": "portfolio.status_changed",
+  "portfolio": {
+    "cooldown_days": 0,
+    "created_at": "1970-01-01T00:00:00Z",
+    "description": "string",
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "rebalance_conditions": [
+      {
+        "day": "string",
+        "percent": "string",
+        "sub_type": "absolute",
+        "type": "drift_band"
+      }
+    ],
+    "status": "active",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "weights": [
+      {
+        "percent": "string",
+        "symbol": "string",
+        "type": "cash"
+      }
+    ]
+  }
+}
+```
+
+A correspondent-scoped rebalancer event delivered on `GET /v2/events/rebalancer`.
+
+`event_type` is one of `portfolio.status_changed`, `run.created`, or `run.status_changed`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[RebalancerPortfolioStatusChangedEvent](#schemarebalancerportfoliostatuschangedevent)|false|none|Emitted when a portfolio status changes. `at` is the business time of the transition.|
+|*oneOf*|[RebalancerRunCreatedEvent](#schemarebalancerruncreatedevent)|false|none|Emitted when a portfolio run is created. `run` is the full run snapshot, without order lists.|
+|*oneOf*|[RebalancerRunStatusChangedEvent](#schemarebalancerrunstatuschangedevent)|false|none|Emitted when a portfolio run status changes. `run` is the same full snapshot sent on `run.created`.|
+
+<h2 id="tocS_RebalancerEventPortfolio">RebalancerEventPortfolio</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancereventportfolio"></a>
+<a id="schema_RebalancerEventPortfolio"></a>
+<a id="tocSrebalancereventportfolio"></a>
+<a id="tocsrebalancereventportfolio"></a>
+
+```json
+{
+  "cooldown_days": 0,
+  "created_at": "1970-01-01T00:00:00Z",
+  "description": "string",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "rebalance_conditions": [
+    {
+      "day": "string",
+      "percent": "string",
+      "sub_type": "absolute",
+      "type": "drift_band"
+    }
+  ],
+  "status": "active",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "weights": [
+    {
+      "percent": "string",
+      "symbol": "string",
+      "type": "cash"
+    }
+  ]
+}
+```
+
+Portfolio snapshot carried on `portfolio.status_changed`, including weights and rebalance conditions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cooldown_days|integer|true|none|none|
+|created_at|string(date-time)|true|none|none|
+|description|string|true|none|none|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|rebalance_conditions|[[RebalancerEventRebalanceCondition](#schemarebalancereventrebalancecondition)]|true|none|none|
+|status|string|true|none|none|
+|updated_at|string(date-time)|true|none|none|
+|weights|[[PortfolioWeights](#schemaportfolioweights)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|inactive|
+|status|needs_adjustment|
+
+<h2 id="tocS_RebalancerEventRebalanceCondition">RebalancerEventRebalanceCondition</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancereventrebalancecondition"></a>
+<a id="schema_RebalancerEventRebalanceCondition"></a>
+<a id="tocSrebalancereventrebalancecondition"></a>
+<a id="tocsrebalancereventrebalancecondition"></a>
+
+```json
+{
+  "day": "string",
+  "percent": "string",
+  "sub_type": "absolute",
+  "type": "drift_band"
+}
+```
+
+Rebalance condition on a `portfolio.status_changed` event. Empty `sub_type`, `percent`, and `day` are omitted.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|day|string|false|none|Calendar day. A lowercase weekday name (`monday` through `friday`) for `weekly`, a day of the month (`1` to `31`) for `monthly` and `quarterly`, and `MM-DD` for `annually`. Omitted when empty.|
+|percent|string|false|none|Decimal string. Present for drift_band conditions. Omitted when empty.|
+|sub_type|string|false|none|Omitted when the producer sends no subtype.|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sub_type|absolute|
+|sub_type|relative|
+|sub_type|weekly|
+|sub_type|monthly|
+|sub_type|quarterly|
+|sub_type|annually|
+|type|drift_band|
+|type|calendar|
+|type|on_portfolio_update|
+
+<h2 id="tocS_RebalancerEventRun">RebalancerEventRun</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancereventrun"></a>
+<a id="schema_RebalancerEventRun"></a>
+<a id="tocSrebalancereventrun"></a>
+<a id="tocsrebalancereventrun"></a>
+
+```json
+{
+  "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "canceled_at": "1970-01-01T00:00:00Z",
+  "completed_at": "1970-01-01T00:00:00Z",
+  "created_at": "1970-01-01T00:00:00Z",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "initiated_from": "system",
+  "portfolio_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "reason": "string",
+  "status": "QUEUED",
+  "type": "full_rebalance",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Full run snapshot sent on `run.created` and `run.status_changed`. Order lists are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string(uuid)|true|none|none|
+|canceled_at|string \| null(date-time)|true|none|none|
+|completed_at|string \| null(date-time)|true|none|none|
+|created_at|string(date-time)|true|none|none|
+|id|string(uuid)|true|none|none|
+|initiated_from|[PortfolioRunInitiator](#schemaportfolioruninitiator)|true|none|Who created the run: `system` for runs Alpaca creates (scheduled rebalancing and subscription creation), `api` for runs created with `POST /v1/rebalancing/runs`, or `dashboard` for runs created by a user in the Broker API dashboard.|
+|portfolio_id|string(uuid)|true|none|none|
+|reason|string \| null|true|none|none|
+|status|string|true|none|Run status delivered on the rebalancer stream. `CANCELED_MID_RUN` is a REST portfolio-run status and is not sent on this stream.|
+|type|[PortfolioRunType](#schemaportfolioruntype)|true|none|full_rebalance, partial_liquidation, or invest_cash. partial_liquidation is emitted when a run has that type. Creating one through the REST API is rejected today.|
+|updated_at|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|initiated_from|system|
+|initiated_from|api|
+|initiated_from|dashboard|
+|status|QUEUED|
+|status|IN_PROGRESS|
+|status|CANCELED|
+|status|ERROR|
+|status|TIMEOUT|
+|status|COMPLETED_ADJUSTED|
+|status|COMPLETED_SUCCESS|
+|type|full_rebalance|
+|type|partial_liquidation|
+|type|invest_cash|
+
+<h2 id="tocS_RebalancerPortfolioStatusChangedEvent">RebalancerPortfolioStatusChangedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancerportfoliostatuschangedevent"></a>
+<a id="schema_RebalancerPortfolioStatusChangedEvent"></a>
+<a id="tocSrebalancerportfoliostatuschangedevent"></a>
+<a id="tocsrebalancerportfoliostatuschangedevent"></a>
+
+```json
+{
+  "at": "1970-01-01T00:00:00Z",
+  "event_id": "string",
+  "event_type": "portfolio.status_changed",
+  "portfolio": {
+    "cooldown_days": 0,
+    "created_at": "1970-01-01T00:00:00Z",
+    "description": "string",
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "rebalance_conditions": [
+      {
+        "day": "string",
+        "percent": "string",
+        "sub_type": "absolute",
+        "type": "drift_band"
+      }
+    ],
+    "status": "active",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "weights": [
+      {
+        "percent": "string",
+        "symbol": "string",
+        "type": "cash"
+      }
+    ]
+  }
+}
+```
+
+Emitted when a portfolio status changes. `at` is the business time of the transition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|at|string(date-time)|true|none|Business time of the portfolio status transition.|
+|event_id|string(ulid)|true|none|none|
+|event_type|string|true|none|none|
+|portfolio|[RebalancerEventPortfolio](#schemarebalancereventportfolio)|true|none|Portfolio snapshot carried on `portfolio.status_changed`, including weights and rebalance conditions.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_type|portfolio.status_changed|
+
+<h2 id="tocS_RebalancerRunCreatedEvent">RebalancerRunCreatedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancerruncreatedevent"></a>
+<a id="schema_RebalancerRunCreatedEvent"></a>
+<a id="tocSrebalancerruncreatedevent"></a>
+<a id="tocsrebalancerruncreatedevent"></a>
+
+```json
+{
+  "at": "1970-01-01T00:00:00Z",
+  "event_id": "string",
+  "event_type": "run.created",
+  "run": {
+    "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "canceled_at": "1970-01-01T00:00:00Z",
+    "completed_at": "1970-01-01T00:00:00Z",
+    "created_at": "1970-01-01T00:00:00Z",
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "initiated_from": "system",
+    "portfolio_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "reason": "string",
+    "status": "QUEUED",
+    "type": "full_rebalance",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+Emitted when a portfolio run is created. `run` is the full run snapshot, without order lists.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|at|string(date-time)|true|none|Business time of the run creation.|
+|event_id|string(ulid)|true|none|none|
+|event_type|string|true|none|none|
+|run|[RebalancerEventRun](#schemarebalancereventrun)|true|none|Full run snapshot sent on `run.created` and `run.status_changed`. Order lists are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_type|run.created|
+
+<h2 id="tocS_RebalancerRunStatusChangedEvent">RebalancerRunStatusChangedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemarebalancerrunstatuschangedevent"></a>
+<a id="schema_RebalancerRunStatusChangedEvent"></a>
+<a id="tocSrebalancerrunstatuschangedevent"></a>
+<a id="tocsrebalancerrunstatuschangedevent"></a>
+
+```json
+{
+  "at": "1970-01-01T00:00:00Z",
+  "event_id": "string",
+  "event_type": "run.status_changed",
+  "run": {
+    "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "canceled_at": "1970-01-01T00:00:00Z",
+    "completed_at": "1970-01-01T00:00:00Z",
+    "created_at": "1970-01-01T00:00:00Z",
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "initiated_from": "system",
+    "portfolio_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "reason": "string",
+    "status": "QUEUED",
+    "type": "full_rebalance",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+Emitted when a portfolio run status changes. `run` is the same full snapshot sent on `run.created`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|at|string(date-time)|true|none|Business time of the run status transition.|
+|event_id|string(ulid)|true|none|none|
+|event_type|string|true|none|none|
+|run|[RebalancerEventRun](#schemarebalancereventrun)|true|none|Full run snapshot sent on `run.created` and `run.status_changed`. Order lists are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_type|run.status_changed|
 
 <h2 id="tocS_RebalancingConditions">RebalancingConditions</h2>
 <!-- backwards compatibility -->
@@ -28446,6 +29914,61 @@ Per-account agreements (`account_id` present):
 - etc_agreement
 - joint_account_agreement
 
+<h2 id="tocS_SimulatedIncomingWire">SimulatedIncomingWire</h2>
+<!-- backwards compatibility -->
+<a id="schemasimulatedincomingwire"></a>
+<a id="schema_SimulatedIncomingWire"></a>
+<a id="tocSsimulatedincomingwire"></a>
+<a id="tocssimulatedincomingwire"></a>
+
+```json
+{
+  "account_number": "123456789",
+  "amount": "1000",
+  "batch_processed_at": "0001-01-01T00:00:00Z",
+  "correspondent": "TEST",
+  "create_at": "2026-11-09T17:45:12.123456Z",
+  "currency": "USD",
+  "delay_until": null,
+  "id": "0b6c4a9e-2f4d-4b8a-9c1e-7f3d2a1b5c6d",
+  "status": "QUEUED",
+  "wire_instructions": "FFC TEST-123456789"
+}
+```
+
+A simulated incoming wire transfer created with `POST /v1/testing/incoming_wires`.
+
+Available in the sandbox environment only.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_number|string|true|none|Account number of the destination account.|
+|amount|string(decimal)|true|none|Amount of the incoming wire.|
+|batch_processed_at|string(date-time)|true|none|Not currently populated. Always returns the zero time `0001-01-01T00:00:00Z`.|
+|correspondent|string|true|none|Your 4-character correspondent code.|
+|create_at|string(date-time)|true|none|Timestamp when the incoming wire was created.|
+|currency|[Currency](#schemacurrency)|true|none|"USD" // US Dollar<br>"JPY" // Japanese Yen<br>"EUR" // Euro<br>"CAD" // Canadian Dollar<br>"GBP" // British Pound Sterling<br>"CHF" // Swiss Franc<br>"TRY" // Turkish Lira<br>"AUD" // Australian Dollar<br>"CZK" // Czech Koruna<br>"SEK" // Swedish Krona<br>"DKK" // Danish Krone<br>"SGD" // Singapore Dollar<br>"HKD" // Hong Kong Dollar<br>"HUF" // Hungarian Forint<br>"NZD" // New Zealand Dollar<br>"NOK" // Norwegian Krone<br>"PLN" // Poland Złoty|
+|delay_until|string \| null(date-time)|true|none|The `delay_until` value from the request, or `null` if none was sent. Not used to delay processing.|
+|id|string(uuid)|true|none|The incoming wire ID.|
+|status|[TransferStatus](#schematransferstatus)|true|none|- **QUEUED**<br>Transfer is in queue to be processed.<br>- **APPROVAL_PENDING**<br>Transfer is pending approval.<br>- **PENDING**<br>Transfer is pending processing.<br>- **SENT_TO_CLEARING**<br>Transfer is being processed by the clearing firm.<br>- **REJECTED**<br>Transfer is rejected.<br>- **CANCELED**<br>Client initiated transfer cancellation.<br>- **APPROVED**<br>Transfer is approved.<br>- **COMPLETE**<br>Transfer is completed.<br>- **RETURNED**<br>The bank issued an ACH return for the transfer.<br>|
+|wire_instructions|string|true|none|The `wire_instructions` value from the request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|QUEUED|
+|status|APPROVAL_PENDING|
+|status|PENDING|
+|status|SENT_TO_CLEARING|
+|status|REJECTED|
+|status|CANCELED|
+|status|APPROVED|
+|status|COMPLETE|
+|status|RETURNED|
+
 <h2 id="tocS_SkippedOrder">SkippedOrder</h2>
 <!-- backwards compatibility -->
 <a id="schemaskippedorder"></a>
@@ -28578,11 +30101,20 @@ Represents a change in a Funding entity's status, sent over the events streaming
 |at|string|true|none|Timestamp of when the transfer status changed|
 |correspondent|string(ABCD)|true|none|Correspondent's code|
 |entity_id|string(uuid)|true|none|Entity's UUID|
-|entity_type|string(uuid)|true|none|Valid values are BankRelationship, WireBank, Transfer and FundingWallet.|
+|entity_type|string|true|none|Type of funding entity that `entity_id` identifies.|
 |event_id|string(ulid)|true|none|lexically sortable, monotonically increasing character array|
 |reason|string|false|none|Used when an a bank relationship is rejected, a wire bank is canceled, etc.|
 |status_from|string|false|none|Valid values are based on entity type:<br>- BankRelationship:<br>  - QUEUED<br>  - CANCEL_REQUESTED<br>  - CANCEL_SENT<br>  - CANCEL_FAILED<br>  - PENDING<br>  - SENT_TO_CLEARING<br>  - APPROVED<br>  - CANCELED<br>  - REJECTED<br>- WireBank:<br>  - QUEUED<br>  - SENT_TO_CLEARING<br>  - APPROVED<br>  - CANCELED<br>  - REJECTED<br>- Transfer:<br>  - QUEUED<br>  - APPROVAL_PENDING<br>  - CANCELED<br>  - EXPIRED<br>  - APPROVED<br>  - REJECTED<br>  - SENT_TO_CLEARING<br>  - COMPLETE<br>  - RETURNED<br>- FundingWallet:<br>  - active<br>  - pending<br>|
 |status_to|string|true|none|Valid values are based on entity type:<br>- BankRelationship:<br>  - QUEUED<br>  - CANCEL_REQUESTED<br>  - CANCEL_SENT<br>  - CANCEL_FAILED<br>  - PENDING<br>  - SENT_TO_CLEARING<br>  - APPROVED<br>  - CANCELED<br>  - REJECTED<br>- WireBank:<br>  - QUEUED<br>  - SENT_TO_CLEARING<br>  - APPROVED<br>  - CANCELED<br>  - REJECTED<br>- Transfer:<br>  - QUEUED<br>  - APPROVAL_PENDING<br>  - CANCELED<br>  - EXPIRED<br>  - APPROVED<br>  - REJECTED<br>  - SENT_TO_CLEARING<br>  - COMPLETE<br>  - RETURNED<br>- FundingWallet:<br>  - active<br>  - pending<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|entity_type|BankRelationship|
+|entity_type|WireBank|
+|entity_type|Transfer|
+|entity_type|FundingWallet|
 
 <h2 id="tocS_StreetAddress">StreetAddress</h2>
 <!-- backwards compatibility -->
@@ -28642,142 +30174,247 @@ Represents that system event had occurred and sent over the events streaming api
 "USA_SSN"
 ```
 
-An Enum of the various kinds of Tax ID formats Alpaca supports.
+The type of the tax ID or other government-issued identification number.
 
-Possible Values are:
+Each country-specific type is meant for accounts whose `country_of_tax_residence` is the country it is named after, and some are also meant for that country's associated jurisdictions, such as its territories. For correspondents with strict tax ID validation, the type must match `country_of_tax_residence` and be supported in the account's booking center, so a listed type can still be rejected when the account is validated. The "for individuals" and "for entities" notes describe who each type is typically issued to, and aren't checked when the account is validated.
 
+Possible values are:
 
-- **USA_SSN**
-USA Social Security Number
-
-- **USA_ITIN**
-USA Individual Taxpayer Identification Number
-
-- **ARG_AR_CUIT**
-Argentina CUIT
-
-- **AUS_TFN**
-Australian Tax File Number
-
-- **AUS_ABN**
-Australian Business Number
-
-- **BOL_NIT**
-Bolivia NIT
-
-- **BRA_CPF**
-Brazil CPF
-
-- **CHL_RUT**
-Chile RUT
-
-- **COL_NIT**
-Colombia NIT
-
-- **CRI_NITE**
-Costa Rica NITE
-
-- **DEU_TAX_ID**
-Germany Tax ID (Identifikationsnummer)
-
-- **DOM_RNC**
-Dominican Republic RNC
-
-- **ECU_RUC**
-Ecuador RUC
-
-- **FRA_SPI**
-France SPI (Reference Tax Number)
-
-- **GBR_UTR**
-UK UTR (Unique Taxpayer Reference)
-
-- **GBR_NINO**
-UK NINO (National Insurance Number)
-
-- **GTM_NIT**
-Guatemala NIT
-
-- **HND_RTN**
-Honduras RTN
-
-- **HUN_TIN**
-Hungary TIN Number
-
-- **IDN_KTP**
-Indonesia KTP
-
-- **IND_PAN**
-India PAN Number
-
-- **ISR_TAX_ID**
-Israel Tax ID (Teudat Zehut)
-
-- **ITA_TAX_ID**
-Italy Tax ID (Codice Fiscale)
-
-- **JPN_TAX_ID**
-Japan Tax ID (Kojin Bango)
-
-- **MEX_RFC**
-Mexico RFC
-
-- **NIC_RUC**
-Nicaragua RUC
-
-- **NLD_TIN**
-Netherlands TIN Number
-
-- **PAN_RUC**
-Panama RUC
-
-- **PER_RUC**
-Peru RUC
-
-- **PRY_RUC**
-Paraguay RUC
-
-- **SGP_NRIC**
-Singapore NRIC
-
-- **SGP_FIN**
-Singapore FIN
-
-- **SGP_ASGD**
-Singapore ASGD
-
-- **SGP_ITR**
-Singapore ITR
-
-- **SLV_NIT**
-El Salvador NIT
-
-- **SWE_TAX_ID**
-Sweden Tax ID (Personnummer)
-
-- **URY_RUT**
-Uruguay RUT
-
-- **VEN_RIF**
-Venezuela RIF
-
-- **NATIONAL_ID**
-National ID number, if a tax ID number is not available
-
-- **PASSPORT**
-Passport number, if a tax ID number is not available
-
-- **PERMANENT_RESIDENT**
-Permanent resident number, if a tax ID number is not available
-
-- **DRIVER_LICENSE**
-Driver's license number, if a tax ID number is not available
-
-- **OTHER_GOV_ID**
-Other government issued identifier, if a tax ID number is not available
-
-- **NOT_SPECIFIED**
-Other Tax IDs
+- **USA_SSN**: USA SSN (Social Security Number), for individuals
+- **USA_EIN**: USA EIN (Employer Identification Number), for entities
+- **USA_ITIN**: USA ITIN (Individual Taxpayer Identification Number), for individuals
+- **USA_TIN**: USA TIN (Taxpayer Identification Number), for entities
+- **ABW_PN**: Aruba Persoonsnummer (Aruba TIN), for individuals and entities
+- **AGO_NIF**: Angola NIF (Número de Identificação Fiscal), for individuals and entities
+- **ALB_NIPT**: Albania NIPT (Numri i Identifikimit të Personit të Tatueshëm), for individuals and entities
+- **AND_NRT**: Andorra NRT (Número de Registre Tributari), for individuals and entities
+- **ARE_EID**: UAE Emirates ID, for individuals
+- **ARE_TRN**: UAE TRN (Tax Registration Number), for entities
+- **ARG_AG_CUIT**: Legacy value for an Argentina CUIT. Use `ARG_AR_CUIT` instead.
+- **ARG_AR_CUIT**: Argentina CUIT (Clave Única de Identificación Tributaria), for individuals and entities
+- **ARM_SSN**: Armenia SSN (Social Security Number), for individuals
+- **ARM_TIN**: Armenia TIN (Tax Identification Number), for entities
+- **AUS_ABN**: Australia ABN (Australian business number), for entities
+- **AUS_TFN**: Australia TFN (Tax File Number), for individuals and entities
+- **AUT_UID**: Austria UID-Nummer (VAT Identification Number), for entities
+- **AUT_VNR**: Austria Versicherungsnummer (Social Insurance Number), for individuals
+- **AZE_FIN**: Azerbaijan FIN (Fərdi İdentifikasiya Nömrəsi), for individuals
+- **AZE_VOEN**: Azerbaijan VÖEN (Tax Identification Number), for entities
+- **BEL_BCE**: Belgium BCE/KBO (Enterprise Number), for entities
+- **BEL_NN**: Belgium NN (Numéro National / Rijksregisternummer), for individuals
+- **BEN_IFU**: Benin IFU (Identifiant Fiscal Unique), for individuals and entities
+- **BFA_IFU**: Burkina Faso IFU (Identifiant Financier Unique), for individuals and entities
+- **BGD_TIN**: Bangladesh TIN (Tax Identification Number), for individuals and entities
+- **BGR_EGN**: Bulgaria EGN (Edinen Grazhdanski Nomer), for individuals
+- **BGR_EIK**: Bulgaria EIK/BULSTAT (Entity Identification Code), for entities
+- **BHR_CPR**: Bahrain CPR (Central Population Registry), for individuals
+- **BIH_JMBG**: Bosnia and Herzegovina JMBG (Jedinstveni Matični Broj Građana), for individuals
+- **BLR_ID**: Belarus Personal Identification Number, for individuals
+- **BLR_UNP**: Belarus UNP (Uchyotny Nomer Platelshchika), for entities
+- **BLZ_TIN**: Belize TIN (Tax Identification Number), for individuals and entities
+- **BOL_NIT**: Bolivia NIT (Número de Identificación Tributaria), for individuals and entities
+- **BRA_CNPJ**: Brazil CNPJ (Cadastro Nacional da Pessoa Jurídica), for entities
+- **BRA_CPF**: Brazil CPF (Cadastro de Pessoas Físicas), for individuals
+- **BRB_TIN**: Barbados TIN (Tax Identification Number), for individuals and entities
+- **BTN_TPN**: Bhutan TPN (Taxpayer Number), for individuals and entities
+- **BWA_TIN**: Botswana TIN (Tax Identification Number), for individuals and entities
+- **CAN_BN**: Canada BN (Business Number), for entities
+- **CAN_SIN**: Canada SIN (Social Insurance Number), for individuals
+- **CHE_AHV**: Switzerland AHV/AVS (Social Insurance Number), for individuals
+- **CHE_UID**: Switzerland UID (Unternehmens-Identifikationsnummer), for entities
+- **CHL_RUT**: Chile RUT (Rol Único Tributario), for individuals and entities
+- **CHN_RID**: China Resident Identity Card Number (居民身份证号码), for individuals
+- **CHN_USCC**: China USCC (Unified Social Credit Code / 统一社会信用代码), for entities
+- **CIV_NCC**: Côte d'Ivoire NCC (Numéro de Compte Contribuable), for individuals and entities
+- **CMR_NIU**: Cameroon NIU (Numéro d'Identifiant Unique), for individuals and entities
+- **COK_RMD**: Cook Islands RMD Number (Revenue Management Division), for individuals and entities
+- **COL_CC**: Colombia CC (Cédula de Ciudadanía), for individuals
+- **COL_CE**: Colombia CE (Cédula de Extranjería), for individuals
+- **COL_NIT**: Colombia NIT (Número de Identificación Tributaria), for individuals and entities
+- **COL_NUIP**: Colombia NUIP (Número Único de Identificación Personal), for individuals
+- **COL_PPT**: Colombia PPT (Permiso por Protección Temporal), for individuals
+- **CPV_NIF**: Cabo Verde NIF (Número de Identificação Fiscal), for individuals and entities
+- **CRI_CJ**: Costa Rica Cédula Jurídica (Legal Entity ID), for entities
+- **CRI_DIMEX**: Costa Rica DIMEX (Documento de Identificación Migratorio para Extranjeros), for individuals
+- **CRI_NITE**: Costa Rica NITE (Número de Identificación Tributaria Especial), for individuals and entities
+- **CRI_PIN**: Costa Rica Personal Identification Number (PIN), for individuals
+- **CUW_CRIB**: Curaçao CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities
+- **CYP_TIC**: Cyprus TIC (Tax Identification Code), for individuals and entities
+- **CZE_TIN**: Czech Republic TIN (Tax Identification Number), for individuals and entities
+- **DEU_TAX_ID**: Germany Tax ID (Identifikationsnummer), for individuals
+- **DEU_UST_ID**: Germany USt-IdNr (Umsatzsteuer-Identifikationsnummer), for entities
+- **DNK_CPR**: Denmark CPR-nummer (Det Centrale Personregister), for individuals
+- **DNK_CVR**: Denmark CVR-nummer (Det Centrale Virksomhedsregister), for entities
+- **DOM_CED**: Dominican Republic Cédula de Identidad y Electoral, for individuals
+- **DOM_RNC**: Dominican Republic RNC (Registro Nacional del Contribuyente), for entities
+- **DZA_NIF**: Algeria NIF (Numéro d'Identification Fiscale), for individuals and entities
+- **ECU_RUC**: Ecuador RUC (Registro Unico de Contribuyentes), for individuals and entities
+- **EGY_NID**: Egypt National ID Number, for individuals
+- **EGY_TRN**: Egypt Tax Registration Number, for entities
+- **ESP_DNI**: Spain DNI (Documento Nacional de Identidad), for individuals
+- **ESP_NIE**: Spain NIE (Número de Identidad de Extranjero), for individuals
+- **ESP_NIF**: Spain NIF (Número de Identificación Fiscal), for individuals and entities
+- **EST_IK**: Estonia Isikukood (Personal Identification Code), for individuals
+- **EST_RC**: Estonia Registrikood (Registry Code), for entities
+- **ETH_TIN**: Ethiopia TIN (Tax Identification Number), for individuals and entities
+- **FIN_HETU**: Finland HETU (Henkilötunnus), for individuals
+- **FIN_YTU**: Finland Y-tunnus (Business ID), for entities
+- **FJI_TIN**: Fiji TIN (Tax Identification Number), for individuals and entities
+- **FRA_SIREN**: France SIREN (Business tax ID), for entities
+- **FRA_SPI**: France SPI (Reference tax number), for individuals
+- **GAB_NIF**: Gabon NIF (Numéro d'Identification Fiscale), for individuals and entities
+- **GBR_CRN**: UK CRN (Companies House Registration Number), for entities
+- **GBR_NINO**: UK NINO (National Insurance Number), for individuals
+- **GBR_UTR**: UK UTR (Unique Taxpayer Reference), for individuals and entities
+- **GEO_PID**: Georgia Personal Identification Number, for individuals
+- **GEO_TIN**: Georgia TIN (Tax Identification Number), for entities
+- **GHA_TIN**: Ghana TIN (Tax Identification Number), for individuals and entities
+- **GRC_AFM**: Greece AFM (Arithmos Forologikou Mitroou), for individuals and entities
+- **GTM_NIT**: Guatemala NIT (Número de Identificación Tributaria), for individuals and entities
+- **HKG_BRN**: Hong Kong BRN (Business Registration Number), for entities
+- **HKG_HKID**: Hong Kong HKID (Hong Kong Identity Card), for individuals
+- **HND_RTN**: Honduras RTN (Registro Tributario Nacional), for individuals and entities
+- **HRV_OIB**: Croatia OIB (Osobni Identifikacijski Broj), for individuals
+- **HTI_NIF**: Haiti NIF (Numéro d'Identification Fiscale), for individuals and entities
+- **HUN_ENT**: Hungary Adószám (Entity Tax Number), for entities
+- **HUN_TIN**: Hungary TIN (Tax Identification Number), for individuals
+- **IDN_KTP**: Indonesia KTP (Indonesian Identity Card), for individuals
+- **IDN_NWPW**: Indonesia NPWP (Nomor Pokok Wajib Pajak), for individuals and entities. The code is spelled `IDN_NWPW`, not `IDN_NPWP`.
+- **IND_GSTIN**: India GSTIN (Goods and Services Tax Identification Number), for entities
+- **IND_PAN**: India PAN (Permanent Account Number), for individuals
+- **IRL_CRO**: Ireland CRO (Companies Registration Office Number), for entities
+- **IRL_PPS**: Ireland PPS (Personal Public Service Number), for individuals
+- **IRN_NID**: Iran National ID (Kode Melli), for individuals
+- **ISL_KT**: Iceland Kennitala (National Identification Number), for individuals
+- **ISR_CORP**: Israel Company Number (Mispar Chevra), for entities
+- **ISR_TAX_ID**: Israel Tax ID (Teudat Zehut), for individuals
+- **ITA_PIVA**: Italy Partita IVA (VAT Number), for entities
+- **ITA_TAX_ID**: Italy Tax ID (Codice fiscale), for individuals
+- **JAM_TRN**: Jamaica TRN (Taxpayer Registration Number), for individuals and entities
+- **JOR_NID**: Jordan National ID Number, for individuals
+- **JPN_CORP**: Japan Corporate Number (法人番号), for entities
+- **JPN_TAX_ID**: Japan Tax ID (kojin bango), for individuals
+- **KAZ_BIN**: Kazakhstan BIN (Business Identification Number), for entities
+- **KAZ_IIN**: Kazakhstan IIN (Individual Identification Number), for individuals
+- **KEN_KRA_PIN**: Kenya KRA PIN (Kenya Revenue Authority PIN), for individuals and entities
+- **KGZ_INN**: Kyrgyzstan INN (Individual Tax Number), for individuals
+- **KHM_NID**: Cambodia National ID Number, for individuals
+- **KOR_BRN**: South Korea BRN (Business Registration Number), for entities
+- **KOR_RRN**: South Korea RRN (Resident Registration Number), for individuals
+- **KWT_CID**: Kuwait Civil ID Number, for individuals
+- **LBN_TIN**: Lebanon TIN (Tax Identification Number), for individuals and entities
+- **LKA_NIC**: Sri Lanka NIC (National Identity Card), for individuals
+- **LKA_TIN**: Sri Lanka TIN (Tax Identification Number), for entities
+- **LTU_AK**: Lithuania Asmens Kodas (Personal Code), for individuals
+- **LTU_JAK**: Lithuania Juridinio Asmens Kodas (Legal Entity Code), for entities
+- **LUX_NIN**: Luxembourg Matricule (National Identification Number), for individuals
+- **LUX_TVA**: Luxembourg Numéro TVA (VAT Number), for entities
+- **LVA_PK**: Latvia Personas Kods (Personal Code), for individuals
+- **LVA_REG**: Latvia Reģistrācijas Numurs (Registration Number), for entities
+- **MAC_TIN**: Macao Taxpayer Number, for individuals and entities
+- **MAR_CIN**: Morocco CIN (Carte d'Identité Nationale), for individuals
+- **MAR_ICE**: Morocco ICE (Identifiant Commun de l'Entreprise), for entities
+- **MDA_IDNO**: Moldova IDNO (State Identification Number of Entity), for entities
+- **MDA_IDNP**: Moldova IDNP (Personal Identification Number), for individuals
+- **MEX_CURP**: Mexico CURP (Clave Única de Registro de Población), for individuals
+- **MEX_RFC**: Mexico RFC (Registro Federal de Contribuyentes), for individuals and entities
+- **MKD_EDB**: North Macedonia EDB (Unique Tax Number), for entities
+- **MKD_EMBG**: North Macedonia EMBG (Unique Master Citizen Number), for individuals
+- **MLI_NIF**: Mali NIF (Numéro d'Identification Fiscale), for individuals and entities
+- **MLT_ID**: Malta Identity Card Number, for individuals
+- **MLT_VAT**: Malta VAT Number, for entities
+- **MNE_JMBG**: Montenegro Unique Master Citizen Number, for individuals
+- **MNE_PIB**: Montenegro PIB (Tax Identification Number), for entities
+- **MNG_RD**: Mongolia Register Number, for individuals
+- **MOZ_NUIT**: Mozambique NUIT (Tax Identification Number), for individuals and entities
+- **MUS_NID**: Mauritius National Identity Card Number, for individuals
+- **MUS_TAN_ENT**: Mauritius TAN (Entity Tax Account Number), for entities
+- **MUS_TAN_IND**: Mauritius TAN (Individual Tax Account Number), for individuals
+- **MWI_TPIN**: Malawi TPIN (Taxpayer Identification Number), for individuals and entities
+- **MYS_MYKAD**: Malaysia MyKad (National Registration Identity Card), for individuals
+- **MYS_ROC**: Malaysia ROC (Companies Commission Registration Number), for entities
+- **NAM_TIN**: Namibia TIN (Tax Identification Number), for individuals and entities
+- **NGA_NIN**: Nigeria NIN (National Identification Number), for individuals
+- **NGA_TIN**: Nigeria TIN (Tax Identification Number), for entities
+- **NIC_RUC**: Nicaragua RUC (Registro Unico de Contribuyentes), for individuals and entities
+- **NLD_BTW**: Netherlands Btw-identificatienummer (btw-id), for entities
+- **NLD_KVK**: Netherlands KVK (Kamer van Koophandel), for entities
+- **NLD_OBN**: Netherlands Omzetbelastingnummer (ob-nummer), for entities
+- **NLD_TIN**: Netherlands BSN (Burgerservicenummer), for individuals
+- **NOR_FNR**: Norway Fødselsnummer (National Identity Number), for individuals
+- **NOR_ORG**: Norway Organisasjonsnummer (Organisation Number), for entities
+- **NPL_PAN**: Nepal PAN (Permanent Account Number), for individuals and entities
+- **NZL_IRD**: New Zealand IRD Number (Inland Revenue Department), for individuals and entities
+- **NZL_NZBN**: New Zealand NZBN (New Zealand Business Number), for entities
+- **OMN_CID**: Oman Civil ID Number, for individuals
+- **PAK_NIC**: Pakistan NIC (National Identity Card), for individuals
+- **PAK_NTN**: Pakistan NTN (National Tax Number), for individuals and entities
+- **PAN_RUC**: Panama RUC (Registro Unico de Contribuyentes), for individuals and entities
+- **PER_RUC**: Peru RUC (Registro Unico de Contribuyentes), for individuals and entities
+- **PHL_TIN**: Philippines TIN (Tax Identification Number), for individuals and entities
+- **POL_NIP**: Poland NIP (Numer Identyfikacji Podatkowej), for entities
+- **POL_PESEL**: Poland PESEL (Polish National Identification Number), for individuals
+- **PRT_NIF**: Portugal NIF (Número de Identificação Fiscal), for individuals and entities
+- **PRY_RUC**: Paraguay RUC (Registro Unico de Contribuyentes), for individuals and entities
+- **QAT_QID**: Qatar QID (Qatar Identity Number), for individuals
+- **ROU_CNP**: Romania CNP (Cod Numeric Personal), for individuals
+- **ROU_CUI**: Romania CUI (Cod Unic de Înregistrare), for entities
+- **RUS_INN_ENT**: Russia INN (Entity Tax Number), for entities
+- **RUS_INN_IND**: Russia INN (Individual Tax Number), for individuals
+- **RWA_TIN**: Rwanda TIN (Tax Identification Number), for individuals and entities
+- **SAU_TIN**: Saudi Arabia TIN (Tax Identification Number), for individuals and entities
+- **SAU_VAT**: Saudi Arabia VAT Registration Number, for entities
+- **SEN_NINEA**: Senegal NINEA (Numéro d'Identification Nationale des Entreprises), for entities
+- **SGP_ASGD**: Singapore ASGD, for individuals
+- **SGP_FIN**: Singapore FIN, for individuals
+- **SGP_ITR**: Singapore ITR, for individuals and entities
+- **SGP_NRIC**: Singapore NRIC, for individuals
+- **SGP_UEN**: Singapore UEN (Unique Entity Number), for entities
+- **SLV_NIT**: El Salvador NIT (Número de Identificación Tributaria), for individuals and entities
+- **SRB_JMBG**: Serbia JMBG (Unique Master Citizen Number), for individuals
+- **SRB_PIB**: Serbia PIB (Tax Identification Number), for entities
+- **SVK_ICO**: Slovakia IČO (Identification Number of Organisation), for entities
+- **SVK_TIN**: Slovakia TIN (Tax Identification Number), for individuals
+- **SVN_DAS**: Slovenia Davčna Številka (Tax Number), for individuals and entities
+- **SVN_MS**: Slovenia Matična Številka (Registration Number), for entities
+- **SWE_ORG**: Sweden Organisationsnummer (Organisation Number), for entities
+- **SWE_TAX_ID**: Sweden Tax ID (Personnummer), for individuals
+- **SWZ_TIN**: Eswatini TIN (Tax Identification Number), for individuals and entities
+- **SXM_CRIB**: Sint Maarten CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities
+- **SYR_TIN**: Syria TIN (Tax Identification Number), for individuals and entities
+- **THA_NID**: Thailand National ID Card Number (เลขประจำตัวประชาชน), for individuals
+- **THA_TIN**: Thailand Tax ID (เลขประจำตัวผู้เสียภาษี), for entities
+- **TJK_TIN**: Tajikistan TIN (Tax Identification Number), for individuals and entities
+- **TTO_BIR**: Trinidad and Tobago BIR (Board of Inland Revenue File Number), for individuals and entities
+- **TUN_CIN**: Tunisia CIN (Carte d'Identité Nationale), for individuals
+- **TUN_MF**: Tunisia Matricule Fiscal (Tax Identification Number), for entities
+- **TUR_TIN**: Turkey TIN (Tax Identification Number), for individuals and entities
+- **TWN_GUI**: Taiwan GUI (Unified Business Number / 統一編號), for entities
+- **TWN_NID**: Taiwan National ID Number (身分證字號), for individuals
+- **TZA_TIN**: Tanzania TIN (Tax Identification Number), for individuals and entities
+- **UGA_TIN**: Uganda TIN (Tax Identification Number), for individuals and entities
+- **UKR_EDRPOU**: Ukraine EDRPOU (Entity Identification Code), for entities
+- **UKR_RNTRC**: Ukraine RNTRC (Individual Tax Number), for individuals
+- **URY_CI**: Uruguay CI (Cédula de Identidad), for individuals
+- **URY_RUT**: Uruguay RUT (Rol Único Tributario), for entities
+- **UZB_INN**: Uzbekistan INN (Entity Tax Number), for entities
+- **UZB_PINFL**: Uzbekistan PINFL (Personal Identification Number), for individuals
+- **VEN_RIF**: Venezuela RIF (Registro de Información Fiscal), for individuals and entities
+- **VNM_MST_BRN**: Vietnam MST Branch (Mã số thuế đơn vị phụ thuộc), for entities
+- **VNM_MST_CORP**: Vietnam MST Enterprise (Mã số thuế doanh nghiệp), for individuals and entities
+- **VNM_MST_PIN**: Vietnam PIN (Personal identification number / Số định danh cá nhân), for individuals
+- **WSM_TIN**: Samoa TIN (Tax Identification Number), for individuals and entities
+- **XXK_PID**: Kosovo Personal Identification Number, for individuals
+- **ZAF_CRN**: South Africa Company Registration Number, for entities
+- **ZAF_ID**: South African ID Number, for individuals
+- **ZMB_TPIN**: Zambia TPIN (Taxpayer Identification Number), for individuals and entities
+- **ZWE_TIN**: Zimbabwe TIN (Tax Identification Number), for individuals and entities
+- **NATIONAL_ID**: National ID number, if a tax ID number is not available
+- **PASSPORT**: Passport number, if a tax ID number is not available
+- **PERMANENT_RESIDENT**: Permanent resident number, if a tax ID number is not available
+- **DRIVER_LICENSE**: Driver's license number, if a tax ID number is not available
+- **OTHER_GOV_ID**: Other government issued identifier, if a tax ID number is not available
+- **NOT_SPECIFIED**: Other Tax IDs
 
 <h2 id="tocS_TenderOfferActivityV2">TenderOfferActivityV2</h2>
 <!-- backwards compatibility -->
@@ -28911,6 +30548,7 @@ The tokenized asset's issuer
 
 ```json
 {
+  "client_request_id": "string",
   "issuer": "xstocks",
   "network": "solana",
   "qty": "string",
@@ -28923,6 +30561,7 @@ The tokenized asset's issuer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|client_request_id|string|false|none|Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.<br><br>Must be at most 128 printable ASCII characters with no leading or trailing whitespace.|
 |issuer|[TokenizationIssuer](#schematokenizationissuer)|true|none|The tokenized asset's issuer|
 |network|[TokenizationNetwork](#schematokenizationnetwork)|true|none|The token's blockchain network|
 |qty|string|true|none|The underlying quantity to convert into the tokenized asset. It can be fractional.|
@@ -28934,8 +30573,10 @@ The tokenized asset's issuer
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -28960,6 +30601,7 @@ The tokenized asset's issuer
 
 ```json
 {
+  "client_request_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "issuer": "xstocks",
   "network": "solana",
@@ -28975,6 +30617,7 @@ The tokenized asset's issuer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|client_request_id|string|false|none|The `client_request_id` supplied on the mint request. Omitted when none was supplied.|
 |created_at|string(date-time)|true|none|none|
 |issuer|[TokenizationIssuer](#schematokenizationissuer)|true|none|The tokenized asset's issuer|
 |network|[TokenizationNetwork](#schematokenizationnetwork)|true|none|The token's blockchain network|
@@ -28989,8 +30632,10 @@ The tokenized asset's issuer
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -29120,8 +30765,10 @@ The token's blockchain network
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -29200,8 +30847,10 @@ The token's blockchain network
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -29500,6 +31149,19 @@ Extra data has been added that would be useful for brokers.
 
 Side of the fill on a trade activity. Includes `sell_short` when the fill short-sells. Distinct from `OrderSide`, which is only `buy` / `sell` for order requests and responses.
 
+<h2 id="tocS_TradeMarker">TradeMarker</h2>
+<!-- backwards compatibility -->
+<a id="schematrademarker"></a>
+<a id="schema_TradeMarker"></a>
+<a id="tocStrademarker"></a>
+<a id="tocstrademarker"></a>
+
+```json
+"discretionary"
+```
+
+How trades for a rebalancing subscription are marked. `discretionary` sends those orders as discretion exercised. `unsolicited` leaves them unmarked.
+
 <h2 id="tocS_TradeUpdateEventType">TradeUpdateEventType</h2>
 <!-- backwards compatibility -->
 <a id="schematradeupdateeventtype"></a>
@@ -29566,6 +31228,7 @@ These are events that may rarely be sent due to unexpected circumstances on the 
   "execution_id": "string",
   "legs": [
     {
+      "commission": "0.65",
       "execution_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "order_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "price": "string",
@@ -29687,7 +31350,7 @@ Represents an update to an order/trade, sent over the events streaming api.
 |event|[TradeUpdateEventType](#schematradeupdateeventtype)|false|none|**Common events**<br><br>These are the events that are the expected results of actions you may have taken by sending API requests.<br><br>The meaning of the `timestamp` field changes for each type; the meanings have been specified here for which types the<br>timestamp field will be present.<br><br>- `accepted`: Sent when an order is received and accepted by Alpaca.<br>- `new`: Sent when an order has been routed to exchanges for execution.<br>- `fill`: Sent when your order has been completely filled.<br>  - `timestamp`: The time at which the order was filled.<br>- `partial_fill`: Sent when a number of shares less than the total remaining quantity on your order has been filled.<br>  - `timestamp`: The time at which the shares were filled.<br>- `canceled`: Sent when the order transitions to the `canceled` state. This can be triggered by a user-submitted cancel request, by Alpaca as part of automated processing (e.g. corporate-action sweeps, aged-GTC expiration, overnight-session lifecycle), or by an upstream execution venue. When Alpaca populates a machine-readable cause, it is exposed on the top-level `reason` field — see the `reason` property on `TradeUpdateEventV2` for known values (e.g. `CORPORATE_ACTION`).<br>  - `timestamp`: The time at which the order was canceled.<br>- `expired`: Sent when an order has reached the end of its lifespan, as determined by the order's time in force value.<br>  - `timestamp`: The time at which the order expired.<br>- `done_for_day`: Sent when the order is done executing for the day, and will not receive further updates until the next trading day.<br>- `replaced`: Sent when your requested replacement of an order is processed.<br>  - `timestamp`: The time at which the order was replaced.<br><br>**Rarer events**<br><br>These are events that may rarely be sent due to unexpected circumstances on the exchanges. It is unlikely you will need to design your code around them, but you may still wish to account for the possibility that they will occur.<br><br>- `rejected`: Sent when your order has been rejected.<br>  - `timestamp`: The time at which the rejection occurred.<br>- `pending_new`: Sent when the order has been received by Alpaca and routed to the exchanges, but has not yet been accepted for execution.<br>- `stopped`: Sent when your order has been stopped, and a trade is guaranteed for the order, usually at a stated price or better, but has not yet occurred.<br>- `pending_cancel`: Sent when the order is awaiting cancellation. Most cancellations will occur without the order entering this state.<br>- `pending_replace`: Sent when the order is awaiting replacement.<br>- `calculated`: Sent when the order has been completed for the day - it is either `filled` or `done_for_day` - but remaining settlement calculations are still pending.<br>- `suspended`: Sent when the order has been suspended and is not eligible for trading.<br>- `order_replace_rejected`: Sent when the order replace has been rejected.<br>- `order_cancel_rejected`: Sent when the order cancel has been rejected.<br>- `trade_bust`: Sent when a previously reported execution has been canceled ("busted") by the upstream exchange.<br>- `trade_correct`: Sent when a previously reported trade has been corrected. For example, the exchange may have updated the price, quantity, or another execution parameter after the trade was initially reported.<br>- `restated`: Sent when the order is manually modified.<br>|
 |event_id|string(ulid)|false|none|lexically sortable, monotonically increasing character array|
 |execution_id|string(uui)|false|none|Corresponding execution of an order. If an order gets filled over two executions (a partial_fill for example), you will receive two events with different IDs.<br>Not present for `MultilegOptions`<br>|
-|legs|[[TradeUpdateEventV2Leg](#schematradeupdateeventv2leg)]|false|none|Only present when event is for `MultilegOptions`. Represents filled qty/price of legs.<br>|
+|legs|[[TradeUpdateEventV2Leg](#schematradeupdateeventv2leg)]|false|none|Only present when event is for `MultilegOptions`. Represents filled qty/price and commission of legs.<br>|
 |order|[Order](#schemaorder)|false|none|none|
 |position_qty|string|false|none|Only present when event is either `fill` or `partial_fill` other than `MultilegOptions`. The size of your total position, after this fill event, in shares. Positive for long positions, negative for short positions.<br>|
 |position_qtys|string|false|none|Only present when event is either `fill` or `partial_fill` for `MultilegOptions`. The size of your total position, after this fill event, in shares. Positive for long positions, negative for short positions.<br>|
@@ -29732,6 +31395,7 @@ Represents an update to an order/trade, sent over the events streaming api.
 
 ```json
 {
+  "commission": "0.65",
   "execution_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "order_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "price": "string",
@@ -29741,12 +31405,13 @@ Represents an update to an order/trade, sent over the events streaming api.
 }
 ```
 
-Represents filled qty/price of legs.
+Represents filled qty/price and commission of legs.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|commission|string(decimal)|false|none|The commission charged on this leg's execution. On a `trade_bust` event it is negative, refunding the busted execution's commission.<br><br>Omitted when the execution carries no commission, such as on an equity leg. A zero commission is sent as `"0"`.<br><br>A later event can list the same execution again, so key commissions by `execution_id` instead of adding up every event.|
 |execution_id|string(uuid)|false|none|Corresponding execution of an order. If an order gets filled over two executions (a partial_fill for example), you will receive two events with different IDs.|
 |order_id|string(uuid)|false|none|Order UUID|
 |price|string|false|none|The average price per share for this event.|
@@ -29894,7 +31559,7 @@ Funds outgoing from user's account (withdrawal).
 ```json
 {
   "amount": "string",
-  "currency": "string",
+  "currency": "USD",
   "payment_type": "invoice",
   "type": "withdrawal_fee"
 }
@@ -30690,6 +32355,8 @@ Unit split
 Represents the fields that are editable in an order replace/update call.
 
 Note: client_order_id is currently not editable on its own, one of the other fields must be changed at the same time to effectively replace the order.
+
+Note: `commission`, `commission_type`, and `commission_bps` are not editable. They are ignored on a replace request and have no effect.
 
 Note: `qty` and `notional` are mutually exclusive on a single replace request. `notional` is only valid for IPO indications of interest (`asset_class: "ipo"`); non-IPO notional orders cannot be replaced at all.
 

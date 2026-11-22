@@ -1038,7 +1038,7 @@ const SubscriptionSchema = z
               }),
             description: z
               .string()
-              .max(500)
+              .max(2000)
               .exactOptional()
               .openapi({
                 deprecated: false,
@@ -1717,6 +1717,11 @@ const SubscriptionSchema = z
                   'The name of the discount as it should appear on customer-facing pages and documents such as [invoices](/docs/api/invoices)\nand [hosted pages](/docs/api/hosted_pages).\nThis is auto-generated based on the `type`\n, `amount`\n, and `currency_code`\nof the discount. For example, it can be `10% off`\nor `10$ off`\n.\n',
                 example: null,
               }),
+            description: z
+              .string()
+              .max(100)
+              .exactOptional()
+              .openapi({ deprecated: false, example: null }),
             type: z
               .enum(['fixed_amount', 'percentage', 'offer_quantity'])
               .default('percentage')
@@ -6344,6 +6349,46 @@ const BillingDayOfWeekModeSchema = z
   .openapi({ deprecated: false, example: null })
   .openapi('BillingDayOfWeekMode')
 
+const BillingLineItemSchema = z
+  .object({
+    id: z.string().max(40).exactOptional().openapi({ deprecated: false, example: null }),
+    invoice_number: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    quantity: z.number().exactOptional().openapi({ deprecated: false, example: null }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('BillingLineItem')
+
+const BillingMetadataSchema = z
+  .object({
+    item_price_id: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.string().max(40).exactOptional().openapi({ deprecated: false, example: null }),
+            invoice_number: z
+              .string()
+              .max(50)
+              .exactOptional()
+              .openapi({ deprecated: false, example: null }),
+            quantity: z.number().exactOptional().openapi({ deprecated: false, example: null }),
+          })
+          .openapi({ deprecated: false, example: null, required: [] }),
+      )
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('BillingMetadata')
+
 const BillingMetricBreakdownSchema = z
   .object({
     line_item_code: z.string().max(100).openapi({ deprecated: false, example: null }),
@@ -7139,7 +7184,7 @@ const BusinessRuleSchema = z
   })
   .openapi({
     description:
-      'A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.\n\nBusiness Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).\n\nThe condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).\n\nThe `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.\n\nBusiness rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.\n\nThe `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.\n\nRelated rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset\'s `execute_mode`.\n\nFor a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  \n**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.\n\nExpressions\n-----------\n\nThe `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.\n\nThe following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:\n\n```json\n{\n  "type": "GROUP",\n  "operation": "AND",\n  "children": [\n    {\n      "type": "CONDITION",\n      "field": "customer.language",\n      "operator": "CONTAINS",\n      "value": "en"\n    },\n    {\n      "type": "CONDITION",\n      "field": "quote.shipping_address_country",\n      "operator": "ANY_OF",\n      "values": ["IN", "US"]\n    }\n  ]\n}\n```\n\nEvery condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn\'t carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  \n\n### GROUP node\n\nCombines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.\n\n* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.\n* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.\n\n```json\n{\n  "type": "GROUP",\n  "operation": "OR",\n  "children": [\n    {\n      "type": "CONDITION",\n      "field": "quote.payment_terms",\n      "operator": "GREATER_THAN",\n      "value": 30\n    },\n    {\n      "type": "CONDITION",\n      "field": "customer.billing_address_country",\n      "operator": "EQUALS",\n      "value": "US"\n    }\n  ]\n}\n```\n\n### CONDITION node\n\nCompares one field of the context against a value.\n\n* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.\n* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.\n* `value`: The single value to compare against. Required for the single-value operators.\n* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.\n\n```json\n{\n  "type": "CONDITION",\n  "field": "quote.contract_duration",\n  "operator": "BETWEEN",\n  "values": [12, 36]\n}\n```\n\n### COLLECTION node\n\nTests the entries of an array in the context, such as the line items of a quote. All four fields are required.\n\n* `field`: **Required.** The array to iterate over, such as `items`.\n* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.\n* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.\n* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.\n\nInside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:\n\n```json\n{\n  "type": "COLLECTION",\n  "field": "items",\n  "variable": "item",\n  "mode": "ANY",\n  "predicate": {\n    "type": "GROUP",\n    "operation": "AND",\n    "children": [\n      {\n        "type": "CONDITION",\n        "field": "item.discount",\n        "operator": "GREATER_THAN",\n        "value": 20\n      }\n    ]\n  }\n}\n```\n\n### Operators\n\nThe following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  \n\n|                                   Operator                                   |       Field type        |                                        Value                                        |\n|------------------------------------------------------------------------------|-------------------------|-------------------------------------------------------------------------------------|\n| `EQUALS`, `NOT_EQUALS`                                                       | String, number, boolean | `value`                                                                             |\n| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` | Number                  | `value`                                                                             |\n| `BETWEEN`                                                                    | Number                  | `values`, holding exactly two entries, read as the inclusive lower and upper bounds |\n| `CONTAINS`, `NOT_CONTAINS`                                                   | String                  | `value`                                                                             |\n| `STARTS_WITH`                                                                | String                  | `value`                                                                             |\n| `ANY_OF`, `NONE_OF`                                                          | String, number, boolean | `values`, holding at least one entry                                                |\n\nAn operator used on a field of another type isn\'t rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.\n\nContext\n-------\n\nThe `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn\'t a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.\n\nA `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you\'re evaluating need:\n\n```json\n{\n  "type": "CPQ",\n  "customer": {\n    "language": "en",\n    "billing_address_country": "US"\n  },\n  "quote": {\n    "shipping_address_country": "IN",\n    "payment_terms": 30,\n    "custom_fields": { "region": "apac" }\n  },\n  "items": [\n    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },\n    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }\n  ]\n}\n```\n\nA condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.\n\nEach `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.\n\nThe response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  \n\n### quote\n\n* `type` and `contract_type`: strings.\n* `contract_duration` and `payment_terms`: numbers.\n* `billing_address_country` and `shipping_address_country`: strings.\n* `billing_frequency` and `billing_currency`: strings.\n* `creator_email` and `creator_role`: strings.\n* `custom_fields`: object.\n* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  \n\n### customer\n\n* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.\n* `language`: string.\n* `payment_terms`: number.\n* `custom_fields`: object.  \n\n### items\n\nAn array, with each entry holding the following.\n\n* `reference_id`: string, identifying the entry within the context.\n* `type`, `item_name`, and `product_family_name`: strings.\n* `billing_frequency` and `currency`: strings.\n* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.\n* `start_date` and `end_date`: timestamps.\n* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  \n\n### user\n\n* `name`, `email`, and `phone`: strings.  \n\n### site\n\n* `name`, `domain`, and `currency`: strings.\n* `sandbox`: boolean.  \n\n### quote_subscription\n\n* `custom_fields`: object.\n\nActions\n-------\n\nEvery entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template\'s parameters in `input`:\n\n```json\n[\n  {\n    "action_template_id": "action-apply-discount",\n    "input": {\n      "apply_on": "INVOICE_AMOUNT",\n      "discount": 12.0,\n      "discount_type": "PERCENTAGE",\n      "duration_type": "ONE_TIME"\n    }\n  }\n]\n```\n\nThe `type` of an action is derived from its template, so it\'s returned with the action but you don\'t have to pass it. A parameter that the template doesn\'t define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.\n\nAn action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action\'s own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  \n\n### Apply discount\n\nApplies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.\n* `discount`: **Required.** The discount to apply, such as `12.0`.\n* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.\n* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.\n* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.\n* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  \n\n### Apply coupon\n\nApplies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.\n* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  \n\n### Limit discount\n\nCaps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.\n\nBuilt from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.\n* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.\n* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.\n* `disable_price_override`: Pass `true` to disallow overriding the price outright.  \n\n### Limit quantity\n\nConstrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.\n\n* `minimum_quantity`: The smallest quantity allowed.\n* `maximum_quantity`: The largest quantity allowed.\n* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  \n\n### Error\n\nReturns an error message instead of a change. Use this template to block an operation when the rule matches.\n\nBuilt from `action_template_id` `action-error` and returned with `type` `ERROR`.\n\n* `error_message`: **Required.** The message returned with the action.\n\nEvaluation results\n------------------\n\n[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:\n\n```json\n{\n  "apply_rule": {\n    "context": {\n      "type": "CPQ",\n      "customer": { "language": "en" },\n      "quote": { "shipping_address_country": "IN" }\n    },\n    "rules": [\n      {\n        "id": "quote-discount-en",\n        "version": 1,\n        "name": "Apply 12 percent discount at invoice level",\n        "evaluation_result": true,\n        "actions": [\n          {\n            "action_template_id": "action-apply-discount",\n            "type": "APPLY_DISCOUNT",\n            "input": {\n              "apply_on": "INVOICE_AMOUNT",\n              "discount": 12.0,\n              "discount_type": "PERCENTAGE",\n              "duration_type": "ONE_TIME"\n            }\n          }\n        ],\n        "object": "applied_rule"\n      },\n      {\n        "id": "quote-discount-uk",\n        "version": 1,\n        "name": "Apply 5 percent discount at invoice level for UK quotes",\n        "evaluation_result": false,\n        "object": "applied_rule"\n      }\n    ],\n    "object": "apply_rule"\n  }\n}\n```\n\nRead the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.\n\n* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn\'t match.\n* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there\'s no stored rule to report an `id`, `name`, or `actions` for.\n\nA rule that couldn\'t be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).\n',
+      'A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.\n\nBusiness Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).\n\nThe condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).\n\nThe `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.\n\nBusiness rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.\n\nThe `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.\n\nRelated rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset\'s `execute_mode`.\n\nFor a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).\n\nExpressions\n-----------\n\nThe `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.\n\nThe following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:\n\n```json\n{\n  "type": "GROUP",\n  "operation": "AND",\n  "children": [\n    {\n      "type": "CONDITION",\n      "field": "customer.language",\n      "operator": "CONTAINS",\n      "value": "en"\n    },\n    {\n      "type": "CONDITION",\n      "field": "quote.shipping_address_country",\n      "operator": "ANY_OF",\n      "values": ["IN", "US"]\n    }\n  ]\n}\n```\n\nEvery condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn\'t carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  \n\n### GROUP node\n\nCombines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.\n\n* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.\n* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.\n\n```json\n{\n  "type": "GROUP",\n  "operation": "OR",\n  "children": [\n    {\n      "type": "CONDITION",\n      "field": "quote.payment_terms",\n      "operator": "GREATER_THAN",\n      "value": 30\n    },\n    {\n      "type": "CONDITION",\n      "field": "customer.billing_address_country",\n      "operator": "EQUALS",\n      "value": "US"\n    }\n  ]\n}\n```\n\n### CONDITION node\n\nCompares one field of the context against a value.\n\n* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.\n* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.\n* `value`: The single value to compare against. Required for the single-value operators.\n* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.\n\n```json\n{\n  "type": "CONDITION",\n  "field": "quote.contract_duration",\n  "operator": "BETWEEN",\n  "values": [12, 36]\n}\n```\n\n### COLLECTION node\n\nTests the entries of an array in the context, such as the line items of a quote. All four fields are required.\n\n* `field`: **Required.** The array to iterate over, such as `items`.\n* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.\n* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.\n* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.\n\nInside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:\n\n```json\n{\n  "type": "COLLECTION",\n  "field": "items",\n  "variable": "item",\n  "mode": "ANY",\n  "predicate": {\n    "type": "GROUP",\n    "operation": "AND",\n    "children": [\n      {\n        "type": "CONDITION",\n        "field": "item.discount",\n        "operator": "GREATER_THAN",\n        "value": 20\n      }\n    ]\n  }\n}\n```\n\n### Operators\n\nThe following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  \n\n|                                   Operator                                   |       Field type        |                                        Value                                        |\n|------------------------------------------------------------------------------|-------------------------|-------------------------------------------------------------------------------------|\n| `EQUALS`, `NOT_EQUALS`                                                       | String, number, boolean | `value`                                                                             |\n| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` | Number                  | `value`                                                                             |\n| `BETWEEN`                                                                    | Number                  | `values`, holding exactly two entries, read as the inclusive lower and upper bounds |\n| `CONTAINS`, `NOT_CONTAINS`                                                   | String                  | `value`                                                                             |\n| `STARTS_WITH`                                                                | String                  | `value`                                                                             |\n| `ANY_OF`, `NONE_OF`                                                          | String, number, boolean | `values`, holding at least one entry                                                |\n\nAn operator used on a field of another type isn\'t rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.\n\nContext\n-------\n\nThe `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn\'t a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.\n\nA `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you\'re evaluating need:\n\n```json\n{\n  "type": "CPQ",\n  "customer": {\n    "language": "en",\n    "billing_address_country": "US"\n  },\n  "quote": {\n    "shipping_address_country": "IN",\n    "payment_terms": 30,\n    "custom_fields": { "region": "apac" }\n  },\n  "items": [\n    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },\n    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }\n  ]\n}\n```\n\nA condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.\n\nEach `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.\n\nThe response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  \n\n### quote\n\n* `type` and `contract_type`: strings.\n* `contract_duration` and `payment_terms`: numbers.\n* `billing_address_country` and `shipping_address_country`: strings.\n* `billing_frequency` and `billing_currency`: strings.\n* `creator_email` and `creator_role`: strings.\n* `custom_fields`: object.\n* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  \n\n### customer\n\n* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.\n* `language`: string.\n* `payment_terms`: number.\n* `custom_fields`: object.  \n\n### items\n\nAn array, with each entry holding the following.\n\n* `reference_id`: string, identifying the entry within the context.\n* `type`, `item_name`, and `product_family_name`: strings.\n* `billing_frequency` and `currency`: strings.\n* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.\n* `start_date` and `end_date`: timestamps.\n* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  \n\n### user\n\n* `name`, `email`, and `phone`: strings.  \n\n### site\n\n* `name`, `domain`, and `currency`: strings.\n* `sandbox`: boolean.  \n\n### quote_subscription\n\n* `custom_fields`: object.\n\nActions\n-------\n\nEvery entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template\'s parameters in `input`:\n\n```json\n[\n  {\n    "action_template_id": "action-apply-discount",\n    "input": {\n      "apply_on": "INVOICE_AMOUNT",\n      "discount": 12.0,\n      "discount_type": "PERCENTAGE",\n      "duration_type": "ONE_TIME"\n    }\n  }\n]\n```\n\nThe `type` of an action is derived from its template, so it\'s returned with the action but you don\'t have to pass it. A parameter that the template doesn\'t define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.\n\nAn action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action\'s own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  \n\n### Apply discount\n\nApplies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.\n* `discount`: **Required.** The discount to apply, such as `12.0`.\n* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.\n* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.\n* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.\n* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  \n\n### Apply coupon\n\nApplies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.\n* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  \n\n### Limit discount\n\nCaps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.\n\nBuilt from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.\n\n* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.\n* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.\n* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.\n* `disable_price_override`: Pass `true` to disallow overriding the price outright.  \n\n### Limit quantity\n\nConstrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.\n\n* `minimum_quantity`: The smallest quantity allowed.\n* `maximum_quantity`: The largest quantity allowed.\n* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  \n\n### Error\n\nReturns an error message instead of a change. Use this template to block an operation when the rule matches.\n\nBuilt from `action_template_id` `action-error` and returned with `type` `ERROR`.\n\n* `error_message`: **Required.** The message returned with the action.\n\nEvaluation results\n------------------\n\n[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:\n\n```json\n{\n  "apply_rule": {\n    "context": {\n      "type": "CPQ",\n      "customer": { "language": "en" },\n      "quote": { "shipping_address_country": "IN" }\n    },\n    "rules": [\n      {\n        "id": "quote-discount-en",\n        "version": 1,\n        "name": "Apply 12 percent discount at invoice level",\n        "evaluation_result": true,\n        "actions": [\n          {\n            "action_template_id": "action-apply-discount",\n            "type": "APPLY_DISCOUNT",\n            "input": {\n              "apply_on": "INVOICE_AMOUNT",\n              "discount": 12.0,\n              "discount_type": "PERCENTAGE",\n              "duration_type": "ONE_TIME"\n            }\n          }\n        ],\n        "object": "applied_rule"\n      },\n      {\n        "id": "quote-discount-uk",\n        "version": 1,\n        "name": "Apply 5 percent discount at invoice level for UK quotes",\n        "evaluation_result": false,\n        "object": "applied_rule"\n      }\n    ],\n    "object": "apply_rule"\n  }\n}\n```\n\nRead the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.\n\n* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn\'t match.\n* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there\'s no stored rule to report an `id`, `name`, or `actions` for.\n\nA rule that couldn\'t be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).\n',
     required: ['active', 'created_at', 'created_by', 'id', 'name', 'updated_at'],
     example: null,
   })
@@ -7509,7 +7554,7 @@ const BusinessRulesetSchema = z
   })
   .openapi({
     description:
-      'A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.\n\nRulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.\n\nMembership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.\n\nThe `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  \n**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.\n',
+      'A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.\n\nRulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.\n\nMembership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.\n\nThe `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.\n',
     required: ['active', 'created_at', 'created_by', 'execute_mode', 'id', 'name', 'updated_at'],
     example: null,
   })
@@ -8973,8 +9018,7 @@ const CollectionsPaymentPromiseSchema = z
       .max(100)
       .openapi({
         deprecated: false,
-        description:
-          'Identifier of the invoice linked to this promise, when the promise is invoice-specific.\n',
+        description: 'Identifier of the invoice this promise covers.\n',
         example: null,
       }),
     status: z
@@ -8982,7 +9026,7 @@ const CollectionsPaymentPromiseSchema = z
       .openapi({
         deprecated: false,
         description:
-          'Current lifecycle state of the payment promise.\n\n* active - The promise is active and awaiting payment.\n* cancelled - The payment promise was cancelled.\n* fulfilled - The promised payment has been received.\n* broken - The promised payment was not received by the promised date.\n',
+          'Current lifecycle state of the payment promise.\n\n* active - The promise is active and awaiting payment.\n* cancelled - The payment promise was cancelled, or its invoice was voided, written off, or deleted.\n* fulfilled - The invoice was paid by `promised_on`.\n* broken - The promised payment was not received by the promised date.\n',
         example: null,
       }),
     reason: z
@@ -9007,7 +9051,8 @@ const CollectionsPaymentPromiseSchema = z
       .int()
       .openapi({
         deprecated: false,
-        description: 'Timestamp in UTC seconds representing when the customer committed to pay.\n',
+        description:
+          'Timestamp in UTC seconds of the date by which the customer promised to pay.\n',
         example: null,
       }),
     created_at: z
@@ -9048,7 +9093,7 @@ const CollectionsPaymentPromiseSchema = z
   })
   .openapi({
     description:
-      "Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).\n\nReceivables must be enabled for the site. If it is not, these operations are rejected.\n",
+      "A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:\n\n* `fulfilled`: the invoice is paid on or before `promised_on`.\n* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.\n* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.\n\nReceivables must be enabled for the site. If it is not, these operations are rejected.\n",
     required: [
       'created_at',
       'customer_id',
@@ -9546,7 +9591,7 @@ const CommentSchema = z
       .openapi({
         deprecated: false,
         description:
-          'Type of the entity this comment generated for\n\n* item - Entity that represents item\n* invoice - Invoice description\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* quote - Entity that represents a quote\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* business_entity - Entity that represents item of type business entity\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n',
+          'Type of the entity this comment generated for\n\n* item - Entity that represents item\n* invoice - Invoice description\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* quote - Entity that represents a quote\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* business_entity - Entity that represents item of type business entity\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* task - Entity that represents a task\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n',
         example: null,
       }),
     added_by: z
@@ -15440,6 +15485,7 @@ const DiscountSchema = z
           'The name of the discount as it should appear on customer-facing pages and documents such as [invoices](/docs/api/invoices)\nand [hosted pages](/docs/api/hosted_pages).\nThis is auto-generated based on the `type`\n, `amount`\n, and `currency_code`\nof the discount. For example, it can be `10% off`\nor `10$ off`\n.\n',
         example: null,
       }),
+    description: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
     type: z
       .enum(['fixed_amount', 'percentage', 'offer_quantity'])
       .default('percentage')
@@ -16209,6 +16255,24 @@ const InvoiceSchema = z
           'Indicates whether an [advance charge](https://www.chargebee.com/docs/billing/2.0/invoices-credit-notes-and-quotes/advance-invoices) is present in this invoice.\n',
         example: null,
       }),
+    offline_payment_method: z
+      .enum([
+        'no_preference',
+        'cash',
+        'check',
+        'bank_transfer',
+        'ach_credit',
+        'sepa_credit',
+        'boleto',
+        'us_automated_bank_transfer',
+        'eu_automated_bank_transfer',
+        'uk_automated_bank_transfer',
+        'jp_automated_bank_transfer',
+        'mx_automated_bank_transfer',
+        'custom',
+      ])
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
     term_finalized: z
       .boolean()
       .default(true)
@@ -26370,6 +26434,8 @@ const EventSchema = z
         'customer_business_entity_changed',
         'subscription_business_entity_changed',
         'payment_source_business_entity_changed',
+        'organization_details_created',
+        'organization_details_updated',
         'purchase_created',
         'voucher_created',
         'voucher_expired',
@@ -26468,7 +26534,7 @@ const EventSchema = z
       .openapi({
         deprecated: false,
         description:
-          "The type of event provided by Chargebee. See [event types](/docs/api/events/event-types)\nfor a complete list.\n\n* card_deleted - Sent when a card is deleted for a customer\n* rule_created - Triggered when a rule is created.\n* subscription_cancelled - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.\n* customer_changed - Sent when a customer is changed\n* invoice_deleted - Event triggered when an invoice is deleted.\n* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed\n* subscription_shipping_address_updated - Triggered when shipping address is added or updated for a subscription.\n* differential_price_created - Triggered when a differential price is created\n* subscription_created - Sent when a new subscription is created.\n* payment_initiated - Sent when a payment is initiated via direct debit\n* quote_updated - Triggered when quote is updated\n* payment_source_added - Sent when a payment source is added for a customer.\n* contract_term_created - Triggered when new contract term is created\n* subscription_business_entity_changed - Sent when a subscription's business entity is changed.\n* subscription_deleted - Sent when a subscription has been deleted\n* differential_price_deleted - Triggered when a differential price is deleted\n* omnichannel_subscription_created - Triggered when an omnichannel subscription is created\n* voucher_created - Triggered when a payment voucher is created.\n* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.\n* rule_deleted - Triggered when a rule is deleted.\n* transaction_deleted - Triggered when a transaction is deleted.\n* item_family_deleted - Triggered when an item family is deleted\n* payment_failed - Sent when attempt to charge customer's credit card fails\n* subscription_reactivated_with_backdating - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation\n* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed\n* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* payment_schedules_created - Event triggered when new payment schedules are created for an invoice\n* subscription_entitlements_updated - Triggered when subscription entitlements are updated for a subscription change.\n* price_variant_updated - Triggered when a price variant is updated.\n* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired\n* item_price_updated - Triggered when an item price is updated\n* order_ready_to_process - Triggered when order reaches its order date\n* entitlement_overrides_updated - Triggered when an override entitlement is updated\n* item_updated - Triggered when an item is updated\n* coupon_set_updated - Sent when a coupon set is changed\n* subscription_reactivated - Sent when the subscription is moved from cancelled state to active or in_trial state\n* subscription_scheduled_changes_removed - Sent when scheduled change for the subscription is removed.\n* customer_business_entity_changed - Sent when a customer's business entity is changed.\n* payment_refunded - Sent when a payment refund is made\n* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.\n* subscription_started - Sent when a 'future' subscription gets started at the scheduled date.\n* attached_item_created - Triggered when an Attached item is created\n* token_created - Sent when a Token is created\n* item_family_created - Triggered when an item family is created\n* subscription_created_with_backdating - Sent when a new subscription is created with backdating.\n* unbilled_charges_deleted - Triggered when unbilled charges are deleted.\n* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed\n* subscription_ramp_applied - Triggered when a subscription ramp is applied.\n* promotional_credits_added - Sent when promotional credits are added to a customer.\n* subscription_canceled_with_backdating - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* item_entitlements_updated - Triggered when item entitlements are updated to a feature\n* card_expired - Sent when a card for a customer is expired\n* payment_intent_created - Sent when a Payment intent is created\n* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed with backdated date\n* subscription_scheduled_cancellation_removed - Sent when scheduled cancellation is removed for the subscription.\n* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed\n* feature_updated - Triggered when an feature is updated\n* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created\n* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported\n* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.\n* tax_withheld_refunded - Sent when a tax withheld refund is made\n* unbilled_charges_voided - Triggered when unbilled charges are voided.\n* customer_moved_out - Sent when a customer is copied to another site\n* dunning_updated - Sent when dunning is paused for an invoice.\n* feature_created - Triggered when a feature is created.\n* record_purchase_failed - Triggered when an omnichannel record purchase is failed\n* coupon_codes_deleted - Sent when coupon codes are deleted in coupon set\n* subscription_paused - Sent when the subscription is paused.\n* order_updated - Triggered when order is updated\n* subscription_movement_failed - Triggered when a subscription movement failed\n* unbilled_charges_created - Triggered when unbilled charges are created.\n* subscription_moved_in - Triggered when a subscription moved from other customer\n* feature_archived - Triggered when a feature is archived.\n* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.\n* payment_succeeded - Sent when the payment is successfully collected\n* voucher_expired - Triggered when a payment voucher is expired.\n* mrr_updated - Sent when either of MRR or CMRR of a subscription changes\n* subscription_scheduled_resumption_removed - Triggered when scheduled resumption is removed for the subscription.\n* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* order_ready_to_ship - Triggered when order reaches its shipping date\n* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.\n* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled\n* payment_due_reminder - Sent after scheduled days of payment failure\n* purchase_created - Triggered when purchase action completed successfully\n* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.\n* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.\n* subscription_renewed - Sent when the subscription is renewed from the current term.\n* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.\n* item_created - Triggered when an item is created\n* coupon_codes_updated - Sent when coupon codes are updated\n* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed\n* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription\n* subscription_ramp_updated - Triggered when a subscription ramp is updated.\n* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.\n* subscription_moved_out - Triggered when a subscription moved to other customer\n* contract_term_completed - Triggered when contract term is completed\n* feature_deleted - Triggered when a feature is deleted\n* subscription_renewal_reminder - Sent before each subscription's renewal based on plan's period\n* coupon_updated - Sent when a coupon is changed.\n* token_consumed - Sent when a Token is consumed\n* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded\n* transaction_created - Triggered when a transaction is recorded\n* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted\n* customer_deleted - Sent when a customer is deleted\n* subscription_items_renewed - Sent when one or more Subscription Items are renewed\n* coupon_deleted - Sent when a coupon is deleted.\n* quote_deleted - Triggered when quote is deleted\n* card_updated - Sent when the card is updated for a customer.\n* coupon_created - Sent when a coupon is created.\n* quote_created - Triggered when quote is created\n* add_usages_reminder - Sent every month day before renewal date of plan's period\n* business_entity_updated - Sent when a business entity is updated.\n* subscription_changed - Sent after the subscription's recurring items have been changed\n* customer_created - Sent when a new customer is created, either directly or automatically during subscription creation.\n* price_variant_created - Triggered when a price variant is created.\n* coupon_set_deleted - Sent when a coupon set is deleted\n* refund_initiated - Sent when a refund is initiated via direct debit\n* order_cancelled - Triggered when order is cancelled\n* entitlement_overrides_removed - Triggered when an override entitlement is removed\n* coupon_codes_added - Sent when coupon codes are added in coupon set\n* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused\n* card_added - Sent when a card is added for a customer.\n* gift_cancelled - Triggered when a gift is cancelled.\n* entitlement_overrides_auto_removed - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer\n* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded\n* ledger_updated - Triggered when a batch of [ledger_operations](/docs/api/ledger_operations) is persisted for a subscription unit. The event content includes the related `ledger_operations`, `ledger_account_balance`, `grant_blocks`, and `ledger_entries`.\n* payment_source_deleted - Sent when a payment source is deleted for a customer\n* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.\n* grant_blocks_created - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are created for a subscription unit.\n* credit_note_created - Sent when a credit note is created\n* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.\n* item_price_deleted - Triggered when an item price is deleted\n* subscription_advance_invoice_schedule_updated - Triggered when scheduled advance invoice is updated for a subscription.\n* item_deleted - Triggered when an item is deleted\n* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one time order item is cancelled\n* gift_claimed - Triggered when a gift is claimed\n* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.\n* vault_token_updated - Triggered when a vaulted payment method is updated.\n* subscription_activated - Sent after the subscription has been moved from trial to active state\n* subscription_resumed - Sent when the subscription is moved from paused state to active state\n* sales_order_updated - Triggered when a sales order is updated.\n* credit_note_deleted - Sent when a credit note is deleted\n* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature\n* subscription_advance_invoice_schedule_added - Triggered when advance invoice is scheduled for a subscription.\n* differential_price_updated - Triggered when a differential price is updated\n* alert_status_changed -\n  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.\n  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.\n* order_deleted - Triggered when order is deleted\n* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* token_expired - Sent when a Token is expired\n* price_variant_deleted - Triggered when a price variant is deleted.\n* transaction_updated - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.\n* rule_updated - Triggered when a rule is updated.\n* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item's refund is reversed\n* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* order_delivered - Triggered when order is marked as delivered\n* pending_invoice_created - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the \"Notify for Pending Invoices\" option is enabled.\n* subscription_ramp_created - Triggered when a subscription ramp is created.\n* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item is expired\n* refund_failed - Triggered when a refund attempt fails at the gateway.\n* authorization_succeeded - Triggered when an authorization transaction is created.\n* invoice_generated_with_backdating - Event triggered when a new invoice is generated with past date as invoice date.\n* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled\n* subscription_cancellation_scheduled - Sent when subscription is scheduled to cancel at end of current term\n* order_created - Triggered when order is created\n* hierarchy_deleted - Triggered when a hierarchy is deleted\n* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice\n* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).\n* credit_note_created_with_backdating - Sent when a credit note is created with past date as credit note date\n* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item scheduled for pause\n* gift_updated - Triggered when a gift is updated\n* order_resent - Triggered when order is resent\n* hierarchy_created - Triggered when a hierarchy is created\n* voucher_create_failed - Triggered when a payment voucher creation fails.\n* customer_moved_in - Sent when a customer is copied from another site\n* customer_entitlements_updated - Triggered when entitlements for the list of customers got updated.\n* item_price_entitlements_updated - Triggered when item Price entitlements are updated to a feature\n* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired\n* attached_item_deleted - Triggered when an Attached item is deleted\n* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.\n* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.\n* order_returned - Triggered when order is marked as returned\n* payment_source_expired - Sent when a payment source for a customer is expired\n* contract_term_terminated - Triggered when contract term is terminated\n* payment_source_updated - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.\n* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started\n* subscription_advance_invoice_schedule_removed - Triggered when scheduled advance invoice is removed for a subscription.\n* tax_withheld_deleted - Triggered when a tax withheld is deleted\n* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started\n* business_entity_created - Sent when a business entity is created.\n* sales_order_created - Triggered when a sales order is created.\n* item_price_created - Triggered when an item price is created\n* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.\n* credit_note_updated - Sent when a credit note is updated\n* subscription_scheduled_pause_removed - Triggered when scheduled pause is removed for the subscription.\n* card_expiry_reminder - Sent 30 days before the customer's credit card expires.\n* coupon_set_created - Sent when a coupon set is created\n* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.\n* omnichannel_one_time_order_created - Triggered when an omnichannel one time order is created\n* gift_scheduled - Triggered when a new gift is created\n* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice\n* business_entity_deleted - Sent when a business entity is deleted.\n* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item recovers from a billing issue and is active again.\n* promotional_credits_deducted - Sent when a customer prmotion credits deducted\n* ledger_account_balance_updated - Triggered when a [ledger_account_balance](/docs/api/ledger_account_balances) changes for a subscription unit.\n* contract_term_renewed - Triggered when new contract term is renewed\n* usage_file_ingested -\n  Triggered when a [usage_file](/docs/api/usage_files)\n  is successfully ingested.\n* subscription_trial_extended - Sent when a subscription trial is extended.\n* item_entitlements_removed - Triggered when item entitlements are removed for a feature\n* gift_expired - Triggered when a gift expires\n* omnichannel_subscription_item_scheduled_change_removed - Triggered when an omnichannel subscription item scheduled change is removed\n* contract_term_cancelled - Triggered when contract term is cancelled\n* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.\n* authorization_voided - Triggered when an authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* item_family_updated - Triggered when an item family is updated\n* attached_item_updated - Triggered when an Attached item is updated\n* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.\n* grant_blocks_updated - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are updated for a subscription unit.\n* payment_intent_updated - Sent when a Payment intent is updated\n* payment_source_locally_deleted - Sent when a payment source for a customer removed from Chargebee\n",
+          "The type of event provided by Chargebee. See [event types](/docs/api/events/event-types)\nfor a complete list.\n\n* card_deleted - Sent when a card is deleted for a customer\n* rule_created - Triggered when a rule is created.\n* subscription_cancelled - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.\n* customer_changed - Sent when a customer is changed\n* invoice_deleted - Event triggered when an invoice is deleted.\n* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed\n* subscription_shipping_address_updated - Triggered when shipping address is added or updated for a subscription.\n* differential_price_created - Triggered when a differential price is created\n* subscription_created - Sent when a new subscription is created.\n* collections_dispute_updated - Triggered when a collections dispute is updated.\n* payment_initiated - Sent when a payment is initiated via direct debit\n* quote_updated - Triggered when quote is updated\n* payment_source_added - Sent when a payment source is added for a customer.\n* contract_term_created - Triggered when new contract term is created\n* collections_reminder_sequence_completed - Triggered when a collections reminder sequence is completed.\n* subscription_business_entity_changed - Sent when a subscription's business entity is changed.\n* subscription_deleted - Sent when a subscription has been deleted\n* differential_price_deleted - Triggered when a differential price is deleted\n* omnichannel_subscription_created - Triggered when an omnichannel subscription is created\n* voucher_created - Triggered when a payment voucher is created.\n* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.\n* rule_deleted - Triggered when a rule is deleted.\n* transaction_deleted - Triggered when a transaction is deleted.\n* item_family_deleted - Triggered when an item family is deleted\n* payment_failed - Sent when attempt to charge customer's credit card fails\n* subscription_reactivated_with_backdating - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation\n* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed\n* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* payment_schedules_created - Event triggered when new payment schedules are created for an invoice\n* subscription_entitlements_updated - Triggered when subscription entitlements are updated for a subscription change.\n* price_variant_updated - Triggered when a price variant is updated.\n* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired\n* item_price_updated - Triggered when an item price is updated\n* order_ready_to_process - Triggered when order reaches its order date\n* entitlement_overrides_updated - Triggered when an override entitlement is updated\n* item_updated - Triggered when an item is updated\n* coupon_set_updated - Sent when a coupon set is changed\n* subscription_reactivated - Sent when the subscription is moved from cancelled state to active or in_trial state\n* collections_payment_promise_created - Triggered when a collections payment promise is created.\n* subscription_scheduled_changes_removed - Sent when scheduled change for the subscription is removed.\n* customer_business_entity_changed - Sent when a customer's business entity is changed.\n* collections_reminder_sequence_created - Triggered when a collections reminder sequence is created.\n* payment_refunded - Sent when a payment refund is made\n* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.\n* subscription_started - Sent when a 'future' subscription gets started at the scheduled date.\n* attached_item_created - Triggered when an Attached item is created\n* token_created - Sent when a Token is created\n* item_family_created - Triggered when an item family is created\n* subscription_created_with_backdating - Sent when a new subscription is created with backdating.\n* unbilled_charges_deleted - Triggered when unbilled charges are deleted.\n* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed\n* subscription_ramp_applied - Triggered when a subscription ramp is applied.\n* promotional_credits_added - Sent when promotional credits are added to a customer.\n* subscription_canceled_with_backdating - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* item_entitlements_updated - Triggered when item entitlements are updated to a feature\n* card_expired - Sent when a card for a customer is expired\n* payment_intent_created - Sent when a Payment intent is created\n* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed with backdated date\n* subscription_scheduled_cancellation_removed - Sent when scheduled cancellation is removed for the subscription.\n* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed\n* feature_updated - Triggered when an feature is updated\n* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created\n* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported\n* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.\n* tax_withheld_refunded - Sent when a tax withheld refund is made\n* unbilled_charges_voided - Triggered when unbilled charges are voided.\n* customer_moved_out - Sent when a customer is copied to another site\n* dunning_updated - Sent when dunning is paused for an invoice.\n* feature_created - Triggered when a feature is created.\n* record_purchase_failed - Triggered when an omnichannel record purchase is failed\n* coupon_codes_deleted - Sent when coupon codes are deleted in coupon set\n* subscription_paused - Sent when the subscription is paused.\n* order_updated - Triggered when order is updated\n* subscription_movement_failed - Triggered when a subscription movement failed\n* unbilled_charges_created - Triggered when unbilled charges are created.\n* subscription_moved_in - Triggered when a subscription moved from other customer\n* feature_archived - Triggered when a feature is archived.\n* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.\n* collections_reminder_sequence_paused - Triggered when a collections reminder sequence is paused.\n* payment_succeeded - Sent when the payment is successfully collected\n* voucher_expired - Triggered when a payment voucher is expired.\n* mrr_updated - Sent when either of MRR or CMRR of a subscription changes\n* subscription_scheduled_resumption_removed - Triggered when scheduled resumption is removed for the subscription.\n* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* order_ready_to_ship - Triggered when order reaches its shipping date\n* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.\n* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled\n* payment_due_reminder - Sent after scheduled days of payment failure\n* purchase_created - Triggered when purchase action completed successfully\n* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.\n* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.\n* subscription_renewed - Sent when the subscription is renewed from the current term.\n* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.\n* item_created - Triggered when an item is created\n* coupon_codes_updated - Sent when coupon codes are updated\n* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed\n* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription\n* subscription_ramp_updated - Triggered when a subscription ramp is updated.\n* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.\n* subscription_moved_out - Triggered when a subscription moved to other customer\n* contract_term_completed - Triggered when contract term is completed\n* feature_deleted - Triggered when a feature is deleted\n* subscription_renewal_reminder - Sent before each subscription's renewal based on plan's period\n* coupon_updated - Sent when a coupon is changed.\n* token_consumed - Sent when a Token is consumed\n* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded\n* transaction_created - Triggered when a transaction is recorded\n* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted\n* customer_deleted - Sent when a customer is deleted\n* subscription_items_renewed - Sent when one or more Subscription Items are renewed\n* coupon_deleted - Sent when a coupon is deleted.\n* collections_payment_promise_broken - Triggered when a collections payment promise is marked as broken.\n* quote_deleted - Triggered when quote is deleted\n* card_updated - Sent when the card is updated for a customer.\n* coupon_created - Sent when a coupon is created.\n* quote_created - Triggered when quote is created\n* add_usages_reminder - Sent every month day before renewal date of plan's period\n* business_entity_updated - Sent when a business entity is updated.\n* subscription_changed - Sent after the subscription's recurring items have been changed\n* collections_dispute_resolved - Triggered when a collections dispute is resolved.\n* customer_created - Sent when a new customer is created, either directly or automatically during subscription creation.\n* price_variant_created - Triggered when a price variant is created.\n* collections_dispute_created - Triggered when a collections dispute is created.\n* coupon_set_deleted - Sent when a coupon set is deleted\n* refund_initiated - Sent when a refund is initiated via direct debit\n* order_cancelled - Triggered when order is cancelled\n* entitlement_overrides_removed - Triggered when an override entitlement is removed\n* coupon_codes_added - Sent when coupon codes are added in coupon set\n* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused\n* card_added - Sent when a card is added for a customer.\n* gift_cancelled - Triggered when a gift is cancelled.\n* entitlement_overrides_auto_removed - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer\n* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded\n* ledger_updated - Triggered when a batch of [ledger_operations](/docs/api/ledger_operations) is persisted for a subscription unit. The event content includes the related `ledger_operations`, `ledger_account_balance`, `grant_blocks`, and `ledger_entries`.\n* payment_source_deleted - Sent when a payment source is deleted for a customer\n* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.\n* grant_blocks_created - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are created for a subscription unit.\n* credit_note_created - Sent when a credit note is created\n* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.\n* item_price_deleted - Triggered when an item price is deleted\n* subscription_advance_invoice_schedule_updated - Triggered when scheduled advance invoice is updated for a subscription.\n* item_deleted - Triggered when an item is deleted\n* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one time order item is cancelled\n* gift_claimed - Triggered when a gift is claimed\n* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.\n* vault_token_updated - Triggered when a vaulted payment method is updated.\n* subscription_activated - Sent after the subscription has been moved from trial to active state\n* subscription_resumed - Sent when the subscription is moved from paused state to active state\n* sales_order_updated - Triggered when a sales order is updated.\n* credit_note_deleted - Sent when a credit note is deleted\n* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature\n* subscription_advance_invoice_schedule_added - Triggered when advance invoice is scheduled for a subscription.\n* differential_price_updated - Triggered when a differential price is updated\n* alert_status_changed -\n  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.\n  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.\n* order_deleted - Triggered when order is deleted\n* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* token_expired - Sent when a Token is expired\n* collections_reminder_sequence_resumed - Triggered when a collections reminder sequence is resumed.\n* price_variant_deleted - Triggered when a price variant is deleted.\n* transaction_updated - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* email_message_received - Triggered when an email message is received.\n* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.\n* rule_updated - Triggered when a rule is updated.\n* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item's refund is reversed\n* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* order_delivered - Triggered when order is marked as delivered\n* pending_invoice_created - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the \"Notify for Pending Invoices\" option is enabled.\n* subscription_ramp_created - Triggered when a subscription ramp is created.\n* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item is expired\n* refund_failed - Triggered when a refund attempt fails at the gateway.\n* authorization_succeeded - Triggered when an authorization transaction is created.\n* invoice_generated_with_backdating - Event triggered when a new invoice is generated with past date as invoice date.\n* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled\n* subscription_cancellation_scheduled - Sent when subscription is scheduled to cancel at end of current term\n* order_created - Triggered when order is created\n* hierarchy_deleted - Triggered when a hierarchy is deleted\n* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice\n* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).\n* credit_note_created_with_backdating - Sent when a credit note is created with past date as credit note date\n* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item scheduled for pause\n* gift_updated - Triggered when a gift is updated\n* order_resent - Triggered when order is resent\n* hierarchy_created - Triggered when a hierarchy is created\n* voucher_create_failed - Triggered when a payment voucher creation fails.\n* customer_moved_in - Sent when a customer is copied from another site\n* customer_entitlements_updated - Triggered when entitlements for the list of customers got updated.\n* item_price_entitlements_updated - Triggered when item Price entitlements are updated to a feature\n* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired\n* attached_item_deleted - Triggered when an Attached item is deleted\n* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.\n* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.\n* collections_payment_promise_fulfilled - Triggered when a collections payment promise is fulfilled.\n* order_returned - Triggered when order is marked as returned\n* payment_source_expired - Sent when a payment source for a customer is expired\n* contract_term_terminated - Triggered when contract term is terminated\n* payment_source_updated - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.\n* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started\n* subscription_advance_invoice_schedule_removed - Triggered when scheduled advance invoice is removed for a subscription.\n* collections_payment_promise_updated - Triggered when a collections payment promise is updated.\n* tax_withheld_deleted - Triggered when a tax withheld is deleted\n* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started\n* business_entity_created - Sent when a business entity is created.\n* sales_order_created - Triggered when a sales order is created.\n* item_price_created - Triggered when an item price is created\n* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.\n* credit_note_updated - Sent when a credit note is updated\n* subscription_scheduled_pause_removed - Triggered when scheduled pause is removed for the subscription.\n* card_expiry_reminder - Sent 30 days before the customer's credit card expires.\n* private_note_added - Triggered when a private note is added.\n* coupon_set_created - Sent when a coupon set is created\n* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.\n* omnichannel_one_time_order_created - Triggered when an omnichannel one time order is created\n* gift_scheduled - Triggered when a new gift is created\n* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice\n* business_entity_deleted - Sent when a business entity is deleted.\n* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item recovers from a billing issue and is active again.\n* promotional_credits_deducted - Sent when a customer prmotion credits deducted\n* ledger_account_balance_updated - Triggered when a [ledger_account_balance](/docs/api/ledger_account_balances) changes for a subscription unit.\n* contract_term_renewed - Triggered when new contract term is renewed\n* usage_file_ingested -\n  Triggered when a [usage_file](/docs/api/usage_files)\n  is successfully ingested.\n* subscription_trial_extended - Sent when a subscription trial is extended.\n* item_entitlements_removed - Triggered when item entitlements are removed for a feature\n* gift_expired - Triggered when a gift expires\n* omnichannel_subscription_item_scheduled_change_removed - Triggered when an omnichannel subscription item scheduled change is removed\n* contract_term_cancelled - Triggered when contract term is cancelled\n* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.\n* authorization_voided - Triggered when an authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* item_family_updated - Triggered when an item family is updated\n* attached_item_updated - Triggered when an Attached item is updated\n* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.\n* grant_blocks_updated - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are updated for a subscription unit.\n* payment_intent_updated - Sent when a Payment intent is updated\n* collections_dispute_withdrawn - Triggered when a collections dispute is withdrawn.\n* collections_payment_promise_cancelled - Triggered when a collections payment promise is cancelled.\n* payment_source_locally_deleted - Sent when a payment source for a customer removed from Chargebee\n",
         example: null,
       }),
     site_id: z
@@ -26729,6 +26795,8 @@ const EventTypeSchema = z
     'customer_business_entity_changed',
     'subscription_business_entity_changed',
     'payment_source_business_entity_changed',
+    'organization_details_created',
+    'organization_details_updated',
     'purchase_created',
     'voucher_created',
     'voucher_expired',
@@ -27751,6 +27819,197 @@ const GatewayPaymentMethodTokenSchema = z
   })
   .openapi('GatewayPaymentMethodToken')
 
+const GatewayRequestLogSchema = z
+  .object({
+    log_id: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    url: z.string().max(500).exactOptional().openapi({ deprecated: false, example: null }),
+    status_code: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    method: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    request_body: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    response_body: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    request_headers: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    response_headers: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    gateway: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    customer_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    invoice_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    transaction_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_method_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    gateway_credential_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_attempt_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_intent_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_method_name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    operation_name: z
+      .string()
+      .max(200)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    operation_type: z
+      .string()
+      .max(200)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    action_type: z.string().max(500).exactOptional().openapi({ deprecated: false, example: null }),
+    source: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    trace_id_hash: z
+      .string()
+      .max(300)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    invocation_time: z.int().exactOptional().openapi({ deprecated: false, example: null }),
+    response_received_at: z.int().exactOptional().openapi({ deprecated: false, example: null }),
+    response_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', deprecated: false, example: null }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('GatewayRequestLog')
+
+const GatewayWebhookLogSchema = z
+  .object({
+    webhook_id: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    url: z.string().max(500).exactOptional().openapi({ deprecated: false, example: null }),
+    method: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    status_code: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    gateway: z.string().max(100).exactOptional().openapi({ deprecated: false, example: null }),
+    id_at_gateway: z
+      .string()
+      .max(200)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    customer_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    invoice_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    transaction_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_method_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    gateway_credential_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_attempt_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_intent_handle: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    payment_method_name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    request_body: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    response_body: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    request_headers: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    response_headers: z
+      .string()
+      .max(65000)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    received_at: z.int().exactOptional().openapi({ deprecated: false, example: null }),
+    response_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', deprecated: false, example: null }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('GatewayWebhookLog')
+
 const GiftSchema = z
   .object({
     id: z
@@ -28283,7 +28542,7 @@ const GrantBlockSchema = z
       .openapi({
         deprecated: false,
         description:
-          'Enumerated string indicating the event or action that resulted in these credit grants being issued.\n\n* grant_renewal - Issued when a grant is renewed for the next cycle by the grant renewal process (recurring re-grant of the configured credits).\n* promotional_grants - Issued from the [allocate](/docs/api/ledger_operations/allocate) operation (for example, marketing offers or goodwill credits).\n* rollover - Issued by carrying forward unused credit grants from another block at end-of-period processing.\n* subscription_changed -\n  Issued in response to a subscription change that triggers a new allocation (for example, a plan or addon\n  update that adjusts the credit grants).\n* subscription_created - Issued when the subscription was created (initial allocation as per the plan configuration).\n* top_up - Issued from a top-up purchase or similar add-on credit-grant purchase made on top of the configured plan.\n* subscription_renewed - Issued when the subscription renews for a new term, triggering a fresh allocation of the configured credit grants.\n',
+          'Enumerated string indicating the event or action that resulted in these credit grants being issued.\n\n* grant_renewal - Issued when a grant is renewed for the next cycle by the grant renewal process (recurring re-grant of the configured credits).\n* promotional_grants - Issued from the [allocate](/docs/api/ledger_operations/allocate) operation (for example, marketing offers or goodwill credits).\n* subscription_changed -\n  Issued in response to a subscription change that triggers a new allocation (for example, a plan or addon\n  update that adjusts the credit grants).\n* subscription_created - Issued when the subscription was created (initial allocation as per the plan configuration).\n* top_up - Issued from a top-up purchase or similar add-on credit-grant purchase made on top of the configured plan.\n* rollover - Issued by carrying forward unused credit grants from another block at end-of-period processing.\n* subscription_renewed - Issued when the subscription renews for a new term, triggering a fresh allocation of the configured credit grants.\n',
         example: null,
       }),
     created_at: z
@@ -28479,6 +28738,70 @@ const GrantBlockSchema = z
           'Balance details for a grant block with overdraft [`account_type`](#account_type).  \n**Note**\n\nPopulated only for blocks with overdraft `account_type`; `null` for provisioned blocks.\n',
         required: ['is_unlimited'],
         example: null,
+      }),
+    billing_metadata: z
+      .object({
+        item_price_id: z
+          .string()
+          .max(100)
+          .exactOptional()
+          .openapi({
+            deprecated: false,
+            description:
+              'Identifier of the [item price](/docs/api/item_prices) associated with the grant block.\n',
+            example: null,
+          }),
+        line_items: z
+          .array(
+            z
+              .object({
+                id: z
+                  .string()
+                  .max(40)
+                  .exactOptional()
+                  .openapi({
+                    deprecated: false,
+                    description:
+                      'Identifier of the [invoice line item](/docs/api/invoices/invoice-object#line_items) associated with the grant block.\n',
+                    example: null,
+                  }),
+                invoice_number: z
+                  .string()
+                  .max(50)
+                  .exactOptional()
+                  .openapi({
+                    deprecated: false,
+                    description:
+                      'Identifier of the [invoice](/docs/api/invoices) that contains this line item, when available. Despite the field name, the value is the invoice [`id`](/docs/api/invoices/invoice-object#id).\n',
+                    example: null,
+                  }),
+                quantity: z
+                  .number()
+                  .exactOptional()
+                  .openapi({
+                    deprecated: false,
+                    description:
+                      'Quantity of the invoice line item. Returned as a JSON number, not a decimal string like the balance amounts on this resource, and can be fractional (for example, `0.5`).\n',
+                    example: null,
+                  }),
+              })
+              .openapi({ deprecated: false, example: null, required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            deprecated: false,
+            description:
+              'Invoice line items associated with the grant block. Each entry can reference a different invoice. The array can be empty.\n',
+            example: null,
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        deprecated: false,
+        description:
+          'Billing context for this grant block, such as the associated item price and invoice line items. Separate from the opaque [`metadata`](#metadata) object.  \n**Note**\n\nAbsent when billing context is unavailable; a grant block does not necessarily have an associated invoice. Any field within the object can also be absent or `null`.\n',
+        example: null,
+        required: [],
       }),
   })
   .openapi({
@@ -32888,7 +33211,7 @@ const MeterSchema = z
       .openapi({
         deprecated: false,
         description:
-          "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.\n",
+          "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.\n",
         example: null,
       }),
     created_at: z
@@ -32908,7 +33231,7 @@ const MeterSchema = z
       .openapi({
         deprecated: false,
         description:
-          'An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nFor example, when `query` is `SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.\n',
+          'An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.\n\nFor example, when `query` is `SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.\n',
         example: null,
       }),
     column_definitions: z
@@ -33108,7 +33431,7 @@ const MeterSchema = z
   })
   .openapi({
     description:
-      'A **meter** captures the usage measurement configuration of a [metered feature](/docs/api/metered_features).\n\n### Meter configuration examples\n\nThe following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nWhen `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.\n\n#### Without group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(request_count) FROM events WHERE status = \'completed\'",\n  "column_definitions": [\n    {\n      "column_name": "request_count",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ]\n}\n```\n\n#### With group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region",\n  "column_definitions": [\n    {\n      "column_name": "hours",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ],\n  "group_by": [\n    "gpu_type",\n    "region"\n  ]\n}\n```\n\nGroup-by attributes used only in the `GROUP BY` clause are returned in `group_by` and do not require `column_definitions` entries.\n',
+      'A **meter** captures the usage measurement configuration of a [metered feature](/docs/api/metered_features).\n\n### Meter configuration examples\n\nThe following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.\n\nWhen `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.\n\n#### Without group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(request_count) FROM events WHERE status = \'completed\'",\n  "column_definitions": [\n    {\n      "column_name": "request_count",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ]\n}\n```\n\n#### With group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region",\n  "column_definitions": [\n    {\n      "column_name": "hours",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ],\n  "group_by": [\n    "gpu_type",\n    "region"\n  ]\n}\n```\n\nGroup-by attributes used only in the `GROUP BY` clause are returned in `group_by` and do not require `column_definitions` entries.\n',
     required: ['created_at', 'id', 'name', 'query', 'type'],
     example: null,
   })
@@ -33174,7 +33497,7 @@ const MeteredFeatureSchema = z
       .openapi({
         deprecated: false,
         description:
-          "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  \n**Usage reporting and subscription billing**\n\nFor a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.\n\nFor example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.\n",
+          "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  \n**Usage reporting and subscription billing**\n\nFor a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.\n\nFor example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.\n",
         example: null,
       }),
     group_by: z
@@ -33183,7 +33506,7 @@ const MeteredFeatureSchema = z
       .openapi({
         deprecated: false,
         description:
-          'An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nFor example, when `query` is `SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.\n',
+          'An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.\n\nFor example, when `query` is `SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.\n',
         example: null,
       }),
     column_definitions: z
@@ -33384,7 +33707,7 @@ const MeteredFeatureSchema = z
   })
   .openapi({
     description:
-      'A metered feature object represents two things:\n\n* the [feature](/docs/api/features) whose entitlement is consumed based on measured usage.\n* the configuration that measures that usage.\n\n### Meter configuration examples\n\nThe following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nWhen `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.\n\n#### Without group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(request_count) FROM events WHERE status = \'completed\'",\n  "column_definitions": [\n    {\n      "column_name": "request_count",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ]\n}\n```\n\n#### With group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region",\n  "column_definitions": [\n    {\n      "column_name": "hours",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ],\n  "group_by": [\n    "gpu_type",\n    "region"\n  ]\n}\n```\n\nGroup-by attributes used only in the `GROUP BY` clause are returned in `group_by` and do not require `column_definitions` entries.\n',
+      'A metered feature object represents two things:\n\n* the [feature](/docs/api/features) whose entitlement is consumed based on measured usage.\n* the configuration that measures that usage.\n\n### Meter configuration examples\n\nThe following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.\n\nWhen `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.\n\n#### Without group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(request_count) FROM events WHERE status = \'completed\'",\n  "column_definitions": [\n    {\n      "column_name": "request_count",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ]\n}\n```\n\n#### With group-by attributes\n\n```json\n{\n  "query": "SELECT SUM(hours) FROM events WHERE status = \'completed\' GROUP BY gpu_type, region",\n  "column_definitions": [\n    {\n      "column_name": "hours",\n      "data_type": "number"\n    },\n    {\n      "column_name": "status",\n      "data_type": "string"\n    }\n  ],\n  "group_by": [\n    "gpu_type",\n    "region"\n  ]\n}\n```\n\nGroup-by attributes used only in the `GROUP BY` clause are returned in `group_by` and do not require `column_definitions` entries.\n',
     required: ['id'],
     example: null,
   })
@@ -34409,7 +34732,7 @@ const OmnichannelSubscriptionSchema = z
       .openapi({
         deprecated: false,
         description:
-          'The storefront where the purchase is originally made and managed (`apple_app_store` or `google_play_store`).\n\n* google_play_store - The purchase originated from the Google Play Store.\n* apple_app_store - The purchase originated from the Apple App Store.\n',
+          'The storefront where the purchase is originally made and managed (`apple_app_store` or `google_play_store`).\n\n* apple_app_store - The purchase originated from the Apple App Store.\n* google_play_store - The purchase originated from the Google Play Store.\n',
         example: null,
       }),
     customer_id: z
@@ -34561,14 +34884,19 @@ const OmnichannelSubscriptionSchema = z
               .openapi({
                 deprecated: false,
                 description:
-                  'Specifies the reason for the subscription expiration. Present when `status` is `expired`.\n\n**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.\n\n**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.\n\n* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).\n* product_not_available -\n  The product was unavailable for purchase at the time of renewal.\n\n  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.\n* other -\n  The subscription associated with the item expired for an unspecified reason.\n\n  **Apple App Store** : Maps from expiration intent `OTHER`.\n* billing_error -\n  Billing error, such as invalid customer payment information.\n\n  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.\n',
+                  'Specifies the reason for the subscription expiration. Present when `status` is `expired`. When the value is `other`, see `expiration_reason_at_source` for the original store value when available.\n\n**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.\n\n**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.\n\n* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).\n* other -\n  The subscription associated with the item expired for an unspecified or marketplace-specific reason. See `expiration_reason_at_source` for the original store value when available.\n\n  **Apple App Store** : Maps from expiration intent `OTHER`.\n* product_not_available -\n  The product was unavailable for purchase at the time of renewal.\n\n  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.\n* billing_error -\n  Billing error, such as invalid customer payment information.\n\n  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.\n',
                 example: null,
               }),
             expiration_reason_at_source: z
               .string()
               .max(500)
               .exactOptional()
-              .openapi({ deprecated: false, example: null }),
+              .openapi({
+                deprecated: false,
+                description:
+                  'Expiration reason as reported by the source store (text or code). Present only when `expiration_reason` is `other`. Maximum length is 500 characters.\n',
+                example: null,
+              }),
             cancelled_at: z
               .int()
               .exactOptional()
@@ -34591,14 +34919,19 @@ const OmnichannelSubscriptionSchema = z
               .openapi({
                 deprecated: false,
                 description:
-                  'The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value.\n\n* customer_did_not_consent_to_price_increase -\n  The customer did not consent to a price increase for the subscription item.\n\n  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.\n\n  **Google Play Store**: Not typically used for this reason code.\n* merchant_revoked -\n  The merchant revoked access to the subscription.\n\n  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).\n\n  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).\n* customer_cancelled -\n  The customer voluntarily cancelled the subscription.\n\n  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.\n\n  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.\n* refunded_for_other_reason -\n  The subscription was cancelled and refunded for another reason.\n\n  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* refunded_due_to_app_issue -\n  The subscription was cancelled and refunded due to an app issue.\n\n  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n',
+                  'The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value. When the value is `other`, see `cancellation_reason_at_source` for the original store value when available.\n\n* merchant_revoked -\n  The merchant revoked access to the subscription.\n\n  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).\n\n  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).\n* customer_did_not_consent_to_price_increase -\n  The customer did not consent to a price increase for the subscription item.\n\n  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.\n\n  **Google Play Store**: Not typically used for this reason code.\n* customer_cancelled -\n  The customer voluntarily cancelled the subscription.\n\n  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.\n\n  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.\n* refunded_for_other_reason -\n  The subscription was cancelled and refunded for another reason.\n\n  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* other - The subscription item was cancelled for a marketplace-specific or unmapped reason. See `cancellation_reason_at_source` for the original store value when available.\n* refunded_due_to_app_issue -\n  The subscription was cancelled and refunded due to an app issue.\n\n  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n',
                 example: null,
               }),
             cancellation_reason_at_source: z
               .string()
               .max(500)
               .exactOptional()
-              .openapi({ deprecated: false, example: null }),
+              .openapi({
+                deprecated: false,
+                description:
+                  'Cancellation reason as reported by the source store (text or code). Present only when `cancellation_reason` is `other`. Maximum length is 500 characters.\n',
+                example: null,
+              }),
             grace_period_expires_at: z
               .int()
               .exactOptional()
@@ -35211,14 +35544,19 @@ const OmnichannelSubscriptionItemSchema = z
       .openapi({
         deprecated: false,
         description:
-          'Specifies the reason for the subscription expiration. Present when `status` is `expired`.\n\n**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.\n\n**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.\n\n* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).\n* other -\n  The subscription associated with the item expired for an unspecified reason.\n\n  **Apple App Store** : Maps from expiration intent `OTHER`.\n* product_not_available -\n  The product was unavailable for purchase at the time of renewal.\n\n  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.\n* billing_error -\n  Billing error, such as invalid customer payment information.\n\n  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.\n',
+          'Specifies the reason for the subscription expiration. Present when `status` is `expired`. When the value is `other`, see `expiration_reason_at_source` for the original store value when available.\n\n**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.\n\n**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.\n\n* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).\n* other -\n  The subscription associated with the item expired for an unspecified or marketplace-specific reason. See `expiration_reason_at_source` for the original store value when available.\n\n  **Apple App Store** : Maps from expiration intent `OTHER`.\n* product_not_available -\n  The product was unavailable for purchase at the time of renewal.\n\n  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.\n* billing_error -\n  Billing error, such as invalid customer payment information.\n\n  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.\n',
         example: null,
       }),
     expiration_reason_at_source: z
       .string()
       .max(500)
       .exactOptional()
-      .openapi({ deprecated: false, example: null }),
+      .openapi({
+        deprecated: false,
+        description:
+          'Expiration reason as reported by the source store (text or code). Present only when `expiration_reason` is `other`. Maximum length is 500 characters.\n',
+        example: null,
+      }),
     cancelled_at: z
       .int()
       .exactOptional()
@@ -35241,14 +35579,19 @@ const OmnichannelSubscriptionItemSchema = z
       .openapi({
         deprecated: false,
         description:
-          'The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value.\n\n* refunded_for_other_reason -\n  The subscription was cancelled and refunded for another reason.\n\n  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* refunded_due_to_app_issue -\n  The subscription was cancelled and refunded due to an app issue.\n\n  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* customer_did_not_consent_to_price_increase -\n  The customer did not consent to a price increase for the subscription item.\n\n  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.\n\n  **Google Play Store**: Not typically used for this reason code.\n* customer_cancelled -\n  The customer voluntarily cancelled the subscription.\n\n  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.\n\n  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.\n* merchant_revoked -\n  The merchant revoked access to the subscription.\n\n  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).\n\n  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).\n',
+          'The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value. When the value is `other`, see `cancellation_reason_at_source` for the original store value when available.\n\n* refunded_for_other_reason -\n  The subscription was cancelled and refunded for another reason.\n\n  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* refunded_due_to_app_issue -\n  The subscription was cancelled and refunded due to an app issue.\n\n  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.\n\n  **Google Play Store**: Not typically used for this reason code.\n* customer_did_not_consent_to_price_increase -\n  The customer did not consent to a price increase for the subscription item.\n\n  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.\n\n  **Google Play Store**: Not typically used for this reason code.\n* other - The subscription item was cancelled for a marketplace-specific or unmapped reason. See `cancellation_reason_at_source` for the original store value when available.\n* customer_cancelled -\n  The customer voluntarily cancelled the subscription.\n\n  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.\n\n  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.\n* merchant_revoked -\n  The merchant revoked access to the subscription.\n\n  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).\n\n  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).\n',
         example: null,
       }),
     cancellation_reason_at_source: z
       .string()
       .max(500)
       .exactOptional()
-      .openapi({ deprecated: false, example: null }),
+      .openapi({
+        deprecated: false,
+        description:
+          'Cancellation reason as reported by the source store (text or code). Present only when `cancellation_reason` is `other`. Maximum length is 500 characters.\n',
+        example: null,
+      }),
     grace_period_expires_at: z
       .int()
       .exactOptional()
@@ -35581,7 +35924,7 @@ const OmnichannelSubscriptionItemSchema = z
   })
   .openapi({
     description:
-      'Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.\n\nStatus, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.\n\nChargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.\n\nWhen `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  \n**Note:**\nThis resource represents in-app subscription items made on Apple App Store and Google Play Store.\n',
+      "Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.\n\nStatus, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.\n\nWhen a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.\n\nChargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.\n\nWhen `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  \n**Note:**\nThis resource represents in-app subscription items made on Apple App Store and Google Play Store.\n",
     required: ['has_scheduled_changes', 'id', 'item_id_at_source', 'status', 'updated_at'],
     example: null,
   })
@@ -39287,6 +39630,151 @@ const OrderUpdatedEventSchema = z
   })
   .openapi('OrderUpdatedEvent')
 
+const OrganizationDetailSchema = z
+  .object({
+    id: z.string().max(40).openapi({ deprecated: false, example: null }),
+    organization_name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    email: z.email().max(70).exactOptional().openapi({ deprecated: false, example: null }),
+    address_line1: z
+      .string()
+      .max(180)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    address_line2: z
+      .string()
+      .max(150)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    address_line3: z
+      .string()
+      .max(150)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    city: z.string().max(50).exactOptional().openapi({ deprecated: false, example: null }),
+    state_code: z.string().max(50).exactOptional().openapi({ deprecated: false, example: null }),
+    state: z.string().max(50).exactOptional().openapi({ deprecated: false, example: null }),
+    country_code: z.string().max(50).exactOptional().openapi({ deprecated: false, example: null }),
+    zip: z.string().max(20).exactOptional().openapi({ deprecated: false, example: null }),
+    phone: z.string().max(20).exactOptional().openapi({ deprecated: false, example: null }),
+    fax: z.string().max(20).exactOptional().openapi({ deprecated: false, example: null }),
+    website: z.string().max(200).exactOptional().openapi({ deprecated: false, example: null }),
+    is_vat_number_present: z
+      .boolean()
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+    vat_number: z.string().max(20).exactOptional().openapi({ deprecated: false, example: null }),
+    resource_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', deprecated: false, example: null }),
+    updated_at: z.int().exactOptional().openapi({ deprecated: false, example: null }),
+    business_entity_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ deprecated: false, example: null }),
+  })
+  .openapi({ required: ['id'], example: null })
+  .openapi('OrganizationDetail')
+
+const OrganizationDetailsCreatedEventSchema = z
+  .object({
+    id: z.string().openapi({ description: 'The ID of the event', example: null }),
+    occurred_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Timestamp of the event',
+        example: null,
+      }),
+    source: z.string().openapi({ description: 'Source of the event', example: null }),
+    object: z.string().openapi({ description: 'The object of the event', example: null }),
+    api_version: z.string().openapi({ description: 'API version', example: null }),
+    event_type: z.string().openapi({ description: 'Type of the event', example: null }),
+    webhook_status: z.string().openapi({ description: 'Status of webhook', example: null }),
+    content: z
+      .object({ organization_detail: OrganizationDetailSchema })
+      .openapi({ required: ['organization_detail'], example: null }),
+  })
+  .openapi({
+    required: [
+      'api_version',
+      'content',
+      'event_type',
+      'id',
+      'object',
+      'occurred_at',
+      'source',
+      'webhook_status',
+    ],
+    example: null,
+  })
+  .openapi('OrganizationDetailsCreatedEvent')
+
+const OrganizationDetailsUpdatedEventSchema = z
+  .object({
+    id: z.string().openapi({ description: 'The ID of the event', example: null }),
+    occurred_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Timestamp of the event',
+        example: null,
+      }),
+    source: z.string().openapi({ description: 'Source of the event', example: null }),
+    object: z.string().openapi({ description: 'The object of the event', example: null }),
+    api_version: z.string().openapi({ description: 'API version', example: null }),
+    event_type: z.string().openapi({ description: 'Type of the event', example: null }),
+    webhook_status: z.string().openapi({ description: 'Status of webhook', example: null }),
+    content: z
+      .object({ organization_detail: OrganizationDetailSchema })
+      .openapi({ required: ['organization_detail'], example: null }),
+  })
+  .openapi({
+    required: [
+      'api_version',
+      'content',
+      'event_type',
+      'id',
+      'object',
+      'occurred_at',
+      'source',
+      'webhook_status',
+    ],
+    example: null,
+  })
+  .openapi('OrganizationDetailsUpdatedEvent')
+
 const OverridesMetricSchema = z
   .object({
     item_type: z
@@ -40597,12 +41085,6 @@ const PaymentMethodSchema = z
     'bank_transfer',
     'other',
     'custom',
-    'tamara',
-    'qpay',
-    'blik',
-    'fpx',
-    'wero',
-    'p24',
     'chargeback',
     'card',
     'amazon_payments',
@@ -40658,6 +41140,8 @@ const PaymentMethodSchema = z
     'promptpay',
     'dana',
     'touch_n_go',
+    'tamara',
+    'qpay',
     'ovo',
     'momo',
     'mercado_pago',
@@ -40665,6 +41149,10 @@ const PaymentMethodSchema = z
     'nupay',
     'picpay',
     'thai_qr',
+    'blik',
+    'fpx',
+    'wero',
+    'p24',
     'affirm_pay',
     'rakuten_pay',
   ])
@@ -48260,6 +48748,11 @@ const QuotedChargeSchema = z
                   'The name of the discount as it should appear on customer-facing pages and documents such as [invoices](/docs/api/invoices)\nand [hosted pages](/docs/api/hosted_pages).\nThis is auto-generated based on the `type`\n, `amount`\n, and `currency_code`\nof the discount. For example, it can be `10% off`\nor `10$ off`\n.\n',
                 example: null,
               }),
+            description: z
+              .string()
+              .max(100)
+              .exactOptional()
+              .openapi({ deprecated: false, example: null }),
             type: z
               .enum(['fixed_amount', 'percentage', 'offer_quantity'])
               .default('percentage')
@@ -49280,6 +49773,11 @@ const QuotedSubscriptionSchema = z
                   'The name of the discount as it should appear on customer-facing pages and documents such as [invoices](/docs/api/invoices)\nand [hosted pages](/docs/api/hosted_pages).\nThis is auto-generated based on the `type`\n, `amount`\n, and `currency_code`\nof the discount. For example, it can be `10% off`\nor `10$ off`\n.\n',
                 example: null,
               }),
+            description: z
+              .string()
+              .max(100)
+              .exactOptional()
+              .openapi({ deprecated: false, example: null }),
             type: z
               .enum(['fixed_amount', 'percentage', 'offer_quantity'])
               .default('percentage')
@@ -49695,7 +50193,7 @@ const QuotedSubscriptionSchema = z
               .openapi({ deprecated: false, example: null }),
             description: z
               .string()
-              .max(500)
+              .max(2000)
               .exactOptional()
               .openapi({
                 deprecated: false,
@@ -50188,7 +50686,7 @@ const RampSchema = z
               }),
             description: z
               .string()
-              .max(500)
+              .max(2000)
               .exactOptional()
               .openapi({ deprecated: false, example: null }),
             charge_on_event: z
@@ -50384,7 +50882,7 @@ const RampSchema = z
               }),
             description: z
               .string()
-              .max(500)
+              .max(2000)
               .exactOptional()
               .openapi({ deprecated: false, example: null }),
             charge_on_event: z
@@ -52450,6 +52948,7 @@ const SalesOrderSchema = z
             example: null,
           }),
         next_renewal_date: z.int().exactOptional().openapi({ deprecated: false, example: null }),
+        trial_end: z.int().exactOptional().openapi({ deprecated: false, example: null }),
         billing_cycles_to_invoice: z
           .int32()
           .exactOptional()
@@ -52685,7 +53184,7 @@ const SiteSchema = z
       }),
     currency_code: z.string().max(3).exactOptional().openapi({ deprecated: false, example: null }),
     status: z
-      .enum(['active', 'disabled', 'cancelled'])
+      .enum(['active', 'disabled', 'cancelled', 'unclaimed', 'claimed'])
       .exactOptional()
       .openapi({ deprecated: false, example: null }),
     type: z.enum(['sandbox', 'live']).exactOptional().openapi({ deprecated: false, example: null }),
@@ -52753,6 +53252,8 @@ const SiteSchema = z
       .max(50)
       .exactOptional()
       .openapi({ deprecated: false, example: null }),
+    claim_url: z.string().max(500).exactOptional().openapi({ deprecated: false, example: null }),
+    claim_expiry_at: z.int().exactOptional().openapi({ deprecated: false, example: null }),
     linked_sites: z
       .array(
         z
@@ -52764,7 +53265,7 @@ const SiteSchema = z
               .exactOptional()
               .openapi({ deprecated: false, example: null }),
             status: z
-              .enum(['active', 'disabled', 'cancelled'])
+              .enum(['active', 'disabled', 'cancelled', 'unclaimed', 'claimed'])
               .exactOptional()
               .openapi({ deprecated: false, example: null }),
             created_at: z.int().openapi({ deprecated: false, example: null }),
@@ -59024,13 +59525,13 @@ const UsageSummarySchema = z
       .openapi({
         deprecated: false,
         description:
-          'The group-by attributes that identify the usage group. Each entry contains the group-by attribute\'s `name` and `value`. A null group is returned with `value` set to JSON `null`, while an empty-string group has `value` set to `""`.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nThis list is returned only when the request includes `group_by`. Its order matches the group-by attribute order specified in `group_by`.\n',
+          'The group-by attributes that identify the usage group. Each entry contains the group-by attribute\'s `name` and `value`. A null group is returned with `value` set to JSON `null`, while an empty-string group has `value` set to `""`.\n\nThis list is returned only when the request includes `group_by`. Its order matches the group-by attribute order specified in `group_by`.\n',
         example: null,
       }),
   })
   .openapi({
     description:
-      'Usage summary represents aggregated usage data for a metered [feature](/docs/api/features/feature-object) in a [subscription](/docs/api/subscriptions/subscription-object) over a specific reporting period. The aggregation is performed based on the [aggregation method](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/defining-metered-features) configured in Billing.\n\nUse this resource to analyze feature-level usage for reporting or analytics purposes, independent of usage billing or invoicing.\n\n### Group-by attributes\n\n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nWhen usage is grouped, each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object with an `attributes` list containing:\n\n* `name`: The group-by attribute name.\n* `value`: The group-by attribute value for that group. A null group is returned as JSON `null`, and an empty-string group is returned as `""`.\n\nFor example:\n\n```json\n{\n  "attributes": [\n    {\n      "name": "gpu_type",\n      "value": "h100"\n    },\n    {\n      "name": "region",\n      "value": "us-east"\n    }\n  ]\n}\n```\n\nThe `attributes` list is not returned when usage is not grouped.\n\nThe order of entries in `attributes` matches the order of the names specified in `group_by`.\n',
+      'Usage summary represents aggregated usage data for a metered [feature](/docs/api/features/feature-object) in a [subscription](/docs/api/subscriptions/subscription-object) over a specific reporting period. The aggregation is performed based on the [aggregation method](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/defining-metered-features) configured in Billing.\n\nUse this resource to analyze feature-level usage for reporting or analytics purposes, independent of usage billing or invoicing.\n\n### Group-by attributes\n\nWhen usage is grouped, each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object with an `attributes` list containing:\n\n* `name`: The group-by attribute name.\n* `value`: The group-by attribute value for that group. A null group is returned as JSON `null`, and an empty-string group is returned as `""`.\n\nFor example:\n\n```json\n{\n  "attributes": [\n    {\n      "name": "gpu_type",\n      "value": "h100"\n    },\n    {\n      "name": "region",\n      "value": "us-east"\n    }\n  ]\n}\n```\n\nThe `attributes` list is not returned when usage is not grouped.\n\nThe order of entries in `attributes` matches the order of the names specified in `group_by`.\n',
     required: [
       'aggregated_from',
       'aggregated_to',
@@ -60200,6 +60701,8 @@ const WebhookEndpointSchema = z
             'customer_business_entity_changed',
             'subscription_business_entity_changed',
             'payment_source_business_entity_changed',
+            'organization_details_created',
+            'organization_details_updated',
             'purchase_created',
             'voucher_created',
             'voucher_expired',
@@ -60297,7 +60800,7 @@ const WebhookEndpointSchema = z
           .openapi({
             deprecated: false,
             description:
-              "The types of events that trigger this webhook. For a complete list, see [event types](/docs/api/webhook_endpoints)\n.\n\n* entitlement_overrides_auto_removed - Triggered when subscription entitlement overrides for a feature are automatically removed after expiry.\n* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.\n* payment_source_expired - Sent when a payment source for a customer expires.\n* business_ruleset_updated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [updated](/docs/api/business_rulesets/update-a-business-ruleset).\n* payment_succeeded - Sent when the payment is successfully collected.\n* order_ready_to_process - Triggered when an order reaches its order date.\n* price_variant_updated - Triggered when a price variant is updated.\n* subscription_scheduled_changes_removed - Sent when a scheduled change for the subscription is removed.\n* payment_failed - Sent when an attempt to charge the customer's credit card fails.\n* coupon_codes_deleted - Sent when coupon codes are deleted from a coupon set.\n* customer_changed - Sent when a customer is changed.\n* subscription_scheduled_resumption_removed - Triggered when a scheduled resumption is removed for the subscription.\n* differential_price_deleted - Triggered when a differential price is deleted.\n* card_expired - Sent when a card for a customer expires.\n* omnichannel_one_time_order_created - Triggered when an omnichannel one-time order is created.\n* subscription_canceled_with_backdating - Sent when the subscription is cancelled, with the cancellation backdated. If it is cancelled due to non-payment or a missing card, the reason is available in `cancel_reason`.\n* attached_item_deleted - Triggered when an attached item is deleted.\n* hierarchy_created - Triggered when a hierarchy is created.\n* order_cancelled - Triggered when an order is cancelled.\n* refund_failed - Triggered when a refund attempt fails at the gateway.\n* business_ruleset_activated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [activated](/docs/api/business_rulesets/activate-a-business-ruleset), so Chargebee starts evaluating the rules it contains.\n* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.\n* payment_due_reminder - Sent after scheduled days of payment failure\n* authorization_succeeded - Triggered when an authorization transaction is created.\n* order_deleted - Triggered when an order is deleted.\n* payment_initiated - Sent when a payment is initiated via direct debit.\n* order_resent - Triggered when an order is resent.\n* coupon_updated - Sent when a coupon is changed.\n* grant_blocks_updated -\n* item_price_updated - Triggered when an item price is updated.\n* coupon_set_created - Sent when a coupon set is created.\n* subscription_cancelled - Sent when the subscription is cancelled. If it is cancelled due to non-payment or a missing card, the reason is available in `cancel_reason`.\n* subscription_paused - Sent when the subscription is paused.\n* transaction_updated - Triggered when a transaction is updated. For example, when a transaction is removed, when an excess payment is applied to an invoice, or when `amount_capturable` is updated.\n* omnichannel_subscription_created - Triggered when an omnichannel subscription is created.\n* order_created - Triggered when an order is created.\n* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.\n* unbilled_charges_deleted - Triggered when unbilled charges are deleted.\n* business_entity_updated - Sent when a business entity is updated.\n* feature_deleted - Triggered when a feature is deleted.\n* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started.\n* payment_source_business_entity_changed -\n* feature_archived - Triggered when a feature is archived.\n* attached_item_created - Triggered when an attached item is created.\n* card_updated - Sent when the card is updated for a customer.\n* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed.\n* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.\n* hierarchy_deleted - Triggered when a hierarchy is deleted.\n* subscription_changed - Sent after the subscription's recurring items have been changed.\n* gift_scheduled - Triggered when a new gift is created.\n* differential_price_created - Triggered when a differential price is created.\n* invoice_generated_with_backdating - Event triggered when a new invoice is generated with a past date as the invoice date.\n* payment_intent_updated - Sent when a payment intent is updated.\n* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.\n* promotional_credits_deducted - Sent when promotional credits are deducted for a customer.\n* subscription_ramp_created - Triggered when a subscription ramp is created.\n* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation.\n* subscription_started - Sent when a `future` subscription starts on the scheduled date.\n* credit_note_deleted - Sent when a credit note is deleted.\n* credit_note_updated - Sent when a credit note is updated.\n* item_family_created - Triggered when an item family is created.\n* contract_term_terminated - Triggered when a contract term is terminated.\n* contract_term_cancelled - Triggered when a contract term is cancelled.\n* sales_order_created - Triggered when a sales order is created.\n* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.\n* item_family_deleted - Triggered when an item family is deleted.\n* order_returned - Triggered when an order is marked as returned.\n* item_price_created - Triggered when an item price is created.\n* business_entity_created - Sent when a business entity is created.\n* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed.\n* subscription_renewal_reminder - Sent before each subscription renewal, based on the plan's period.\n* item_family_updated - Triggered when an item family is updated.\n* promotional_credits_added - Sent when promotional credits are added for a customer.\n* business_entity_deleted - Sent when a business entity is deleted.\n* business_rule_activated - Triggered when a [business rule](/docs/api/business_rules) is [activated](/docs/api/business_rules/activate-a-business-rule), so Chargebee starts evaluating its released version.\n* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.\n* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice.\n* dunning_updated - Sent when dunning is paused for an invoice.\n* payment_source_added - Sent when a payment source is added for a customer.\n* customer_entitlements_updated - Triggered when entitlements for a list of customers are updated.\n* subscription_moved_in - Triggered when a subscription is moved from another customer.\n* item_created - Triggered when an item is created.\n* record_purchase_failed - Triggered when an omnichannel record purchase fails.\n* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. The changes are applied at the end of the current term.\n* feature_created - Triggered when a feature is created.\n* coupon_set_deleted - Sent when a coupon set is deleted.\n* item_deleted - Triggered when an item is deleted.\n* coupon_set_updated - Sent when a coupon set is changed.\n* subscription_items_renewed - Sent when one or more subscription items are renewed.\n* subscription_scheduled_cancellation_removed - Sent when a scheduled cancellation is removed for the subscription.\n* business_ruleset_deactivated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [deactivated](/docs/api/business_rulesets/deactivate-a-business-ruleset), so Chargebee stops evaluating it.\n* coupon_created - Sent when a coupon is created.\n* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded.\n* order_updated - Triggered when an order is updated.\n* item_price_deleted - Triggered when an item price is deleted.\n* purchase_created - Triggered when a purchase action is completed successfully.\n* gift_cancelled - Triggered when a gift is cancelled.\n* subscription_renewed - Sent when the subscription is renewed from the current term.\n* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled.\n* subscription_scheduled_pause_removed - Triggered when a scheduled pause is removed for the subscription.\n* grant_blocks_created -\n* quote_updated - Triggered when a quote is updated.\n* customer_created - Sent when a customer is created. This event occurs when a new customer is created on its own, or when a customer is created automatically during subscription creation.\n* tax_withheld_refunded - Sent when a tax withheld refund is made.\n* alert_status_changed -\n  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.\n  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.\n* coupon_deleted - Sent when a coupon is deleted.\n* order_delivered - Triggered when an order is marked as delivered.\n* differential_price_updated - Triggered when a differential price is updated.\n* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.\n* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.\n* usage_file_ingested - Triggered when a usage file is ingested.\n* subscription_entitlements_updated - Triggered when subscription entitlements are updated because of a subscription change event.\n* voucher_created - Triggered when a payment voucher is created.\n* entitlement_overrides_removed - Triggered when an override entitlement is removed.\n* subscription_business_entity_changed - Sent when a subscription's business entity is changed.\n* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.\n* add_usages_reminder - Sent every month day before renewal date of plan's period\n* contract_term_created - Triggered when a new contract term is created.\n* subscription_resumed - Sent when the subscription is moved from the paused state to the active state.\n* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.\n* order_ready_to_ship - Triggered when an order reaches its shipping date.\n* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported.\n* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* business_ruleset_deleted -\n* ledger_updated -\n* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started.\n* subscription_advance_invoice_schedule_removed - Triggered when a scheduled advance invoice is removed for a subscription.\n* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription.\n* card_added - Sent when a card is added for a customer.\n* customer_moved_out - Sent when a customer is copied to another site.\n* gift_updated - Triggered when a gift is updated.\n* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted.\n* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* customer_deleted - Sent when a customer is deleted.\n* price_variant_created - Triggered when a price variant is created.\n* business_ruleset_created - Triggered when a [business ruleset](/docs/api/business_rulesets) is [created](/docs/api/business_rulesets/create-a-business-ruleset). The ruleset is created with `active` set to `false`, so it is not evaluated until it is activated.\n* customer_moved_in - Sent when a customer is copied from another site.\n* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created.\n* contract_term_renewed - Triggered when a contract term is renewed.\n* item_entitlements_removed - Triggered when item entitlements are removed for a feature.\n* item_price_entitlements_updated - Triggered when item price entitlements are updated for a feature.\n* price_variant_deleted - Triggered when a price variant is deleted.\n* token_created - Sent when a token is created.\n* voucher_expired - Triggered when a payment voucher expires.\n* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item expires.\n* item_updated - Triggered when an item is updated.\n* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.\n* business_rule_deleted - Triggered when a [business rule](/docs/api/business_rules) is [deleted](/docs/api/business_rules/delete-a-business-rule) and removed from every ruleset it belonged to.\n* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.\n* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed.\n* gift_claimed - Triggered when a gift is claimed.\n* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one-time order item is cancelled.\n* unbilled_charges_voided - Triggered when unbilled charges are voided.\n* omnichannel_subscription_item_scheduled_change_removed - Triggered when a scheduled change for an omnichannel subscription item is removed.\n* subscription_created_with_backdating - Sent when a new subscription is created with backdating.\n* subscription_reactivated - Sent when the subscription is moved from the cancelled state to the active or in_trial state.\n* ledger_account_balance_updated -\n* payment_source_locally_deleted - Sent when a payment source for a customer is removed from Chargebee.\n* authorization_voided - Triggered when an authorization transaction is voided. An authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.\n* token_expired - Sent when a token expires.\n* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item is reactivated.\n* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.\n* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* invoice_deleted - Event triggered when an invoice is deleted.\n* quote_deleted - Triggered when a quote is deleted.\n* subscription_reactivated_with_backdating - Sent when the subscription is moved from the cancelled state to the active or in_trial state, with a past date.\n* subscription_moved_out - Triggered when a subscription is moved to another customer.\n* subscription_shipping_address_updated - Triggered when a shipping address is added or updated for a subscription.\n* token_consumed - Sent when a token is consumed.\n* transaction_deleted - Triggered when a transaction is deleted.\n* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.\n* subscription_trial_extended - Sent when the trial period of a subscription is extended.\n* coupon_codes_updated - Sent when coupon codes are updated.\n* pending_invoice_created - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage-related charges or line items to be added, before being closed. This is triggered only when the \"Notify for Pending Invoices\" option is enabled.\n* business_rule_created - Triggered when a [business rule](/docs/api/business_rules) is [created](/docs/api/business_rules/create-a-business-rule).\n* subscription_advance_invoice_schedule_added - Triggered when an advance invoice is scheduled for a subscription.\n* vault_token_updated - Triggered when a vaulted payment method is updated.\n* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.\n* subscription_movement_failed - Triggered when a subscription movement fails.\n* tax_withheld_deleted - Triggered when a tax withheld is deleted.\n* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled.\n* entitlement_overrides_updated - Triggered when an override entitlement is updated.\n* payment_refunded - Sent when a payment refund is made.\n* item_entitlements_updated - Triggered when item entitlements are updated for a feature.\n* payment_source_updated - Sent when the payment source is updated for a customer, or when a role is assigned to the payment source.\n* quote_created - Triggered when a quote is created.\n* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.\n* credit_note_created - Sent when a credit note is created.\n* gift_expired - Triggered when a gift expires.\n* transaction_created - Triggered when a transaction is recorded.\n* payment_source_deleted - Sent when a payment source is deleted for a customer.\n* coupon_codes_added - Sent when coupon codes are added to a coupon set.\n* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item is recovered from a grace period or dunning.\n* rule_created - Triggered when a rule is created.\n* subscription_activated - Sent after the subscription has been moved from the trial state to the active state.\n* customer_business_entity_changed - Sent when a customer's business entity is changed.\n* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed.\n* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired.\n* subscription_ramp_updated - Triggered when a subscription ramp is updated.\n* business_rule_deactivated - Triggered when a [business rule](/docs/api/business_rules) is [deactivated](/docs/api/business_rules/deactivate-a-business-rule), so Chargebee stops evaluating it.\n* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature.\n* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed, with the change backdated.\n* rule_updated - Triggered when a rule is updated.\n* mrr_updated - Sent when the MRR or CMRR of a subscription changes.\n* feature_updated - Triggered when a feature is updated.\n* subscription_ramp_applied - Triggered when a subscription ramp is applied.\n* card_deleted - Sent when a card is deleted for a customer.\n* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item is scheduled for pause.\n* sales_order_updated - Triggered when a sales order is updated.\n* subscription_cancellation_scheduled - Sent when a subscription is scheduled to be cancelled at the end of the current term.\n* subscription_deleted - Sent when a subscription has been deleted.\n* voucher_create_failed - Triggered when payment voucher creation fails.\n* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired.\n* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.\n* card_expiry_reminder - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.\n* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.\n* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed.\n* refund_initiated - Sent when a refund is initiated via direct debit.\n* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded.\n* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer.\n* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).\n* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused.\n* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when a scheduled cancellation for an omnichannel subscription item is removed.\n* payment_schedules_created - Event triggered when new payment schedules are created for an invoice.\n* subscription_advance_invoice_schedule_updated - Triggered when a scheduled advance invoice is updated for a subscription.\n* credit_note_created_with_backdating - Sent when a credit note is created with a past date as the credit note date.\n* unbilled_charges_created - Triggered when unbilled charges are created.\n* rule_deleted - Triggered when a rule is deleted.\n* attached_item_updated - Triggered when an attached item is updated.\n* payment_intent_created - Sent when a payment intent is created.\n* contract_term_completed - Triggered when a contract term is completed.\n* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice.\n* business_rule_updated - Triggered when the draft of a [business rule](/docs/api/business_rules) is [updated](/docs/api/business_rules/update-a-business-rule-draft). Only the draft changes, so the version Chargebee evaluates is unaffected. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft and [deleting](/docs/api/business_rules/delete-a-business-rule-draft) it do not send this event.\n* subscription_created - Sent when a new subscription is created.\n",
+              "The types of events that trigger this webhook. For a complete list, see [event types](/docs/api/webhook_endpoints)\n.\n\n* entitlement_overrides_auto_removed - Triggered when subscription entitlement overrides for a feature are automatically removed after expiry.\n* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.\n* payment_source_expired - Sent when a payment source for a customer expires.\n* business_ruleset_updated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [updated](/docs/api/business_rulesets/update-a-business-ruleset).\n* payment_succeeded - Sent when the payment is successfully collected.\n* order_ready_to_process - Triggered when an order reaches its order date.\n* price_variant_updated - Triggered when a price variant is updated.\n* subscription_scheduled_changes_removed - Sent when a scheduled change for the subscription is removed.\n* collections_payment_promise_broken - Triggered when a collections payment promise is marked as broken.\n* payment_failed - Sent when an attempt to charge the customer's credit card fails.\n* coupon_codes_deleted - Sent when coupon codes are deleted from a coupon set.\n* customer_changed - Sent when a customer is changed.\n* subscription_scheduled_resumption_removed - Triggered when a scheduled resumption is removed for the subscription.\n* differential_price_deleted - Triggered when a differential price is deleted.\n* card_expired - Sent when a card for a customer expires.\n* omnichannel_one_time_order_created - Triggered when an omnichannel one-time order is created.\n* subscription_canceled_with_backdating - Sent when the subscription is cancelled, with the cancellation backdated. If it is cancelled due to non-payment or a missing card, the reason is available in `cancel_reason`.\n* attached_item_deleted - Triggered when an attached item is deleted.\n* hierarchy_created - Triggered when a hierarchy is created.\n* order_cancelled - Triggered when an order is cancelled.\n* refund_failed - Triggered when a refund attempt fails at the gateway.\n* collections_payment_promise_created - Triggered when a collections payment promise is created.\n* business_ruleset_activated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [activated](/docs/api/business_rulesets/activate-a-business-ruleset), so Chargebee starts evaluating the rules it contains.\n* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.\n* payment_due_reminder - Sent after scheduled days of payment failure\n* authorization_succeeded - Triggered when an authorization transaction is created.\n* order_deleted - Triggered when an order is deleted.\n* payment_initiated - Sent when a payment is initiated via direct debit.\n* order_resent - Triggered when an order is resent.\n* coupon_updated - Sent when a coupon is changed.\n* grant_blocks_updated -\n* item_price_updated - Triggered when an item price is updated.\n* coupon_set_created - Sent when a coupon set is created.\n* subscription_cancelled - Sent when the subscription is cancelled. If it is cancelled due to non-payment or a missing card, the reason is available in `cancel_reason`.\n* subscription_paused - Sent when the subscription is paused.\n* transaction_updated - Triggered when a transaction is updated. For example, when a transaction is removed, when an excess payment is applied to an invoice, or when `amount_capturable` is updated.\n* omnichannel_subscription_created - Triggered when an omnichannel subscription is created.\n* order_created - Triggered when an order is created.\n* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.\n* unbilled_charges_deleted - Triggered when unbilled charges are deleted.\n* collections_reminder_sequence_completed - Triggered when a collections reminder sequence is completed.\n* business_entity_updated - Sent when a business entity is updated.\n* feature_deleted - Triggered when a feature is deleted.\n* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started.\n* payment_source_business_entity_changed -\n* feature_archived - Triggered when a feature is archived.\n* attached_item_created - Triggered when an attached item is created.\n* collections_dispute_updated - Triggered when a collections dispute is updated.\n* card_updated - Sent when the card is updated for a customer.\n* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed.\n* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.\n* hierarchy_deleted - Triggered when a hierarchy is deleted.\n* subscription_changed - Sent after the subscription's recurring items have been changed.\n* gift_scheduled - Triggered when a new gift is created.\n* differential_price_created - Triggered when a differential price is created.\n* invoice_generated_with_backdating - Event triggered when a new invoice is generated with a past date as the invoice date.\n* payment_intent_updated - Sent when a payment intent is updated.\n* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.\n* promotional_credits_deducted - Sent when promotional credits are deducted for a customer.\n* subscription_ramp_created - Triggered when a subscription ramp is created.\n* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation.\n* subscription_started - Sent when a `future` subscription starts on the scheduled date.\n* credit_note_deleted - Sent when a credit note is deleted.\n* collections_payment_promise_cancelled - Triggered when a collections payment promise is cancelled.\n* credit_note_updated - Sent when a credit note is updated.\n* collections_dispute_resolved - Triggered when a collections dispute is resolved.\n* item_family_created - Triggered when an item family is created.\n* contract_term_terminated - Triggered when a contract term is terminated.\n* contract_term_cancelled - Triggered when a contract term is cancelled.\n* sales_order_created - Triggered when a sales order is created.\n* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.\n* item_family_deleted - Triggered when an item family is deleted.\n* order_returned - Triggered when an order is marked as returned.\n* item_price_created - Triggered when an item price is created.\n* business_entity_created - Sent when a business entity is created.\n* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed.\n* subscription_renewal_reminder - Sent before each subscription renewal, based on the plan's period.\n* item_family_updated - Triggered when an item family is updated.\n* promotional_credits_added - Sent when promotional credits are added for a customer.\n* business_entity_deleted - Sent when a business entity is deleted.\n* business_rule_activated - Triggered when a [business rule](/docs/api/business_rules) is [activated](/docs/api/business_rules/activate-a-business-rule), so Chargebee starts evaluating its released version.\n* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.\n* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice.\n* dunning_updated - Sent when dunning is paused for an invoice.\n* payment_source_added - Sent when a payment source is added for a customer.\n* customer_entitlements_updated - Triggered when entitlements for a list of customers are updated.\n* private_note_added - Triggered when a private note is added.\n* subscription_moved_in - Triggered when a subscription is moved from another customer.\n* item_created - Triggered when an item is created.\n* record_purchase_failed - Triggered when an omnichannel record purchase fails.\n* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. The changes are applied at the end of the current term.\n* feature_created - Triggered when a feature is created.\n* coupon_set_deleted - Sent when a coupon set is deleted.\n* item_deleted - Triggered when an item is deleted.\n* coupon_set_updated - Sent when a coupon set is changed.\n* subscription_items_renewed - Sent when one or more subscription items are renewed.\n* subscription_scheduled_cancellation_removed - Sent when a scheduled cancellation is removed for the subscription.\n* business_ruleset_deactivated - Triggered when a [business ruleset](/docs/api/business_rulesets) is [deactivated](/docs/api/business_rulesets/deactivate-a-business-ruleset), so Chargebee stops evaluating it.\n* coupon_created - Sent when a coupon is created.\n* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded.\n* order_updated - Triggered when an order is updated.\n* item_price_deleted - Triggered when an item price is deleted.\n* purchase_created - Triggered when a purchase action is completed successfully.\n* gift_cancelled - Triggered when a gift is cancelled.\n* subscription_renewed - Sent when the subscription is renewed from the current term.\n* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled.\n* subscription_scheduled_pause_removed - Triggered when a scheduled pause is removed for the subscription.\n* grant_blocks_created -\n* quote_updated - Triggered when a quote is updated.\n* customer_created - Sent when a customer is created. This event occurs when a new customer is created on its own, or when a customer is created automatically during subscription creation.\n* tax_withheld_refunded - Sent when a tax withheld refund is made.\n* alert_status_changed -\n  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.\n  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.\n* coupon_deleted - Sent when a coupon is deleted.\n* order_delivered - Triggered when an order is marked as delivered.\n* differential_price_updated - Triggered when a differential price is updated.\n* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.\n* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.\n* usage_file_ingested - Triggered when a usage file is ingested.\n* collections_payment_promise_fulfilled - Triggered when a collections payment promise is fulfilled.\n* subscription_entitlements_updated - Triggered when subscription entitlements are updated because of a subscription change event.\n* voucher_created - Triggered when a payment voucher is created.\n* entitlement_overrides_removed - Triggered when an override entitlement is removed.\n* subscription_business_entity_changed - Sent when a subscription's business entity is changed.\n* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.\n* add_usages_reminder - Sent every month day before renewal date of plan's period\n* contract_term_created - Triggered when a new contract term is created.\n* subscription_resumed - Sent when the subscription is moved from the paused state to the active state.\n* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.\n* order_ready_to_ship - Triggered when an order reaches its shipping date.\n* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported.\n* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* business_ruleset_deleted -\n* ledger_updated -\n* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started.\n* subscription_advance_invoice_schedule_removed - Triggered when a scheduled advance invoice is removed for a subscription.\n* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription.\n* card_added - Sent when a card is added for a customer.\n* customer_moved_out - Sent when a customer is copied to another site.\n* gift_updated - Triggered when a gift is updated.\n* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted.\n* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* customer_deleted - Sent when a customer is deleted.\n* price_variant_created - Triggered when a price variant is created.\n* business_ruleset_created - Triggered when a [business ruleset](/docs/api/business_rulesets) is [created](/docs/api/business_rulesets/create-a-business-ruleset). The ruleset is created with `active` set to `false`, so it is not evaluated until it is activated.\n* customer_moved_in - Sent when a customer is copied from another site.\n* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created.\n* contract_term_renewed - Triggered when a contract term is renewed.\n* item_entitlements_removed - Triggered when item entitlements are removed for a feature.\n* item_price_entitlements_updated - Triggered when item price entitlements are updated for a feature.\n* price_variant_deleted - Triggered when a price variant is deleted.\n* token_created - Sent when a token is created.\n* voucher_expired - Triggered when a payment voucher expires.\n* collections_payment_promise_updated - Triggered when a collections payment promise is updated.\n* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item expires.\n* item_updated - Triggered when an item is updated.\n* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.\n* business_rule_deleted - Triggered when a [business rule](/docs/api/business_rules) is [deleted](/docs/api/business_rules/delete-a-business-rule) and removed from every ruleset it belonged to.\n* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.\n* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed.\n* gift_claimed - Triggered when a gift is claimed.\n* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one-time order item is cancelled.\n* unbilled_charges_voided - Triggered when unbilled charges are voided.\n* collections_reminder_sequence_created - Triggered when a collections reminder sequence is created.\n* omnichannel_subscription_item_scheduled_change_removed - Triggered when a scheduled change for an omnichannel subscription item is removed.\n* subscription_created_with_backdating - Sent when a new subscription is created with backdating.\n* subscription_reactivated - Sent when the subscription is moved from the cancelled state to the active or in_trial state.\n* ledger_account_balance_updated -\n* payment_source_locally_deleted - Sent when a payment source for a customer is removed from Chargebee.\n* authorization_voided - Triggered when an authorization transaction is voided. An authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.\n* token_expired - Sent when a token expires.\n* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item is reactivated.\n* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.\n* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* invoice_deleted - Event triggered when an invoice is deleted.\n* quote_deleted - Triggered when a quote is deleted.\n* subscription_reactivated_with_backdating - Sent when the subscription is moved from the cancelled state to the active or in_trial state, with a past date.\n* subscription_moved_out - Triggered when a subscription is moved to another customer.\n* subscription_shipping_address_updated - Triggered when a shipping address is added or updated for a subscription.\n* token_consumed - Sent when a token is consumed.\n* transaction_deleted - Triggered when a transaction is deleted.\n* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.\n* subscription_trial_extended - Sent when the trial period of a subscription is extended.\n* coupon_codes_updated - Sent when coupon codes are updated.\n* pending_invoice_created - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage-related charges or line items to be added, before being closed. This is triggered only when the \"Notify for Pending Invoices\" option is enabled.\n* business_rule_created - Triggered when a [business rule](/docs/api/business_rules) is [created](/docs/api/business_rules/create-a-business-rule).\n* subscription_advance_invoice_schedule_added - Triggered when an advance invoice is scheduled for a subscription.\n* vault_token_updated - Triggered when a vaulted payment method is updated.\n* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.\n* subscription_movement_failed - Triggered when a subscription movement fails.\n* tax_withheld_deleted - Triggered when a tax withheld is deleted.\n* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled.\n* entitlement_overrides_updated - Triggered when an override entitlement is updated.\n* payment_refunded - Sent when a payment refund is made.\n* collections_dispute_withdrawn - Triggered when a collections dispute is withdrawn.\n* item_entitlements_updated - Triggered when item entitlements are updated for a feature.\n* payment_source_updated - Sent when the payment source is updated for a customer, or when a role is assigned to the payment source.\n* quote_created - Triggered when a quote is created.\n* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.\n* credit_note_created - Sent when a credit note is created.\n* gift_expired - Triggered when a gift expires.\n* transaction_created - Triggered when a transaction is recorded.\n* payment_source_deleted - Sent when a payment source is deleted for a customer.\n* coupon_codes_added - Sent when coupon codes are added to a coupon set.\n* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item is recovered from a grace period or dunning.\n* rule_created - Triggered when a rule is created.\n* subscription_activated - Sent after the subscription has been moved from the trial state to the active state.\n* customer_business_entity_changed - Sent when a customer's business entity is changed.\n* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed.\n* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired.\n* subscription_ramp_updated - Triggered when a subscription ramp is updated.\n* business_rule_deactivated - Triggered when a [business rule](/docs/api/business_rules) is [deactivated](/docs/api/business_rules/deactivate-a-business-rule), so Chargebee stops evaluating it.\n* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature.\n* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed, with the change backdated.\n* rule_updated - Triggered when a rule is updated.\n* mrr_updated - Sent when the MRR or CMRR of a subscription changes.\n* feature_updated - Triggered when a feature is updated.\n* subscription_ramp_applied - Triggered when a subscription ramp is applied.\n* card_deleted - Sent when a card is deleted for a customer.\n* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item is scheduled for pause.\n* sales_order_updated - Triggered when a sales order is updated.\n* subscription_cancellation_scheduled - Sent when a subscription is scheduled to be cancelled at the end of the current term.\n* subscription_deleted - Sent when a subscription has been deleted.\n* voucher_create_failed - Triggered when payment voucher creation fails.\n* collections_reminder_sequence_resumed - Triggered when a collections reminder sequence is resumed.\n* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired.\n* collections_reminder_sequence_paused - Triggered when a collections reminder sequence is paused.\n* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.\n* card_expiry_reminder - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.\n* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.\n* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed.\n* refund_initiated - Sent when a refund is initiated via direct debit.\n* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded.\n* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer.\n* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).\n* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused.\n* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when a scheduled cancellation for an omnichannel subscription item is removed.\n* collections_dispute_created - Triggered when a collections dispute is created.\n* payment_schedules_created - Event triggered when new payment schedules are created for an invoice.\n* subscription_advance_invoice_schedule_updated - Triggered when a scheduled advance invoice is updated for a subscription.\n* email_message_received - Triggered when an email message is received.\n* credit_note_created_with_backdating - Sent when a credit note is created with a past date as the credit note date.\n* unbilled_charges_created - Triggered when unbilled charges are created.\n* rule_deleted - Triggered when a rule is deleted.\n* attached_item_updated - Triggered when an attached item is updated.\n* payment_intent_created - Sent when a payment intent is created.\n* contract_term_completed - Triggered when a contract term is completed.\n* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice.\n* business_rule_updated - Triggered when the draft of a [business rule](/docs/api/business_rules) is [updated](/docs/api/business_rules/update-a-business-rule-draft). Only the draft changes, so the version Chargebee evaluates is unaffected. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft and [deleting](/docs/api/business_rules/delete-a-business-rule-draft) it do not send this event.\n* subscription_created - Sent when a new subscription is created.\n",
             example: null,
           }),
       )
@@ -61028,6 +61531,23 @@ const WebhookEndpointIdParamsSchema = z
     'x-cb-references': { resource: 'webhook_endpoint', attribute: 'id' },
   })
 
+const OrganizationDetailIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'organization-detail-id',
+      in: 'path',
+      required: true,
+      style: 'simple',
+      explode: false,
+      schema: {
+        type: 'string',
+        'x-cb-references': { resource: 'organization_detail', attribute: 'id' },
+      },
+    },
+    'x-cb-references': { resource: 'organization_detail', attribute: 'id' },
+  })
+
 const UsageFileIdParamsSchema = z
   .string()
   .openapi({
@@ -61237,6 +61757,23 @@ const DifferentialPriceIdParamsSchema = z
       },
     },
     'x-cb-references': { resource: 'differential_price', attribute: 'id' },
+  })
+
+const GatewayRequestLogLogIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'gateway-request-log-log-id',
+      in: 'path',
+      required: true,
+      style: 'simple',
+      explode: false,
+      schema: {
+        type: 'string',
+        'x-cb-references': { resource: 'gateway_request_log', attribute: 'log_id' },
+      },
+    },
+    'x-cb-references': { resource: 'gateway_request_log', attribute: 'log_id' },
   })
 
 const BillingDeskEmailAttachmentIdParamsSchema = z
@@ -61907,6 +62444,23 @@ const CouponIdParamsSchema = z
       schema: { type: 'string', 'x-cb-references': { resource: 'coupon', attribute: 'id' } },
     },
     'x-cb-references': { resource: 'coupon', attribute: 'id' },
+  })
+
+const GatewayWebhookLogWebhookIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'gateway-webhook-log-webhook-id',
+      in: 'path',
+      required: true,
+      style: 'simple',
+      explode: false,
+      schema: {
+        type: 'string',
+        'x-cb-references': { resource: 'gateway_webhook_log', attribute: 'webhook_id' },
+      },
+    },
+    'x-cb-references': { resource: 'gateway_webhook_log', attribute: 'webhook_id' },
   })
 
 const PaymentIntentIdParamsSchema = z
@@ -63854,7 +64408,7 @@ export const postSubscriptionsSubscriptionIdUpdateForItemsRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -64110,6 +64664,13 @@ export const postSubscriptionsSubscriptionIdUpdateForItemsRoute = createRoute({
                         'The `id`\nof the `discount`\nto be removed. This parameter is only relevant when `discounts[operation_type]`\nis `remove`\n.\n',
                       example: null,
                     }),
+                  description: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(z.string().max(100).openapi({ deprecated: false, example: null })),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -67514,19 +68075,7 @@ export const postCustomersCustomerIdImportForItemsRoute = createRoute({
                       example: null,
                     }),
                   payment_method: z
-                    .enum([
-                      'cash',
-                      'check',
-                      'bank_transfer',
-                      'other',
-                      'custom',
-                      'tamara',
-                      'qpay',
-                      'blik',
-                      'fpx',
-                      'wero',
-                      'p24',
-                    ])
+                    .enum(['cash', 'check', 'bank_transfer', 'other', 'custom'])
                     .exactOptional()
                     .openapi({
                       deprecated: false,
@@ -67898,7 +68447,7 @@ export const postCustomersCustomerIdImportForItemsRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -70669,7 +71218,7 @@ export const postCustomersCustomerIdSubscriptionForItemsRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -70898,6 +71447,13 @@ export const postCustomersCustomerIdSubscriptionForItemsRoute = createRoute({
                         'Specifies the number of free units provided for the item, without affecting the total quantity sold\n',
                       example: null,
                     }),
+                  description: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(z.string().max(100).openapi({ deprecated: false, example: null })),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -76722,19 +77278,7 @@ export const postCustomersCustomerIdRecordExcessPaymentRoute = createRoute({
                       example: null,
                     }),
                   payment_method: z
-                    .enum([
-                      'cash',
-                      'check',
-                      'bank_transfer',
-                      'other',
-                      'custom',
-                      'tamara',
-                      'qpay',
-                      'blik',
-                      'fpx',
-                      'wero',
-                      'p24',
-                    ])
+                    .enum(['cash', 'check', 'bank_transfer', 'other', 'custom'])
                     .openapi({
                       deprecated: false,
                       description:
@@ -86289,6 +86833,1918 @@ export const getCustomersCustomerIdEmailLogsRoute = createRoute({
   security: [{ BasicAuth: [] }],
 })
 
+export const getGatewayRequestLogsGatewayRequestLogLogIdRoute = createRoute({
+  method: 'get',
+  path: '/gateway_request_logs/{gateway-request-log-log-id}',
+  tags: ['gateway_request_logs'],
+  summary: 'Retrieve a gateway request log',
+  operationId: 'retrieve_a_gateway_request_log',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    params: z.object({ 'gateway-request-log-log-id': GatewayRequestLogLogIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              gateway_request_log: GatewayRequestLogSchema.openapi({
+                description: 'Resource object representing gateway_request_log',
+              }),
+            })
+            .openapi({ required: ['gateway_request_log'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
+export const getGatewayRequestLogsRoute = createRoute({
+  method: 'get',
+  path: '/gateway_request_logs',
+  tags: ['gateway_request_logs'],
+  summary: 'List gateway request logs',
+  operationId: 'list_gateway_request_logs',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = [
+          'log_id',
+          'gateway',
+          'status_code',
+          'method',
+          'url',
+          'customer_handle',
+          'invoice_handle',
+          'transaction_handle',
+          'payment_method_handle',
+          'gateway_credential_handle',
+          'payment_attempt_handle',
+          'payment_intent_handle',
+          'operation_name',
+          'operation_type',
+          'source',
+          'invocation_time',
+          'response_received_at',
+          'sort_by',
+        ]
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          limit: LimitParamsSchema,
+          offset: OffsetParamsSchema,
+          log_id: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'log_id',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'This is a unique identifier assigned by open search. It is used to track the request within the Chargebee open search system',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'This is a unique identifier assigned by open search. It is used to track the request within the Chargebee open search system',
+              example: null,
+              required: [],
+            }),
+          gateway: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'gateway',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Payment Gateway through which the API call was made.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Payment Gateway through which the API call was made.',
+              example: null,
+              required: [],
+            }),
+          status_code: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'status_code',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Http status code of the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Http status code of the API call.',
+              example: null,
+              required: [],
+            }),
+          method: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'method',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Http Method of the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Http Method of the API call.',
+              example: null,
+              required: [],
+            }),
+          url: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'url',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Third Party Gateway URL that was invoked.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Third Party Gateway URL that was invoked.',
+              example: null,
+              required: [],
+            }),
+          customer_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'customer_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Customer handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Customer handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          invoice_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'invoice_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Invoice handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Invoice handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          transaction_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'transaction_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Transaction handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Transaction handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          payment_method_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_method_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Payment Method handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Payment Method handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          gateway_credential_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'gateway_credential_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Gateway Credential used for the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Gateway Credential used for the API call.',
+              example: null,
+              required: [],
+            }),
+          payment_attempt_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_attempt_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Payment Attempt handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Payment Attempt handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          payment_intent_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_intent_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Payment Intent handle used in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Payment Intent handle used in the API call.',
+              example: null,
+              required: [],
+            }),
+          operation_name: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'operation_name',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Name of the operation performed in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Name of the operation performed in the API call.',
+              example: null,
+              required: [],
+            }),
+          operation_type: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'operation_type',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Type of the operation performed in the API call.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Type of the operation performed in the API call.',
+              example: null,
+              required: [],
+            }),
+          source: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'source',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Source of the API call (e.g., Chargebee App, OpenPay, etc.).',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Source of the API call (e.g., Chargebee App, OpenPay, etc.).',
+              example: null,
+              required: [],
+            }),
+          invocation_time: z
+            .object({
+              after: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              before: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              on: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              between: z
+                .string()
+                .regex(/^\[\d{10},\d{10}\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'invocation_time',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'API invocation time in milliseconds.',
+                  properties: {
+                    after: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    before: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    on: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'API invocation time in milliseconds.',
+              example: null,
+              required: [],
+            }),
+          response_received_at: z
+            .object({
+              after: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              before: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              on: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              between: z
+                .string()
+                .regex(/^\[\d{10},\d{10}\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'response_received_at',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Timestamp when response was received from Gateway.',
+                  properties: {
+                    after: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    before: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    on: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Timestamp when response was received from Gateway.',
+              example: null,
+              required: [],
+            }),
+          sort_by: z
+            .looseObject({
+              asc: z.literal('invocation_time').exactOptional().openapi({ example: null }),
+              desc: z.literal('invocation_time').exactOptional().openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'sort_by',
+                in: 'query',
+                required: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  additionalProperties: true,
+                  properties: {
+                    asc: { type: 'string', enum: ['invocation_time'], example: null },
+                    desc: { type: 'string', enum: ['invocation_time'], example: null },
+                  },
+                  example: null,
+                },
+              },
+              example: null,
+              required: [],
+            }),
+        }),
+      ),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              list: z
+                .array(
+                  z
+                    .object({
+                      gateway_request_log: GatewayRequestLogSchema.openapi({
+                        description: 'Resource object representing gateway_request_log',
+                      }),
+                    })
+                    .openapi({ required: ['gateway_request_log'], example: null }),
+                )
+                .openapi({ example: null }),
+              next_offset: z
+                .string()
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.',
+                  example: null,
+                }),
+            })
+            .openapi({ required: ['list'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
+export const getGatewayWebhookLogsGatewayWebhookLogWebhookIdRoute = createRoute({
+  method: 'get',
+  path: '/gateway_webhook_logs/{gateway-webhook-log-webhook-id}',
+  tags: ['gateway_webhook_logs'],
+  summary: 'Retrieve a gateway webhook log',
+  operationId: 'retrieve_a_gateway_webhook_log',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    params: z.object({ 'gateway-webhook-log-webhook-id': GatewayWebhookLogWebhookIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              gateway_webhook_log: GatewayWebhookLogSchema.openapi({
+                description: 'Resource object representing gateway_webhook_log',
+              }),
+            })
+            .openapi({ required: ['gateway_webhook_log'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
+export const getGatewayWebhookLogsRoute = createRoute({
+  method: 'get',
+  path: '/gateway_webhook_logs',
+  tags: ['gateway_webhook_logs'],
+  summary: 'List gateway webhook logs',
+  operationId: 'list_gateway_webhook_logs',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = [
+          'webhook_id',
+          'gateway',
+          'status_code',
+          'method',
+          'url',
+          'id_at_gateway',
+          'customer_handle',
+          'invoice_handle',
+          'transaction_handle',
+          'payment_method_handle',
+          'gateway_credential_handle',
+          'payment_attempt_handle',
+          'payment_intent_handle',
+          'received_at',
+          'sort_by',
+        ]
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          limit: LimitParamsSchema,
+          offset: OffsetParamsSchema,
+          webhook_id: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'webhook_id',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Unique identifier for the webhook log in OpenSearch.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Unique identifier for the webhook log in OpenSearch.',
+              example: null,
+              required: [],
+            }),
+          gateway: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'gateway',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Payment gateway that sent the webhook.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Payment gateway that sent the webhook.',
+              example: null,
+              required: [],
+            }),
+          status_code: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'status_code',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'HTTP status code returned in the webhook response.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'HTTP status code returned in the webhook response.',
+              example: null,
+              required: [],
+            }),
+          method: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'method',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'HTTP method of the incoming webhook request.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'HTTP method of the incoming webhook request.',
+              example: null,
+              required: [],
+            }),
+          url: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'url',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'URL from which the webhook request was received.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'URL from which the webhook request was received.',
+              example: null,
+              required: [],
+            }),
+          id_at_gateway: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'id_at_gateway',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Gateway transaction reference from webhook metadata (e.g. Adyen originalReference or pspReference) for linking to transactions.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Gateway transaction reference from webhook metadata (e.g. Adyen originalReference or pspReference) for linking to transactions.',
+              example: null,
+              required: [],
+            }),
+          customer_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'customer_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Customer handle resolved from the matched transaction or payment intent for UI deep links.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Customer handle resolved from the matched transaction or payment intent for UI deep links.',
+              example: null,
+              required: [],
+            }),
+          invoice_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'invoice_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Invoice number from the matched transaction when available.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Invoice number from the matched transaction when available.',
+              example: null,
+              required: [],
+            }),
+          transaction_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'transaction_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Chargebee transaction external_id resolved from id_at_gateway for UI deep links.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Chargebee transaction external_id resolved from id_at_gateway for UI deep links.',
+              example: null,
+              required: [],
+            }),
+          payment_method_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_method_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Payment method external id from the matched transaction when available.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Payment method external id from the matched transaction when available.',
+              example: null,
+              required: [],
+            }),
+          gateway_credential_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'gateway_credential_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Gateway credential external id from the matched transaction or payment intent.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Gateway credential external id from the matched transaction or payment intent.',
+              example: null,
+              required: [],
+            }),
+          payment_attempt_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_attempt_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Payment attempt token or id resolved from id_at_gateway when no transaction match.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Payment attempt token or id resolved from id_at_gateway when no transaction match.',
+              example: null,
+              required: [],
+            }),
+          payment_intent_handle: z
+            .object({
+              not_in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              is_not: z.string().min(1).exactOptional().openapi({ example: null }),
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
+                .string()
+                .regex(/^\[(.*)(,.*)*\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payment_intent_handle',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'Payment intent external id from the matched payment attempt when available.',
+                  properties: {
+                    not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description:
+                'Payment intent external id from the matched payment attempt when available.',
+              example: null,
+              required: [],
+            }),
+          received_at: z
+            .object({
+              after: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              before: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              on: z
+                .string()
+                .regex(/^\d{10}$/)
+                .exactOptional()
+                .openapi({ example: null }),
+              between: z
+                .string()
+                .regex(/^\[\d{10},\d{10}\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'received_at',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description: 'Timestamp when the webhook was received.',
+                  properties: {
+                    after: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    before: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    on: {
+                      type: 'string',
+                      format: 'unix-time',
+                      pattern: '^\\d{10}$',
+                      example: null,
+                    },
+                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
+                  },
+                  example: null,
+                },
+              },
+              deprecated: false,
+              description: 'Timestamp when the webhook was received.',
+              example: null,
+              required: [],
+            }),
+          sort_by: z
+            .looseObject({
+              asc: z.literal('received_at').exactOptional().openapi({ example: null }),
+              desc: z.literal('received_at').exactOptional().openapi({ example: null }),
+            })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'sort_by',
+                in: 'query',
+                required: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  additionalProperties: true,
+                  properties: {
+                    asc: { type: 'string', enum: ['received_at'], example: null },
+                    desc: { type: 'string', enum: ['received_at'], example: null },
+                  },
+                  example: null,
+                },
+              },
+              example: null,
+              required: [],
+            }),
+        }),
+      ),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              list: z
+                .array(
+                  z
+                    .object({
+                      gateway_webhook_log: GatewayWebhookLogSchema.openapi({
+                        description: 'Resource object representing gateway_webhook_log',
+                      }),
+                    })
+                    .openapi({ required: ['gateway_webhook_log'], example: null }),
+                )
+                .openapi({ example: null }),
+              next_offset: z
+                .string()
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.',
+                  example: null,
+                }),
+            })
+            .openapi({ required: ['list'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
 export const postInvoicesInvoiceIdDeleteLineItemsRoute = createRoute({
   method: 'post',
   path: '/invoices/{invoice-id}/delete_line_items',
@@ -87256,7 +89712,7 @@ export const postInvoicesInvoiceIdWriteOffRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -89817,6 +92273,51 @@ export const postInvoicesInvoiceIdApplyCreditsRoute = createRoute({
                         'The ID of the credit note to be applied to the invoice.  \n**Constraints**\n\n* `credit_note.type` must be `refundable`.\n* The `credit_note.customer_id` must always be the same as `invoice.customer_id` even if `invoice.payment_owner` is different.  \n**Default behavior**\n\nWhen the parameter is not passed, [available refundable credits](/docs/api/customers/customer-object#refundable_credits) with the customer are applied to the invoice.\n',
                       example: null,
                     }),
+                  amount: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64().min(1n))
+                          .openapi({
+                            type: 'integer',
+                            format: 'int64',
+                            minimum: 1,
+                            deprecated: false,
+                            example: null,
+                          }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                  applied_at: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int(),
+                          )
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -90163,6 +92664,24 @@ export const postInvoicesCreateForChargeItemsAndChargesRoute = createRoute({
                     'The [Net D](https://www.chargebee.com/docs/billing/2.0/subscriptions/net_d) value explicitly set for this invoice. Net D is the number of days within which the invoice must be paid. When this value is provided, it overrides the payment terms defined at the subscription or customer level. **Note:** This value is used only for this invoice operation and does not update the customer or subscription records.\n',
                   example: null,
                 }),
+              offline_payment_method: z
+                .enum([
+                  'no_preference',
+                  'cash',
+                  'check',
+                  'bank_transfer',
+                  'ach_credit',
+                  'sepa_credit',
+                  'boleto',
+                  'us_automated_bank_transfer',
+                  'eu_automated_bank_transfer',
+                  'uk_automated_bank_transfer',
+                  'jp_automated_bank_transfer',
+                  'mx_automated_bank_transfer',
+                  'custom',
+                ])
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
               invoice_date: z
                 .preprocess(
                   (val) =>
@@ -92252,19 +94771,7 @@ export const postInvoicesInvoiceIdRecordPaymentRoute = createRoute({
                       example: null,
                     }),
                   payment_method: z
-                    .enum([
-                      'cash',
-                      'check',
-                      'bank_transfer',
-                      'other',
-                      'custom',
-                      'tamara',
-                      'qpay',
-                      'blik',
-                      'fpx',
-                      'wero',
-                      'p24',
-                    ])
+                    .enum(['cash', 'check', 'bank_transfer', 'other', 'custom'])
                     .openapi({
                       deprecated: false,
                       description:
@@ -92484,7 +94991,7 @@ export const postInvoicesImportInvoiceRoute = createRoute({
   tags: ['invoices'],
   summary: 'Import invoice',
   description:
-    'Imports an invoice into Chargebee Billing.\n\nUse this API to import invoices from your other billing or accounting system into Chargebee Billing. You can import both current-term and historical invoices.  \n**Caution: Importing current-term invoices**\nTo ensure accurate [proration](https://www.chargebee.com/docs/billing/2.0/subscriptions/proration#proration) for any changes to the subscription in the current term, import only one current-term invoice. Chargebee considers only the first imported invoice for the current term when calculating proration. If you have multiple invoices for the current term in the source system, consolidate them into a single invoice before importing it into Chargebee.  \n\n### Impacts\n\n**RevenueStory**  \n* You must run the [MRR History Builder](https://www.chargebee.com/docs/billing/2.0/reports-and-analytics/monthly-recurring-revenue#how-are-the-metrics-calculated-from-historical-data) to update Revenue Story metrics after importing invoices. [Contact Support](https://www.chargebee.com/docs/billing/2.0/kb/getting-started/how-to-contact-chargebees-support-team?utm_source=docs_api&utm_medium=content&utm_campaign=support) to do this.  \n**Accounting Integrations**  \n* Chargebee Billing [accounting integrations](https://www.chargebee.com/docs/billing/2.0/integrations/finance-integration-index) sync imported invoices, unless you disable them from syncing.  \n\n### Implementation Notes\n\n* If discounts are present on the invoice, then the following parameters must be passed:\n  * `discounts[entity_type][]`\n  * `discounts[amount][]`\n  * `discounts[line_item_id][i]` if `discounts[entity_type][i]` is `item_level_coupon` or `document_level_coupon`.\n* If taxes are present on the invoice, then the following parameters must be passed:\n  * `taxes[name][]`\n  * `taxes[rate][]`\n  * `line_items[tax*_name][]`\n  * `line_items[tax*_amount][]`\n  * `line_items[is_partial_tax_applied][]` and `line_items[taxable_amount][]` when tax applies to only a portion of the line item amount. When `line_items[is_partial_tax_applied][]` is `true`, `line_items[taxable_amount][]` is required.\n',
+    'Imports an invoice into Chargebee Billing.\n\nUse this API to import invoices from your other billing or accounting system into Chargebee Billing. You can import both current-term and historical invoices.  \n**Caution: Importing current-term invoices**\nTo ensure accurate [proration](https://www.chargebee.com/docs/billing/2.0/subscriptions/proration#proration) for any changes to the subscription in the current term, import only one current-term invoice. Chargebee considers only the first imported invoice for the current term when calculating proration. If you have multiple invoices for the current term in the source system, consolidate them into a single invoice before importing it into Chargebee.  \n\n### Impacts\n\n**RevenueStory**  \n* You must run the [MRR History Builder](https://www.chargebee.com/docs/billing/2.0/reports-and-analytics/monthly-recurring-revenue#how-are-the-metrics-calculated-from-historical-data) to update Revenue Story metrics after importing invoices. [Contact Support](https://www.chargebee.com/docs/billing/2.0/kb/getting-started/how-to-contact-chargebees-support-team?utm_source=docs_api&utm_medium=content&utm_campaign=support) to do this.  \n**Accounting Integrations**  \n* Chargebee Billing [accounting integrations](https://www.chargebee.com/docs/billing/2.0/integrations/finance-integration-index) sync imported invoices, unless you disable them from syncing.  \n\n### Implementation Notes\n\n* If discounts are present on the invoice, then the following parameters must be passed:\n  * `discounts[entity_type][]`\n  * `discounts[amount][]`\n  * `discounts[line_item_id][i]` if `discounts[entity_type][i]` is `item_level_coupon` or `document_level_coupon`.\n* If taxes are present on the invoice, then the following parameters must be passed:\n  * `taxes[name][]`\n  * `taxes[rate][]`\n  * `line_items[tax*_name][]`\n  * `line_items[tax*_amount][]`\n  * `line_items[is_partial_tax_applied][]` and `line_items[taxable_amount][]` when tax applies to only a portion of the line item amount. When `line_items[is_partial_tax_applied][]` is `true`, `line_items[taxable_amount][]` is required.\n* To exempt one line, pass `line_items[tax_exempt_reason][]` and omit taxes for that line. Do not pass it together with `tax_override_reason`. `reverse_charge` requires `vat_number`. Omit this parameter when `status` is `pending`. Do not send `tax_not_configured`.\n* `zero_rated` may include line item taxes only when every matching `taxes[rate]` and `line_items[tax*_amount]` is `0`.\n* `line_items.is_taxed` depends on where `zero_rated` is set:\n  * `line_items[tax_exempt_reason][]` of `zero_rated` stores the line with tax rate `0`, tax amount `0`, and [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `true`.\n  * `tax_override_reason` of `zero_rated` stores each line with [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `false`.\n',
   operationId: 'import_invoice',
   request: {
     headers: z.object({
@@ -92575,7 +95082,7 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'The reason for exempting the invoice from tax. (Applicable only for exempted invoices.).\n\n* zero_rated - If the rate of tax is 0% and no Sales/ GST tax is collectable for that line item\n* export - The customer is from a non-taxable region or the billing address and shipping address are unavailable.\n* customer_exempt -\n  The customer is [exempted](/docs/api/customers/customer-object#taxability)\n  from tax.\n* tax_not_configured_external_provider - If the tax is not configured for the country in 3rd party tax provider.\n* id_exempt -\n  The customer is from a different country than your business and they have a valid VAT number or, the customer is a business entity. (This reason is only applicable when [EU VAT](https://www.chargebee.com/docs/eu-vat.html)\n  or [UK VAT](https://www.chargebee.com/docs/uk-vat.html)\n  is enabled.)\n* high_value_physical_goods - If physical goods are sold from outside Australia to customers in Australia, and the price of all the physical good line items is greater than AUD 1000, then tax will not be applied\n* product_exempt - If the Plan or Addon is marked as Tax exempt\n* region_non_taxable - If the product sold is not taxable in this region, but it is taxable in other regions, hence this region is not part of the Taxable jurisdiction\n* zero_value_item - If the total invoice value/amount is equal to zero. E.g., If the total order value is $10 and a $10 coupon has been applied against that order, the total order value becomes $0. Hence the invoice value also becomes $0.\n',
+                    'The reason for exempting the invoice from tax. The reason applies to every line item. Applicable only for exempt invoices.  \n**Constraints**\n\n* Must not be sent when `line_items[tax_exempt_reason]` is sent.\n\n* zero_rated -\n  If the rate of tax is 0% and no Sales/ GST tax is collectable for that line item.\n  Each line is stored with [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `false`.\n* export - The customer is from a non-taxable region or the billing address and shipping address are unavailable.\n* customer_exempt -\n  The customer is [exempted](/docs/api/customers/customer-object#taxability)\n  from tax.\n* tax_not_configured_external_provider - If the tax is not configured for the country in 3rd party tax provider.\n* id_exempt -\n  The customer is from a different country than your business and they have a valid VAT number or, the customer is a business entity. (This reason is only applicable when [EU VAT](https://www.chargebee.com/docs/eu-vat.html)\n  or [UK VAT](https://www.chargebee.com/docs/uk-vat.html)\n  is enabled.)\n* high_value_physical_goods - If physical goods are sold from outside Australia to customers in Australia, and the price of all the physical good line items is greater than AUD 1000, then tax will not be applied\n* product_exempt - If the Plan or Addon is marked as Tax exempt\n* region_non_taxable - If the product sold is not taxable in this region, but it is taxable in other regions, hence this region is not part of the Taxable jurisdiction\n* zero_value_item - If the total invoice value/amount is equal to zero. E.g., If the total order value is $10 and a $10 coupon has been applied against that order, the total order value becomes $0. Hence the invoice value also becomes $0.\n',
                   example: null,
                 }),
               vat_number: z
@@ -92584,7 +95091,8 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   deprecated: false,
-                  description: 'Vat Number. Required if this invoice is VAT exempted.\n',
+                  description:
+                    'VAT number. Required when `tax_override_reason` is `id_exempt`. Also required when `line_items[tax_exempt_reason]` is `reverse_charge`.\n',
                   example: null,
                 }),
               vat_number_prefix: z
@@ -93734,7 +96242,7 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Indicates whether tax is applied only to a portion of the line item amount.  \n**Constraints**\n\n* Must not be provided when the line item has no taxes.\n',
+                        'Indicates whether tax is applied only to a portion of the line item amount.  \n**Constraints**\n\n* Must not be provided when the line item has no taxes.\n* Must not be sent when `line_items[tax_exempt_reason]` is sent.\n',
                       example: null,
                     }),
                   taxable_amount: z
@@ -93764,7 +96272,7 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'The portion of the line item amount, in cents, that is taxable.\nChargebee stores this on import so later credit notes tax this amount instead of the full line item amount.  \n**Required if**\n\n* `line_items[is_partial_tax_applied]` is `true`.  \n**Constraints**\n\n* Must not be provided when the line item has no taxes.\n',
+                        'The portion of the line item amount, in cents, that is taxable.\nChargebee stores this on import so later credit notes tax this amount instead of the full line item amount.  \n**Required if**\n\n* `line_items[is_partial_tax_applied]` is `true`.  \n**Constraints**\n\n* Must not be provided when the line item has no taxes.\n* Must not be sent when `line_items[tax_exempt_reason]` is sent.\n',
                       example: null,
                     }),
                   tax_exempt_reason: z
@@ -93783,7 +96291,12 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                             'zero_value_item',
                             'tax_not_configured_external_provider',
                           ])
-                          .openapi({ deprecated: false, example: null }),
+                          .openapi({
+                            deprecated: false,
+                            description:
+                              "The reason this line item is exempt from tax. Accepts the same values as [`line_items.tax_exempt_reason`](/docs/api/invoices/invoice-object#line_items_tax_exempt_reason), including `reverse_charge`. Do not send `tax_not_configured`. That value is returned on invoices, and import invoice does not accept it.\n\nOmit line item taxes for this line. Use `tax_override_reason` when every line is exempt for the same reason other than `zero_rated`. For `zero_rated`, pass this parameter on each line to store [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) as `true`. Invoice-level `tax_override_reason` of `zero_rated` stores [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) as `false`. Line item taxes are allowed with `zero_rated` only when every matching `taxes[rate]` and `line_items[tax*_amount]` is `0`.  \n**Constraints**\n\n* Must not be sent when `tax_override_reason` is sent.\n* Must not be sent when `status` is `pending`.\n* Must not be sent with line item taxes (`line_items[tax*_name]` and `line_items[tax*_amount]`), except `zero_rated` when every matching `taxes[rate]` and `line_items[tax*_amount]` is `0`.\n* Must not be sent when `line_items[is_partial_tax_applied]` or `line_items[taxable_amount]` is sent.\n* `reverse_charge` requires `vat_number`.  \n**Impacts**\n\n* When this value is `zero_rated`, the line is stored with tax rate `0`, tax amount `0`, and [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `true`. This matches a normal zero-rate tax calculation.\n* When the invoice is exempted with `tax_override_reason` set to `zero_rated`, [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) is `false`.\n\n* zero_value_item - The total invoice amount is zero. For example, a $10 order with a $10 coupon applied has an invoice total of $0.\n* reverse_charge - The customer is a B2B customer identified by a VAT number. Applicable for EU VAT. Requires `vat_number`.\n* high_value_physical_goods - Physical goods are sold from outside Australia to customers in Australia, and the price of all physical-goods line items is greater than AUD 1000, so tax is not applied.\n* tax_not_configured_external_provider - Tax is not configured for the country in the third-party tax provider.\n* customer_exempt - The customer is marked as tax exempt.\n* region_non_taxable - The product is not taxable in this region, so this region is outside the taxable jurisdiction.\n* product_exempt - The plan or addon is marked as tax exempt.\n* zero_rated -\n  The tax rate is 0% and no sales or GST tax is collectable for this line item.\n  Line item taxes are allowed only when every matching `taxes[rate]` and `line_items[tax*_amount]` is `0`.\n  The line is stored with tax rate `0`, tax amount `0`, and [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `true`.\n* export - You are not registered for tax in the customer's region. This is also the reason when both `billing_address` and `shipping_address` are missing.\n",
+                            example: null,
+                          }),
                       ),
                     )
                     .exactOptional()
@@ -94270,19 +96783,7 @@ export const postInvoicesImportInvoiceRoute = createRoute({
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
                       z.array(
                         z
-                          .enum([
-                            'cash',
-                            'check',
-                            'bank_transfer',
-                            'other',
-                            'custom',
-                            'tamara',
-                            'qpay',
-                            'blik',
-                            'fpx',
-                            'wero',
-                            'p24',
-                          ])
+                          .enum(['cash', 'check', 'bank_transfer', 'other', 'custom'])
                           .openapi({
                             deprecated: false,
                             description:
@@ -94593,7 +97094,7 @@ export const postInvoicesInvoiceIdResumeDunningRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -95071,12 +97572,12 @@ export const getInvoicesPaymentReferenceNumbersRoute = createRoute({
             }),
           id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -95094,8 +97595,8 @@ export const getInvoicesPaymentReferenceNumbersRoute = createRoute({
                   deprecated: false,
                   example: 'old_inv_001',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -95107,12 +97608,12 @@ export const getInvoicesPaymentReferenceNumbersRoute = createRoute({
             .object({
               number: z
                 .object({
+                  is: z.string().min(1).exactOptional().openapi({ example: null }),
                   in: z
                     .string()
                     .regex(/^\[(.*)(,.*)*\]$/)
                     .exactOptional()
                     .openapi({ example: null }),
-                  is: z.string().min(1).exactOptional().openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -95144,8 +97645,8 @@ export const getInvoicesPaymentReferenceNumbersRoute = createRoute({
                         'This parameter is used to identify the PRN in the system and retrieve its corresponding payment information.\n**Note**:\nTo retrieve the PRN, the API requires either the invoice ID or the payment reference number to be provided by the user. If both values are missing, an error will be returned by the API.\n',
                       example: '001234',
                       properties: {
-                        in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                         is: { type: 'string', minLength: 1, example: null },
+                        in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                       },
                     },
                   },
@@ -95237,7 +97738,7 @@ export const postInvoicesInvoiceIdRemovePaymentScheduleSchemeRoute = createRoute
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -95659,20 +98160,7 @@ export const postInvoicesInvoiceIdRecordRefundRoute = createRoute({
                       example: null,
                     }),
                   payment_method: z
-                    .enum([
-                      'cash',
-                      'check',
-                      'chargeback',
-                      'bank_transfer',
-                      'other',
-                      'custom',
-                      'tamara',
-                      'qpay',
-                      'blik',
-                      'fpx',
-                      'wero',
-                      'p24',
-                    ])
+                    .enum(['cash', 'check', 'chargeback', 'bank_transfer', 'other', 'custom'])
                     .openapi({
                       deprecated: false,
                       description:
@@ -96371,20 +98859,7 @@ export const postCreditNotesCreditNoteIdRecordRefundRoute = createRoute({
                       example: null,
                     }),
                   payment_method: z
-                    .enum([
-                      'cash',
-                      'check',
-                      'chargeback',
-                      'bank_transfer',
-                      'other',
-                      'custom',
-                      'tamara',
-                      'qpay',
-                      'blik',
-                      'fpx',
-                      'wero',
-                      'p24',
-                    ])
+                    .enum(['cash', 'check', 'chargeback', 'bank_transfer', 'other', 'custom'])
                     .openapi({
                       deprecated: false,
                       description:
@@ -96478,7 +98953,7 @@ export const postCreditNotesImportCreditNoteRoute = createRoute({
   tags: ['credit_notes'],
   summary: 'Import credit note',
   description:
-    "Imports a credit note into Chargebee Billing. This endpoint allows you to import a credit note from external systems, such as accounting software, into Chargebee.\n\nUse this operation during data migration or reconciliation to ensure historical credits are represented in the system. The credit note is linked to a reference [invoice](/docs/api/invoices) and can be allocated to other invoices or recorded as refunded to the customer.  \n\n### Impacts\n\n**Credit Note**  \nThe credit note's [`billing_address`](/docs/api/credit_notes/credit-note-object#credit_note_billing_address), [`shipping_address`](/docs/api/credit_notes/credit-note-object#credit_note_shipping_address), and [`vat_number`](/docs/api/credit_notes/credit-note-object#credit_note_vat_number) are copied from the reference invoice.  \n**Invoices**  \n\n##### Reference invoice\n\n* See [Impact on reference invoice](/docs/api/credit_notes/credit-note-object#ref-invoice-impact).\n\n##### Other invoices\n\n* If `allocations[]` are provided, then for each allocated invoice:\n  * the invoice's `amount_due` decreases by the allocated amount\n  * the invoice `status` changes to `paid` if the `amount_due` becomes zero\n* an [applied credit](/docs/api/invoices/invoice-object#applied_credits) record is created to track the allocation.  \n**Transactions**  \nIf `linked_refunds[]` are provided, then for each refund provided, a [`transaction`](/docs/api/transactions/transaction-object) of `type` `refund` is created with `status` set to `success`.\n",
+    "Imports a credit note into Chargebee Billing. This endpoint allows you to import a credit note from external systems, such as accounting software, into Chargebee.\n\nUse this operation during data migration or reconciliation to ensure historical credits are represented in the system. The credit note is linked to a reference [invoice](/docs/api/invoices) and can be allocated to other invoices or recorded as refunded to the customer.  \n\n### Impacts\n\n**Credit Note**  \nThe credit note's [`billing_address`](/docs/api/credit_notes/credit-note-object#credit_note_billing_address), [`shipping_address`](/docs/api/credit_notes/credit-note-object#credit_note_shipping_address), and [`vat_number`](/docs/api/credit_notes/credit-note-object#credit_note_vat_number) are copied from the reference invoice.\n\n`line_items[tax_exempt_reason]` is not accepted. Chargebee copies the tax-exempt reason from the reference invoice.\n\n* When every invoice line has the same tax-exempt reason, that reason applies to the credit note.\n* When `line_items[reference_line_item_id][]` is sent on every credit note line, Chargebee copies each line's reason from that invoice line. If any tax on the invoice line has no exempt reason, the credit note line is not treated as exempt.\n* For `zero_rated`, [`line_items.is_taxed`](/docs/api/credit_notes/credit-note-object#line_items_is_taxed) matches the invoice line when `line_items[reference_line_item_id][]` is sent. A line imported with [`line_items[tax_exempt_reason]`](/docs/api/invoices/import-invoice) of `zero_rated` has `is_taxed` set to `true`. The credit note line that references it does too, including when every invoice line is `zero_rated`. If that reference is omitted, the credit note line is stored with `is_taxed` set to `false`. An invoice imported with `tax_override_reason` of `zero_rated` has `is_taxed` set to `false`, and the credit note line does too.\n* When a copied reason is `reverse_charge`, Chargebee copies `vat_number` from the reference invoice onto the credit note.  \n**Invoices**  \n\n##### Reference invoice\n\n* See [Impact on reference invoice](/docs/api/credit_notes/credit-note-object#ref-invoice-impact).\n\n##### Other invoices\n\n* If `allocations[]` are provided, then for each allocated invoice:\n  * the invoice's `amount_due` decreases by the allocated amount\n  * the invoice `status` changes to `paid` if the `amount_due` becomes zero\n* an [applied credit](/docs/api/invoices/invoice-object#applied_credits) record is created to track the allocation.  \n**Transactions**  \nIf `linked_refunds[]` are provided, then for each refund provided, a [`transaction`](/docs/api/transactions/transaction-object) of `type` `refund` is created with `status` set to `success`.  \n\n### Implementation Notes\n\n* Pass `line_items[reference_line_item_id][]` on every credit note line to keep each invoice line's tax-exempt reason. By default, import fails when the invoice lines have different reasons and any credit note line omits that reference. When `app.tax.allow_multiple_tax_override_reason_on_cn_import` is enabled, that import is allowed and every credit note line uses the first invoice line's tax-exempt reason.\n* For `zero_rated`, pass `line_items[reference_line_item_id][]` so `line_items.is_taxed` matches the invoice line. Omitting that reference stores `is_taxed` as `false`.\n* This operation does not accept `line_items[tax_exempt_reason]` or `vat_number`. The reference invoice must already have `vat_number` when a copied reason is `reverse_charge`.\n",
   operationId: 'import_credit_note',
   request: {
     headers: z.object({
@@ -97990,19 +100465,7 @@ export const postCreditNotesImportCreditNoteRoute = createRoute({
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
                       z.array(
                         z
-                          .enum([
-                            'cash',
-                            'check',
-                            'bank_transfer',
-                            'other',
-                            'custom',
-                            'tamara',
-                            'qpay',
-                            'blik',
-                            'fpx',
-                            'wero',
-                            'p24',
-                          ])
+                          .enum(['cash', 'check', 'bank_transfer', 'other', 'custom'])
                           .openapi({
                             deprecated: false,
                             description:
@@ -98130,7 +100593,7 @@ export const postCreditNotesCreditNoteIdDeleteRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -98320,7 +100783,7 @@ export const postCreditNotesCreditNoteIdVoidRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -109413,20 +111876,7 @@ export const postTransactionsTransactionIdRecordRefundRoute = createRoute({
                   example: null,
                 }),
               payment_method: z
-                .enum([
-                  'cash',
-                  'check',
-                  'chargeback',
-                  'bank_transfer',
-                  'other',
-                  'custom',
-                  'tamara',
-                  'qpay',
-                  'blik',
-                  'fpx',
-                  'wero',
-                  'p24',
-                ])
+                .enum(['cash', 'check', 'chargeback', 'bank_transfer', 'other', 'custom'])
                 .openapi({
                   deprecated: false,
                   description:
@@ -109813,7 +112263,7 @@ export const postTransactionsTransactionIdDeleteOfflineTransactionRoute = create
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -112240,6 +114690,16 @@ export const postHostedPagesCheckoutGiftForItemsRoute = createRoute({
                     'List of coupons to be applied to this subscription. You can provide coupon ids or [coupon codes](/docs/api/coupon_codes)\n.\n',
                   example: null,
                 }),
+              show_billing_frequency_selector: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
               gifter: z
                 .object({
                   customer_id: z
@@ -112497,9 +114957,49 @@ export const postHostedPagesCheckoutGiftForItemsRoute = createRoute({
                   example: null,
                   required: [],
                 }),
+              allowed_billing_frequencies: z
+                .object({
+                  period: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int32().min(1),
+                          )
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                  period_unit: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .enum(['day', 'week', 'month', 'year'])
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                })
+                .exactOptional()
+                .openapi({ deprecated: false, example: null, required: [] }),
             })
             .openapi({ example: null, required: [] }),
-          encoding: { gifter: {}, item_tiers: {}, subscription_items: {} },
+          encoding: {
+            allowed_billing_frequencies: {},
+            gifter: {},
+            item_tiers: {},
+            subscription_items: {},
+          },
         },
       },
     },
@@ -113618,6 +116118,16 @@ export const postHostedPagesCheckoutNewForItemsRoute = createRoute({
                     "This attribute allows you to store custom information with the `hosted_page` object. You can use it to associate specific data with a hosted page session.\nFor example, you can store the ID of the marketing campaign that initiated the user session. After a successful checkout, when the customer is redirected, you can retrieve the hosted page ID from the [redirect URL](/docs/api/hosted_pages/create-checkout-for-a-new-subscription#redirect_url)'s query parameters. Using this ID, you can fetch the hosted page and perform actions related to the success of the marketing campaign.\n",
                   example: null,
                 }),
+              show_billing_frequency_selector: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
               allow_offline_payment_methods: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -114888,9 +117398,45 @@ export const postHostedPagesCheckoutNewForItemsRoute = createRoute({
                   example: null,
                   required: [],
                 }),
+              allowed_billing_frequencies: z
+                .object({
+                  period: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int32().min(1),
+                          )
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                  period_unit: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .enum(['day', 'week', 'month', 'year'])
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                })
+                .exactOptional()
+                .openapi({ deprecated: false, example: null, required: [] }),
             })
             .openapi({ example: null, required: [] }),
           encoding: {
+            allowed_billing_frequencies: {},
             billing_address: {},
             card: {},
             contract_term: {},
@@ -115330,6 +117876,16 @@ export const postHostedPagesCheckoutExistingForItemsRoute = createRoute({
                     "This attribute allows you to store custom information with the `hosted_page` object. You can use it to associate specific data with a hosted page session.\nFor example, you can store the ID of the marketing campaign that initiated the user session. After a successful checkout, when the customer is redirected, you can retrieve the hosted page ID from the [redirect URL](/docs/api/hosted_pages/create-checkout-to-update-a-subscription#redirect_url)'s query parameters. Using this ID, you can fetch the hosted page and perform actions related to the success of the marketing campaign.\n",
                   example: null,
                 }),
+              show_billing_frequency_selector: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
               allow_offline_payment_methods: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -116261,9 +118817,45 @@ export const postHostedPagesCheckoutExistingForItemsRoute = createRoute({
                   example: null,
                   required: [],
                 }),
+              allowed_billing_frequencies: z
+                .object({
+                  period: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int32().min(1),
+                          )
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                  period_unit: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .enum(['day', 'week', 'month', 'year'])
+                          .openapi({ deprecated: false, example: null }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
+                })
+                .exactOptional()
+                .openapi({ deprecated: false, example: null, required: [] }),
             })
             .openapi({ example: null, required: [] }),
           encoding: {
+            allowed_billing_frequencies: {},
             card: {},
             contract_term: {},
             customer: {},
@@ -117635,7 +120227,7 @@ export const postEstimatesCreateSubscriptionForItemsRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -117848,6 +120440,13 @@ export const postEstimatesCreateSubscriptionForItemsRoute = createRoute({
                         'Specifies the number of free units provided for the item, without affecting the total quantity sold\n',
                       example: null,
                     }),
+                  description: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(z.string().max(100).openapi({ deprecated: false, example: null })),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -121427,7 +124026,7 @@ export const postEstimatesUpdateSubscriptionForItemsRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -121666,6 +124265,13 @@ export const postEstimatesUpdateSubscriptionForItemsRoute = createRoute({
                         'An immutable unique id for the discount. It is always auto-generated.\n',
                       example: null,
                     }),
+                  description: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(z.string().max(100).openapi({ deprecated: false, example: null })),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -122791,7 +125397,7 @@ export const postCustomersCustomerIdCreateSubscriptionForItemsEstimateRoute = cr
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({
@@ -123004,6 +125610,13 @@ export const postCustomersCustomerIdCreateSubscriptionForItemsEstimateRoute = cr
                         'Specifies the number of free units provided for the item, without affecting the total quantity sold\n',
                       example: null,
                     }),
+                  description: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(z.string().max(100).openapi({ deprecated: false, example: null })),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -128040,7 +130653,7 @@ export const postQuotesQuoteIdDeleteRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Reason for deleting this transaction. This comment will be added to the associated entity.\n',
+                    'An internal [comment](/docs/api/comments)\nto be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)\nor any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)\n.\n',
                   example: null,
                 }),
             })
@@ -134591,12 +137204,12 @@ export const getCouponsRoute = createRoute({
             }),
           applicable_item_price_ids: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -134614,8 +137227,8 @@ export const getCouponsRoute = createRoute({
                   deprecated: false,
                   example: 'day-pass-USD',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -137680,7 +140293,7 @@ export const postUsagesPdfRoute = createRoute({
   tags: ['usages'],
   summary: 'Retrieve usages for an invoice as PDF',
   description:
-    '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nRetrieves usages record for an invoice in PDF file format. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.\n\nFor Usage-Based Billing invoices, you can optionally group a metered feature\'s usage by its configured group-by attributes. Automated Metered Billing continues to render the existing ungrouped usage PDF.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n\n### Use Cases\n\n##### Group usage events in the PDF\n\nThis capability applies to Usage-Based Billing. The metered feature\'s `query` must include a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.\n\nUse `group_by` to show how usage events are distributed across group-by attributes such as GPU type and region.\n\nFor example, group the `gpu_cloud` metered feature by `gpu_type` and `region`. Specify the group-by attributes as a JSON array:\n\n```bash\n-d "group_by[feature_id][0]"="gpu_cloud" \\\n-d \'group_by[attributes][0]\'=\'["gpu_type","region"]\'\n```\n\nEach distinct set of selected group-by attribute values forms a separate usage section in the PDF:\n\n```text\ngpu_type = "h100", region = "us-east"  60 hours\ngpu_type = "a100", region = "eu-west"  40 hours\n```\n\nThe order of names in the `group_by[attributes]` array determines their display order. A metered feature that is not included in `group_by[feature_id]` is displayed with a single usage total.\n\n**Null and empty group-by attribute values**\n\nWhen usage is grouped by `region`, the PDF combines the following usage into one null group:\n\n* Usage recorded before `region` was added to the metered feature\'s `GROUP BY` clause.\n* Events that do not contain `region`.\n* Events where `region` is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Values containing leading or trailing whitespace, such as `"region": " null"` and `"region": "null "`, retain their original values and appear as separate groups.\n\nAn event containing `"region": ""` belongs to a separate empty-string group. The PDF displays the null group using an em dash (`---`) and displays the empty-string group as a blank value.  \n**Grouped usage and invoice total**\n\nFor `SUM` and `COUNT`, all grouped values, including the null and empty-string groups, add up to the overall usage for the same metered feature on the invoice:\n\n```text\nregion = "us-east"  60 hours\nregion = "eu-west"  40 hours\nOverall usage       100 hours\n```\n\nThis does not apply to `MIN`, `MAX`, `AVG`, or `COUNT(DISTINCT ...)`. For these functions, each group is calculated separately.\n\nThe API response continues to return a `download` object. The grouped usage appears in the PDF, not in the API response.  \n**Constraints**\n\n* Provide both `group_by[feature_id]` and `group_by[attributes]` for each entry.\n* Each `group_by[feature_id]` value must identify a metered feature billed on the invoice.\n* Each `group_by[attributes]` value must be a nonempty JSON array. Exact duplicate names are not allowed.\n* Group-by attribute names are case-sensitive and must match the names in that metered feature\'s `group_by` attribute. For example, `region, region` is invalid, while `region, Region` identifies two different attributes.\n* You can specify up to 5 group-by attributes per metered feature.\n* The same metered feature cannot be listed more than once.\n\n**Usage line limit**\n\nBy default, the PDF can contain up to 1,000 usage lines in total across all metered features.\n\nIf the request exceeds the limit, it fails with `invalid_request` and the error code `exceeds_max_allowed_breakdown_rows`.\n',
+    '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nRetrieves usages record for an invoice in PDF file format. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.\n\nFor Usage-Based Billing invoices, you can optionally group a metered feature\'s usage by its configured group-by attributes and choose daily or full-period aggregation for that feature. Automated Metered Billing continues to render the existing ungrouped usage PDF.\n\n### Aggregation windows in the usage PDF\n\nThe invoice period is the reporting range for the PDF, and only usage within the invoice period is included. For each metered feature in `group_by[feature_id]`, `group_by[window_size]` at the same position controls how its usage is aggregated:\n\n* `day` (default): Usage is aggregated into calendar-day windows in UTC. A calendar day runs from `00:00:00 UTC` through `23:59:59 UTC`, so the first and last days can contain usage for only part of the day. Each row displays its date.\n* `none`: Usage is aggregated once for the full invoice period. The table has no date column. Instead, it has one column for each group-by attribute and one row for each distinct set of attribute values.\n\nMetered features that are not listed in `group_by[feature_id]` always use daily aggregation.\n\n#### Daily aggregation example\n\nFor an invoice period from `January 12, 2026 10:45:00 UTC` to `January 25, 2026 10:45:00 UTC`, `group_by[window_size][0]=day` assigns the corresponding metered feature\'s usage to these calendar-day windows:\n\n* `January 12`: usage from `January 12 10:45:00 UTC` through `January 12 23:59:59 UTC`\n* `January 13` through `January 24`: usage from `00:00:00 UTC` through `23:59:59 UTC` on each day\n* `January 25`: usage from `January 25 00:00:00 UTC` through `January 25 10:45:00 UTC`\n\nThe PDF displays only the calendar date for each daily total.  \n\n### Use Cases\n\n##### Group usage events in the PDF\n\nThis capability applies to Usage-Based Billing. The metered feature\'s `query` must include a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.\n\nUse `group_by` to show how usage events are distributed across group-by attributes such as GPU type and region.\n\nFor example, group the `gpu_cloud` metered feature by `gpu_type` and `region`. Specify the group-by attributes as a JSON array:\n\n```bash\n-d "group_by[feature_id][0]"="gpu_cloud" \\\n-d \'group_by[attributes][0]\'=\'["gpu_type","region"]\'\n```\n\nWhen `group_by[window_size]` is `day` or omitted, each distinct set of selected group-by attribute values forms a separate usage section in the PDF. When it is `none`, the PDF shows a single table with one column for each group-by attribute and one row for each distinct set of values.\n\n```text\ngpu_type = "h100", region = "us-east"  60 hours\ngpu_type = "a100", region = "eu-west"  40 hours\n```\n\nThe order of names in the `group_by[attributes]` array determines their display order. A metered feature that is not included in `group_by[feature_id]` is displayed without attribute grouping and uses daily aggregation.\n\n**Null and empty group-by attribute values**\n\nWhen usage is grouped by `region`, the PDF combines the following usage into one null group:\n\n* Usage recorded before `region` was added to the metered feature\'s `GROUP BY` clause.\n* Events that do not contain `region`.\n* Events where `region` is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Values containing leading or trailing whitespace, such as `"region": " null"` and `"region": "null "`, retain their original values and appear as separate groups.\n\nAn event containing `"region": ""` belongs to a separate empty-string group. The PDF displays the null group using an em dash (`---`) and displays the empty-string group as a blank value.  \n**Grouped usage and invoice total**\n\nFor `SUM` and `COUNT`, all grouped values, including the null and empty-string groups, add up to the overall usage for the same metered feature on the invoice:\n\n```text\nregion = "us-east"  60 hours\nregion = "eu-west"  40 hours\nOverall usage       100 hours\n```\n\nThis does not apply to `MIN`, `MAX`, `AVG`, or `COUNT(DISTINCT ...)`. For these functions, each group is calculated separately.\n\nThe API response continues to return a `download` object. The grouped usage appears in the PDF, not in the API response.  \n**Constraints**\n\n* Provide both `group_by[feature_id]` and `group_by[attributes]` for each entry.\n* Each `group_by[feature_id]` value must identify a metered feature billed on the invoice.\n* Each `group_by[attributes]` value must be a nonempty JSON array. Exact duplicate names are not allowed.\n* Group-by attribute names are case-sensitive and must match the names in that metered feature\'s `group_by` attribute. For example, `region, region` is invalid, while `region, Region` identifies two different attributes.\n* You can specify up to 5 group-by attributes per metered feature.\n* The same metered feature cannot be listed more than once.\n\n**Usage line limit**\n\nBy default, the PDF can contain up to 1,000 usage lines in total across all metered features.\n\nIf the request exceeds the limit, it fails with `invalid_request` and the error code `exceeds_max_allowed_breakdown_rows`.\n',
   operationId: 'retrieve_usages_for_an_invoice_as_pdf',
   request: {
     headers: z.object({
@@ -137737,7 +140350,7 @@ export const postUsagesPdfRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'The unique identifier of the metered feature whose usage is grouped in the PDF.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Constraints**\n\n* The identifier must belong to a metered feature billed on the invoice.\n* Each entry must have a corresponding `group_by[attributes]` entry at the same position.\n* The same metered feature cannot be listed twice.\n',
+                        'The unique identifier of the metered feature whose usage is grouped in the PDF.  \n**Constraints**\n\n* The identifier must belong to a metered feature billed on the invoice.\n* Each entry must have a corresponding `group_by[attributes]` entry at the same position.\n* The same metered feature cannot be listed twice.\n',
                       example: null,
                     }),
                   attributes: z
@@ -137755,9 +140368,25 @@ export const postUsagesPdfRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        "A JSON array of group-by attribute names used to group the metered feature at the corresponding position in `group_by[feature_id]`. The order of the names determines their display order in the PDF.\n\nEach distinct set of selected group-by attribute values forms a separate usage section in the PDF.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Prerequisites**\n\n* Usage-Based Billing is enabled for the site.\n* The metered feature's `query` includes a `GROUP BY` clause.  \n**Constraints**\n\n* The array must contain at least one group-by attribute name.\n* Each name is case-sensitive and must match a value in the metered feature's `group_by` attribute.\n* Exact duplicate names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.\n* You can specify up to 5 group-by attributes per metered feature.\n",
+                        "A JSON array of group-by attribute names used to group the metered feature at the corresponding position in `group_by[feature_id]`. The order of the names determines their display order in the PDF.\n\nWhen `group_by[window_size]` is `day` or omitted, each distinct set of selected group-by attribute values forms a separate usage section in the PDF. When it is `none`, the PDF shows a single table with one column for each group-by attribute and one row for each distinct set of values.  \n**Prerequisites**\n\n* Usage-Based Billing is enabled for the site.\n* The metered feature's `query` includes a `GROUP BY` clause.  \n**Constraints**\n\n* The array must contain at least one group-by attribute name.\n* Each name is case-sensitive and must match a value in the metered feature's `group_by` attribute.\n* Exact duplicate names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.\n* You can specify up to 5 group-by attributes per metered feature.\n",
                       example: null,
                     }),
+                  window_size: z
+                    .preprocess(
+                      (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                      z.array(
+                        z
+                          .enum(['day', 'none'])
+                          .openapi({
+                            deprecated: false,
+                            description:
+                              "Specifies the aggregation window for the metered feature at the corresponding position in `group_by[feature_id]`.  \n**Prerequisites**\n\n* Usage-Based Billing is enabled for the site.  \n**Constraints**\n\n* Each entry must have corresponding `group_by[feature_id]` and `group_by[attributes]` entries at the same position.  \n**Default value**\n\n* `day`\n\n* day - Aggregates the metered feature's usage into calendar-day windows in UTC. Each row in the PDF displays its date.\n* none - Aggregates the metered feature's usage once for the full invoice period. Instead of a date column, the PDF shows one column for each group-by attribute and one row for each distinct set of attribute values.\n",
+                            example: null,
+                          }),
+                      ),
+                    )
+                    .exactOptional()
+                    .openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({ deprecated: false, example: null, required: [] }),
@@ -137801,7 +140430,6 @@ export const getSubscriptionsSubscriptionIdUsagesRoute = createRoute({
   method: 'get',
   path: '/subscriptions/{subscription-id}/usages',
   tags: ['subscriptions'],
-  summary: 'Retrieve a usage',
   description:
     '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nRetrieves a usage record of a specific subscription. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.\n',
   operationId: 'retrieve_a_usage',
@@ -137865,7 +140493,6 @@ export const postSubscriptionsSubscriptionIdUsagesRoute = createRoute({
   method: 'post',
   path: '/subscriptions/{subscription-id}/usages',
   tags: ['subscriptions'],
-  summary: 'Create a usage',
   description:
     '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nCreates a usage record for an item price in a subscription. The item price must belong to a [`metered`](/docs/api/items/item-object#metered) item. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.  \n**Max Usages**\n\nLegacy metered billing applies per-subscription usage limits over the subscription lifetime. [Contact Support](https://www.chargebee.com/docs/billing/2.0/kb/getting-started/how-to-contact-chargebees-support-team?utm_source=docs_api&utm_medium=content&utm_campaign=support) for the limit applicable to your site or to request an increase. For high-volume usage at scale, see [Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages).\n',
   operationId: 'create_a_usage',
@@ -137976,7 +140603,6 @@ export const postSubscriptionsSubscriptionIdDeleteUsageRoute = createRoute({
   method: 'post',
   path: '/subscriptions/{subscription-id}/delete_usage',
   tags: ['subscriptions'],
-  summary: 'Delete a usage',
   description:
     '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nDeletes a usage record. This operation cannot be invoked for a usage record that has been [invoiced](/docs/api/usages). This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.\n',
   operationId: 'delete_a_usage',
@@ -138043,7 +140669,6 @@ export const getUsagesRoute = createRoute({
   method: 'get',
   path: '/usages',
   tags: ['usages'],
-  summary: 'List usages',
   description:
     '**Advanced Usage-Based Billing**\n\nFor high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/understanding-usages) with the [Usage Events API](/docs/api/usage_events). The Usage Events API supports schemaless event ingestion at scale, including [individual events](/docs/api/usage_events/create-a-usage-event), [batch ingestion](/docs/api/usage_events/ingest-usages-in-batch), and [usage file ingestion](/docs/api/usage_files/usage-file-object).\n\nRetrieves the list of usages. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.\n',
   operationId: 'list_usages',
@@ -139218,6 +141843,8 @@ export const getEventsRoute = createRoute({
                   'customer_business_entity_changed',
                   'subscription_business_entity_changed',
                   'payment_source_business_entity_changed',
+                  'organization_details_created',
+                  'organization_details_updated',
                   'purchase_created',
                   'voucher_created',
                   'voucher_expired',
@@ -139315,7 +141942,7 @@ export const getEventsRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                   example: null,
                 }),
               is_not: z
@@ -139485,6 +142112,8 @@ export const getEventsRoute = createRoute({
                   'customer_business_entity_changed',
                   'subscription_business_entity_changed',
                   'payment_source_business_entity_changed',
+                  'organization_details_created',
+                  'organization_details_updated',
                   'purchase_created',
                   'voucher_created',
                   'voucher_expired',
@@ -139582,7 +142211,7 @@ export const getEventsRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                   example: null,
                 }),
               in: z
@@ -139752,6 +142381,8 @@ export const getEventsRoute = createRoute({
                   'customer_business_entity_changed',
                   'subscription_business_entity_changed',
                   'payment_source_business_entity_changed',
+                  'organization_details_created',
+                  'organization_details_updated',
                   'purchase_created',
                   'voucher_created',
                   'voucher_expired',
@@ -139849,7 +142480,7 @@ export const getEventsRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                   example: null,
                 }),
               not_in: z
@@ -140019,6 +142650,8 @@ export const getEventsRoute = createRoute({
                   'customer_business_entity_changed',
                   'subscription_business_entity_changed',
                   'payment_source_business_entity_changed',
+                  'organization_details_created',
+                  'organization_details_updated',
                   'purchase_created',
                   'voucher_created',
                   'voucher_expired',
@@ -140116,7 +142749,7 @@ export const getEventsRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                    "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                   example: null,
                 }),
             })
@@ -140139,7 +142772,7 @@ export const getEventsRoute = createRoute({
                     is: {
                       type: 'string',
                       description:
-                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                       enum: [
                         'coupon_created',
                         'coupon_updated',
@@ -140306,6 +142939,8 @@ export const getEventsRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -140405,7 +143040,7 @@ export const getEventsRoute = createRoute({
                     is_not: {
                       type: 'string',
                       description:
-                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                       enum: [
                         'coupon_created',
                         'coupon_updated',
@@ -140572,6 +143207,8 @@ export const getEventsRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -140671,7 +143308,7 @@ export const getEventsRoute = createRoute({
                     in: {
                       type: 'string',
                       description:
-                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                       enum: [
                         'coupon_created',
                         'coupon_updated',
@@ -140838,6 +143475,8 @@ export const getEventsRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -140933,13 +143572,13 @@ export const getEventsRoute = createRoute({
                         'private_note_added',
                       ],
                       pattern:
-                        '^\\[(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added)(,(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added))*\\]$',
+                        '^\\[(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|organization_details_created|organization_details_updated|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added)(,(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|organization_details_created|organization_details_updated|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added))*\\]$',
                       example: null,
                     },
                     not_in: {
                       type: 'string',
                       description:
-                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
+                        "* `coupon_created` - Sent when a coupon is created. \n* `coupon_updated` - Sent when a coupon is changed. \n* `coupon_deleted` - Sent when a coupon is deleted. \n* `coupon_set_created` - Sent when a coupon set is created\n* `coupon_set_updated` - Sent when a coupon set is changed\n* `coupon_set_deleted` - Sent when a coupon set is deleted\n* `coupon_codes_added` - Sent when coupon codes are added in coupon set\n* `coupon_codes_deleted` - Sent when coupon codes are deleted in coupon set\n* `coupon_codes_updated` - Sent when coupon codes are updated\n* `customer_created` - Sent when a customer is created. This event happens when only a new customer is created or when a customer is automatically created during new subscription creation.\n* `customer_changed` - Sent when a customer is changed\n* `customer_deleted` - Sent when a customer is deleted\n* `customer_moved_out` - Sent when a customer is copied to another site\n* `customer_moved_in` - Sent when a customer is copied from another site\n* `promotional_credits_added` - Sent when a customer prmotion credits added\n* `promotional_credits_deducted` - Sent when a customer prmotion credits deducted\n* `subscription_created` - Sent when a new subscription is created.\n* `subscription_created_with_backdating` - Sent when a new subscription is created with backdating.\n* `subscription_started` - Sent when a 'future' subscription gets started at the scheduled date.\n* `subscription_trial_end_reminder` - Sent when the customer's trial period is about to end.\n* `subscription_activated` - Sent after the subscription has been moved from trial to active state\n* `subscription_activated_with_backdating` - Sent after the subscription changes to `active` from another `status`, while the change is backdated.\n* `subscription_changed` - Sent after the subscription's recurring items have been changed\n* `subscription_trial_extended` - Trial Extension\n* `mrr_updated` - Sent when either of MRR or CMRR of a subscription changes\n* `subscription_changed_with_backdating` - Sent after the subscription's recurring items have been changed with backdated date\n* `subscription_cancellation_scheduled` - Sent when subscription is scheduled to cancel at end of current term\n* `subscription_cancellation_reminder` - Sent when the customer's subscription is nearing it's scheduled cancellation date.\n* `subscription_cancelled` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_canceled_with_backdating` - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.\n* `subscription_reactivated` - Sent when the subscription is moved from cancelled state to active or in_trial state\n* `subscription_reactivated_with_backdating` - Sent when the subscription is moved from cancelled state to active or in_trial state with past date\n* `subscription_renewed` - Sent when the subscription is renewed from the current term.\n* `subscription_items_renewed` - Sent when one or more Subscription Items are renewed\n* `subscription_scheduled_cancellation_removed` - Sent when scheduled cancellation is removed for the subscription.\n* `subscription_changes_scheduled` - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.\n* `subscription_scheduled_changes_removed` - Sent when scheduled change for the subscription is removed.\n* `subscription_shipping_address_updated` - Triggered when shipping address is added or updated for a subscription.\n* `subscription_deleted` - Sent when a subscription has been deleted\n* `subscription_paused` - Sent when the subscription is paused.\n* `subscription_pause_scheduled` - Sent when the subscription is scheduled to pause.\n* `subscription_scheduled_pause_removed` - Triggered when scheduled pause is removed for the subscription.\n* `subscription_resumed` - Sent when the subscription is moved from paused state to active state\n* `subscription_resumption_scheduled` - Triggered when the subscription resumption is scheduled.\n* `subscription_scheduled_resumption_removed` - Triggered when scheduled resumption is removed for the subscription.\n* `subscription_advance_invoice_schedule_added` - Triggered when advance invoice is scheduled for a subscription.\n* `subscription_advance_invoice_schedule_updated` - Triggered when scheduled advance invoice is updated for a subscription.\n* `subscription_advance_invoice_schedule_removed` - Triggered when scheduled advance invoice is removed for a subscription.\n* `pending_invoice_created` - Event triggered (in the case of metered billing) when a \"Pending\" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the “Notify for Pending Invoices” option is enabled.\n* `pending_invoice_updated` - Event triggered when the option \"Notify and wait to close invoices\" is enabled, and the 'Pending' invoice is updated.\n* `invoice_generated` - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a \"Pending\" invoice is closed.\n* `invoice_generated_with_backdating` - Event triggered when a new invoice is generated with past date as invoice date.\n* `invoice_updated` - Triggered when the invoice’s shipping/billing address is updated, if the invoice is voided, or when the amount due is modified due to payments applied/removed.\n* `invoice_deleted` - Event triggered when an invoice is deleted.\n* `credit_note_created` - Sent when a credit note is created\n* `credit_note_created_with_backdating` - Sent when a credit note is created with past date as credit note date\n* `credit_note_updated` - Sent when a credit note is updated\n* `credit_note_deleted` - Sent when a credit note is deleted\n* `einvoice_created` - Triggered when an e-invoice is created for an invoice or credit note.\n* `einvoice_updated` - Triggered when an e-invoice is updated (for example status or provider response changes).\n* `payment_schedules_created` - Event triggered when new payment schedules are created for an invoice\n* `payment_schedules_updated` - Event triggered when payment schedules are updated for an invoice\n* `payment_schedule_scheme_created` - Event triggered when a new payment schedule scheme is created\n* `payment_schedule_scheme_deleted` - Event triggered when a payment schedule scheme is deleted\n* `payment_schedules_cancelled` - Event triggered when remaining unpaid payment schedules are cancelled for an invoice\n* `subscription_renewal_reminder` - Sent before each subscription's renewal based on plan's period\n* `add_usages_reminder` - Sent every month day before renewal date of plan's period\n* `payment_due_reminder` - Sent after scheduled days of payment failure\n* `transaction_created` - Triggered when a transaction is recorded\n* `transaction_updated` - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.\n* `transaction_deleted` - Triggered when a transaction is deleted. \n* `payment_succeeded` - Sent when the payment is successfully collected\n* `payment_failed` - Sent when attempt to charge customer's credit card fails\n* `dunning_updated` - Sent when dunning is paused for an invoice\n* `payment_refunded` - Sent when a payment refund is made\n* `refund_failed` - Sent when a refund attempt fails at the gateway\n* `payment_initiated` - Sent when a payment is initiated via direct debit\n* `refund_initiated` - Sent when a refund is initiated via direct debit\n* `netd_payment_due_reminder` - **(Deprecated)** Sent when a invoice's due period is about to end\n* `authorization_succeeded` - Triggered when a authorization transaction is created.\n* `authorization_voided` - Triggered when a authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.\n* `card_added` - Sent when a card is added for a customer.\n* `card_updated` - Sent when the card is updated for a customer.\n* `card_expiry_reminder` - Sent when the customer's credit card is expiring soon. Sent 30 days before the expiry date.\n* `card_expired` - Sent when a card for a customer is expired\n* `card_deleted` - Sent when a card is deleted for a customer\n* `payment_source_added` - Sent when a payment source is added for a customer.\n* `payment_source_updated` - Sent when the payment source is updated for a customer or when role is assigned to the payment source.\n* `payment_source_deleted` - Sent when a payment source is deleted for a customer\n* `payment_source_expiring` - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.\n* `payment_source_expired` - Sent when a payment source for a customer is expired\n* `payment_source_locally_deleted` - Sent when a payment source for a customer removed from Chargebee\n* `virtual_bank_account_added` - Sent when a virtual bank account is added for a customer.\n* `virtual_bank_account_updated` - Sent when the virtual bank account is updated for a customer.\n* `virtual_bank_account_deleted` - Sent when a virtual bank account is deleted for a customer.\n* `token_created` - Sent when a Token is created\n* `token_consumed` - Sent when a Token is consumed\n* `token_expired` - Sent when a Token is expired\n* `unbilled_charges_created` - Triggered when unbilled charges are created\n* `unbilled_charges_voided` - Triggered when unbilled charges are voided\n* `unbilled_charges_deleted` - Triggered when unbilled charges are deleted\n* `unbilled_charges_invoiced` - Triggered when unbilled charges are invoiced\n* `order_created` - Triggered when order is created\n* `order_updated` - Triggered when order is updated\n* `order_cancelled` - Triggered when order is cancelled\n* `order_delivered` - Triggered when order is marked as delivered\n* `order_returned` - Triggered when order is marked as returned\n* `order_ready_to_process` - Triggered when order reaches it's order date\n* `order_ready_to_ship` - Triggered when order reaches it's shipping date\n* `order_deleted` - Triggered when order is deleted\n* `order_resent` - Triggered when order is resent\n* `quote_created` - Triggered when quote is created\n* `quote_updated` - Triggered when quote is updated\n* `quote_deleted` - Triggered when quote is deleted\n* `tax_withheld_recorded` - Triggered when a tax withheld is recorded for an invoice\n* `tax_withheld_deleted` - Triggered when a tax withheld is deleted\n* `tax_withheld_refunded` - Sent when a tax withheld refund is made\n* `gift_scheduled` - Triggered when a new gift is created\n* `gift_unclaimed` - Triggered when a new gift is unclaimed and is ready to be claimed\n* `gift_claimed` - Triggered when a gift is claimed\n* `gift_expired` - Triggered when a gift expires\n* `gift_cancelled` - Triggered when a gift is cancelled.\n* `gift_updated` - Triggered when a gift is updated\n* `hierarchy_created` - Triggered when a hierarchy is created\n* `hierarchy_deleted` - Triggered when a hierarchy is deleted\n* `payment_intent_created` - Sent when a Payment intent is created\n* `payment_intent_updated` - Sent when a Payment intent is updated\n* `contract_term_created` - Triggered when new contract term is created\n* `contract_term_renewed` - Triggered when new contract term is renewed\n* `contract_term_terminated` - Triggered when contract term is terminated\n* `contract_term_completed` - Triggered when contract term is completed\n* `contract_term_cancelled` - Triggered when contract term is cancelled\n* `item_family_created` - Triggered when an item family is created\n* `item_family_updated` - Triggered when an item family is updated\n* `item_family_deleted` - Triggered when an item family is deleted\n* `item_created` - Triggered when an item is created\n* `item_updated` - Triggered when an item is updated\n* `item_deleted` - Triggered when an item is deleted\n* `item_price_created` - Triggered when an item price is created\n* `item_price_updated` - Triggered when an item price is updated\n* `item_price_deleted` - Triggered when an item price is deleted\n* `attached_item_created` - Triggered when an Attached item is created\n* `attached_item_updated` - Triggered when an Attached item is updated\n* `attached_item_deleted` - Triggered when an Attached item is deleted\n* `differential_price_created` - Triggered when a differential price is created\n* `differential_price_updated` - Triggered when a differential price is updated\n* `differential_price_deleted` - Triggered when a differential price is deleted\n* `feature_created` - Triggered when a feature is created.\n* `feature_updated` - Triggered when an feature is updated\n* `feature_deleted` - Triggered when a feature is deleted\n* `feature_activated` - Triggered when a feature `status` transitions to `active` for the first time.\n* `feature_reactivated` - Triggered when a feature `status` transitions to `active` for the second time or more.\n* `feature_archived` - Triggered when an feature is archived\n* `item_entitlements_updated` - Triggered when item entitlements are updated to a feature\n* `entitlement_overrides_updated` - Triggered when an override entitlement is updated\n* `entitlement_overrides_removed` - Triggered when an override entitlement is removed\n* `item_entitlements_removed` - Triggered when item entitlements are removed for a feature\n* `entitlement_overrides_auto_removed` - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry\n* `subscription_entitlements_created` - Triggered when subscription entitlements are created for a new subscription\n* `subscription_entitlements_updated` - Triggered when subscription entitlements are updated due to the subscription change event\n* `business_entity_created` - Sent when a business entity is created. \n* `business_entity_updated` - Sent when a business entity is updated. \n* `business_entity_deleted` - Sent when a business entity is deleted. \n* `customer_business_entity_changed` - Sent when a customer's business entity is changed.\n* `subscription_business_entity_changed` - Sent when a subscription's business entity is changed. \n* `payment_source_business_entity_changed` - Sent when a payment source's business entity is changed.\n* `organization_details_created` - Sent when an organization address is created.\n* `organization_details_updated` - Sent when an organization address is updated.\n* `purchase_created` - Triggered when purchase action is completed successfully\n* `voucher_created` - Triggered when a payment voucher is created\n* `voucher_expired` - Triggered when a payment voucher is expired\n* `voucher_create_failed` - Triggered when a payment voucher creation is failed\n* `product_created` - **(Deprecated)** Triggered when the product create is completed successfully\n* `product_updated` - **(Deprecated)** Triggered when the product update is completed successfully\n* `product_deleted` - **(Deprecated)** Triggered when the product delete is completed successfully\n* `variant_created` - **(Deprecated)** Triggered when product variant create completed successfully\n* `variant_updated` - **(Deprecated)** Triggered when product variant update completed successfully\n* `variant_deleted` - **(Deprecated)** Triggered when product variant delete completed successfully\n* `item_price_entitlements_updated` - Triggered when item Price entitlements are updated to a feature\n* `item_price_entitlements_removed` - Triggered when item price entitlements are removed for a feature\n* `subscription_ramp_created` - Triggered when a subscription ramp is created.\n* `subscription_ramp_deleted` - Triggered when a subscription ramp is deleted.\n* `subscription_ramp_applied` - Triggered when a subscription ramp is applied.\n* `subscription_ramp_drafted` - Triggered when a subscription ramp is moved to draft status.\n* `subscription_ramp_updated` - Triggered when a subscription ramp is updated.\n* `price_variant_created` - Triggered when a price variant is created.\n* `price_variant_updated` - Triggered when a price variant is updated.\n* `price_variant_deleted` - Triggered when a price variant is deleted.\n* `customer_entitlements_updated` - Triggered when entitlements for the list of customers got updated.\n* `subscription_moved_in` - Triggered when a subscription moved from other customer\n* `subscription_moved_out` - Triggered when a subscription moved to other customer\n* `subscription_movement_failed` - Triggered when a subscription movement failed\n* `omnichannel_subscription_created` - Triggered when an omnichannel subscription is created\n* `omnichannel_subscription_item_renewed` - Triggered when an omnichannel subscription item is renewed\n* `omnichannel_subscription_item_downgrade_scheduled` - **(Deprecated)** Triggered when an omnichannel subscription item is downgrade is scheduled\n* `omnichannel_subscription_item_scheduled_downgrade_removed` - **(Deprecated)** Triggered when an omnichannel subscription item scheduled downgrade is removed\n* `omnichannel_subscription_item_downgraded` - Triggered when an omnichannel subscription item is downgraded\n* `omnichannel_subscription_item_expired` - Triggered when an omnichannel subscription item is expired\n* `omnichannel_subscription_item_cancellation_scheduled` - Triggered when an omnichannel subscription item is scheduled for cancellation\n* `omnichannel_subscription_item_scheduled_cancellation_removed` - Triggered when an omnichannel subscription item scheduled cancellation is removed\n* `omnichannel_subscription_item_resubscribed` - Triggered when an omnichannel subscription item is resubscribed\n* `omnichannel_subscription_item_upgraded` - Triggered when an omnichannel subscription item is upgraded\n* `omnichannel_subscription_item_cancelled` - Triggered when an omnichannel subscription item is cancelled\n* `omnichannel_subscription_imported` - Triggered when an omnichannel subscription item is imported\n* `omnichannel_subscription_item_grace_period_started` - Triggered when an omnichannel subscription item's grace period has started\n* `omnichannel_subscription_item_grace_period_expired` - Triggered when an omnichannel subscription item's grace period has expired\n* `omnichannel_subscription_item_dunning_started` - Triggered when an omnichannel subscription item's dunning has started\n* `omnichannel_subscription_item_dunning_expired` - Triggered when an omnichannel subscription item's dunning has expired\n* `rule_created` - Triggered when a rule is created\n* `rule_updated` - Triggered when a rule is updated\n* `rule_deleted` - Triggered when a rule is deleted\n* `record_purchase_failed` - Triggered when an omnichannel record purchase is failed\n* `omnichannel_subscription_item_change_scheduled` - Triggered when an omnichannel subscription item change is scheduled\n* `omnichannel_subscription_item_scheduled_change_removed` - Triggered when an omnichannel subscription item scheduled change is removed\n* `omnichannel_subscription_item_reactivated` - Triggered when an omnichannel subscription item's refund is reversed\n* `sales_order_created` - Triggered when sales order is created\n* `sales_order_updated` - Triggered when sales order is updated\n* `omnichannel_subscription_item_changed` - Triggered when an omnichannel subscription item is changed\n* `omnichannel_subscription_item_paused` - Triggered when an omnichannel subscription item is paused\n* `omnichannel_subscription_item_resumed` - Triggered when an omnichannel subscription item is resumed\n* `omnichannel_one_time_order_created` - Triggered when an omnichannel one time order is created\n* `omnichannel_one_time_order_item_cancelled` - Triggered when an omnichannel one time order item is cancelled\n* `usage_file_ingested` - Triggered when a usage file is ingested\n* `omnichannel_subscription_item_pause_scheduled` - Triggered when an omnichannel subscription item scheduled for pause\n* `omnichannel_subscription_moved_in` - Triggered when an omnichannel subscription is moved into another customer\n* `omnichannel_transaction_created` - Triggered when an omnichannel transaction is created\n* `alert_status_changed` - Triggered when the status for an alert changes\n* `omnichannel_subscription_item_updated` - Triggered when an omnichannel subscription item is updated\n* `omnichannel_subscription_item_recovered` - Triggered when an omnichannel subscription item is recovered from grace period or dunning\n* `price_ramp_created` - Triggered when a price ramp is created.\n* `price_ramp_updated` - Triggered when a price ramp is updated.\n* `price_ramp_deleted` - Triggered when a price ramp is deleted.\n* `omnichannel_subscription_item_mrr_updated` - Triggered when an omnichannel subscription item's MRR is updated\n* `ledger_account_balance_updated` - Triggered when a ledger account balance changes for a subscription unit.\n* `grant_blocks_created` - Triggered when one or more grant blocks are created for a subscription unit.\n* `grant_blocks_updated` - Triggered when one or more grant blocks are updated for a subscription unit.\n* `ledger_updated` - Triggered when a batch of ledger operations is persisted for a subscription unit.\n* `business_rule_created` - Triggered when a business rule is created\n* `business_rule_updated` - Triggered when a business rule is updated\n* `business_rule_activated` - Triggered when a business rule is activated\n* `business_rule_deactivated` - Triggered when a business rule is deactivated\n* `business_rule_deleted` - Triggered when a business rule is deleted\n* `business_rule_released` - Triggered when a business rule is released\n* `vault_token_created` - Triggered when a payment method is tokenized and stored in the vault.\n* `vault_token_updated` - Triggered when a vaulted payment method is updated.\n* `vault_token_deleted` - Triggered when a vaulted payment method is deleted from the vault.\n* `chargeback_initiated` - Triggered when a chargeback is raised against a payment.\n* `chargeback_won` - Triggered when a chargeback is resolved in the merchant's favour.\n* `chargeback_lost` - Triggered when a chargeback is resolved in the customer's favour.\n* `business_ruleset_created` - Triggered when a business ruleset is created\n* `business_ruleset_updated` - Triggered when a business ruleset is updated\n* `business_ruleset_activated` - Triggered when a business ruleset is activated\n* `business_ruleset_deactivated` - Triggered when a business ruleset is deactivated\n* `business_ruleset_deleted` - Triggered when a business ruleset is deleted\n* `collections_reminder_sequence_created` - Triggered when a collections reminder sequence is created.\n* `collections_reminder_sequence_paused` - Triggered when a collections reminder sequence is paused.\n* `collections_reminder_sequence_resumed` - Triggered when a collections reminder sequence is resumed.\n* `collections_reminder_sequence_completed` - Triggered when a collections reminder sequence is completed.\n* `collections_payment_promise_created` - Triggered when a collections payment promise is created.\n* `collections_payment_promise_updated` - Triggered when a collections payment promise is updated.\n* `collections_payment_promise_fulfilled` - Triggered when a collections payment promise is fulfilled.\n* `collections_payment_promise_cancelled` - Triggered when a collections payment promise is cancelled.\n* `collections_payment_promise_broken` - Triggered when a collections payment promise is broken.\n* `collections_dispute_created` - Triggered when a collections dispute is created.\n* `collections_dispute_updated` - Triggered when a collections dispute is updated.\n* `collections_dispute_resolved` - Triggered when a collections dispute is resolved.\n* `collections_dispute_withdrawn` - Triggered when a collections dispute is withdrawn.\n* `email_message_received` - Triggered when an inbound email message is received in Billing Desk.\n* `private_note_added` - Triggered when a private note is added in Billing Desk.",
                       enum: [
                         'coupon_created',
                         'coupon_updated',
@@ -141106,6 +143745,8 @@ export const getEventsRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -141201,7 +143842,7 @@ export const getEventsRoute = createRoute({
                         'private_note_added',
                       ],
                       pattern:
-                        '^\\[(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added)(,(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added))*\\]$',
+                        '^\\[(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|organization_details_created|organization_details_updated|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added)(,(coupon_created|coupon_updated|coupon_deleted|coupon_set_created|coupon_set_updated|coupon_set_deleted|coupon_codes_added|coupon_codes_deleted|coupon_codes_updated|customer_created|customer_changed|customer_deleted|customer_moved_out|customer_moved_in|promotional_credits_added|promotional_credits_deducted|subscription_created|subscription_created_with_backdating|subscription_started|subscription_trial_end_reminder|subscription_activated|subscription_activated_with_backdating|subscription_changed|subscription_trial_extended|mrr_updated|subscription_changed_with_backdating|subscription_cancellation_scheduled|subscription_cancellation_reminder|subscription_cancelled|subscription_canceled_with_backdating|subscription_reactivated|subscription_reactivated_with_backdating|subscription_renewed|subscription_items_renewed|subscription_scheduled_cancellation_removed|subscription_changes_scheduled|subscription_scheduled_changes_removed|subscription_shipping_address_updated|subscription_deleted|subscription_paused|subscription_pause_scheduled|subscription_scheduled_pause_removed|subscription_resumed|subscription_resumption_scheduled|subscription_scheduled_resumption_removed|subscription_advance_invoice_schedule_added|subscription_advance_invoice_schedule_updated|subscription_advance_invoice_schedule_removed|pending_invoice_created|pending_invoice_updated|invoice_generated|invoice_generated_with_backdating|invoice_updated|invoice_deleted|credit_note_created|credit_note_created_with_backdating|credit_note_updated|credit_note_deleted|einvoice_created|einvoice_updated|payment_schedules_created|payment_schedules_updated|payment_schedule_scheme_created|payment_schedule_scheme_deleted|payment_schedules_cancelled|subscription_renewal_reminder|add_usages_reminder|payment_due_reminder|transaction_created|transaction_updated|transaction_deleted|payment_succeeded|payment_failed|dunning_updated|payment_refunded|refund_failed|payment_initiated|refund_initiated|netd_payment_due_reminder|authorization_succeeded|authorization_voided|card_added|card_updated|card_expiry_reminder|card_expired|card_deleted|payment_source_added|payment_source_updated|payment_source_deleted|payment_source_expiring|payment_source_expired|payment_source_locally_deleted|virtual_bank_account_added|virtual_bank_account_updated|virtual_bank_account_deleted|token_created|token_consumed|token_expired|unbilled_charges_created|unbilled_charges_voided|unbilled_charges_deleted|unbilled_charges_invoiced|order_created|order_updated|order_cancelled|order_delivered|order_returned|order_ready_to_process|order_ready_to_ship|order_deleted|order_resent|quote_created|quote_updated|quote_deleted|tax_withheld_recorded|tax_withheld_deleted|tax_withheld_refunded|gift_scheduled|gift_unclaimed|gift_claimed|gift_expired|gift_cancelled|gift_updated|hierarchy_created|hierarchy_deleted|payment_intent_created|payment_intent_updated|contract_term_created|contract_term_renewed|contract_term_terminated|contract_term_completed|contract_term_cancelled|item_family_created|item_family_updated|item_family_deleted|item_created|item_updated|item_deleted|item_price_created|item_price_updated|item_price_deleted|attached_item_created|attached_item_updated|attached_item_deleted|differential_price_created|differential_price_updated|differential_price_deleted|feature_created|feature_updated|feature_deleted|feature_activated|feature_reactivated|feature_archived|item_entitlements_updated|entitlement_overrides_updated|entitlement_overrides_removed|item_entitlements_removed|entitlement_overrides_auto_removed|subscription_entitlements_created|subscription_entitlements_updated|business_entity_created|business_entity_updated|business_entity_deleted|customer_business_entity_changed|subscription_business_entity_changed|payment_source_business_entity_changed|organization_details_created|organization_details_updated|purchase_created|voucher_created|voucher_expired|voucher_create_failed|product_created|product_updated|product_deleted|variant_created|variant_updated|variant_deleted|item_price_entitlements_updated|item_price_entitlements_removed|subscription_ramp_created|subscription_ramp_deleted|subscription_ramp_applied|subscription_ramp_drafted|subscription_ramp_updated|price_variant_created|price_variant_updated|price_variant_deleted|customer_entitlements_updated|subscription_moved_in|subscription_moved_out|subscription_movement_failed|omnichannel_subscription_created|omnichannel_subscription_item_renewed|omnichannel_subscription_item_downgrade_scheduled|omnichannel_subscription_item_scheduled_downgrade_removed|omnichannel_subscription_item_downgraded|omnichannel_subscription_item_expired|omnichannel_subscription_item_cancellation_scheduled|omnichannel_subscription_item_scheduled_cancellation_removed|omnichannel_subscription_item_resubscribed|omnichannel_subscription_item_upgraded|omnichannel_subscription_item_cancelled|omnichannel_subscription_imported|omnichannel_subscription_item_grace_period_started|omnichannel_subscription_item_grace_period_expired|omnichannel_subscription_item_dunning_started|omnichannel_subscription_item_dunning_expired|rule_created|rule_updated|rule_deleted|record_purchase_failed|omnichannel_subscription_item_change_scheduled|omnichannel_subscription_item_scheduled_change_removed|omnichannel_subscription_item_reactivated|sales_order_created|sales_order_updated|omnichannel_subscription_item_changed|omnichannel_subscription_item_paused|omnichannel_subscription_item_resumed|omnichannel_one_time_order_created|omnichannel_one_time_order_item_cancelled|usage_file_ingested|omnichannel_subscription_item_pause_scheduled|omnichannel_subscription_moved_in|omnichannel_transaction_created|alert_status_changed|omnichannel_subscription_item_updated|omnichannel_subscription_item_recovered|price_ramp_created|price_ramp_updated|price_ramp_deleted|omnichannel_subscription_item_mrr_updated|ledger_account_balance_updated|grant_blocks_created|grant_blocks_updated|ledger_updated|business_rule_created|business_rule_updated|business_rule_activated|business_rule_deactivated|business_rule_deleted|business_rule_released|vault_token_created|vault_token_updated|vault_token_deleted|chargeback_initiated|chargeback_won|chargeback_lost|business_ruleset_created|business_ruleset_updated|business_ruleset_activated|business_ruleset_deactivated|business_ruleset_deleted|collections_reminder_sequence_created|collections_reminder_sequence_paused|collections_reminder_sequence_resumed|collections_reminder_sequence_completed|collections_payment_promise_created|collections_payment_promise_updated|collections_payment_promise_fulfilled|collections_payment_promise_cancelled|collections_payment_promise_broken|collections_dispute_created|collections_dispute_updated|collections_dispute_resolved|collections_dispute_withdrawn|email_message_received|private_note_added))*\\]$',
                       example: null,
                     },
                   },
@@ -141904,7 +144545,7 @@ export const getCommentsRoute = createRoute({
                 name: 'entity_type',
                 in: 'query',
                 description:
-                  'Type of the entity this comment generated for.\n\n* item - Entity that represents item\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* invoice - Invoice description\n* business_entity - Entity that represents item of type business entity\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n* quote - Entity that represents a quote\n',
+                  'Type of the entity this comment generated for.\n\n* item - Entity that represents item\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* invoice - Invoice description\n* business_entity - Entity that represents item of type business entity\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* task - Entity that represents a task\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n* quote - Entity that represents a quote\n',
                 required: false,
                 deprecated: false,
                 style: 'form',
@@ -142142,7 +144783,7 @@ export const postCommentsRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Type of the entity to create the comment for.\n\n* item - Entity that represents item\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* invoice - Invoice description\n* business_entity - Entity that represents item of type business entity\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n* quote - Entity that represents a quote\n',
+                    'Type of the entity to create the comment for.\n\n* item - Entity that represents item\n* order - Entity that represents an order\n* item_price - Entity that represents item price\n* customer - Entity that represents a customer\n* invoice - Invoice description\n* business_entity - Entity that represents item of type business entity\n* plan - Entity that represents a subscription plan\n* price_variant - Entity that represents a price variant\n* coupon - Entity that represents a discount coupon\n* subscription - Entity that represents a subscription of a customer\n* task - Entity that represents a task\n* item_family - Entity that represents item family\n* transaction - Entity that represents a transaction.\n* addon - Entity that represents an addon\n* credit_note - Credit note description\n* quote - Entity that represents a quote\n',
                   example: null,
                 }),
               entity_id: z
@@ -145394,7 +148035,7 @@ export const postExportsRampsRoute = createRoute({
                 .object({
                   status: z
                     .object({
-                      in: z
+                      is: z
                         .enum(['scheduled', 'succeeded', 'failed', 'draft'])
                         .exactOptional()
                         .openapi({
@@ -145402,7 +148043,7 @@ export const postExportsRampsRoute = createRoute({
                             '* `scheduled` - Status of the subscription schedule on creation. \n* `succeeded` - The execution status of the schedule if success. \n* `failed` - The execution status of the schedule if failed. \n* `draft` - Status of the subscription schedule considering as draft',
                           example: null,
                         }),
-                      is: z
+                      in: z
                         .enum(['scheduled', 'succeeded', 'failed', 'draft'])
                         .exactOptional()
                         .openapi({
@@ -145421,12 +148062,12 @@ export const postExportsRampsRoute = createRoute({
                     }),
                   subscription_id: z
                     .object({
+                      is: z.string().min(1).exactOptional().openapi({ example: null }),
                       in: z
                         .string()
                         .regex(/^\[(.*)(,.*)*\]$/)
                         .exactOptional()
                         .openapi({ example: null }),
-                      is: z.string().min(1).exactOptional().openapi({ example: null }),
                     })
                     .exactOptional()
                     .openapi({
@@ -151796,12 +154437,12 @@ export const postExportsCouponsRoute = createRoute({
                 }),
               applicable_item_price_ids: z
                 .object({
+                  is: z.string().min(1).exactOptional().openapi({ example: null }),
                   in: z
                     .string()
                     .regex(/^\[(.*)(,.*)*\]$/)
                     .exactOptional()
                     .openapi({ example: null }),
-                  is: z.string().min(1).exactOptional().openapi({ example: null }),
                 })
                 .exactOptional()
                 .openapi({
@@ -169219,7 +171860,7 @@ export const getCreditUnitsRoute = createRoute({
             }),
           status: z
             .object({
-              in: z
+              is: z
                 .enum(['active', 'archived'])
                 .exactOptional()
                 .openapi({
@@ -169227,7 +171868,7 @@ export const getCreditUnitsRoute = createRoute({
                     '* `active` - The credit unit is active.\n* `archived` - The credit unit is archived; it can be reactivated.',
                   example: null,
                 }),
-              is: z
+              in: z
                 .enum(['active', 'archived'])
                 .exactOptional()
                 .openapi({
@@ -169252,19 +171893,19 @@ export const getCreditUnitsRoute = createRoute({
                   deprecated: false,
                   example: 'active',
                   properties: {
+                    is: {
+                      type: 'string',
+                      description:
+                        '* `active` - The credit unit is active.\n* `archived` - The credit unit is archived; it can be reactivated.',
+                      enum: ['active', 'archived'],
+                      example: null,
+                    },
                     in: {
                       type: 'string',
                       description:
                         '* `active` - The credit unit is active.\n* `archived` - The credit unit is archived; it can be reactivated.',
                       enum: ['active', 'archived'],
                       pattern: '^\\[(active|archived)(,(active|archived))*\\]$',
-                      example: null,
-                    },
-                    is: {
-                      type: 'string',
-                      description:
-                        '* `active` - The credit unit is active.\n* `archived` - The credit unit is archived; it can be reactivated.',
-                      enum: ['active', 'archived'],
                       example: null,
                     },
                   },
@@ -169276,12 +171917,12 @@ export const getCreditUnitsRoute = createRoute({
             }),
           id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -169299,8 +171940,8 @@ export const getCreditUnitsRoute = createRoute({
                   deprecated: false,
                   example: 'ai-tokens',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -170641,12 +173282,12 @@ export const getEntitlementsRoute = createRoute({
             }),
           feature_id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -170664,8 +173305,8 @@ export const getEntitlementsRoute = createRoute({
                   deprecated: false,
                   example: 'user-licenses',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -170675,7 +173316,7 @@ export const getEntitlementsRoute = createRoute({
             }),
           entity_type: z
             .object({
-              in: z
+              is: z
                 .enum(['plan', 'addon', 'charge', 'plan_price', 'addon_price'])
                 .exactOptional()
                 .openapi({
@@ -170683,7 +173324,7 @@ export const getEntitlementsRoute = createRoute({
                     '* `plan` - Plan\n* `addon` - Addon\n* `charge` - Charge\n* `plan_price` - Plan Price\n* `addon_price` - Addon Price',
                   example: null,
                 }),
-              is: z
+              in: z
                 .enum(['plan', 'addon', 'charge', 'plan_price', 'addon_price'])
                 .exactOptional()
                 .openapi({
@@ -170708,6 +173349,13 @@ export const getEntitlementsRoute = createRoute({
                   deprecated: false,
                   example: 'plan_price',
                   properties: {
+                    is: {
+                      type: 'string',
+                      description:
+                        '* `plan` - Plan\n* `addon` - Addon\n* `charge` - Charge\n* `plan_price` - Plan Price\n* `addon_price` - Addon Price',
+                      enum: ['plan', 'addon', 'charge', 'plan_price', 'addon_price'],
+                      example: null,
+                    },
                     in: {
                       type: 'string',
                       description:
@@ -170715,13 +173363,6 @@ export const getEntitlementsRoute = createRoute({
                       enum: ['plan', 'addon', 'charge', 'plan_price', 'addon_price'],
                       pattern:
                         '^\\[(plan|addon|charge|plan_price|addon_price)(,(plan|addon|charge|plan_price|addon_price))*\\]$',
-                      example: null,
-                    },
-                    is: {
-                      type: 'string',
-                      description:
-                        '* `plan` - Plan\n* `addon` - Addon\n* `charge` - Charge\n* `plan_price` - Plan Price\n* `addon_price` - Addon Price',
-                      enum: ['plan', 'addon', 'charge', 'plan_price', 'addon_price'],
                       example: null,
                     },
                   },
@@ -170733,12 +173374,12 @@ export const getEntitlementsRoute = createRoute({
             }),
           entity_id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -170756,8 +173397,8 @@ export const getEntitlementsRoute = createRoute({
                   deprecated: false,
                   example: 'usd-professional-monthly',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -172083,6 +174724,8 @@ export const getBusinessEntitiesBusinessEntityIdRoute = createRoute({
   path: '/business_entities/{business-entity-id}',
   tags: ['business_entities'],
   summary: 'Retrieve a business entity',
+  description:
+    'Retrieves the `business_entity` resource identified by the specified unique identifier.\n',
   operationId: 'retrieve_a_business_entity',
   request: {
     headers: z.object({
@@ -172102,7 +174745,7 @@ export const getBusinessEntitiesBusinessEntityIdRoute = createRoute({
           schema: z
             .object({
               business_entity: BusinessEntitySchema.openapi({
-                description: 'Resource object representing business_entity',
+                description: 'Resource object representing `business_entity`\n.\n',
               }),
             })
             .openapi({ required: ['business_entity'], example: null }),
@@ -172128,6 +174771,8 @@ export const postBusinessEntitiesBusinessEntityIdRoute = createRoute({
   path: '/business_entities/{business-entity-id}',
   tags: ['business_entities'],
   summary: 'Update business entity',
+  description:
+    'Updates the `business_entity` resource identified by the specified unique identifier. You can change the `name` and the `status` of the business entity.\n',
   operationId: 'update_business_entity',
   request: {
     headers: z.object({
@@ -172150,11 +174795,20 @@ export const postBusinessEntitiesBusinessEntityIdRoute = createRoute({
                 .string()
                 .max(100)
                 .exactOptional()
-                .openapi({ deprecated: false, example: null }),
+                .openapi({
+                  deprecated: false,
+                  description: 'A human-friendly name for the business entity.\n',
+                  example: null,
+                }),
               status: z
                 .enum(['active', 'inactive'])
                 .exactOptional()
-                .openapi({ deprecated: false, example: null }),
+                .openapi({
+                  deprecated: false,
+                  description:
+                    'The status to set for the business entity.\n\n* active - The business entity is active and can be used.\n* inactive - The business entity is inactive and cannot be used.\n',
+                  example: null,
+                }),
             })
             .openapi({ example: null, required: [] }),
         },
@@ -172169,7 +174823,7 @@ export const postBusinessEntitiesBusinessEntityIdRoute = createRoute({
           schema: z
             .object({
               business_entity: BusinessEntitySchema.openapi({
-                description: 'Resource object representing business_entity',
+                description: 'Resource object representing `business_entity`\n.\n',
               }),
             })
             .openapi({ required: ['business_entity'], example: null }),
@@ -172195,6 +174849,8 @@ export const getBusinessEntitiesRoute = createRoute({
   path: '/business_entities',
   tags: ['business_entities'],
   summary: 'List business entities',
+  description:
+    'Returns a list of `business_entity` resources configured for the site, meeting all the conditions specified in the filter parameters below. By default, this list is sorted by `id` in ascending order.\n',
   operationId: 'list_business_entities',
   request: {
     headers: z.object({
@@ -172313,8 +174969,56 @@ export const getBusinessEntitiesRoute = createRoute({
       })
       .pipe(
         z.object({
-          limit: LimitParamsSchema,
-          offset: OffsetParamsSchema,
+          limit: z
+            .preprocess(
+              (val) =>
+                typeof val === 'string' &&
+                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                  ? Number(val)
+                  : val,
+              z.int32().min(1).max(100),
+            )
+            .default(10)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'limit',
+                in: 'query',
+                description: 'The number of resources to be returned.\n',
+                required: false,
+                deprecated: false,
+                style: 'form',
+                explode: true,
+                schema: {
+                  type: 'integer',
+                  format: 'int32',
+                  default: 10,
+                  maximum: 100,
+                  minimum: 1,
+                  example: null,
+                },
+              },
+              example: null,
+            }),
+          offset: z
+            .string()
+            .max(1000)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'offset',
+                in: 'query',
+                description:
+                  'Determines your position in the list for pagination. To ensure that the next page is retrieved correctly, always set `offset`\nto the value of `next_offset`\nobtained in the previous iteration of the API call.\n',
+                required: false,
+                deprecated: false,
+                style: 'form',
+                explode: true,
+                schema: { type: 'string', maxLength: 1000, example: null },
+              },
+              example: null,
+            }),
           include_deleted: z
             .stringbool()
             .default(false)
@@ -172323,6 +175027,8 @@ export const getBusinessEntitiesRoute = createRoute({
               param: {
                 name: 'include_deleted',
                 in: 'query',
+                description:
+                  'If set to `true`, the list of business entities returned includes those that have been deleted.\n',
                 required: false,
                 style: 'form',
                 explode: true,
@@ -172342,6 +175048,8 @@ export const getBusinessEntitiesRoute = createRoute({
               param: {
                 name: 'name',
                 in: 'query',
+                description:
+                  'optional, string filter\n\nFilter business entities based on their `name`.\n**Supported operators :**\nis, is_not, starts_with, in, not_in, is_present\n\n**Example →**\n*name\\[is\\] = "Acme Inc"*\n',
                 required: false,
                 deprecated: false,
                 style: 'deepObject',
@@ -172394,7 +175102,7 @@ export const getBusinessEntitiesRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    'This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.',
+                    'This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.\n',
                   example: null,
                 }),
             })
@@ -172420,7 +175128,9 @@ export const postBusinessEntitiesRoute = createRoute({
   method: 'post',
   path: '/business_entities',
   tags: ['business_entities'],
-  summary: 'Create a business_entity',
+  summary: 'Create a business entity',
+  description:
+    'Creates a `business_entity` resource for the site. Use this endpoint to set up an additional business unit or brand under your organization, each with its own configuration and data.  \n**Note**\nThis endpoint is available only when [multiple business entities](https://www.chargebee.com/docs/2.0/mbe.html) are enabled for your site.\n',
   operationId: 'create_a_business_entity',
   request: {
     headers: z.object({
@@ -172438,8 +175148,22 @@ export const postBusinessEntitiesRoute = createRoute({
         'application/x-www-form-urlencoded': {
           schema: z
             .object({
-              name: z.string().max(100).openapi({ deprecated: false, example: null }),
-              status: z.enum(['active', 'inactive']).openapi({ deprecated: false, example: null }),
+              name: z
+                .string()
+                .max(100)
+                .openapi({
+                  deprecated: false,
+                  description: 'A human-friendly name for the business entity.\n',
+                  example: null,
+                }),
+              status: z
+                .enum(['active', 'inactive'])
+                .openapi({
+                  deprecated: false,
+                  description:
+                    'The status to set for the business entity.\n\n* active - The business entity is active and can be used.\n* inactive - The business entity is inactive and cannot be used.\n',
+                  example: null,
+                }),
             })
             .openapi({ required: ['name', 'status'], example: null }),
         },
@@ -172454,7 +175178,7 @@ export const postBusinessEntitiesRoute = createRoute({
           schema: z
             .object({
               business_entity: BusinessEntitySchema.openapi({
-                description: 'Resource object representing business_entity',
+                description: 'Resource object representing `business_entity`\n.\n',
               }),
             })
             .openapi({ required: ['business_entity'], example: null }),
@@ -176293,6 +179017,363 @@ export const postCsvTaxRulesRoute = createRoute({
   security: [{ BasicAuth: [] }],
 })
 
+export const getOrganizationDetailsRoute = createRoute({
+  method: 'get',
+  path: '/organization_details',
+  tags: ['organization_details'],
+  summary: 'List organization details',
+  operationId: 'list_organization_details',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = ['business_entity_id']
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          limit: LimitParamsSchema,
+          offset: OffsetParamsSchema,
+          business_entity_id: z
+            .object({ is: z.string().min(1).exactOptional().openapi({ example: null }) })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'business_entity_id',
+                in: 'query',
+                required: false,
+                deprecated: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  deprecated: false,
+                  description:
+                    'The unique ID of the [business entity](/docs/api?prod_cat_ver=2#mbe) of this subscription. This is always the same as the [business entity](/docs/api/subscriptions?prod_cat_ver=2#subscription_customer_id) of the customer.  \nThe ID of the business entity created for the site. For Product Catalog 1.0, all the site data is tied to this business entity.  \n**Note**\n\n[Multiple Business Entities](/docs/api?prod_cat_ver=2#mbe) is a feature available only on Product Catalog 2.0.\n',
+                  example: 'business_entity_id',
+                  properties: { is: { type: 'string', minLength: 1, example: null } },
+                },
+              },
+              deprecated: false,
+              description:
+                'The unique ID of the [business entity](/docs/api?prod_cat_ver=2#mbe) of this subscription. This is always the same as the [business entity](/docs/api/subscriptions?prod_cat_ver=2#subscription_customer_id) of the customer.  \nThe ID of the business entity created for the site. For Product Catalog 1.0, all the site data is tied to this business entity.  \n**Note**\n\n[Multiple Business Entities](/docs/api?prod_cat_ver=2#mbe) is a feature available only on Product Catalog 2.0.\n',
+              example: 'business_entity_id',
+              required: [],
+            }),
+        }),
+      ),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              list: z
+                .array(
+                  z
+                    .object({
+                      organization_detail: OrganizationDetailSchema.openapi({
+                        description: 'Resource object representing organization_detail',
+                      }),
+                    })
+                    .openapi({ required: ['organization_detail'], example: null }),
+                )
+                .openapi({ example: null }),
+              next_offset: z
+                .string()
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.',
+                  example: null,
+                }),
+            })
+            .openapi({ required: ['list'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
+export const postOrganizationDetailsRoute = createRoute({
+  method: 'post',
+  path: '/organization_details',
+  tags: ['organization_details'],
+  summary: 'Update organization details',
+  operationId: 'update_organization_details',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-event-actions': ChargebeeEventActionsParamsSchema,
+      'chargebee-event-email': ChargebeeEventEmailParamsSchema,
+      'chargebee-event-webhook': ChargebeeEventWebhookParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    body: {
+      content: {
+        'application/x-www-form-urlencoded': {
+          schema: z
+            .object({
+              organization_name: z.string().max(100).openapi({ deprecated: false, example: null }),
+              email: z
+                .email()
+                .max(70)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              address_line1: z.string().max(180).openapi({ deprecated: false, example: null }),
+              address_line2: z
+                .string()
+                .max(150)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              address_line3: z
+                .string()
+                .max(150)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              city: z.string().max(50).openapi({ deprecated: false, example: null }),
+              state_code: z
+                .string()
+                .max(50)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              state: z.string().max(50).openapi({ deprecated: false, example: null }),
+              zip: z.string().max(20).openapi({ deprecated: false, example: null }),
+              country_code: z
+                .string()
+                .max(50)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              phone: z.string().max(20).openapi({ deprecated: false, example: null }),
+              fax: z.string().max(20).exactOptional().openapi({ deprecated: false, example: null }),
+              website: z
+                .string()
+                .max(200)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              is_vat_number_present: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+              vat_number: z
+                .string()
+                .max(20)
+                .exactOptional()
+                .openapi({ deprecated: false, example: null }),
+            })
+            .openapi({
+              required: ['address_line1', 'city', 'organization_name', 'phone', 'state', 'zip'],
+              example: null,
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              organization_detail: OrganizationDetailSchema.openapi({
+                description: 'Resource object representing organization_detail',
+              }),
+            })
+            .openapi({ required: ['organization_detail'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
+export const getOrganizationDetailsOrganizationDetailIdRoute = createRoute({
+  method: 'get',
+  path: '/organization_details/{organization-detail-id}',
+  tags: ['organization_details'],
+  summary: 'Retrieve organization details',
+  operationId: 'retrieve_organization_details',
+  request: {
+    headers: z.object({
+      'chargebee-request-origin-device': ChargebeeRequestOriginDeviceParamsSchema,
+      'chargebee-request-origin-user': ChargebeeRequestOriginUserParamsSchema,
+      'chargebee-request-origin-user-encoded': ChargebeeRequestOriginUserEncodedParamsSchema,
+      'chargebee-request-origin-ip': ChargebeeRequestOriginIpParamsSchema,
+      'chargebee-business-entity-id': ChargebeeBusinessEntityIdParamsSchema,
+    }),
+    params: z.object({ 'organization-detail-id': OrganizationDetailIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              organization_detail: OrganizationDetailSchema.openapi({
+                description: 'Resource object representing organization_detail',
+              }),
+            })
+            .openapi({ required: ['organization_detail'], example: null }),
+        },
+      },
+    },
+    400: { description: 'on error', content: { 'application/json': { schema: _400Schema } } },
+    401: { description: 'on error', content: { 'application/json': { schema: _401Schema } } },
+    403: { description: 'on error', content: { 'application/json': { schema: _403Schema } } },
+    404: { description: 'on error', content: { 'application/json': { schema: _404Schema } } },
+    405: { description: 'on error', content: { 'application/json': { schema: _405Schema } } },
+    409: { description: 'on error', content: { 'application/json': { schema: _409Schema } } },
+    422: { description: 'on error', content: { 'application/json': { schema: _422Schema } } },
+    429: { description: 'on error', content: { 'application/json': { schema: _429Schema } } },
+    500: { description: 'on error', content: { 'application/json': { schema: _500Schema } } },
+    503: { description: 'on error', content: { 'application/json': { schema: _503Schema } } },
+  },
+  security: [{ BasicAuth: [] }],
+})
+
 export const postCurrenciesSiteCurrencyIdAddScheduleRoute = createRoute({
   method: 'post',
   path: '/currencies/{site-currency-id}/add_schedule',
@@ -177165,7 +180246,7 @@ export const postSubscriptionsSubscriptionIdCreateRampRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({ example: null }),
@@ -177372,7 +180453,7 @@ export const postSubscriptionsSubscriptionIdCreateRampRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({ example: null }),
@@ -178031,7 +181112,7 @@ export const getRampsRoute = createRoute({
             }),
           status: z
             .object({
-              in: z
+              is: z
                 .enum(['scheduled', 'succeeded', 'failed', 'draft'])
                 .exactOptional()
                 .openapi({
@@ -178039,7 +181120,7 @@ export const getRampsRoute = createRoute({
                     '* `scheduled` - Status of the subscription schedule on creation. \n* `succeeded` - The execution status of the schedule if success. \n* `failed` - The execution status of the schedule if failed. \n* `draft` - Status of the subscription schedule considering as draft',
                   example: null,
                 }),
-              is: z
+              in: z
                 .enum(['scheduled', 'succeeded', 'failed', 'draft'])
                 .exactOptional()
                 .openapi({
@@ -178064,6 +181145,13 @@ export const getRampsRoute = createRoute({
                   deprecated: false,
                   example: 'SCHEDULED',
                   properties: {
+                    is: {
+                      type: 'string',
+                      description:
+                        '* `scheduled` - Status of the subscription schedule on creation. \n* `succeeded` - The execution status of the schedule if success. \n* `failed` - The execution status of the schedule if failed. \n* `draft` - Status of the subscription schedule considering as draft',
+                      enum: ['scheduled', 'succeeded', 'failed', 'draft'],
+                      example: null,
+                    },
                     in: {
                       type: 'string',
                       description:
@@ -178071,13 +181159,6 @@ export const getRampsRoute = createRoute({
                       enum: ['scheduled', 'succeeded', 'failed', 'draft'],
                       pattern:
                         '^\\[(scheduled|succeeded|failed|draft)(,(scheduled|succeeded|failed|draft))*\\]$',
-                      example: null,
-                    },
-                    is: {
-                      type: 'string',
-                      description:
-                        '* `scheduled` - Status of the subscription schedule on creation. \n* `succeeded` - The execution status of the schedule if success. \n* `failed` - The execution status of the schedule if failed. \n* `draft` - Status of the subscription schedule considering as draft',
-                      enum: ['scheduled', 'succeeded', 'failed', 'draft'],
                       example: null,
                     },
                   },
@@ -178089,12 +181170,12 @@ export const getRampsRoute = createRoute({
             }),
           subscription_id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .openapi({
               param: {
@@ -178111,8 +181192,8 @@ export const getRampsRoute = createRoute({
                   deprecated: false,
                   example: '8gsnbYfsMLds',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -178686,7 +181767,7 @@ export const postRampsRampIdUpdateRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({ example: null }),
@@ -178893,7 +181974,7 @@ export const postRampsRampIdUpdateRoute = createRoute({
                   description: z
                     .preprocess(
                       (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                      z.array(z.string().max(500).openapi({ deprecated: false, example: null })),
+                      z.array(z.string().max(2000).openapi({ deprecated: false, example: null })),
                     )
                     .exactOptional()
                     .openapi({ example: null }),
@@ -183884,6 +186965,11 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                 .regex(/^\d{10}$/)
                 .exactOptional()
                 .openapi({ example: null }),
+              between: z
+                .string()
+                .regex(/^\[\d{10},\d{10}\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
               before: z
                 .string()
                 .regex(/^\d{10}$/)
@@ -183892,11 +186978,6 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
               on: z
                 .string()
                 .regex(/^\d{10}$/)
-                .exactOptional()
-                .openapi({ example: null }),
-              between: z
-                .string()
-                .regex(/^\[\d{10},\d{10}\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
             })
@@ -183922,6 +187003,7 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                       pattern: '^\\d{10}$',
                       example: null,
                     },
+                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
                     before: {
                       type: 'string',
                       format: 'unix-time',
@@ -183934,7 +187016,6 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                       pattern: '^\\d{10}$',
                       example: null,
                     },
-                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
                   },
                 },
               },
@@ -183949,6 +187030,11 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                 .regex(/^\d{10}$/)
                 .exactOptional()
                 .openapi({ example: null }),
+              between: z
+                .string()
+                .regex(/^\[\d{10},\d{10}\]$/)
+                .exactOptional()
+                .openapi({ example: null }),
               before: z
                 .string()
                 .regex(/^\d{10}$/)
@@ -183957,11 +187043,6 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
               on: z
                 .string()
                 .regex(/^\d{10}$/)
-                .exactOptional()
-                .openapi({ example: null }),
-              between: z
-                .string()
-                .regex(/^\[\d{10},\d{10}\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
             })
@@ -183987,6 +187068,7 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                       pattern: '^\\d{10}$',
                       example: null,
                     },
+                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
                     before: {
                       type: 'string',
                       format: 'unix-time',
@@ -183999,7 +187081,6 @@ export const getOmnichannelSubscriptionsRoute = createRoute({
                       pattern: '^\\d{10}$',
                       example: null,
                     },
-                    between: { type: 'string', pattern: '^\\[\\d{10},\\d{10}\\]$', example: null },
                   },
                 },
               },
@@ -185183,7 +188264,7 @@ export const getMetersRoute = createRoute({
   tags: ['meters'],
   summary: 'List all available meters',
   description:
-    'Retrieves the list of meters configured for the site.\n\nThe sample responses show meters with and without group-by attributes.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n',
+    'Retrieves the list of meters configured for the site.\n\nThe sample responses show meters with and without group-by attributes.\n',
   operationId: 'list_all_available_meters',
   request: {
     headers: z.object({
@@ -185768,7 +188849,7 @@ export const postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute = createR
   tags: ['metered_features'],
   summary: 'Reactivate a metered feature',
   description:
-    "Restores a previously archived metered feature `status` back to `active`.\n\nThe sample responses show metered features with and without group-by attributes.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature `status` must be `archived`.  \n\n### Impacts\n\n**Metered feature**  \n* The metered feature `status` is changed to `active`.\n* The meter `status` is changed to `active`.\n* The meter's `query` and `column_definitions` remain unchanged. When `query` includes a `GROUP BY` clause, `group_by` also remains unchanged.  \n**Entitlements and subscription entitlements**  \n* New [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) can be created for the feature when it's reactivated.\n",
+    "Restores a previously archived metered feature `status` back to `active`.\n\nThe sample responses show metered features with and without group-by attributes.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature `status` must be `archived`.  \n\n### Impacts\n\n**Metered feature**  \n* The metered feature `status` is changed to `active`.\n* The meter `status` is changed to `active`.\n* The meter's `query` and `column_definitions` remain unchanged. When `query` includes a `GROUP BY` clause, `group_by` also remains unchanged.  \n**Entitlements and subscription entitlements**  \n* New [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) can be created for the feature when it's reactivated.\n",
   operationId: 'reactivate_a_metered_feature',
   request: {
     headers: z.object({
@@ -185818,7 +188899,7 @@ export const postMeteredFeaturesMeteredFeatureIdDeleteRoute = createRoute({
   tags: ['metered_features'],
   summary: 'Delete a metered feature',
   description:
-    "Permanently deletes a metered feature.\n\nThe sample responses show metered features with and without group-by attributes.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature `status` must not be `active`.  \n\n### Impacts\n\n**Entitlements and subscription entitlements**  \nAny [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) defined for the feature are removed.  \n**Feature and meter**  \n* The feature and meter `status` are changed to `deleted`.\n* The response retains the meter's `query` and `column_definitions`. When `query` includes a `GROUP BY` clause, the response also retains `group_by`.\n",
+    "Permanently deletes a metered feature.\n\nThe sample responses show metered features with and without group-by attributes.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature `status` must not be `active`.  \n\n### Impacts\n\n**Entitlements and subscription entitlements**  \nAny [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) defined for the feature are removed.  \n**Feature and meter**  \n* The feature and meter `status` are changed to `deleted`.\n* The response retains the meter's `query` and `column_definitions`. When `query` includes a `GROUP BY` clause, the response also retains `group_by`.\n",
   operationId: 'delete_a_metered_feature',
   request: {
     headers: z.object({
@@ -185868,7 +188949,7 @@ export const postMeteredFeaturesRoute = createRoute({
   tags: ['metered_features'],
   summary: 'Create a metered feature',
   description:
-    'Creates a metered feature.\n\nUse `query` to define how Chargebee measures usage for the metered feature. The result is a single aggregate across all matching usage events. To report grouped usage, include attributes in a `GROUP BY` clause. Each distinct set of values forms one usage group. These attributes are the metered feature\'s group-by attributes.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n\n### Use Cases\n\n##### Create a metered feature with grouped usage\n\nUse group-by attributes when customers need to view how usage is distributed across properties such as GPU type and region.\n\nFor example, the following query measures completed GPU hours and groups them by `gpu_type` and `region`:\n\n```sql\nSELECT SUM(hours)\nFROM events\nWHERE status = \'completed\'\nGROUP BY gpu_type, region;\n```\n\nChargebee creates a separate usage group for each distinct set of `gpu_type` and `region` values. For example:\n\n```text\ngpu_type = "h100", region = "us-east"  60 hours\ngpu_type = "a100", region = "eu-west"  40 hours\n```\n\nThese groups can be displayed in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). Subscription billing uses the overall aggregate of 100 hours.\n\n**Null and empty group-by attribute values**\n\nChargebee stores usage in the null group in the following cases:\n\n* Usage recorded before the group-by attribute was added to the metered feature\'s `GROUP BY` clause. For example, if `region` is added to the `GROUP BY` clause later, usage recorded before `region` was added belongs to the null group for `region`.\n* Events that do not contain the group-by attribute. For example, an event without `region` belongs to the null group.\n* Events where the group-by attribute is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Chargebee does not remove leading or trailing whitespace. Therefore, `"region": " null"` and `"region": "null "` remain separate string groups.\n\nAn explicit empty string is also kept separate. For example, `"region": ""` belongs to the empty-string group and not the null group.\n',
+    'Creates a metered feature.\n\nUse `query` to define how Chargebee measures usage for the metered feature. The result is a single aggregate across all matching usage events. To report grouped usage, include attributes in a `GROUP BY` clause. Each distinct set of values forms one usage group. These attributes are the metered feature\'s group-by attributes.  \n\n### Use Cases\n\n##### Create a metered feature with grouped usage\n\nUse group-by attributes when customers need to view how usage is distributed across properties such as GPU type and region.\n\nFor example, the following query measures completed GPU hours and groups them by `gpu_type` and `region`:\n\n```sql\nSELECT SUM(hours)\nFROM events\nWHERE status = \'completed\'\nGROUP BY gpu_type, region;\n```\n\nChargebee creates a separate usage group for each distinct set of `gpu_type` and `region` values. For example:\n\n```text\ngpu_type = "h100", region = "us-east"  60 hours\ngpu_type = "a100", region = "eu-west"  40 hours\n```\n\nThese groups can be displayed in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). Subscription billing uses the overall aggregate of 100 hours.\n\n**Null and empty group-by attribute values**\n\nChargebee stores usage in the null group in the following cases:\n\n* Usage recorded before the group-by attribute was added to the metered feature\'s `GROUP BY` clause. For example, if `region` is added to the `GROUP BY` clause later, usage recorded before `region` was added belongs to the null group for `region`.\n* Events that do not contain the group-by attribute. For example, an event without `region` belongs to the null group.\n* Events where the group-by attribute is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Chargebee does not remove leading or trailing whitespace. Therefore, `"region": " null"` and `"region": "null "` remain separate string groups.\n\nAn explicit empty string is also kept separate. For example, `"region": ""` belongs to the empty-string group and not the null group.\n',
   operationId: 'create_a_metered_feature',
   request: {
     headers: z.object({
@@ -185919,7 +189000,7 @@ export const postMeteredFeaturesRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in [`group_by`](/docs/api/metered_features/metered-feature-object#group_by), in the same order.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  \n**Usage reporting and subscription billing**\n\nFor a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.\n\nFor example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.\n",
+                    "The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.\n\nTo group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in [`group_by`](/docs/api/metered_features/metered-feature-object#group_by), in the same order.  \n**Constraints**\n\n* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.\n* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.\n* The `GROUP BY` clause can contain up to 5 group-by attributes.\n* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  \n**Usage reporting and subscription billing**\n\nFor a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.\n\nFor example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.\n",
                   example: null,
                 }),
               column_definitions: z
@@ -186000,7 +189081,7 @@ export const postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute = createRout
   tags: ['metered_features'],
   summary: 'Archive a metered feature',
   description:
-    "Archives a metered [feature](/docs/api/metered_features) and its associated [meter](/docs/api/meters).\n\nThe sample responses show metered features with and without group-by attributes.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature must be `active`.  \n\n### Impacts\n\n**Entitlements and subscription entitlements**  \n* New entitlements and subscription entitlements cannot be created for the feature when it's archived.\n* Pre-existing entitlements and subscription entitlements remain effective.  \n**Feature and meter**  \n* The feature and meter `status` are changed to `archived`.\n* The meter's `query` and `column_definitions` remain unchanged. When `query` includes a `GROUP BY` clause, `group_by` also remains unchanged.\n",
+    "Archives a metered [feature](/docs/api/metered_features) and its associated [meter](/docs/api/meters).\n\nThe sample responses show metered features with and without group-by attributes.  \n\n### Prerequisites \\& Constraints\n\n* The metered feature must be `active`.  \n\n### Impacts\n\n**Entitlements and subscription entitlements**  \n* New entitlements and subscription entitlements cannot be created for the feature when it's archived.\n* Pre-existing entitlements and subscription entitlements remain effective.  \n**Feature and meter**  \n* The feature and meter `status` are changed to `archived`.\n* The meter's `query` and `column_definitions` remain unchanged. When `query` includes a `GROUP BY` clause, `group_by` also remains unchanged.\n",
   operationId: 'archive_a_metered_feature',
   request: {
     headers: z.object({
@@ -186384,12 +189465,12 @@ export const getEinvoicesRoute = createRoute({
             }),
           id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -186407,8 +189488,8 @@ export const getEinvoicesRoute = createRoute({
                   deprecated: false,
                   example: 'HmaT0avT2mtbTL3mR',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -186418,12 +189499,12 @@ export const getEinvoicesRoute = createRoute({
             }),
           reference_id: z
             .object({
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
               in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
             })
             .exactOptional()
             .openapi({
@@ -186441,8 +189522,8 @@ export const getEinvoicesRoute = createRoute({
                   deprecated: false,
                   example: 'einvoice_ref_123',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                     is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -187657,6 +190738,8 @@ export const postWebhookEndpointsWebhookEndpointIdRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -188210,6 +191293,8 @@ export const postWebhookEndpointsRoute = createRoute({
                         'customer_business_entity_changed',
                         'subscription_business_entity_changed',
                         'payment_source_business_entity_changed',
+                        'organization_details_created',
+                        'organization_details_updated',
                         'purchase_created',
                         'voucher_created',
                         'voucher_expired',
@@ -190403,7 +193488,7 @@ export const getSubscriptionsSubscriptionIdUsageSummaryRoute = createRoute({
   tags: ['subscriptions'],
   summary: 'Retrieve usage summary for a subscription',
   description:
-    'Retrieves aggregated usage data for a metered feature in a subscription over a specified reporting window.\n\nUnlike [Retrieve Current Usage Charges for a Subscription](/docs/api/usage_charges/retrieve-usage-charges-for-a-subscription) API, which returns the current unbilled usage snapshot including charges, this endpoint returns aggregated usage for a requested timeframe.\n\nUse this endpoint to power experiences such as:\n\n* plotting daily, weekly, or monthly usage trends\n* analyzing feature adoption over time\n* comparing recent usage against earlier periods\n* showing historical usage summaries to subscribers\n\n### What this endpoint returns\n\nReturns usage summary entries for the requested feature within the specified timeframe.\n\nIf `timeframe_start` and `timeframe_end` are not provided, the reporting range **defaults to the start of the subscription\'s current term for `timeframe_start` and the current time for `timeframe_end`.**\n\n### How aggregation works\n\n* If `window_size` is omitted, the response returns a single aggregate for the full reporting range.\n* If `window_size` is provided, the response returns one aggregated entry for each window in the reporting range.\n\nAggregation windows begin at `timeframe_start` and continue consecutively until `timeframe_end`.\n\nThe usages in the window will be bucketed into **rolling windows** aligned to `timeframe_start`, **not to calendar boundaries**.\n\n#### Example\n\nIf:\n\n* `timeframe_start` is `May 10 10:00:00 UTC`\n* `timeframe_end` is `June 10 10:00:00 UTC`\n* `window_size` is `day`\n\nThe response returns windows such as:\n\n* `May 10 10:00:00 UTC` → `May 11 10:00:00 UTC`\n* `May 11 10:00:00 UTC` → `May 12 10:00:00 UTC`\n\nand continues in the same pattern until the final window:\n\n* `June 9 10:00:00 UTC` → `June 10 10:00:00 UTC`\n\nIf you need calendar-aligned reporting, set `timeframe_start` to the required boundary. For example, use `00:00:00 UTC` for daily reporting aligned to calendar days, or the first day of the month at `00:00:00 UTC` for monthly reporting aligned to calendar months.\n\nEach aggregation window follows inclusive-exclusive semantics:\n\n* `aggregated_from` is inclusive\n* `aggregated_till` is exclusive\n\nIn other words, each window is represented as `aggregated_from` and `aggregated_till`.\n\nThis means:\n\n* an event with a timestamp exactly equal to `aggregated_from` is included in that window\n* an event with a timestamp exactly equal to `aggregated_till` is excluded from that window and counted in the next window, if one exists\n* an event with a timestamp exactly equal to `timeframe_end` is excluded\n\nThese inclusive-exclusive boundaries ensure that windows do not overlap and that events on boundaries are never double-counted.  \n\n### Distinct-count behavior\n\nIf a feature uses distinct-count aggregation, the distinct count is evaluated separately within each returned window.\n\nThis means the same entity can be counted once in multiple windows if it appears in each of them.\n\n#### Example\n\nIf the same user appears in both:\n\n* one daily window on **Jan 1**\n* another daily window on **Jan 2**\n\nThat user is counted once in the Jan 1 aggregate and once in the Jan 2 aggregate.  \n\n### Use Cases\n\n##### Retrieve grouped usage and apply filters\n\n**Prerequisites**\n\n* The metered feature\'s `query` includes a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.\n\nUse `group_by` to form one group for each distinct set of group-by attribute values in an aggregation window. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.\n\nThe order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.\n\nUse optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same. For example, you can filter usage to `region=us-east` and group the filtered result by `gpu_type`.  \n**Constraints**\n\n* You can specify up to 5 group-by attributes.\n* Each name is case-sensitive and must match a value in the metered feature\'s [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.\n\nSupported operators:\n\n* `is` and `is_not` take a single value, for example `attributes[region][is]=us-east`.\n* `in` and `not_in` take a JSON-encoded array, for example `attributes[gpu_type][in]=["h100","a100"]`.\n\nGroup-by attribute values are also case-sensitive. For example, the value `"us"` is different from `"US"`. Filters on different group-by attributes are combined using `AND`.\n\n**Null and empty group-by attribute values**\n\nWhen usage is grouped by `region`, the response returns `"value": null` for the combined null group. This group includes:\n\n* Usage recorded before `region` was added to the metered feature\'s `GROUP BY` clause.\n* Events that do not contain `region`.\n* Events where `region` is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Values containing leading or trailing whitespace, such as `"region": " null"` and `"region": "null "`, retain their original values and are returned as separate groups.\n\nAn event containing `"region": ""` is returned separately with `"value": ""`.\n\nTo select the complete null group, use the unquoted uppercase value `NULL`: `attributes[region][is]=NULL`. This filter includes historical usage, missing attributes, JSON-null values, and exact textual null values in any capitalization.\n\nUse uppercase `NULL` exactly as shown. Lowercase `null` is not the documented null-group selector. Similarly, `attributes[region][is]="NULL"` is not equivalent because the quotation marks become part of the filter value.\n\nTo select the empty-string group, pass an empty filter value: `attributes[region][is]=`.\n\nThe `is_not` and `not_in` operators include the null and empty-string groups when they do not match the excluded values. For example, `attributes[region][is_not]=us-east` includes both groups.\n',
+    'Retrieves aggregated usage data for a metered feature in a subscription over a specified reporting window.\n\nUnlike [Retrieve Current Usage Charges for a Subscription](/docs/api/usage_charges/retrieve-usage-charges-for-a-subscription) API, which returns the current unbilled usage snapshot including charges, this endpoint returns aggregated usage for a requested timeframe.\n\nUse this endpoint to power experiences such as:\n\n* plotting daily, weekly, or monthly usage trends\n* analyzing feature adoption over time\n* comparing recent usage against earlier periods\n* showing historical usage summaries to subscribers\n\n### What this endpoint returns\n\nReturns usage summary entries for the requested feature within the specified timeframe.\n\nIf `timeframe_start` and `timeframe_end` are not provided, the reporting range **defaults to the start of the subscription\'s current term for `timeframe_start` and the current time for `timeframe_end`.**\n\n### How aggregation works\n\n* If `window_size` is omitted, the response returns a single aggregate for the full reporting range.\n* If `window_size` is provided, the response returns one aggregated entry for each window in the reporting range.\n\nAggregation windows begin at `timeframe_start` and continue consecutively until `timeframe_end`.\n\nThe usages in the window will be bucketed into **rolling windows** aligned to `timeframe_start`, **not to calendar boundaries**.\n\n#### Example\n\nIf:\n\n* `timeframe_start` is `May 10 10:00:00 UTC`\n* `timeframe_end` is `June 10 10:00:00 UTC`\n* `window_size` is `day`\n\nThe response returns windows such as:\n\n* `May 10 10:00:00 UTC` → `May 11 10:00:00 UTC`\n* `May 11 10:00:00 UTC` → `May 12 10:00:00 UTC`\n\nand continues in the same pattern until the final window:\n\n* `June 9 10:00:00 UTC` → `June 10 10:00:00 UTC`\n\nIf you need calendar-aligned reporting, set `timeframe_start` to the required boundary. For example, use `00:00:00 UTC` for daily reporting aligned to calendar days, or the first day of the month at `00:00:00 UTC` for monthly reporting aligned to calendar months.\n\nEach aggregation window follows inclusive-exclusive semantics:\n\n* `aggregated_from` is inclusive\n* `aggregated_till` is exclusive\n\nIn other words, each window is represented as `aggregated_from` and `aggregated_till`.\n\nThis means:\n\n* an event with a timestamp exactly equal to `aggregated_from` is included in that window\n* an event with a timestamp exactly equal to `aggregated_till` is excluded from that window and counted in the next window, if one exists\n* an event with a timestamp exactly equal to `timeframe_end` is excluded\n\nThese inclusive-exclusive boundaries ensure that windows do not overlap and that events on boundaries are never double-counted.  \n\n### Distinct-count behavior\n\nIf a feature uses distinct-count aggregation, the distinct count is evaluated separately within each returned window.\n\nThis means the same entity can be counted once in multiple windows if it appears in each of them.\n\n#### Example\n\nIf the same user appears in both:\n\n* one daily window on **Jan 1**\n* another daily window on **Jan 2**\n\nThat user is counted once in the Jan 1 aggregate and once in the Jan 2 aggregate.  \n\n### Use Cases\n\n##### Retrieve grouped usage and apply filters\n\n**Prerequisites**\n\n* The metered feature\'s `query` includes a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.\n\nUse `group_by` to form one group for each distinct set of group-by attribute values in an aggregation window. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.\n\nThe order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.\n\nUse optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same. For example, you can filter usage to `region=us-east` and group the filtered result by `gpu_type`.  \n**Constraints**\n\n* You can specify up to 5 group-by attributes.\n* Each name is case-sensitive and must match a value in the metered feature\'s [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.\n\nSupported operators:\n\n* `is` and `is_not` take a single value, for example `attributes[region][is]=us-east`.\n* `in` and `not_in` take a JSON-encoded array, for example `attributes[gpu_type][in]=["h100","a100"]`.\n\nGroup-by attribute values are also case-sensitive. For example, the value `"us"` is different from `"US"`. Filters on different group-by attributes are combined using `AND`.\n\n**Null and empty group-by attribute values**\n\nWhen usage is grouped by `region`, the response returns `"value": null` for the combined null group. This group includes:\n\n* Usage recorded before `region` was added to the metered feature\'s `GROUP BY` clause.\n* Events that do not contain `region`.\n* Events where `region` is JSON `null`, such as `"region": null`.\n* Events where the attribute is the exact string `"null"`, irrespective of capitalization, such as `"region": "null"`, `"region": "NULL"`, or `"region": "nULL"`.\n\nThe comparison with `"null"` is case-insensitive, but the entire value must match. Values containing leading or trailing whitespace, such as `"region": " null"` and `"region": "null "`, retain their original values and are returned as separate groups.\n\nAn event containing `"region": ""` is returned separately with `"value": ""`.\n\nTo select the complete null group, use the unquoted uppercase value `NULL`: `attributes[region][is]=NULL`. This filter includes historical usage, missing attributes, JSON-null values, and exact textual null values in any capitalization.\n\nUse uppercase `NULL` exactly as shown. Lowercase `null` is not the documented null-group selector. Similarly, `attributes[region][is]="NULL"` is not equivalent because the quotation marks become part of the filter value.\n\nTo select the empty-string group, pass an empty filter value: `attributes[region][is]=`.\n\nThe `is_not` and `not_in` operators include the null and empty-string groups when they do not match the excluded values. For example, `attributes[region][is_not]=us-east` includes both groups.\n',
   operationId: 'retrieve_usage_summary_for_a_subscription',
   request: {
     headers: z.object({
@@ -190688,7 +193773,7 @@ export const getSubscriptionsSubscriptionIdUsageSummaryRoute = createRoute({
                 name: 'group_by',
                 in: 'query',
                 description:
-                  "The group-by attributes used to group usage in each aggregation window. Each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.\n\nThe order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.\n\nUse optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same.  \n**Availability**\n\nSupport for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  \n**Prerequisites**\n\n* The metered feature's `query` includes a `GROUP BY` clause.  \n**Constraints**\n\n* You can specify up to 5 group-by attributes.\n* Each name is case-sensitive and must match a value in the metered feature's [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.\n",
+                  "The group-by attributes used to group usage in each aggregation window. Each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.\n\nThe order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.\n\nUse optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same.  \n**Prerequisites**\n\n* The metered feature's `query` includes a `GROUP BY` clause.  \n**Constraints**\n\n* You can specify up to 5 group-by attributes.\n* Each name is case-sensitive and must match a value in the metered feature's [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.\n",
                 required: false,
                 deprecated: false,
                 style: 'form',
@@ -190713,14 +193798,14 @@ export const getSubscriptionsSubscriptionIdUsageSummaryRoute = createRoute({
             }),
           attributes: z
             .object({
-              in: z
+              not_in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
                 .openapi({ example: null }),
-              is: z.string().min(1).exactOptional().openapi({ example: null }),
               is_not: z.string().min(1).exactOptional().openapi({ example: null }),
-              not_in: z
+              is: z.string().min(1).exactOptional().openapi({ example: null }),
+              in: z
                 .string()
                 .regex(/^\[(.*)(,.*)*\]$/)
                 .exactOptional()
@@ -190740,10 +193825,10 @@ export const getSubscriptionsSubscriptionIdUsageSummaryRoute = createRoute({
                   deprecated: false,
                   example: 'us-east',
                   properties: {
-                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
-                    is: { type: 'string', minLength: 1, example: null },
-                    is_not: { type: 'string', minLength: 1, example: null },
                     not_in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
+                    is_not: { type: 'string', minLength: 1, example: null },
+                    is: { type: 'string', minLength: 1, example: null },
+                    in: { type: 'string', pattern: '^\\[(.*)(,.*)*\\]$', example: null },
                   },
                 },
               },
@@ -192706,7 +195791,7 @@ export const getCollectionsPaymentPromisesRoute = createRoute({
   tags: ['collections_payment_promises'],
   summary: 'List collections payment promises',
   description:
-    'Lists collections payment promises for your site. Use filter parameters to narrow results by customer, invoice, or status.\n',
+    'Lists collections payment promises. All filters are optional; without filters, promises are returned newest first.\n',
   operationId: 'list_collections_payment_promises',
   request: {
     headers: z.object({
@@ -192883,7 +195968,7 @@ export const getCollectionsPaymentPromisesRoute = createRoute({
                 name: 'customer_id',
                 in: 'query',
                 description:
-                  'optional, string filter\n\nFilters promises by customer identifier.\n**Supported operators :**\nis\n\n**Example →**\n*customer_id\\[is\\] = "cbdemo_alicia"*\n',
+                  'optional, string filter\n\nFilters promises by customer identifier.\n**Supported operators :**\nis\n\n**Example →**\n*customer_id\\[is\\] = "Azq8CVnhdtD7C1xD"*\n',
                 required: false,
                 deprecated: false,
                 style: 'deepObject',
@@ -192907,7 +195992,7 @@ export const getCollectionsPaymentPromisesRoute = createRoute({
                 name: 'invoice_id',
                 in: 'query',
                 description:
-                  'optional, string filter\n\nFilters promises by invoice identifier.\n**Supported operators :**\nis\n\n**Example →**\n*invoice_id\\[is\\] = "__demo_inv__4"*\n',
+                  'optional, string filter\n\nFilters promises by invoice identifier.\n**Supported operators :**\nis\n\n**Example →**\n*invoice_id\\[is\\] = "inv_123"*\n',
                 required: false,
                 deprecated: false,
                 style: 'deepObject',
@@ -193019,7 +196104,7 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
   tags: ['collections_payment_promises'],
   summary: 'Create a collections payment promise',
   description:
-    'Creates a collections payment promise for a customer, with the promised amount and the date payment was promised. Include `invoice_id` when the promise applies to a specific invoice.\n',
+    "Creates a collections payment promise that records a customer's commitment to pay by `promised_on`. The response is a list with one promise for each covered invoice.\n\nTo cover one invoice, pass `invoice_id` and an `amount` equal to that invoice's amount due. That invoice must not already have an active promise. Without `invoice_id`, open invoices are covered oldest due date first, and invoices that already have an active promise are skipped. `amount` must equal the combined amount due of the invoices covered in that order. Any other amount is rejected. If open invoices span more than one currency, pass `currency_code`.\n\nEach covered invoice's active reminder sequence is paused until you resume it. It does not resume when the promise ends. Without `invoice_id`, the request is rejected when the customer has more than 200 open invoices or active promises.\n",
   operationId: 'create_a_collections_payment_promise',
   request: {
     headers: z.object({
@@ -193042,8 +196127,7 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
                 .max(100)
                 .openapi({
                   deprecated: false,
-                  description:
-                    'Identifier of the customer for whom the payment promise is being created. This field is required.\n',
+                  description: 'Customer making the promise. This field is required.\n',
                   example: null,
                 }),
               invoice_id: z
@@ -193053,7 +196137,7 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    'Identifier of the invoice associated with this promise. This field is optional.\n',
+                    "Invoice to cover. Leave out to cover the customer's open invoices, oldest due date first.\n",
                   example: null,
                 }),
               amount: z
@@ -193072,7 +196156,7 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
                   format: 'int64',
                   deprecated: false,
                   description:
-                    'Amount promised by the customer, in the smallest currency unit (for example, cents for USD). This field is required.\n',
+                    "Amount the customer promises to pay, in the currency's smallest unit (for example, cents).\nWith `invoice_id`, it must equal that invoice's amount due. Without `invoice_id`, it must equal the combined amount due of whole open invoices, taken oldest due date first. Any other amount is rejected.\n",
                   example: null,
                 }),
               currency_code: z
@@ -193082,7 +196166,7 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
                 .openapi({
                   deprecated: false,
                   description:
-                    "Currency code for `amount` in ISO 4217 format. If omitted, the site's base currency is used.\n",
+                    "ISO 4217 currency code. Without `invoice_id`, only open invoices in this currency are covered, and `currency_code` is required when the customer's open invoices are in more than one currency.\nIgnored when `invoice_id` is passed.\n",
                   example: null,
                 }),
               promised_on: z
@@ -193116,7 +196200,8 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   deprecated: false,
-                  description: 'Name or identifier of the person who captured this promise.\n',
+                  description:
+                    'Name or identifier of the user or agent who captured this promise.\n',
                   example: null,
                 }),
             })
@@ -193134,7 +196219,11 @@ export const postCollectionsPaymentPromisesRoute = createRoute({
             .object({
               collections_payment_promises: z
                 .array(CollectionsPaymentPromiseSchema)
-                .openapi({ example: null }),
+                .openapi({
+                  description:
+                    'One `collections_payment_promise` resource for each covered invoice.\n',
+                  example: null,
+                }),
             })
             .openapi({ required: ['collections_payment_promises'], example: null }),
         },
@@ -193160,7 +196249,7 @@ export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRout
   tags: ['collections_payment_promises'],
   summary: 'Cancel a collections payment promise',
   description:
-    'Cancels an active collections payment promise that is no longer expected to be fulfilled.\n',
+    "Cancels an active collections payment promise. Cancelling does not resume the invoice's reminder sequence.\n\nA promise can also end automatically. When the invoice is paid, the promise becomes `fulfilled` or `broken`. When the invoice is voided, written off, or deleted, the promise becomes `cancelled`.\n",
   operationId: 'cancel_a_collections_payment_promise',
   request: {
     headers: z.object({
@@ -193209,8 +196298,7 @@ export const getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute = cre
   path: '/collections_payment_promises/{collections-payment-promise-id}',
   tags: ['collections_payment_promises'],
   summary: 'Retrieve a payment promise',
-  description:
-    'Returns a collections payment promise by its ID, including the promised amount, promise date, and current status.\n',
+  description: 'Retrieves a collections payment promise by ID.\n',
   operationId: 'retrieve_a_payment_promise',
   request: {
     headers: z.object({
@@ -193257,7 +196345,7 @@ export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute = cr
   tags: ['collections_payment_promises'],
   summary: 'Update a collections payment promise',
   description:
-    'Updates an existing collections payment promise. Use this to revise promise details such as `promised_by`, `promised_on`, or `reason`.\n',
+    'Updates an active collections payment promise. You can change `promised_on`, `reason`, or `promised_by`; omitted parameters remain unchanged.\n',
   operationId: 'update_a_collections_payment_promise',
   request: {
     headers: z.object({
@@ -193289,7 +196377,8 @@ export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute = cr
                 .exactOptional()
                 .openapi({
                   deprecated: false,
-                  description: 'Updated promised payment date as a UTC timestamp in seconds.\n',
+                  description:
+                    'Updated promised payment date as a UTC timestamp in seconds. Must be in the future.\n',
                   example: null,
                 }),
               reason: z
@@ -193298,7 +196387,8 @@ export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute = cr
                 .exactOptional()
                 .openapi({
                   deprecated: false,
-                  description: 'Optional note describing the reason for this update.\n',
+                  description:
+                    'Optional note describing the context or reason for capturing this promise. Replaces the stored value. If you leave out `reason`, the stored value is unchanged.\n',
                   example: null,
                 }),
               promised_by: z
@@ -193308,7 +196398,7 @@ export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute = cr
                 .openapi({
                   deprecated: false,
                   description:
-                    'Name or identifier of the user or agent updating this payment promise.\n',
+                    'Name or identifier of the user or agent who captured this promise. Replaces the stored value.\n',
                   example: null,
                 }),
             })
@@ -194699,7 +197789,7 @@ export const getLedgerOperationsRoute = createRoute({
             }),
           type: z
             .object({
-              in: z
+              is: z
                 .enum([
                   'allocation',
                   'capture',
@@ -194718,7 +197808,7 @@ export const getLedgerOperationsRoute = createRoute({
                     '* `allocation` - Allocation Operation\n* `capture` - Capture Operation\n* `authorize` - Authorization Operation\n* `release_authorization` - Release Authorization Operation\n* `capture_authorization` - Capture Authorization Operation\n* `expiry` - Expiry Operation\n* `void` - Void Operation\n* `rollover` - Rollover Operation\n* `adjustment` - Overdraft Adjustment Operation\n* `overdraft_settlement` - Settle Overdraft Amount Operation',
                   example: null,
                 }),
-              is: z
+              in: z
                 .enum([
                   'allocation',
                   'capture',
@@ -194753,6 +197843,24 @@ export const getLedgerOperationsRoute = createRoute({
                   type: 'object',
                   deprecated: false,
                   properties: {
+                    is: {
+                      type: 'string',
+                      description:
+                        '* `allocation` - Allocation Operation\n* `capture` - Capture Operation\n* `authorize` - Authorization Operation\n* `release_authorization` - Release Authorization Operation\n* `capture_authorization` - Capture Authorization Operation\n* `expiry` - Expiry Operation\n* `void` - Void Operation\n* `rollover` - Rollover Operation\n* `adjustment` - Overdraft Adjustment Operation\n* `overdraft_settlement` - Settle Overdraft Amount Operation',
+                      enum: [
+                        'allocation',
+                        'capture',
+                        'authorize',
+                        'release_authorization',
+                        'capture_authorization',
+                        'expiry',
+                        'void',
+                        'rollover',
+                        'adjustment',
+                        'overdraft_settlement',
+                      ],
+                      example: null,
+                    },
                     in: {
                       type: 'string',
                       description:
@@ -194771,24 +197879,6 @@ export const getLedgerOperationsRoute = createRoute({
                       ],
                       pattern:
                         '^\\[(allocation|capture|authorize|release_authorization|capture_authorization|expiry|void|rollover|adjustment|overdraft_settlement)(,(allocation|capture|authorize|release_authorization|capture_authorization|expiry|void|rollover|adjustment|overdraft_settlement))*\\]$',
-                      example: null,
-                    },
-                    is: {
-                      type: 'string',
-                      description:
-                        '* `allocation` - Allocation Operation\n* `capture` - Capture Operation\n* `authorize` - Authorization Operation\n* `release_authorization` - Release Authorization Operation\n* `capture_authorization` - Capture Authorization Operation\n* `expiry` - Expiry Operation\n* `void` - Void Operation\n* `rollover` - Rollover Operation\n* `adjustment` - Overdraft Adjustment Operation\n* `overdraft_settlement` - Settle Overdraft Amount Operation',
-                      enum: [
-                        'allocation',
-                        'capture',
-                        'authorize',
-                        'release_authorization',
-                        'capture_authorization',
-                        'expiry',
-                        'void',
-                        'rollover',
-                        'adjustment',
-                        'overdraft_settlement',
-                      ],
                       example: null,
                     },
                   },
@@ -196894,6 +199984,8 @@ export const collectionsPaymentPromiseFulfilledPostWebhook = {
   method: 'post',
   path: '/collections_payment_promise_fulfilled',
   summary: 'Triggered when a collections payment promise is fulfilled.',
+  description:
+    'Triggered when a collections payment promise is fulfilled.\nThe event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).\n',
   operationId: 'onCollections_payment_promise_fulfilledWebhook',
   request: {
     body: {
@@ -196972,6 +200064,8 @@ export const collectionsDisputeResolvedPostWebhook = {
   method: 'post',
   path: '/collections_dispute_resolved',
   summary: 'Triggered when a collections dispute is resolved.',
+  description:
+    'Triggered when a collections dispute is resolved.\nThe event content includes `collections_dispute`.\n',
   operationId: 'onCollections_dispute_resolvedWebhook',
   request: {
     body: {
@@ -197151,6 +200245,8 @@ export const collectionsDisputeUpdatedPostWebhook = {
   method: 'post',
   path: '/collections_dispute_updated',
   summary: 'Triggered when a collections dispute is updated.',
+  description:
+    'Triggered when a collections dispute is updated.\nThe event content includes `collections_dispute`.\n',
   operationId: 'onCollections_dispute_updatedWebhook',
   request: {
     body: {
@@ -197363,6 +200459,8 @@ export const collectionsPaymentPromiseUpdatedPostWebhook = {
   method: 'post',
   path: '/collections_payment_promise_updated',
   summary: 'Triggered when a collections payment promise is updated.',
+  description:
+    'Triggered when a collections payment promise is updated.\nThe event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).\n',
   operationId: 'onCollections_payment_promise_updatedWebhook',
   request: {
     body: {
@@ -197630,6 +200728,8 @@ export const collectionsReminderSequenceCreatedPostWebhook = {
   method: 'post',
   path: '/collections_reminder_sequence_created',
   summary: 'Triggered when a collections reminder sequence is created.',
+  description:
+    'Triggered when a collections reminder sequence is created.\nThe event content includes `collections_reminder_sequence`.\n',
   operationId: 'onCollections_reminder_sequence_createdWebhook',
   request: {
     body: {
@@ -197784,6 +200884,8 @@ export const emailMessageReceivedPostWebhook = {
   method: 'post',
   path: '/email_message_received',
   summary: 'Triggered when an inbound email message is received in Billing Desk.',
+  description:
+    'Triggered when an inbound email message is received in Billing Desk.\nThe event content includes `email_message`.\n',
   operationId: 'onEmail_message_receivedWebhook',
   request: {
     body: {
@@ -197875,6 +200977,8 @@ export const collectionsPaymentPromiseBrokenPostWebhook = {
   method: 'post',
   path: '/collections_payment_promise_broken',
   summary: 'Triggered when a collections payment promise is broken.',
+  description:
+    'Triggered when a collections payment promise is marked as broken.\nThe event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).\n',
   operationId: 'onCollections_payment_promise_brokenWebhook',
   request: {
     body: {
@@ -197992,6 +201096,8 @@ export const collectionsPaymentPromiseCreatedPostWebhook = {
   method: 'post',
   path: '/collections_payment_promise_created',
   summary: 'Triggered when a collections payment promise is created.',
+  description:
+    'Triggered when a collections payment promise is created.\nThe event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).\n',
   operationId: 'onCollections_payment_promise_createdWebhook',
   request: {
     body: {
@@ -198068,6 +201174,8 @@ export const privateNoteAddedPostWebhook = {
   method: 'post',
   path: '/private_note_added',
   summary: 'Triggered when a private note is added in Billing Desk.',
+  description:
+    'Triggered when a private note is added in Billing Desk.\nThe event content includes `private_note`.\n',
   operationId: 'onPrivate_note_addedWebhook',
   request: {
     body: {
@@ -198328,6 +201436,8 @@ export const collectionsDisputeCreatedPostWebhook = {
   method: 'post',
   path: '/collections_dispute_created',
   summary: 'Triggered when a collections dispute is created.',
+  description:
+    'Triggered when a collections dispute is created.\nThe event content includes `collections_dispute`.\n',
   operationId: 'onCollections_dispute_createdWebhook',
   request: {
     body: {
@@ -198511,6 +201621,8 @@ export const collectionsPaymentPromiseCancelledPostWebhook = {
   method: 'post',
   path: '/collections_payment_promise_cancelled',
   summary: 'Triggered when a collections payment promise is cancelled.',
+  description:
+    'Triggered when a collections payment promise is cancelled.\nThe event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).\n',
   operationId: 'onCollections_payment_promise_cancelledWebhook',
   request: {
     body: {
@@ -198795,6 +201907,20 @@ export const subscriptionStartedPostWebhook = {
   responses: { 200: { description: 'Webhook received successfully' } },
 }
 
+export const organizationDetailsUpdatedPostWebhook = {
+  method: 'post',
+  path: '/organization_details_updated',
+  summary: 'Triggered when an organization address is updated',
+  operationId: 'onOrganization_details_updatedWebhook',
+  request: {
+    body: {
+      description: 'Payload for organization_details_updated event',
+      content: { 'application/json': { schema: OrganizationDetailsUpdatedEventSchema } },
+    },
+  },
+  responses: { 200: { description: 'Webhook received successfully' } },
+}
+
 export const subscriptionActivatedPostWebhook = {
   method: 'post',
   path: '/subscription_activated',
@@ -198863,6 +201989,8 @@ export const collectionsDisputeWithdrawnPostWebhook = {
   method: 'post',
   path: '/collections_dispute_withdrawn',
   summary: 'Triggered when a collections dispute is withdrawn.',
+  description:
+    'Triggered when a collections dispute is withdrawn.\nThe event content includes `collections_dispute`.\n',
   operationId: 'onCollections_dispute_withdrawnWebhook',
   request: {
     body: {
@@ -199050,6 +202178,8 @@ export const collectionsReminderSequencePausedPostWebhook = {
   method: 'post',
   path: '/collections_reminder_sequence_paused',
   summary: 'Triggered when a collections reminder sequence is paused.',
+  description:
+    'Triggered when a collections reminder sequence is paused.\nThe event content includes `collections_reminder_sequence`.\n',
   operationId: 'onCollections_reminder_sequence_pausedWebhook',
   request: {
     body: {
@@ -199327,6 +202457,8 @@ export const collectionsReminderSequenceResumedPostWebhook = {
   method: 'post',
   path: '/collections_reminder_sequence_resumed',
   summary: 'Triggered when a collections reminder sequence is resumed.',
+  description:
+    'Triggered when a collections reminder sequence is resumed.\nThe event content includes `collections_reminder_sequence`.\n',
   operationId: 'onCollections_reminder_sequence_resumedWebhook',
   request: {
     body: {
@@ -199441,6 +202573,20 @@ export const priceVariantCreatedPostWebhook = {
     body: {
       description: 'Payload for price_variant_created event',
       content: { 'application/json': { schema: PriceVariantCreatedEventSchema } },
+    },
+  },
+  responses: { 200: { description: 'Webhook received successfully' } },
+}
+
+export const organizationDetailsCreatedPostWebhook = {
+  method: 'post',
+  path: '/organization_details_created',
+  summary: 'Triggered when an organization address is created',
+  operationId: 'onOrganization_details_createdWebhook',
+  request: {
+    body: {
+      description: 'Payload for organization_details_created event',
+      content: { 'application/json': { schema: OrganizationDetailsCreatedEventSchema } },
     },
   },
   responses: { 200: { description: 'Webhook received successfully' } },
@@ -199755,6 +202901,8 @@ export const collectionsReminderSequenceCompletedPostWebhook = {
   method: 'post',
   path: '/collections_reminder_sequence_completed',
   summary: 'Triggered when a collections reminder sequence is completed.',
+  description:
+    'Triggered when a collections reminder sequence is completed.\nThe event content includes `collections_reminder_sequence`.\n',
   operationId: 'onCollections_reminder_sequence_completedWebhook',
   request: {
     body: {

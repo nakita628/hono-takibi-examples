@@ -246,7 +246,7 @@ const ActionEntitySchema = z
         example: '/from_path',
       }),
     targets: z
-      .array(z.object({}).openapi({ example: [] }))
+      .array(z.looseObject({}).openapi({ example: [] }))
       .exactOptional()
       .openapi({ description: 'Targets', example: [] }),
     user_id: z.int32().exactOptional().openapi({ description: 'User ID', example: 1 }),
@@ -505,7 +505,7 @@ const AppEntitySchema = z
       .exactOptional()
       .openapi({ description: 'The type of the App', example: 'example' }),
     documentation_links: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Collection of named links to documentation',
@@ -682,7 +682,7 @@ const As2IncomingMessageEntitySchema = z
         example: 'A5:EB:C1:95:DC:D8:2B:E7',
       }),
     http_headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'HTTP Headers sent with this message.',
@@ -694,7 +694,7 @@ const As2IncomingMessageEntitySchema = z
       .exactOptional()
       .openapi({ description: 'HTTP Response Code sent for this message', example: 'example' }),
     http_response_headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'HTTP Headers sent for this message.',
@@ -846,7 +846,7 @@ const As2OutgoingMessageEntitySchema = z
         example: 'example',
       }),
     http_headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'HTTP Headers sent with this message.',
@@ -858,7 +858,7 @@ const As2OutgoingMessageEntitySchema = z
       .exactOptional()
       .openapi({ description: 'HTTP Response Code received for this message', example: 'example' }),
     http_response_headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'HTTP Headers received for this message.',
@@ -1130,7 +1130,7 @@ const As2StationEntitySchema = z
   .openapi('As2StationEntity')
 
 const AutoEntitySchema = z
-  .object({ dynamic: z.object({}).exactOptional() })
+  .object({ dynamic: z.looseObject({}).exactOptional() })
   .openapi({ 'x-docs': null, required: [] })
   .openapi('AutoEntity')
 
@@ -1218,7 +1218,7 @@ const AutomationEntitySchema = z
         example: 'example',
       }),
     schedule: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1261,7 +1261,7 @@ const AutomationEntitySchema = z
         example: [1, 2],
       }),
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A Hash of attributes specific to the automation type.',
@@ -1389,7 +1389,7 @@ const BehaviorEntitySchema = z
       .openapi({ description: 'Name for this behavior.', example: 'example' }),
     path: z.string().exactOptional().openapi({ description: 'Folder path', example: 'example' }),
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1444,7 +1444,7 @@ const BundleRegistrationEntitySchema = z
       .exactOptional()
       .openapi({ description: 'Registrant email address', example: 'john.doe@files.com' }),
     form_field_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Data for form field set with form field ids as keys and user data as values',
@@ -1745,7 +1745,7 @@ const BundleEntitySchema = z
       .openapi({ description: 'Bundle creator username', example: 'user' }),
     watermark_attachment: ImageEntitySchema.exactOptional(),
     watermark_value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2253,7 +2253,7 @@ const FileUploadPartEntitySchema = z
         example: 'example',
       }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional upload headers to provide as part of the upload',
@@ -2280,7 +2280,7 @@ const FileUploadPartEntitySchema = z
         example: true,
       }),
     parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional HTTP parameters to send with the upload',
@@ -2301,7 +2301,7 @@ const FileUploadPartEntitySchema = z
       .exactOptional()
       .openapi({ description: 'Reference name for this upload part', example: 'upload-1' }),
     send: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Content-Type and File to send',
@@ -2761,7 +2761,7 @@ const InboxRegistrationEntitySchema = z
       .exactOptional()
       .openapi({ description: 'Registrant email address', example: 'john.doe@files.com' }),
     form_field_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Data for form field set with form field ids as keys and user data as values',
@@ -4101,7 +4101,7 @@ const SiteEntitySchema = z
       }),
     bundle_watermark_attachment: ImageEntitySchema.exactOptional(),
     bundle_watermark_value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5053,7 +5053,7 @@ const UsageDailySnapshotEntitySchema = z
         example: 1,
       }),
     usage_by_top_level_dir: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Usage broken down by each top-level folder',
@@ -5160,7 +5160,7 @@ const UsageSnapshotEntitySchema = z
       .exactOptional()
       .openapi({ description: 'Storage + Transfer Usage - Total Billable amount', example: 1 }),
     usage_by_top_level_dir: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -6654,7 +6654,7 @@ const PostSiteTestWebhookRequestBody = {
               'x-ms-summary': 'action for test body',
             }),
           body: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description: 'Additional body parameters.',
@@ -6670,7 +6670,7 @@ const PostSiteTestWebhookRequestBody = {
               'x-ms-summary': 'HTTP encoding method.  Can be JSON, XML, or RAW (form data).',
             }),
           headers: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description: 'Additional request headers.',
@@ -7282,7 +7282,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7297,7 +7297,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7312,7 +7312,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7327,7 +7327,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7342,7 +7342,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7357,7 +7357,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7372,7 +7372,7 @@ export const getApiKeysRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7675,7 +7675,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7690,7 +7690,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7705,7 +7705,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7720,7 +7720,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7735,7 +7735,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7750,7 +7750,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7765,7 +7765,7 @@ export const getAppsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7847,7 +7847,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7862,7 +7862,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7877,7 +7877,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7892,7 +7892,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7907,7 +7907,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7922,7 +7922,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7937,7 +7937,7 @@ export const getAs2IncomingMessagesRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8042,7 +8042,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8057,7 +8057,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8072,7 +8072,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8087,7 +8087,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8102,7 +8102,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8117,7 +8117,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8132,7 +8132,7 @@ export const getAs2OutgoingMessagesRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8836,7 +8836,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8851,7 +8851,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8866,7 +8866,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8881,7 +8881,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8896,7 +8896,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8911,7 +8911,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -8926,7 +8926,7 @@ export const getAutomationRunsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9078,7 +9078,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9093,7 +9093,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9108,7 +9108,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9123,7 +9123,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9138,7 +9138,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9153,7 +9153,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9168,7 +9168,7 @@ export const getAutomationsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9359,7 +9359,7 @@ export const postAutomationsRoute = createRoute({
                   'x-ms-summary': 'Path on which this Automation runs.  Supports globs.',
                 }),
               schedule: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Custom schedule for running this automation.',
@@ -9420,7 +9420,7 @@ export const postAutomationsRoute = createRoute({
                     'A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.',
                 }),
               value: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'A Hash of attributes specific to the automation type.',
@@ -9698,7 +9698,7 @@ export const patchAutomationsIdRoute = createRoute({
                   'x-ms-summary': 'Path on which this Automation runs.  Supports globs.',
                 }),
               schedule: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Custom schedule for running this automation.',
@@ -9759,7 +9759,7 @@ export const patchAutomationsIdRoute = createRoute({
                     'A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.',
                 }),
               value: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'A Hash of attributes specific to the automation type.',
@@ -9838,7 +9838,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9853,7 +9853,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9868,7 +9868,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9883,7 +9883,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9898,7 +9898,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9913,7 +9913,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -9928,7 +9928,7 @@ export const getBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10010,7 +10010,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10025,7 +10025,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10040,7 +10040,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10055,7 +10055,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10070,7 +10070,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10085,7 +10085,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10100,7 +10100,7 @@ export const getBehaviorsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10282,7 +10282,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10297,7 +10297,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10312,7 +10312,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10327,7 +10327,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10342,7 +10342,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10357,7 +10357,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10372,7 +10372,7 @@ export const getBehaviorsFoldersPathRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10751,7 +10751,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10766,7 +10766,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10781,7 +10781,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10796,7 +10796,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10811,7 +10811,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10826,7 +10826,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -10841,7 +10841,7 @@ export const getBundleDownloadsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11382,7 +11382,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11397,7 +11397,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11412,7 +11412,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11427,7 +11427,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11442,7 +11442,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11457,7 +11457,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11472,7 +11472,7 @@ export const getBundleRecipientsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11815,7 +11815,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11830,7 +11830,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11845,7 +11845,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11860,7 +11860,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11875,7 +11875,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11890,7 +11890,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -11905,7 +11905,7 @@ export const getBundlesRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -12721,7 +12721,7 @@ export const postBundlesIdShareRoute = createRoute({
               recipients: z
                 .preprocess(
                   (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                  z.array(z.object({})),
+                  z.array(z.looseObject({})),
                 )
                 .exactOptional()
                 .openapi({
@@ -13120,7 +13120,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13135,7 +13135,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13150,7 +13150,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13165,7 +13165,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13180,7 +13180,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13195,7 +13195,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -13210,7 +13210,7 @@ export const getExternalEventsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15739,7 +15739,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15754,7 +15754,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15769,7 +15769,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15784,7 +15784,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15799,7 +15799,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15814,7 +15814,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -15829,7 +15829,7 @@ export const getGroupsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16108,7 +16108,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16123,7 +16123,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16138,7 +16138,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16153,7 +16153,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16168,7 +16168,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16183,7 +16183,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -16198,7 +16198,7 @@ export const getGroupsGroupIdPermissionsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17183,7 +17183,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17198,7 +17198,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17213,7 +17213,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17228,7 +17228,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17243,7 +17243,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17258,7 +17258,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17273,7 +17273,7 @@ export const getHistoryRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17394,7 +17394,7 @@ export const getHistoryFilesPathRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17529,7 +17529,7 @@ export const getHistoryFoldersPathRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17664,7 +17664,7 @@ export const getHistoryLoginRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -17785,7 +17785,7 @@ export const getHistoryUsersUserIdRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18320,7 +18320,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18335,7 +18335,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18350,7 +18350,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18365,7 +18365,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18380,7 +18380,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18395,7 +18395,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18410,7 +18410,7 @@ export const getInboxRecipientsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18709,7 +18709,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18724,7 +18724,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18739,7 +18739,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18754,7 +18754,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18769,7 +18769,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18784,7 +18784,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -18799,7 +18799,7 @@ export const getInboxUploadsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20653,7 +20653,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20668,7 +20668,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20683,7 +20683,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20698,7 +20698,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20713,7 +20713,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20728,7 +20728,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -20743,7 +20743,7 @@ export const getNotificationsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21606,7 +21606,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21621,7 +21621,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21636,7 +21636,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21651,7 +21651,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21666,7 +21666,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21681,7 +21681,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -21696,7 +21696,7 @@ export const getPermissionsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22575,7 +22575,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22590,7 +22590,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22605,7 +22605,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22620,7 +22620,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22635,7 +22635,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22650,7 +22650,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -22665,7 +22665,7 @@ export const getRemoteBandwidthSnapshotsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23177,7 +23177,7 @@ export const getRequestsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23357,7 +23357,7 @@ export const getRequestsFoldersPathRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23606,7 +23606,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23621,7 +23621,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23636,7 +23636,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23651,7 +23651,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23666,7 +23666,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23681,7 +23681,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -23696,7 +23696,7 @@ export const getSettingsChangesRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -24225,7 +24225,7 @@ export const patchSiteRoute = createRoute({
                 .exactOptional()
                 .openapi({ type: 'string', format: 'binary', 'x-ms-summary': null }),
               bundle_watermark_value: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -25528,7 +25528,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25543,7 +25543,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25558,7 +25558,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25573,7 +25573,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25588,7 +25588,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25603,7 +25603,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -25618,7 +25618,7 @@ export const getSiteApiKeysRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26212,7 +26212,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26227,7 +26227,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26242,7 +26242,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26257,7 +26257,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26272,7 +26272,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26287,7 +26287,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26302,7 +26302,7 @@ export const getUsageDailySnapshotsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26499,7 +26499,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26514,7 +26514,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26529,7 +26529,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26544,7 +26544,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26559,7 +26559,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26574,7 +26574,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -26589,7 +26589,7 @@ export const getUserApiKeysRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27228,7 +27228,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27243,7 +27243,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27258,7 +27258,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27273,7 +27273,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27288,7 +27288,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27303,7 +27303,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27318,7 +27318,7 @@ export const getUsersRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27851,7 +27851,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27866,7 +27866,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27881,7 +27881,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27896,7 +27896,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27911,7 +27911,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27926,7 +27926,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -27941,7 +27941,7 @@ export const getUsersUserIdApiKeysRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28333,7 +28333,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       sort_by: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28348,7 +28348,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28363,7 +28363,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter_gt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28378,7 +28378,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter_gteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28393,7 +28393,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter_like: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28408,7 +28408,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter_lt: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28423,7 +28423,7 @@ export const getUsersUserIdPermissionsRoute = createRoute({
           },
         }),
       filter_lteq: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -28704,7 +28704,7 @@ export const postWebhookTestsRoute = createRoute({
                   'x-ms-summary': 'action for test body',
                 }),
               body: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Additional body parameters.',
@@ -28742,7 +28742,7 @@ export const postWebhookTestsRoute = createRoute({
                     'Send the file data as a named parameter in the request POST body',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Additional request headers.',

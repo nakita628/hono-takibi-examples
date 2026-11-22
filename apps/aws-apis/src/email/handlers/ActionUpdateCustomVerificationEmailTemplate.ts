@@ -1,0 +1,15 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getActionUpdateCustomVerificationEmailTemplateRoute,
+  postActionUpdateCustomVerificationEmailTemplateRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const ActionUpdateCustomVerificationEmailTemplateHandler = app
+  .openapi(getActionUpdateCustomVerificationEmailTemplateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postActionUpdateCustomVerificationEmailTemplateRoute, (c) => {
+    throw new Error('Not implemented')
+  })

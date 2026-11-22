@@ -27,12 +27,6 @@ Base URLs:
 |crm.segments.read||
 |crm.segments.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="crm-lists-basic">Basic</h1>
 
 ## List
@@ -117,13 +111,13 @@ null
 |» customProperties|body|object|false|An object containing custom properties for the list. These properties allow for additional customization of the list.|
 |» » **additionalProperties**|body|string|false|none|
 |» filterBranch|body|[PublicOrFilterBranch](#schemapublicorfilterbranch) \| [PublicAndFilterBranch](#schemapublicandfilterbranch) \| [PublicNotAllFilterBranch](#schemapublicnotallfilterbranch) \| [PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch) \| [PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch) \| [PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch) \| [PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|false|An object that defines the filter criteria for the list. It determines which records are included in the list based on specified conditions.|
-|» » *oneOf*|body|[PublicOrFilterBranch](#schemapublicorfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicAndFilterBranch](#schemapublicandfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicNotAllFilterBranch](#schemapublicnotallfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|false|none|
+|» » *oneOf*|body|[PublicOrFilterBranch](#schemapublicorfilterbranch)|false|The PublicOrFilterBranch component represents a logical 'OR' filter branch used in constructing complex filter criteria within the ListAppService API. It is used to group multiple filters or filter branches, where any of the conditions can be true for the branch to be satisfied.|
+|» » *oneOf*|body|[PublicAndFilterBranch](#schemapublicandfilterbranch)|false|Represents a logical 'AND' filter branch used in constructing complex filter criteria for lists in the HubSpot ListAppService API. This component is utilized to group multiple filters and sub-branches that must all be true for the branch to be considered true.|
+|» » *oneOf*|body|[PublicNotAllFilterBranch](#schemapublicnotallfilterbranch)|false|The PublicNotAllFilterBranch component represents a filter branch used in HubSpot's ListAppService API to define complex filtering logic where not all conditions need to be met. It is typically used in scenarios where a combination of filters and filter branches are applied to refine data retrieval.|
+|» » *oneOf*|body|[PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch)|false|Represents a filter branch in a list operation that excludes any filters or branches that match the specified criteria. It is used within the context of defining complex filter logic for lists in the ListAppService API.|
+|» » *oneOf*|body|[PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch)|false|The PublicRestrictedFilterBranch component represents a specific type of filter branch used within the ListAppService API. It is utilized to apply restrictions on filter branches and filters, allowing for complex query operations within lists.|
+|» » *oneOf*|body|[PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch)|false|The PublicUnifiedEventsFilterBranch component represents a filter branch specifically for unified events within HubSpot's API. It is used to define criteria for filtering events based on specific conditions and is typically utilized in constructing complex filter logic for event data.|
+|» » *oneOf*|body|[PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|false|Represents a branch of filters specifically for associations in the HubSpot API. This component is used to define complex filtering logic involving associations between objects, typically in the context of search or list operations.|
 |» listFolderId|body|integer(int32)|false|A string representing the ID of the folder where the list will be stored. This helps in organizing lists into folders.|
 |» listPermissions|body|[PublicListPermissions](#schemapubliclistpermissions)|false|none|
 |» membershipSettings|body|[PublicMembershipSettings](#schemapublicmembershipsettings)|false|none|
@@ -155,68 +149,6 @@ null
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 oauth2 ( Scopes: crm.lists.write ), oauth2 ( Scopes: cms.membership.access_groups.write ), oauth2 ( Scopes: crm.segments.write )
-</aside>
-
-## List all
-
-<a id="opIdpost-/crm/lists/2026-09/all_/crm/lists/2026-09-beta/all"></a>
-
-> Code samples
-
-```bash
-curl https://api.hubapi.com/crm/lists/2026-09/all \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d 'null'
-```
-
-`POST /crm/lists/2026-09/all`
-
-Retrieve all lists in the CRM system. This endpoint allows you to fetch a comprehensive list of all available lists, which can be useful for managing and organizing your CRM data effectively.
-
-> Body parameter
-
-```json
-null
-```
-
-<h3 id="list-all-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ListAllRequest](#schemalistallrequest)|true|none|
-|» additionalProperties|body|[string]|true|An array of strings representing additional properties to include in the list retrieval.|
-|» after|body|string|false|A string used as a paging cursor token to retrieve the next set of results.|
-|» count|body|integer(int32)|false|An integer specifying the number of results to retrieve.|
-|» objectTypeId|body|string|false|A string representing the unique identifier for the object type of the lists.|
-|» processingTypes|body|[string]|true|An array of strings specifying the types of processing to apply to the request.|
-
-> Example responses
-
-> 200 Response
-
-```json
-null
-```
-
-> default Response
-
-```json
-null
-```
-
-<h3 id="list-all-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|successful operation|[ApiCollectionResponsePublicObjectListSearchResult](#schemaapicollectionresponsepublicobjectlistsearchresult)|
-|default|Default|An error occurred.|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.segments.read ), oauth2 ( Scopes: crm.lists.read )
 </aside>
 
 ## List folders
@@ -1453,13 +1385,13 @@ null
 |enrollObjectsInWorkflows|query|boolean|false|A boolean indicating whether to enroll objects in workflows based on the updated filters. Defaults to false.|
 |body|body|[ListFilterUpdateRequest](#schemalistfilterupdaterequest)|true|none|
 |» filterBranch|body|[PublicOrFilterBranch](#schemapublicorfilterbranch) \| [PublicAndFilterBranch](#schemapublicandfilterbranch) \| [PublicNotAllFilterBranch](#schemapublicnotallfilterbranch) \| [PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch) \| [PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch) \| [PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch) \| [PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|true|A complex object that defines the structure and logic of the filters to be applied to the list. It can include various types of filter branches and filters, allowing for detailed and specific filtering criteria.|
-|» » *oneOf*|body|[PublicOrFilterBranch](#schemapublicorfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicAndFilterBranch](#schemapublicandfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicNotAllFilterBranch](#schemapublicnotallfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch)|false|none|
-|» » *oneOf*|body|[PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|false|none|
+|» » *oneOf*|body|[PublicOrFilterBranch](#schemapublicorfilterbranch)|false|The PublicOrFilterBranch component represents a logical 'OR' filter branch used in constructing complex filter criteria within the ListAppService API. It is used to group multiple filters or filter branches, where any of the conditions can be true for the branch to be satisfied.|
+|» » *oneOf*|body|[PublicAndFilterBranch](#schemapublicandfilterbranch)|false|Represents a logical 'AND' filter branch used in constructing complex filter criteria for lists in the HubSpot ListAppService API. This component is utilized to group multiple filters and sub-branches that must all be true for the branch to be considered true.|
+|» » *oneOf*|body|[PublicNotAllFilterBranch](#schemapublicnotallfilterbranch)|false|The PublicNotAllFilterBranch component represents a filter branch used in HubSpot's ListAppService API to define complex filtering logic where not all conditions need to be met. It is typically used in scenarios where a combination of filters and filter branches are applied to refine data retrieval.|
+|» » *oneOf*|body|[PublicNotAnyFilterBranch](#schemapublicnotanyfilterbranch)|false|Represents a filter branch in a list operation that excludes any filters or branches that match the specified criteria. It is used within the context of defining complex filter logic for lists in the ListAppService API.|
+|» » *oneOf*|body|[PublicRestrictedFilterBranch](#schemapublicrestrictedfilterbranch)|false|The PublicRestrictedFilterBranch component represents a specific type of filter branch used within the ListAppService API. It is utilized to apply restrictions on filter branches and filters, allowing for complex query operations within lists.|
+|» » *oneOf*|body|[PublicUnifiedEventsFilterBranch](#schemapublicunifiedeventsfilterbranch)|false|The PublicUnifiedEventsFilterBranch component represents a filter branch specifically for unified events within HubSpot's API. It is used to define criteria for filtering events based on specific conditions and is typically utilized in constructing complex filter logic for event data.|
+|» » *oneOf*|body|[PublicAssociationFilterBranch](#schemapublicassociationfilterbranch)|false|Represents a branch of filters specifically for associations in the HubSpot API. This component is used to define complex filtering logic involving associations between objects, typically in the context of search or list operations.|
 
 > Example responses
 
@@ -1693,25 +1625,6 @@ null
 |results|[[JoinTimeAndRecordId](#schemajointimeandrecordid)]|true|none|An array of objects, each containing join time and record ID information.|
 |total|integer(int64)|false|none|An integer representing the total number of results available.|
 
-<h2 id="tocS_ApiCollectionResponsePublicObjectListSearchResult">ApiCollectionResponsePublicObjectListSearchResult</h2>
-<!-- backwards compatibility -->
-<a id="schemaapicollectionresponsepublicobjectlistsearchresult"></a>
-<a id="schema_ApiCollectionResponsePublicObjectListSearchResult"></a>
-<a id="tocSapicollectionresponsepublicobjectlistsearchresult"></a>
-<a id="tocsapicollectionresponsepublicobjectlistsearchresult"></a>
-
-```json
-null
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|paging|[Paging](#schemapaging)|false|none|Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.|
-|results|[[PublicObjectListSearchResult](#schemapublicobjectlistsearchresult)]|true|none|An array of PublicObjectListSearchResult objects representing the individual search results.|
-|total|integer(int64)|false|none|An integer representing the total number of results available in the search, formatted as a 64-bit integer.|
-
 <h2 id="tocS_ApiCollectionResponseRecordListMembership">ApiCollectionResponseRecordListMembership</h2>
 <!-- backwards compatibility -->
 <a id="schemaapicollectionresponserecordlistmembership"></a>
@@ -1884,27 +1797,6 @@ null
 |---|---|---|---|---|
 |membershipTimestamp|string(date-time)|true|none|The timestamp indicating when the record was added to the list. It is represented as a string in date-time format.|
 |recordId|string|true|none|The unique identifier for the record within the list. It is represented as a string.|
-
-<h2 id="tocS_ListAllRequest">ListAllRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemalistallrequest"></a>
-<a id="schema_ListAllRequest"></a>
-<a id="tocSlistallrequest"></a>
-<a id="tocslistallrequest"></a>
-
-```json
-null
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|additionalProperties|[string]|true|none|An array of strings representing additional properties to include in the list retrieval.|
-|after|string|false|none|A string used as a paging cursor token to retrieve the next set of results.|
-|count|integer(int32)|false|none|An integer specifying the number of results to retrieve.|
-|objectTypeId|string|false|none|A string representing the unique identifier for the object type of the lists.|
-|processingTypes|[string]|true|none|An array of strings specifying the types of processing to apply to the request.|
 
 <h2 id="tocS_ListCreateRequest">ListCreateRequest</h2>
 <!-- backwards compatibility -->
@@ -2273,6 +2165,8 @@ specifies the paging information needed to retrieve the previous set of results 
 null
 ```
 
+The PublicAbsoluteComparativeTimestampRefineBy component is used to refine timestamp-based filters in HubSpot's ListAppService API. It specifies an absolute timestamp and a comparison type to filter data based on specific time criteria.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2297,6 +2191,8 @@ null
 ```json
 null
 ```
+
+The PublicAbsoluteRangedTimestampRefineBy component is used to define a filter based on an absolute time range. It specifies a fixed lower and upper timestamp to refine results in API requests, particularly for filtering data within a specific time period.
 
 ### Properties
 
@@ -2323,6 +2219,8 @@ null
 ```json
 null
 ```
+
+The PublicAdsSearchFilter component is used to define filters for searching advertisements within the HubSpot API. It specifies the criteria for filtering ads based on various parameters such as filter type, entity type, search term type, and more.
 
 ### Properties
 
@@ -2352,6 +2250,8 @@ null
 null
 ```
 
+The PublicAdsTimeFilter component is used to define a filter for advertisements based on time-related criteria. It is typically utilized in scenarios where time-based filtering of ad data is required.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2376,6 +2276,8 @@ null
 null
 ```
 
+The PublicAllHistoryRefineBy component is used to specify a refinement criterion that considers all historical data. It is typically used within filter operations to ensure that all past occurrences are taken into account.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2398,6 +2300,8 @@ null
 ```json
 null
 ```
+
+The PublicAllPropertyTypesOperation component represents a filter operation that can handle various property types within the HubSpot API. It is used to specify conditions for filtering objects based on their properties, and it is typically utilized in search or filter operations.
 
 ### Properties
 
@@ -2424,6 +2328,8 @@ null
 null
 ```
 
+Represents a logical 'AND' filter branch used in constructing complex filter criteria for lists in the HubSpot ListAppService API. This component is utilized to group multiple filters and sub-branches that must all be true for the branch to be considered true.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2449,6 +2355,8 @@ null
 ```json
 null
 ```
+
+Represents a branch of filters specifically for associations in the HubSpot API. This component is used to define complex filtering logic involving associations between objects, typically in the context of search or list operations.
 
 ### Properties
 
@@ -2479,6 +2387,8 @@ null
 ```json
 null
 ```
+
+The PublicAssociationInListFilter component is used to define a filter that applies to associations within a list. It specifies the criteria for filtering associations based on their type, category, and related object types. This component is typically used as part of a request to filter results in list-related operations.
 
 ### Properties
 
@@ -2528,6 +2438,8 @@ null
 null
 ```
 
+Represents an operation for boolean properties in a HubSpot account. This component is used to define how boolean properties should be evaluated in various operations, such as filtering or searching.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2553,6 +2465,8 @@ null
 ```json
 null
 ```
+
+The PublicCalendarDatePropertyOperation component represents an operation that can be performed on calendar date properties within the HubSpot API. It is used to define operations that involve calendar dates, such as filtering or manipulating date-based data.
 
 ### Properties
 
@@ -2595,6 +2509,8 @@ null
 null
 ```
 
+Represents a filter for communication subscriptions in the HubSpot API, used to specify criteria for filtering communication subscriptions based on various parameters.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2623,6 +2539,8 @@ null
 null
 ```
 
+The PublicComparativeDatePropertyOperation component represents an operation used to compare date properties within a HubSpot account. It is typically used in contexts where date-based comparisons are necessary, such as filtering or querying records based on specific date criteria.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2650,15 +2568,17 @@ null
 null
 ```
 
+The PublicComparativeNumberPropertyOperation component is used to define operations that compare numerical properties within HubSpot. It is typically used in scenarios where numerical comparisons are needed to filter or evaluate data.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|comparisonPropertyName|string|true|none|none|
-|defaultComparisonValue|string|false|none|none|
-|includeObjectsWithNoValueSet|boolean|true|none|none|
-|operationType|string|true|none|none|
-|operator|string|true|none|none|
+|comparisonPropertyName|string|true|none|The name of the property to be compared, represented as a string. This property is required.|
+|defaultComparisonValue|string|false|none|The default value used for comparison if no specific value is provided. This is an optional string value.|
+|includeObjectsWithNoValueSet|boolean|true|none|A required boolean that determines whether objects without a set value for the comparison property should be included in the operation.|
+|operationType|string|true|none|A required string that defines the type of operation being performed.|
+|operator|string|true|none|A required string that specifies the comparison operator to be used, such as 'greater than' or 'less than'.|
 
 #### Enumerated Values
 
@@ -2676,6 +2596,8 @@ null
 ```json
 null
 ```
+
+Represents an operation for updating comparative properties in a list within the HubSpot ListAppService API. This component is used to define the criteria for comparing and updating properties based on specified conditions.
 
 ### Properties
 
@@ -2704,6 +2626,8 @@ null
 null
 ```
 
+Represents a comparative string property operation used in filtering or querying within the HubSpot API. This component is typically used to compare string properties of objects, allowing for operations based on the comparison results.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2731,6 +2655,8 @@ null
 null
 ```
 
+The PublicConstantFilter component represents a filter used in the HubSpot ListAppService API to apply constant conditions to lists. It is typically used as part of filter branches to define static criteria that do not change over time.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2755,6 +2681,8 @@ null
 ```json
 null
 ```
+
+Represents a filter for analyzing Call-To-Action (CTA) interactions in HubSpot. This component is used to specify criteria for filtering CTA analytics data, such as the type of filter, operator, and specific CTA name.
 
 ### Properties
 
@@ -2782,6 +2710,8 @@ null
 ```json
 null
 ```
+
+The PublicDatePoint component represents a specific point in time, defined by various time-related properties. It is used within the API to specify or reference exact dates and times, potentially for operations that require precise time points.
 
 ### Properties
 
@@ -2815,6 +2745,8 @@ null
 null
 ```
 
+The PublicDatePropertyOperation component represents a date-based operation used within the ListAppService API. It is utilized to specify date-related criteria for filtering or processing data, often as part of a request or response object.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2843,6 +2775,8 @@ null
 null
 ```
 
+Represents an operation on a date-time property within the HubSpot ListAppService API. This component is used to define operations involving date-time properties, such as filtering or querying data based on specific date-time criteria.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2869,6 +2803,8 @@ null
 ```json
 null
 ```
+
+The PublicEmailEventFilter component is used to define filters for email events within the HubSpot API. It specifies criteria for filtering email events based on various properties such as filter type, level, email ID, and more. This component is typically used in scenarios where email event data needs to be filtered or refined according to specific conditions.
 
 ### Properties
 
@@ -2912,6 +2848,8 @@ null
 null
 ```
 
+Represents a filter for email subscriptions in a HubSpot account, used to specify criteria for filtering email subscription data. This component is typically used within filter branches to refine search or list operations based on email subscription status and type.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2938,6 +2876,8 @@ null
 null
 ```
 
+Represents an operation for handling enumeration properties within the API. This component is used to define operations that involve enumeration types, specifying how they should be processed or filtered.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -2963,6 +2903,8 @@ null
 ```json
 null
 ```
+
+The PublicEventAnalyticsFilter is a schema used to define filters for event analytics within the HubSpot API. It is used to specify criteria for filtering event data based on various parameters and is typically utilized in analytics and reporting contexts.
 
 ### Properties
 
@@ -2991,6 +2933,8 @@ null
 null
 ```
 
+PublicEventFilterMetadata is a schema used within the ListAppService API to define metadata for event filters. It is utilized to specify the criteria for filtering events based on certain properties and operations.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3008,6 +2952,8 @@ null
 ```json
 null
 ```
+
+Represents a reference to a specific fiscal quarter, including details such as the time and date components. This component is used to specify or interpret a point in time within a fiscal quarter context.
 
 ### Properties
 
@@ -3038,6 +2984,8 @@ null
 null
 ```
 
+Represents a reference to a fiscal year in the context of the ListAppService API. It is used to specify a particular time point within a fiscal year, including details such as the month, day, and time components.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3067,6 +3015,8 @@ null
 null
 ```
 
+The PublicFormSubmissionFilter component is used to define criteria for filtering form submissions in HubSpot. It specifies the conditions under which a form submission is considered relevant, such as whether a form was filled out or not. This component is typically used in list filtering operations within the API.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3095,6 +3045,8 @@ null
 ```json
 null
 ```
+
+Represents a filter used to determine form submissions on specific pages in the HubSpot ListAppService API. This component is utilized to filter form submissions based on specific criteria such as form ID and page ID, and is typically used in search or filtering operations.
 
 ### Properties
 
@@ -3126,13 +3078,15 @@ null
 null
 ```
 
+Represents a filter used to determine if an item is part of a specified list in HubSpot. This component is used in filtering operations where inclusion in a list is a criterion.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |filterType|string|true|none|A string indicating the type of filter. Defaults to 'IN_LIST'.|
 |listId|string|true|none|The unique identifier of the list to check for membership, represented as a string.|
-|metadata|[PublicInListFilterMetadata](#schemapublicinlistfiltermetadata)|false|none|none|
+|metadata|[PublicInListFilterMetadata](#schemapublicinlistfiltermetadata)|false|none|The PublicInListFilterMetadata component represents metadata information for a filter that checks if an item is part of a list. This component is used within the context of filtering operations in the ListAppService API.|
 |operator|string|true|none|A string representing the operator used in the filter.|
 
 #### Enumerated Values
@@ -3152,6 +3106,8 @@ null
 null
 ```
 
+The PublicInListFilterMetadata component represents metadata information for a filter that checks if an item is part of a list. This component is used within the context of filtering operations in the ListAppService API.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3169,6 +3125,8 @@ null
 ```json
 null
 ```
+
+The PublicIndexOffset component represents a set of time offsets used in various time-related operations within the API. It is utilized to specify adjustments in time units such as years, months, days, etc., and can be used in contexts where time manipulation is required.
 
 ### Properties
 
@@ -3195,12 +3153,14 @@ null
 null
 ```
 
+Represents a specific point in time indexed by a reference, used within the API to define time-related operations or filters. It is utilized in contexts where a time point needs to be specified relative to a known index, such as 'now' or 'today'.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |indexReference|[PublicNowReference](#schemapublicnowreference) \| [PublicTodayReference](#schemapublictodayreference) \| [PublicWeekReference](#schemapublicweekreference) \| [PublicFiscalQuarterReference](#schemapublicfiscalquarterreference) \| [PublicFiscalYearReference](#schemapublicfiscalyearreference) \| [PublicYearReference](#schemapublicyearreference) \| [PublicQuarterReference](#schemapublicquarterreference) \| [PublicMonthReference](#schemapublicmonthreference)|true|none|An object that defines the reference point for the indexed time, which can be one of several predefined references like 'now', 'today', or a specific fiscal period.|
-|offset|[PublicIndexOffset](#schemapublicindexoffset)|false|none|none|
+|offset|[PublicIndexOffset](#schemapublicindexoffset)|false|none|The PublicIndexOffset component represents a set of time offsets used in various time-related operations within the API. It is utilized to specify adjustments in time units such as years, months, days, etc., and can be used in contexts where time manipulation is required.|
 |timeType|string|true|none|A string indicating the type of time point, with a default value of 'INDEXED'.|
 |timezoneSource|string|false|none|A string representing the source of the timezone information.|
 |zoneId|string|true|none|A string specifying the ID of the timezone.|
@@ -3221,6 +3181,8 @@ null
 ```json
 null
 ```
+
+The PublicIntegrationEventFilter component is used to define filters for integration events within the HubSpot API. It specifies the criteria for filtering events based on their type and associated filter lines. This component is typically used in contexts where integration event filtering is required, such as in list operations or event processing.
 
 ### Properties
 
@@ -3417,6 +3379,8 @@ null
 null
 ```
 
+Represents a reference to a specific month, including detailed time components. This component is used within the API to specify or manipulate date and time information at the month level.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3445,6 +3409,8 @@ null
 null
 ```
 
+The PublicMultiStringPropertyOperation component represents an operation that involves multiple string properties. It is used in the context of filtering or processing data where multiple string values need to be considered. This component is typically used as part of a request or response in APIs that handle complex data operations.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3470,6 +3436,8 @@ null
 ```json
 null
 ```
+
+The PublicNotAllFilterBranch component represents a filter branch used in HubSpot's ListAppService API to define complex filtering logic where not all conditions need to be met. It is typically used in scenarios where a combination of filters and filter branches are applied to refine data retrieval.
 
 ### Properties
 
@@ -3497,6 +3465,8 @@ null
 null
 ```
 
+Represents a filter branch in a list operation that excludes any filters or branches that match the specified criteria. It is used within the context of defining complex filter logic for lists in the ListAppService API.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3522,6 +3492,8 @@ null
 ```json
 null
 ```
+
+The PublicNowReference component represents a reference to the current time, used within the API to specify or manipulate time-related data. It is utilized in scenarios where the current time is needed as a reference point, such as in time-based operations or calculations.
 
 ### Properties
 
@@ -3550,6 +3522,8 @@ null
 null
 ```
 
+Represents a refinement criterion based on the number of occurrences, used in filtering operations within the ListAppService API. This component is typically used to specify the minimum and maximum number of times an event or condition should occur.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3574,6 +3548,8 @@ null
 ```json
 null
 ```
+
+Represents an operation for handling number properties in a list within the HubSpot ListAppService API. This component is used to define operations that involve number-based criteria, such as filtering or evaluating list items based on numerical values.
 
 ### Properties
 
@@ -3662,6 +3638,8 @@ null
 null
 ```
 
+The PublicOrFilterBranch component represents a logical 'OR' filter branch used in constructing complex filter criteria within the ListAppService API. It is used to group multiple filters or filter branches, where any of the conditions can be true for the branch to be satisfied.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3687,6 +3665,8 @@ null
 ```json
 null
 ```
+
+The PublicPageViewAnalyticsFilter component is used to define filters for page view analytics within the HubSpot API. It specifies the criteria for tracking and analyzing page views, including the type of filter, operator, and specific page URL. This component is typically used in contexts where page view data needs to be filtered or refined for analytics purposes.
 
 ### Properties
 
@@ -3716,6 +3696,8 @@ null
 null
 ```
 
+The PublicPrivacyAnalyticsFilter is a schema used to define filters related to privacy analytics in the HubSpot API. It is typically used within filter branches to specify conditions based on privacy-related data.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3741,6 +3723,8 @@ null
 null
 ```
 
+Represents a filter applied to a property within a list in the HubSpot ListAppService API. This component is used to define criteria for filtering list items based on property values.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3765,6 +3749,8 @@ null
 ```json
 null
 ```
+
+The PublicPropertyReferencedTime component represents a specific point in time that is determined by a property value. It is used within the API to specify time-related operations or filters that are based on property values.
 
 ### Properties
 
@@ -3792,6 +3778,8 @@ null
 ```json
 null
 ```
+
+Represents a reference to a specific quarter, including details such as the day, month, and time components. This component is used in the API to specify or retrieve information related to a particular quarter.
 
 ### Properties
 
@@ -3822,6 +3810,8 @@ null
 null
 ```
 
+Represents an operation for filtering objects based on a date range property, used in contexts where date-based filtering is required. This component is typically used in request bodies to specify criteria for ranged date operations.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3850,6 +3840,8 @@ null
 null
 ```
 
+Represents a ranged number property operation used in the ListAppService API. This component is utilized to define operations that involve numerical properties with specified upper and lower bounds.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3876,6 +3868,8 @@ null
 ```json
 null
 ```
+
+Represents a time-based range operation used within the ListAppService API to filter or manipulate data based on time constraints. This component is utilized in scenarios where operations need to consider a range of time points, such as filtering records within a specific time frame.
 
 ### Properties
 
@@ -3908,12 +3902,14 @@ null
 null
 ```
 
+Represents a refinement criterion for timestamp-based filters in a relative comparative manner. This component is used to specify conditions for filtering data based on relative time comparisons.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |comparison|string|true|none|A string that defines the comparison operation to be used in the refinement.|
-|timeOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|none|
+|timeOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|The PublicTimeOffset component represents a time offset used in various operations within the API. It is used to specify a direction, unit, and amount of time to offset, typically in contexts where relative time calculations are needed.|
 |type|string|true|none|A string that specifies the type of refinement, with the default value 'RELATIVE_COMPARATIVE'.|
 
 #### Enumerated Values
@@ -3933,14 +3929,16 @@ null
 null
 ```
 
+Represents a refinement filter for timestamp-based criteria within a relative range. It is used in scenarios where filtering by a time range relative to the current time is necessary.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|lowerBoundOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|none|
+|lowerBoundOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|The PublicTimeOffset component represents a time offset used in various operations within the API. It is used to specify a direction, unit, and amount of time to offset, typically in contexts where relative time calculations are needed.|
 |rangeType|string|true|none|A string that specifies the type of range being applied.|
 |type|string|true|none|A string indicating the type of refinement, with a default value of 'RELATIVE_RANGED'.|
-|upperBoundOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|none|
+|upperBoundOffset|[PublicTimeOffset](#schemapublictimeoffset)|true|none|The PublicTimeOffset component represents a time offset used in various operations within the API. It is used to specify a direction, unit, and amount of time to offset, typically in contexts where relative time calculations are needed.|
 
 #### Enumerated Values
 
@@ -3958,6 +3956,8 @@ null
 ```json
 null
 ```
+
+The PublicRestrictedFilterBranch component represents a specific type of filter branch used within the ListAppService API. It is utilized to apply restrictions on filter branches and filters, allowing for complex query operations within lists.
 
 ### Properties
 
@@ -3984,6 +3984,8 @@ null
 ```json
 null
 ```
+
+The PublicRollingDateRangePropertyOperation component represents a filter operation for properties that involve a rolling date range. It is used in scenarios where you need to filter data based on a dynamic date range, such as the last 'n' days. This component is typically used in request bodies for filtering operations within the API.
 
 ### Properties
 
@@ -4012,6 +4014,8 @@ null
 null
 ```
 
+Represents an operation that updates a property based on a rolling time window. It is used in scenarios where properties need to be updated dynamically over a specified number of days.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4038,6 +4042,8 @@ null
 null
 ```
 
+Represents a refinement criterion for filtering based on a set number of occurrences. This component is used within filter operations to specify how occurrences should be refined.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4061,6 +4067,8 @@ null
 ```json
 null
 ```
+
+Represents an operation for handling string properties in the context of HubSpot's ListAppService API. This component is used to define operations on string properties, including specifying the type of operation, the operator to use, and any values involved.
 
 ### Properties
 
@@ -4088,6 +4096,8 @@ null
 null
 ```
 
+Represents a filter used in the ListAppService API to apply conditions based on SurveyMonkey data. This component is utilized when filtering lists by specific survey responses.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4112,6 +4122,8 @@ null
 ```json
 null
 ```
+
+Represents a filter used to evaluate SurveyMonkey responses within the HubSpot ListAppService API. This component is used to specify criteria for filtering SurveyMonkey survey data based on specific questions and answers.
 
 ### Properties
 
@@ -4142,6 +4154,8 @@ null
 null
 ```
 
+The PublicTimeOffset component represents a time offset used in various operations within the API. It is used to specify a direction, unit, and amount of time to offset, typically in contexts where relative time calculations are needed.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4160,6 +4174,8 @@ null
 ```json
 null
 ```
+
+Represents a time point operation used in filtering or querying data based on specific time-related criteria. This component is typically used in scenarios where time-based operations are required, such as filtering records by a specific date or time point.
 
 ### Properties
 
@@ -4190,6 +4206,8 @@ null
 null
 ```
 
+Represents a reference to the current day, used in time-related operations within the API. This component is typically utilized when specifying or manipulating time points relative to today's date.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4217,6 +4235,8 @@ null
 null
 ```
 
+The PublicUnifiedEventsFilter component is used to define a filter for unified events in the HubSpot API. It specifies the criteria for filtering events based on their type and other refining conditions. This component is typically used within filter branches to refine event data based on specific conditions.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4243,6 +4263,8 @@ null
 ```json
 null
 ```
+
+The PublicUnifiedEventsFilterBranch component represents a filter branch specifically for unified events within HubSpot's API. It is used to define criteria for filtering events based on specific conditions and is typically utilized in constructing complex filter logic for event data.
 
 ### Properties
 
@@ -4276,6 +4298,8 @@ null
 null
 ```
 
+Represents a filter used in the context of webinars, specifying the type of filter and its criteria. This component is used to filter webinar-related data based on specific conditions.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -4300,6 +4324,8 @@ null
 ```json
 null
 ```
+
+Represents a reference to a specific week, including detailed time components. This component is used to specify a particular week and time within that week in various API operations.
 
 ### Properties
 
@@ -4335,6 +4361,8 @@ null
 ```json
 null
 ```
+
+The PublicYearReference component represents a reference to a specific year within the API. It is used to define a point in time with detailed granularity, including the year, month, day, and optional time components such as hour, minute, second, and millisecond.
 
 ### Properties
 
