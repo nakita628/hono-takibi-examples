@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7a574ac1463db881e7f9a497b1333a2e6a111a2797580555d44312ea1e70549d",
+    "sources": {
+      "https://raw.githubusercontent.com/personio/api-docs/master/personio-personnel-data-api-oa3.yaml": {
+        "etag": "W/\"606ba12d9f349e157aac554238a416fd5679a8b9053c6477b217cd3415dac921\"",
+        "sha256": "575c400a0b704655d4e14dfe63bc8a759d9f99e0739305d3b2e0cae709b0e1c7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "df513e625c4b205bbd432a2852793bdc12d61d166390e78b9047d925911aa392",
+    "sources": {
+      "https://raw.githubusercontent.com/openmeterio/openmeter/main/api/openapi.yaml": {
+        "etag": "W/\"dc0124b4228521359e1af24e066d80417cec9450db8aaa12226444ba1624cd40\"",
+        "sha256": "3a86dce305b8af710092ad193217e576d95d6cbd857cdc248dde270086f10121"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

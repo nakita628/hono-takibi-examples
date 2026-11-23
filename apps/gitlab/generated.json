@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ee4f5a53dd4edfc876d383ac6bddd2129625d22c75963917b6908a99ffda555a",
+    "sources": {
+      "https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v3.yaml": {
+        "etag": "\"2e967371d7fd251cd75baa34578625f9\"",
+        "sha256": "cf84f8ceea6ac31805840c86b593fedba78aebd5d70a642d4a85cbd86a4131a1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e9e5501392262a70f79691e3eede9a424939d8d8a56535a0164acb4936af69a6",
+    "sources": {
+      "https://raw.githubusercontent.com/MingweiSamuel/riotapi-schema/gh-pages/openapi-3.0.0.json": {
+        "etag": "W/\"7a5e7c9f3c8186e73b55a2db9d894bf0f3fac3000934d2a36b1386febf2fe633\"",
+        "sha256": "43d010b0440e180b4756be784e7269ff7dc5d0a71de8324ee58777951a54b7ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

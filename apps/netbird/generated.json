@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "a1838b864d563ba538b8f493edd15ff8715aec631435adcf109dd9a047e28865",
+    "sources": {
+      "https://raw.githubusercontent.com/netbirdio/netbird/main/shared/management/http/api/openapi.yml": {
+        "etag": "W/\"2d7b06b5776e7722bfacf139fe70d30fcbcdd4d9ed0f85f78428d1cb6d71344f\"",
+        "sha256": "f3392d977b2fb705577dab609569cbdb14aae786e08aef249b41f46f8165f39b"
+      }
+    }
+  }
+}

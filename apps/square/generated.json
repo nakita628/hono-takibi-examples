@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "ca3c223b8a1641a0f4496c7da0f9163ffebeb8ceb71c625fc07642e52c7f8918",
+    "sources": {
+      "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json": {
+        "etag": "W/\"cfce73a3e466795d50cc7f4c31c0fb13c9013559fe8cfa7f4d14a3cc321154e6\"",
+        "sha256": "76e7cc8ba3fd94c162a3339531aafe798d5556ac34ae03e8253df815b49305f1"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "181eddcc01ea2b67aca0106ad4955519eb92208a0e34b8030d27f3430a92970d",
+    "sources": {
+      "https://raw.githubusercontent.com/kuberhealthy/kuberhealthy/main/openapi.yaml": {
+        "etag": "W/\"9f157ff7d0e6c87ea6ce3cf08723695830b70c6a79890b1fa5cb309c20b5a279\"",
+        "sha256": "7756f7972858b24e8cbeded65c30d5fcc7012291b4353e90f79ccc674ab2d5d5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

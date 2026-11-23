@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2d220737d1ef340bfe360c39822a03536dac9f19fddc659855fc727a5b33b0af",
+    "sources": {
+      "https://raw.githubusercontent.com/openfaas/faas/master/api-docs/spec.openapi.yml": {
+        "etag": "W/\"6e1de41bc68a015739400b9807f44231a23e0fa25af5c4fea7ed65eb70b41ba3\"",
+        "sha256": "c56399ba26560260ec62c901b1c4dedccbf7f50d593140dfa68d449f6ba1e538"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

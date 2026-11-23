@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5002dc61fb1b72fda932550a2c6b39c80c22d276ef090c8807c9097e5804e779",
+    "sources": {
+      "https://raw.githubusercontent.com/chargebee/openapi/main/spec/chargebee_api_v2_pc_v2_spec.yaml": {
+        "etag": "W/\"a8a0e0aecb8c93b6262d7afad9e26426364cbaad0d0549aa6257c98d56740181\"",
+        "sha256": "da97e5cd8016d2a5b38e0bedda2b7b6afbbed750431fd77e8b1978ecc2bf427c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

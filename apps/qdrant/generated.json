@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "474c7471962adb3b7e4ac626bb77e4f0b40e3cb059ceceac124804322f79a951",
+    "sources": {
+      "https://raw.githubusercontent.com/qdrant/qdrant/master/docs/redoc/master/openapi.json": {
+        "etag": "W/\"885c0961817347a059dac9d862f70063ca1485657ee35ad490e6681ab219be01\"",
+        "sha256": "0db73cd4a05b9824818312ba9ae6914fff4885f0cb1ed18eb2a79aa33d27f849"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

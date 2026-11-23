@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8dbd793fbbc948c735601914df0392d989f49d259e2e4c09174763bcfca56e67",
+    "sources": {
+      "https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/src/Prowlarr.Api.V1/openapi.json": {
+        "etag": "W/\"a1391e419bea4111efe210d6ecd00958ced1c4f2cea3d77f171f8b97d72f950c\"",
+        "sha256": "efe3dfb9a928658d8a1f2f307a965fb1275bad2853012a2f9bdc2404215d0fbb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

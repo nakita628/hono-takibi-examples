@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "71b7e0e152c37e8eb7c7435220e7fdaa843dbf55b55aa506e323f797364d8cac",
+    "sources": {
+      "https://raw.githubusercontent.com/knadh/listmonk/master/docs/swagger/collections.yaml": {
+        "etag": "W/\"7e744c27b42dd997f5af5dcecd91645aab721db86dbb5e0312f89a7771764452\"",
+        "sha256": "0d7967a6bb543f6c341039abdab25b9beec5df806ddb4c64072ecff08ea059a0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

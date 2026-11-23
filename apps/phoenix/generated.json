@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "683fb6a2873df51bea72f6f054ef036e21e608ec2003097a6a0f91fee09dd914",
+    "sources": {
+      "https://raw.githubusercontent.com/Arize-ai/phoenix/main/schemas/openapi.json": {
+        "etag": "W/\"270dc2bb7d577a4a6a8b7c7271e40e52331fcb9cd03f1c391b6f0cc4096e3ea3\"",
+        "sha256": "0f355b05edbad27518ee29aba7e36db7c82bb28f8c4eeba3a7125d898c1a894c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

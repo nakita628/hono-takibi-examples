@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "456245bd7c4d2854e8c5283e1921a7624c4d15fd68bd48e04efb0da20d371e11",
+    "sources": {
+      "https://raw.githubusercontent.com/comet-ml/opik/main/sdks/code_generation/fern/openapi/openapi.yaml": {
+        "etag": "W/\"9629734515a0d1a69c1258de4f41e5603a7256074d7e9155f6bb5b8d35cfc10e\"",
+        "sha256": "e0a79a360fbf344b8c413bdab7f98fdbbbbdbfd7752b6be3429148d1681349e5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

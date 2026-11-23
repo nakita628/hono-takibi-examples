@@ -348,7 +348,7 @@ Checks a user's Account Activity subscription for a given webhook.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read dm.read tweet.read ), UserToken
 </aside>
 
 ## Create Subscription
@@ -427,7 +427,7 @@ Creates an Account Activity subscription for the user and the given webhook.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read dm.read ), UserToken
 </aside>
 
 ## Get Subscriptions
@@ -2788,7 +2788,7 @@ Takes one or more of the authenticated user's sources live and returns 201 with 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## List Live Categories
@@ -3562,7 +3562,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read broadcast.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read users.read tweet.read ), UserToken
 </aside>
 
 ## Add a Chat Moderator
@@ -4362,7 +4362,7 @@ Prevents a user from posting messages in all of a broadcaster's chats. Without `
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Unmute a User in Chat
@@ -4431,7 +4431,7 @@ Allows a muted user to post messages in a broadcaster's chats again. Without `br
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## List Scheduled Broadcasts
@@ -5018,7 +5018,7 @@ Publishes a schedule that was created or updated with `manual_publish: true`. Wi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get a Broadcast
@@ -5310,7 +5310,7 @@ Deletes one of the authenticated user's broadcasts, scheduled or ended, includin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Get Broadcast Chat History
@@ -6197,7 +6197,7 @@ Removes a specific chat message from a running broadcast where the authenticated
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## End a Broadcast
@@ -6292,7 +6292,7 @@ Ends one of the authenticated user's broadcasts. Only `state: END` is supported.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get the Ingest Region
@@ -6502,7 +6502,7 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get a Stream Source
@@ -6663,7 +6663,7 @@ Renames one of the authenticated user's stream sources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Delete a Stream Source
@@ -7180,7 +7180,7 @@ Deletes one of the authenticated user's broadcasts. `id` must be the authenticat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Publish or End a User's Broadcast
@@ -7308,7 +7308,7 @@ Publishes or ends one of the authenticated user's broadcasts. `id` must be the a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## List a User's Stream Sources
@@ -7504,7 +7504,7 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. `id` mu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get a User's Stream Source
@@ -7764,7 +7764,7 @@ Deletes one of the authenticated user's stream sources. `id` must be the authent
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-calls">Calls</h1>
@@ -11051,7 +11051,7 @@ Creates a new encrypted Chat group conversation on behalf of the authenticated u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Initialize Chat Group
@@ -11728,7 +11728,7 @@ Returns metadata for a Chat conversation including type, muted status, group det
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
 </aside>
 
 ## Update a Chat Group Conversation
@@ -11911,7 +11911,7 @@ Renames an encrypted Chat group conversation, changes its avatar, or sets its de
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Delete a Chat Conversation
@@ -12033,7 +12033,7 @@ Deletes a Chat conversation for the authenticated user only; other participants 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get Pending Admin Requests for a Chat Group Conversation
@@ -12746,7 +12746,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
 ## Request Admin Permissions in a Chat Group Conversation
@@ -12868,7 +12868,7 @@ Asks the admins of an encrypted Chat group conversation to make the authenticate
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Approve an Admin Request in a Chat Group Conversation
@@ -12991,7 +12991,7 @@ Makes the user who requested admin permissions an admin of an encrypted Chat gro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 ## Reject an Admin Request in a Chat Group Conversation
@@ -13114,7 +13114,7 @@ Declines a user's pending request for admin permissions in an encrypted Chat gro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Update the Admin-Only Settings of a Chat Group Conversation
@@ -13260,7 +13260,7 @@ Sets which actions only admins can perform in an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Add Admins to a Chat Group Conversation
@@ -13389,7 +13389,7 @@ Grants admin rights to one or more members of an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Remove Admins from a Chat Group Conversation
@@ -13518,7 +13518,7 @@ Revokes admin rights from one or more admins of an existing encrypted Chat group
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Archive a Chat Conversation
@@ -13762,7 +13762,7 @@ Unarchives a Chat conversation for the authenticated user only. Unarchiving a co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get Chat Conversation Events
@@ -13868,7 +13868,7 @@ Retrieves the events of a specific Chat conversation, newest first, with paginat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
 ## Enable a Chat Group Invite Link
@@ -14017,7 +14017,7 @@ Turns on the invite link for an encrypted Chat group conversation and returns th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Disable a Chat Group Invite Link
@@ -14139,7 +14139,7 @@ Turns off the invite link for an encrypted Chat group conversation. The existing
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Get a Chat Group Invite Link
@@ -14232,7 +14232,7 @@ Returns the preview of an encrypted Chat group conversation from its invite link
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
 </aside>
 
 ## Request to Join a Chat Group
@@ -14486,7 +14486,7 @@ Rejects pending requests to join an encrypted Chat group conversation. Only grou
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 ## Add Conversation Keys
@@ -14630,7 +14630,7 @@ Adds (initializes or rotates) the encryption keys for a Chat conversation. Call 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Add Members to a Chat Group Conversation
@@ -14983,7 +14983,7 @@ Adds one or more members to an existing encrypted Chat group conversation, rotat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Remove Members from a Chat Group Conversation
@@ -15155,7 +15155,7 @@ Removes one or more members from an existing encrypted Chat group conversation. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Turn On Disappearing Messages in a Chat Conversation
@@ -15280,7 +15280,7 @@ Sets how long new messages in a 1:1 or group Chat conversation last before they 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Turn Off Disappearing Messages in a Chat Conversation
@@ -15402,7 +15402,7 @@ Stops new messages in a 1:1 or group Chat conversation from disappearing, for ev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Send Chat Message
@@ -15527,7 +15527,7 @@ Sends a message or reaction to a Chat conversation, which you can find with `par
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Delete Chat Messages
@@ -15795,7 +15795,7 @@ Mutes notifications for a Chat conversation for the authenticated user only. Wor
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Unmute a Chat Conversation
@@ -15917,7 +15917,7 @@ Unmutes notifications for a Chat conversation for the authenticated user only. W
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Get Chat Conversation Pinned Messages
@@ -16122,7 +16122,7 @@ Marks a specific Chat conversation as read on behalf of the authenticated user. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Update Screen Capture Settings for a Chat Conversation
@@ -16434,7 +16434,7 @@ Marks a specific Chat conversation as unread on behalf of the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Initialize Chat Media Upload
@@ -16866,7 +16866,7 @@ Retrieves the authenticated user's pending Chat message requests from one inbox.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
 ## Get Chat Message Request
@@ -16956,7 +16956,7 @@ Retrieves the message request state of a 1:1 Chat conversation and its newest me
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
 ## Accept a Chat Message Request
@@ -17026,7 +17026,7 @@ Accepts the other user's pending message request in a 1:1 Chat conversation, whi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Get Chat Settings
@@ -17118,7 +17118,7 @@ Returns the authenticated user's Chat privacy settings: who can message them, re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Update Chat Settings
@@ -17360,7 +17360,7 @@ Registers a user's public key for X Chat encryption.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 <h1 id="x-api-v2-communities">Communities</h1>
@@ -17546,7 +17546,7 @@ Retrieves details of a specific Community by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-community-notes">Community Notes</h1>
@@ -19880,7 +19880,7 @@ Initiates a new direct message conversation with specified participants.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Download DM Media
@@ -20600,7 +20600,7 @@ Retrieves direct message events for the one-to-one conversation between the auth
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
 ## Create DM Message by Participant ID
@@ -21465,7 +21465,7 @@ Retrieves direct message events for a specific conversation by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Get DM Events
@@ -22137,7 +22137,7 @@ Retrieves a list of recent direct message events across all conversations.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
 </aside>
 
 ## Get DM Event by ID
@@ -22797,7 +22797,7 @@ Retrieves details of a specific direct message event by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
 ## Delete DM Event
@@ -22998,7 +22998,7 @@ Creates a new List for the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read users.read tweet.read list.write ), UserToken
+OAuth2UserToken ( Scopes: list.write list.read users.read tweet.read ), UserToken
 </aside>
 
 ## Get List by ID
@@ -23560,7 +23560,7 @@ Retrieves details of a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Update List
@@ -23720,7 +23720,7 @@ Deletes a specific List owned by the authenticated user by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
 </aside>
 
 ## Get List Followers
@@ -24432,7 +24432,7 @@ Retrieves a list of Users who follow a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read list.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get List Members
@@ -25144,7 +25144,7 @@ Retrieves a list of Users who are members of a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Add List Member
@@ -25226,7 +25226,7 @@ Adds a User to a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
 </aside>
 
 ## Remove List Member
@@ -25297,7 +25297,7 @@ Removes a User from a List by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
 </aside>
 
 ## Get List Posts
@@ -26126,7 +26126,7 @@ Retrieves a list of Posts associated with a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-media">Media</h1>
@@ -28676,7 +28676,7 @@ Saves a Post draft to the authenticated user's X account without publishing it. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
 </aside>
 
 ## Delete Post Draft
@@ -28744,7 +28744,7 @@ Deletes one of the authenticated user's Post drafts by its ID. The whole draft i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
 </aside>
 
 ## Get Posts by IDs
@@ -29801,7 +29801,7 @@ Creates a new Post for the authenticated user, or edits an existing Post when ed
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
 </aside>
 
 ## Get Post Analytics
@@ -29954,7 +29954,7 @@ Retrieves analytics data for specified Posts within a defined time range.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
 </aside>
 
 ## Get Count of All Posts
@@ -30981,7 +30981,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Search Recent Posts
@@ -32642,7 +32642,7 @@ Retrieves details of a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Delete Post
@@ -32710,7 +32710,7 @@ Deletes a specific Post by its ID, if owned by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read tweet.write ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
 </aside>
 
 ## Get Liking Users
@@ -33422,7 +33422,7 @@ Retrieves a list of Users who liked a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: like.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read like.read users.read ), UserToken
 </aside>
 
 ## Get Quoted Posts
@@ -34253,7 +34253,7 @@ Retrieves a list of Posts that quote a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Reposted By
@@ -34965,7 +34965,7 @@ Retrieves a list of Users who reposted a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Reposts
@@ -36478,7 +36478,7 @@ Retrieves details of multiple Spaces by their IDs.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read space.read users.read ), BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
 </aside>
 
 ## Get Spaces by Creator IDs
@@ -37075,7 +37075,7 @@ Retrieves details of Spaces created by specified User IDs.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: space.read tweet.read users.read ), BearerToken
+OAuth2UserToken ( Scopes: users.read space.read tweet.read ), BearerToken
 </aside>
 
 ## Search Spaces
@@ -38271,7 +38271,7 @@ Retrieves details of a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: space.read users.read tweet.read ), BearerToken
 </aside>
 
 ## Get Space Ticket Buyers
@@ -38985,7 +38985,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read space.read users.read )
+OAuth2UserToken ( Scopes: users.read space.read tweet.read )
 </aside>
 
 ## Get Space Posts
@@ -49859,7 +49859,7 @@ Retrieves details of multiple Users by their IDs.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users by Usernames
@@ -51267,7 +51267,7 @@ Retrieves details of a specific User by their username.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get My User
@@ -51969,7 +51969,7 @@ Retrieves details of the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
 </aside>
 
 ## Get the Authenticated User's Followers
@@ -52680,7 +52680,7 @@ Returns the Users who follow the authenticated user. Same results as `GET /2/use
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read follows.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read follows.read ), UserToken
 </aside>
 
 ## Get the Users the Authenticated User Follows
@@ -53391,7 +53391,7 @@ Returns the Users the authenticated user follows. Same results as `GET /2/users/
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: follows.read users.read tweet.read ), UserToken
 </aside>
 
 ## Get Public Keys for Multiple Users
@@ -53481,7 +53481,7 @@ Every key field is returned by default, so public_key.fields can be left out. It
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
 ## Get Reposts of Me
@@ -54309,7 +54309,7 @@ Retrieves a list of Posts that repost content from the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read timeline.read ), UserToken
+OAuth2UserToken ( Scopes: timeline.read tweet.read ), UserToken
 </aside>
 
 ## Search Users
@@ -55020,7 +55020,7 @@ Retrieves a list of Users matching a search query.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get User by ID
@@ -56435,7 +56435,7 @@ Retrieves a list of Users who are affiliated with a specific organization User b
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get Blocked Users
@@ -57147,7 +57147,7 @@ Returns the Users that the given User is blocking.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: block.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read block.read users.read ), UserToken
 </aside>
 
 ## Block User
@@ -57229,7 +57229,7 @@ Causes the source User to block the target User. A block also removes any follow
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read block.write ), UserToken
+OAuth2UserToken ( Scopes: users.read block.write tweet.read ), UserToken
 </aside>
 
 ## Get Bookmarks
@@ -58058,7 +58058,7 @@ Retrieves a list of Posts bookmarked by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read bookmark.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read bookmark.read tweet.read ), UserToken
 </aside>
 
 ## Create Bookmark
@@ -58438,7 +58438,7 @@ Removes a Post from the authenticated user's Bookmarks by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read bookmark.write )
+OAuth2UserToken ( Scopes: tweet.read bookmark.write users.read )
 </aside>
 
 ## Block DMs
@@ -58506,7 +58506,7 @@ Blocks direct messages to or from a specific User by their ID for the authentica
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Unblock DMs
@@ -58574,7 +58574,7 @@ Unblocks direct messages to or from a specific User by their ID for the authenti
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get Followed Lists
@@ -59145,7 +59145,7 @@ Retrieves a list of Lists followed by a specific User by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Follow List
@@ -59227,7 +59227,7 @@ Causes the authenticated user to follow a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read list.write users.read ), UserToken
 </aside>
 
 ## Unfollow List
@@ -60722,7 +60722,7 @@ Retrieves a list of Users followed by a specific User by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read follows.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: follows.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Follow User
@@ -60805,7 +60805,7 @@ Causes the authenticated user to follow a specific User by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read follows.write ), UserToken
+OAuth2UserToken ( Scopes: users.read follows.write tweet.read ), UserToken
 </aside>
 
 ## Get Liked Posts
@@ -61716,7 +61716,7 @@ Causes the authenticated user to like a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: like.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read like.write ), UserToken
 </aside>
 
 ## Unlike Post
@@ -61785,7 +61785,7 @@ Causes the authenticated user to unlike a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read like.write users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read like.write ), UserToken
 </aside>
 
 ## Get List Memberships
@@ -62356,7 +62356,7 @@ Retrieves a list of Lists that a specific User is a member of by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken, BearerToken
 </aside>
 
 ## Get Mentions
@@ -63193,7 +63193,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get Muting
@@ -63905,7 +63905,7 @@ Retrieves a list of Users muted by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read mute.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read mute.read users.read ), UserToken
 </aside>
 
 ## Mute User
@@ -63987,7 +63987,7 @@ Causes the authenticated user to mute a specific User by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read mute.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read mute.write users.read ), UserToken
 </aside>
 
 ## Get Owned Lists
@@ -64558,7 +64558,7 @@ Retrieves a list of Lists owned by a specific User by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Pinned Lists
@@ -65125,7 +65125,7 @@ Retrieves a list of Lists pinned by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken
 </aside>
 
 ## Pin List
@@ -65209,7 +65209,7 @@ Causes the authenticated user to pin a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
+OAuth2UserToken ( Scopes: users.read list.write tweet.read ), UserToken
 </aside>
 
 ## Unpin List
@@ -65280,7 +65280,7 @@ Causes the authenticated user to unpin a List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read list.write users.read ), UserToken
 </aside>
 
 ## Get User Public Keys
@@ -65370,7 +65370,7 @@ Every key field is returned by default, so public_key.fields can be left out. It
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
 ## Repost Post
@@ -65455,7 +65455,7 @@ Causes the authenticated user to repost a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read tweet.write ), UserToken
 </aside>
 
 ## Unrepost Post
@@ -66366,7 +66366,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
 </aside>
 
 ## Get Posts
@@ -67277,7 +67277,7 @@ Causes the source User to unblock the target User. Unblocking does not restore a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: block.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read block.write users.read ), UserToken
 </aside>
 
 ## Unfollow User
@@ -67348,7 +67348,7 @@ Causes the authenticated user to unfollow a specific user by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read follows.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read follows.write users.read ), UserToken
 </aside>
 
 ## Unmute User
@@ -67419,7 +67419,7 @@ Causes the authenticated user to unmute the target user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read mute.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read mute.write ), UserToken
 </aside>
 
 <h1 id="x-api-v2-webhooks">Webhooks</h1>

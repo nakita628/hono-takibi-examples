@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a74ca170575f6d0043bf8c9ce498d2e9f23dd392bfaf68619658a42cbb53715",
+    "sources": {
+      "https://developer.atlassian.com/cloud/confluence/swagger.v3.json": {
+        "sha256": "f80279e4beace901a20174044ff3dc1cf047ea9486c3dd6eff57e33e4161bf12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

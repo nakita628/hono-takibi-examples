@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "f65bf78b903872a57bf942519457e562a04ee2b4f24ea69241725864c1ccd72b",
+    "sources": {
+      "https://raw.githubusercontent.com/kabucom/kabusapi/master/reference/kabu_STATION_API.yaml": {
+        "etag": "W/\"9d95088dbc391f09ef7198c92d0a013e913d2391a6fea5f289b6dba830d7406f\"",
+        "sha256": "d8440231874c0093ba9f51cce619428bccdb394e7c29a89f614721e1f4051985"
+      }
+    }
+  }
+}

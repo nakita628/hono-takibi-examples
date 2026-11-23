@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "86b3d9e9d0ada0a08c0419444fe6acdff7d05e94030ee46762677f839bc0f083",
+    "sources": {
+      "https://raw.githubusercontent.com/figma/rest-api-spec/main/openapi/openapi.yaml": {
+        "etag": "W/\"586b7aa51cae60cd64880cb79cb7bff42a0e954cbb1f0de371360415e24fedf9\"",
+        "sha256": "490cc17e98f72b8e5eff8f3cfcf8df2e059a67d89993c607761c2e9d6234fb7f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

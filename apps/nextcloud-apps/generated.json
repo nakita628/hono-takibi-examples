@@ -1,0 +1,422 @@
+{
+  "configs/appstore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "acaccf353e43033795b6e637b995f1c4120a4d597c04e40712bd32dc5fb8f190",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/appstore/openapi.json": {
+        "etag": "W/\"c7dafe7b028db5e0340899d6411bfae089e8058e712275519dbf8405d5ee7bda\"",
+        "sha256": "aaaa29f8f26716496829c83d5cdaf9addb9cf84122886ce044f31a270f0f1c01"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloud-federation-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "53052df7b032e64a6013cd0ccccd8a947dfeb8d26a7c78ced652c4ce3a03d4aa",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/cloud_federation_api/openapi.json": {
+        "etag": "W/\"2e0ff2929cd14057e0498aedaa27063b41a7d6786ab4e8c3b7835505eada8f1b\"",
+        "sha256": "86aad55dc6a2ee32122be2544266de8309f7c58426f4e5619d491c426cd10c52"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/comments.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "17cfa4074514ba7ffb343fd5df464a4aea1eb67f30d6fbf3ae8f5b6cfdbc2ebf",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/comments/openapi.json": {
+        "etag": "W/\"689f0b6026bb1572719269a201d2a140bc2a85ecc13daca8134a73accc5a421a\"",
+        "sha256": "2c5d457c56577bbb657914f6a93ad85fd07fa874e0a3b7fe44459e9cd6249d2c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dashboard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f1c7fb21bc26c47d0fb42c8cbb848bef0ecdc9d858cc33c044dc107d4413a30b",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/dashboard/openapi.json": {
+        "etag": "W/\"662d3dff08857486a18dace572410afc6143e170abfe2b590d039d6f2a765402\"",
+        "sha256": "30d9a2be67c410fb956b195e60e7ba71f0dfc7719cddd44aa94fafa655f554d9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dav.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0a026623b2bbaf3a04f4b94d3be992218c5dedef878bd1e5830f422b4d81009d",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/dav/openapi.json": {
+        "etag": "W/\"12b8e452369d2226a48fc8110b1b340529b2dbcd765019bfc9ed9168ad6d0ad4\"",
+        "sha256": "c422c8d2e7f1c0a2ffcce81e7d7342abf4c058525e8a213ea49e17bedbcd8fc2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/federatedfilesharing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eea34a685c88591d620ed7f8ea47579005745d7e0ba01c281e402cba5ae12da1",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/federatedfilesharing/openapi.json": {
+        "etag": "W/\"3fe02e578662d59888be60163ab0af6cabd3c4310cb557a8cfe10a57eef7a5cd\"",
+        "sha256": "5abf6fcb4bda1909e96ff565f11fd91f8c8d52f101c56c5dcafc552b1a718eab"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/federation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "96fb50b02c0bd8bfee0c830c98571f9dfe6a31df9f6501e6ed3ce0bf08659979",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/federation/openapi-full.json": {
+        "etag": "W/\"7fd1f2cd8e50e959562944b7667e52f8df71b3b190448f2d479b3f602f131654\"",
+        "sha256": "44692b7a65f77cc511500fd46b8456f19dca9adab7620ae02c29b97ca560ab9b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-external.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c26eafd5dca9c2ed7a02cb9b360a1a00a9fc4db4f327cf60afcf24b89836e43",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files_external/openapi.json": {
+        "etag": "W/\"b9ad8592cc04e62a8ec85823e6d5f6bca867e7b3fe625a15ff8238a6aa3ba3e8\"",
+        "sha256": "94aaf98a340308beb7bff77062298fa6b7c1b6f6d457d883bdbd574f78273615"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-reminders.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "245a26596d643f2ddfb7b2bc3599f034133a6b439bd6e7eb78442a4c992ada22",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files_reminders/openapi.json": {
+        "etag": "W/\"8c589f3dd598536ce09e0ac0fcbff1a0091cce3120cb8caf5cd11703f24987ec\"",
+        "sha256": "b4760d21d3e1a0247a88fa83043fd13d7ce2e8bff737996dc2cde1c13f50459a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-sharing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e4979613484561564dde70034383473520b976db4ae97f5d9231c2d3a4c17849",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files_sharing/openapi.json": {
+        "etag": "W/\"9becc9b692d5acb7173853dde9d360a78a232ea29471adaf63dc77f77e653561\"",
+        "sha256": "31352e4361f4011d1eef5dc5480164d1f4b2d2112411b19f32986d5055021188"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-trashbin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "492a276bccc81202df501452ebcde432e1fe2b13c1bf0fb9c0322a329bd38bfa",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files_trashbin/openapi.json": {
+        "etag": "W/\"cc63d06e0e940cfd508f3e0bde6e6375eb18ba6050adb9a07aff829560519bab\"",
+        "sha256": "659c49e4e231126557f10c770c88d9499b6af65a9f126893ac72afed213d4969"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-versions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6af0a78285193c0114ef4dc7e51c0c55bc90850c92f288cdb184a44ad38ac6f4",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files_versions/openapi.json": {
+        "etag": "W/\"a213f1ef449fadcc21d250fd27961da57d895f1fcce00eeb22109141942896d1\"",
+        "sha256": "ca65c134cf9f54b85df9968d4a95cdd7cade53aa100509b4717bbc44acf8a49f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5280643f1748523040dd6c5e30a288981d2094547445ca5bccb4238aa6b459a6",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/files/openapi.json": {
+        "etag": "W/\"881b50eb0dd86f586777973294d66761a041cbdd29624c05d413c97b5364811c\"",
+        "sha256": "7ee0d6785dffa56e48e7d326520c89014ed5f53737ad70b7342b793fa947a851"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/oauth2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "db627dd2c3f076e3ba8174e259d1bd1bafe03c77366951a1958d12f1380c0f92",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/oauth2/openapi.json": {
+        "etag": "W/\"7025f04911742dc55495504f1e5e4a277d48f713aec99c0afe44c15c1a9b73a8\"",
+        "sha256": "82c5291370e01aa7bbffc40e02112f6073f7c4466fe64ede3884b761bb612ef5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/profile.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3ecb4cb1c2a8d8c26b0b57d335ef056b157d82612fb9f12a9ebdc6e82e3b3202",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/profile/openapi.json": {
+        "etag": "W/\"048451d6ec245815dd83e74af2493378915f0dafd656497f99a2f464270d28a1\"",
+        "sha256": "be5586e06b7ade4cd4c76e16d5ceaf714bc6f45c7f2309ea1423207873450d6b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/provisioning-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4fefcf9e89713c7155617c24374e366ba5fd7cabaff539450a87011483172fcf",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/provisioning_api/openapi-full.json": {
+        "etag": "W/\"2ffad812e08cd210b747d6854f656f7998cf6cc320e809bac55da6fa17c41e64\"",
+        "sha256": "68bd798a574a04e8df8630a62eef4257d53c3941761517dfa43860a9d7e86e71"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f06cfdd892e10856f3444c946bb142db2c287cd64e0c2aca882c9e77b18867e",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/settings/openapi-full.json": {
+        "etag": "W/\"84e458e8ef50381ccbab32b5010e5375c9c310008ac4c04046c144753068d9dc\"",
+        "sha256": "305c4793dd8da99ee58760ac6ea2dba14cce25a2b0dbac301039a797ff81e52f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sharebymail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aa0851e6cb4ce9816e2e2e65ff926b982127b0de2f0cea1baae33fc67d2bef7c",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/sharebymail/openapi.json": {
+        "etag": "W/\"1cec14827d7a0d4638028216abefd33c31de858c7c20564fe81f223986f8846d\"",
+        "sha256": "318ec74ea79c2e26f8588a4ca5d23f55d1f161cf78a394b79381f1b753f92c60"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sharing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f23728a93dac7ae45b3ecf0dda4673129be5dbd6c36a30cf751511d585db7aa2",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/sharing/openapi.json": {
+        "etag": "W/\"e71065a39881d4213453d8238cd33dddb55ac26a281cfe895a428c20fd960b72\"",
+        "sha256": "798fe1d3cc7be7a1aef151d49cfabb9635aef1131919da9f4b7b245b1f963951"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/systemtags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d504d5b5e13aed59b81ec8c1f60f968ec462f60b686b8de70971e49350eb306b",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/systemtags/openapi.json": {
+        "etag": "W/\"37dcfe0326e115652422f129d8f591d6fc67cbe7c524e574f87139713088b205\"",
+        "sha256": "4a317fdc0a6be69833594713bd389b03fdb62f6537608f5db1ae7d7769f9d2aa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/theming.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "780a5a579ee7ffa0bb9675c87c0445f948a51a798549085cbe160858a645e971",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/theming/openapi.json": {
+        "etag": "W/\"8f02719b78a83683ad42d4059c43218091103e4ae6c3a9ff9eeaa7fa369141d3\"",
+        "sha256": "0550f42a22173f9d7de6327548f9d4e002b1cd27d48962f03b67ceabf9007eed"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/updatenotification.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "66eaac673d666e79c419426b0f217396a8d90b844742aa3ce237f5b64d6d4877",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/updatenotification/openapi.json": {
+        "etag": "W/\"00bceea6476b4bf307ee587caec9e61d67267ae92885ae1b678cb6c7e0c99b2c\"",
+        "sha256": "2a07f08ae3e71c6f16eb9f3510acd410f375664a2df72224d9297d00cd583085"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/user-ldap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "709165d424f8d982c6518860c3439a7cddcd12192c4389b324d533df89b73e64",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/user_ldap/openapi.json": {
+        "etag": "W/\"35bf9e68ddedd42377ea2566fedf3d4c71acc483340f744c18b1c77c756a45f1\"",
+        "sha256": "500693512c26fe1a224a47ce9f65d1e36a391388690b3e1a35f6edf5ec782744"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/user-status.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c2317eaeeb1d35c490bebda3b585b1f0eebdb3abd5a650fb4e94b083c6aca809",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/user_status/openapi.json": {
+        "etag": "W/\"81462754e75779761eca9d8c111cf15e5fb3822da6d393d992a1a546c1ecdd36\"",
+        "sha256": "da47cc33aeb01d67c62dcf9e31b46f74988f76ecece73507e03e173e1ff0ee07"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/viewer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cbc3e95f6eb9110c75b7e8d2a01417043bd842719a7ec80cfd6ff952365a4a03",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/viewer/openapi.json": {
+        "etag": "W/\"980a93e28f9ae9703f09d597b5db5373d8d42b61948d8e1ed1eb53746cd51191\"",
+        "sha256": "9f3541953658660ec8670be15c6dab472e52eaa67f125248c3977a8c71e74afd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/weather-status.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "42d3e39a57f33d73d70279367db79043a5db07d7ca709251fe74b891abb11dc4",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/weather_status/openapi.json": {
+        "etag": "W/\"7c7d3a0b40fce61930a1cf46c92441a21ce7c212d9c65486df2d401f14a38d12\"",
+        "sha256": "bd0fc5a74893d4e1e9f70dafbc4c6463b37ed36142bddf467321cb260678d1a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webhook-listeners.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "45b52de0ee10c6ac4341dea8951680c3d29f3b546dcd1cd7d29873de62dd8d79",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/webhook_listeners/openapi.json": {
+        "etag": "W/\"22292b60b00203ca55215952b2ade65753759b6101e2f3da4ee2d811a1d84b17\"",
+        "sha256": "98a9ede8e4feb998738c1e468d52813ccba83a2c1e33beb0fdef5605b78e9546"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workflowengine.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7a1cd7fac23bbcb4fb8efb28ea04f40cbc3dc81abd30de44aab543e6453eb948",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/apps/workflowengine/openapi-full.json": {
+        "etag": "W/\"42ab591d08a958cb9415c919fe074456eabd20654b9eca3758ded3479f6ebecc\"",
+        "sha256": "98037abe81eb98b6bc0d8eb52bf07b652c784a1418bc45f3354f857ebc362122"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

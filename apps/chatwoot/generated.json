@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "baf216a1d06bf1eb0ebd210f4a35e5da8469a1dd4e6c538fe47673d39533068a",
+    "sources": {
+      "https://raw.githubusercontent.com/chatwoot/chatwoot/develop/swagger/swagger.json": {
+        "etag": "W/\"23d95ae1cd586bc8eea6c6227de54785d07638c560d5d4e72aa2f6b8630e501c\"",
+        "sha256": "ffed5616f81003e8ab90e2b6f8f41b9f7669b5a93c4808257b5b63d13c6844d9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

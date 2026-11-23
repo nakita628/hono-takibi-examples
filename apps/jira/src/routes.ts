@@ -42782,6 +42782,20 @@ export const postRestApi3IssueRoute = createRoute({
             required: false,
           },
         }),
+      preferFieldAssociatedErrors: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "EXPERIMENTAL. Whether you prefer errors that relate to a field to be returned as field errors (`errors`) rather than as general errors (`errorMessages`). A response can contain both kinds of error, regardless of what this is set to. When this is `true`, more errors are returned as field errors, and which errors are field errors and which are general errors isn't part of the contract and can change without notice.",
+            in: 'query',
+            name: 'preferFieldAssociatedErrors',
+            schema: { default: false, type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       content: {
@@ -45971,6 +45985,22 @@ export const postRestApi3IssueIssueIdOrKeyTransitionsRoute = createRoute({
             name: 'issueIdOrKey',
             required: true,
             schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      preferFieldAssociatedErrors: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "EXPERIMENTAL. Whether you prefer errors that relate to a field to be returned as field errors (`errors`) rather than as general errors (`errorMessages`). A response can contain both kinds of error, regardless of what this is set to. When this is `true`, more errors are returned as field errors, and which errors are field errors and which are general errors isn't part of the contract and can change without notice.",
+            in: 'query',
+            name: 'preferFieldAssociatedErrors',
+            schema: { default: false, type: 'boolean' },
+            required: false,
           },
         }),
     }),
@@ -58524,7 +58554,7 @@ export const getRestApi3ProjectProjectIdOrKeyClassificationConfigRoute = createR
       },
     },
     401: { description: 'Returned if the user does not have the necessary permission.' },
-    404: { description: 'Returned if the project is not found or the feature is disabled.' },
+    404: { description: 'Returned if the project is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-work'] }],
 })

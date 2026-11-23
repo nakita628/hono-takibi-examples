@@ -1,0 +1,305 @@
+{
+  "configs/account.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb14916204aa18d2163f4f86f79de3422a7127e9f985a4b02a1f05323f1a7d2b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/account/1.0.4/openapi.yaml": {
+        "etag": "W/\"8823d83314aa7a42f0f3706e503f166bfae22d2553c43192033f5ff3699d56a0\"",
+        "sha256": "05e2ba28dc34765b4f093955235d8fd7be0940caa559d39cf1ea4c18f32d2605"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/application-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "71f91aafccee45501da20aefa8dcfac7a999f55c0acda8a16db961a89d7575fd",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/application.v2/2.1.4/openapi.yaml": {
+        "etag": "W/\"d5723a91011b54d1d58142a5996a7e522a7b696cdb34f1b1cdc9c80a90713f0c\"",
+        "sha256": "6c3cedbfd77e9c371f2b3edb03b4428f0ec5a3a0b56b5a65c465c0e4abb3c7e3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/application.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "600d2cb0172426f0bd69c4f24780f274e5dff6852bb299e0389654285a5d3381",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/application/1.0.2/openapi.yaml": {
+        "etag": "W/\"93b666451376ad7b9f43d066cd64c5b36bdc370a47e4c997d4c804826aa981db\"",
+        "sha256": "b7f038107c6a771c7d5dd76959a08a6fe80388da6cd4cf1a1b40c26833e9c864"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/audit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c2686d0e01aeb76dc697426c37ab0e65bbff3662122bffe1155c47c1fbb91048",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/audit/1.0.4/openapi.yaml": {
+        "etag": "W/\"bc61964a227016a3de9b7034ea6cc546aa6bc38fefa768cf6dc3d20038ffcb15\"",
+        "sha256": "5fc6be40ab1a91e0f0b21526cf1dc1daab9fd948f88681d770d736f4c685b9cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversation-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "27f1119fcb9c3c178d872a17311e37e2e729ec7b083280044e79bd7ac473617c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/conversation.v2/1.0.1/openapi.yaml": {
+        "etag": "W/\"fc54646e332443ceae7493ce0854bca4bf9cc39e2a7b50e861b61fd385d8dfc8\"",
+        "sha256": "da91f14a81283a48b71d042ce4e5bf6d4245780b7b513e7c50c051a9958f905d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c8887b58335485801269808a4f1ab5d14afdc3c14acac697b8fa951ea3e07a5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/conversation/2.0.1/openapi.yaml": {
+        "etag": "W/\"41e582334f1f4139e1044974261e5a29213421c6425c42fa7613976f9f68ced0\"",
+        "sha256": "6eb10fee318269b7131a3a0d43897e8d33774a31db3cec86b3d33ffc05eb05b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversion.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b7a7bf8515aaa9cae2e578aeef4b52909999bbf01bc857e69fd82872358bfde8",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/conversion/1.0.1/openapi.yaml": {
+        "etag": "W/\"92e413f8530ffaf4df57e9aae4400a396aed0031a3201b3bec5048d582a5e9fb\"",
+        "sha256": "83f86731715302ecf2158b67d376d885b471e935542499c735388d73eb138f51"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dispatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e4571a66814be84ecca711f3e4a4ab6bf0fbb7198c557fa7af4e4fe118dd7f99",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/dispatch/0.3.4/openapi.yaml": {
+        "etag": "W/\"b31ba13e0faf04a6c01327273a6623516fa60c51b49d79aab0172f6c6fe496f9\"",
+        "sha256": "7b5487376c11518e0bbbef0c2ceea4474623e164574c7bbb752d779fe1b7753b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/external-accounts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ee59f31f3160d1dcddc47a7e258faa0112578ed3b21264db45bbd8b84745637a",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/external-accounts/0.1.5/openapi.yaml": {
+        "etag": "W/\"e9a3b9fa9f452b0179b4dfb5df7741a40d0c8d2cf0c286c94c7aad61d8c420e7\"",
+        "sha256": "72fccf735b91ca2b89dab2f59f0cd393404ae898341ba01828d1d31cb6a8ff75"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/media.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba37ace04902e3e688127c4b0aab1eb76bf106a264d39b3f70feab51ebb2be13",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/media/1.0.2/openapi.yaml": {
+        "etag": "W/\"9692068e58c36f57cbc0956319049c5f9aa79749e636721fa70f805e8a093a87\"",
+        "sha256": "95e96ec808cead903c95d71a140b1afa33bb0355dce66d45babebbe2120741a9"
+      }
+    },
+    "typecheck": {
+      "errors": 18,
+      "where": "`hooks/*`, `rpc.ts`",
+      "codes": "TS2345 ×18",
+      "issue": "spec: the paths are written `/:id` (a colon, not `{id}`)"
+    }
+  },
+  "configs/messages-olympus.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c8d106bc500092869d31bdf0d4df8494261d13562e25d6e7a0b3a0ea71ea69ab",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/messages-olympus/1.4.0/openapi.yaml": {
+        "etag": "W/\"81407cbafa490db80e5bb9286fce46e0ac2fda25a5af2468428f6ca6cd649a44\"",
+        "sha256": "cabb790bb6f9258273e2eb2ca11132181cbb68949d44ba98106c32471aa61fee"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/number-insight.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6794b70afaf2187b792c502e9da1bc9a7589692638befda3724e84a748c91773",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/number-insight/1.2.1/openapi.yaml": {
+        "etag": "W/\"9e83eef8acd83f1f4ab5a09c82e37a37015d74a1390ca68267afbbd67dd57953\"",
+        "sha256": "ed29b80104b5751c864b4268572281ab07000bb9a46708f605f1e91e191acf06"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/numbers.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce8a1320f90eec33def6a4fc887803b1bb0a9e9e968c93ec67410e89cf3b0208",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/numbers/1.0.20/openapi.yaml": {
+        "etag": "W/\"72a4e9978f7d4c6739b4f0518589fe7e0816a893d1c6bc98a7678e988968e72d\"",
+        "sha256": "c42ad63b7c52ca3462da6ff6cbd960110b16dfd66f87cf521ec8f6d66de78ebc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pricing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25069e88f4c54df8faee283032af215cdd732106d6a281900b69e99601f60fb1",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/pricing/0.0.3/openapi.yaml": {
+        "etag": "W/\"b8fea3cba6ab8e2629aa2cd9ee75ee1d4000e081a823dc094b8918f0b3a71887\"",
+        "sha256": "fb8532255a1e03c09a249fd9251b8e720768cc586d8b1379f1068fd8aab03899"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/redact.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "70297a4d03ea38621d215d71519ccc044be31b616b9313829bf83d826564dcef",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/redact/1.0.6/openapi.yaml": {
+        "etag": "W/\"ae391d1e0fb16a1fdab8b7f10e8171c77adedb71d03e86e737ea3cfc3fc93a87\"",
+        "sha256": "cd730a16f0bf54df465f9f8c180d95de149ac706345d9b7d516d8b5a23657799"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/reports.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c470c56c18d6e24ea147cadc9541d8e6c2bb41c484d2babb7d0dcb3bae85900",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/reports/2.2.2/openapi.yaml": {
+        "etag": "W/\"384cfb24d3493b7d0d53106b5fec6ad46f30809aba28630e66c562731700ecf4\"",
+        "sha256": "dcc2a511160eddf1d4cc8e993dbaa851fe899a59cf282dcab79ffcb5b6ec0c93"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e743bceaca0ded9214f5f91036cc9260f7475be11a6c4705101f8c319aaf7935",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/sms/1.2.0/openapi.yaml": {
+        "etag": "W/\"c4a297a9ddea46d482a94feba4f305df01a1907cbcc6ed559bfad07680c3cad4\"",
+        "sha256": "2aae9817c526ae3db53d832504ceb7bdca1a17eab486cce751280469b0af69e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/subaccounts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "40b93d656a29f61d529cf6ffe361aefd83f8602319af8f931b4a7d869d829341",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/subaccounts/1.0.8/openapi.yaml": {
+        "etag": "W/\"6ddb190b14dcb5b5e633c9c2c36fbff78f7a427075caab8607c55094e0939f3d\"",
+        "sha256": "608e22dcd5e099d5d0991cfe641dd5bb13e70335f04fd8886beeaa3e744f6ad8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/verify.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f1c0dd3743ce66bce1b16508d49ef42b688888c5035181e9243bc39957ca81b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/verify/1.2.4/openapi.yaml": {
+        "etag": "W/\"c63b2d396b0246cabb8c7478d367c98f7edaffef9d73845917a657087c09ab9e\"",
+        "sha256": "be15d74e53f3352d07420ba19057853178f5c40c98758a6dbaa9ba69a1ab676b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/voice.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe4a17c5eff6cf3647a0337f6fa45fb6ad567757a58c2b1bb51aee81fc45d252",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/voice/1.3.10/openapi.yaml": {
+        "etag": "W/\"c3122b6882dd45dc0dd968febfe644947728656705d2212b9f2df2db6b69f5bf\"",
+        "sha256": "2f46a95f2698426fe1df112c2afdf9ac40017df8b47934639bd470b06b748f3e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

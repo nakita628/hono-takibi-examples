@@ -22524,7 +22524,7 @@ curl https://api.aiven.io/project \
 This operation is deprecated
 </aside>
 
-<p>The API endpoint /v1/project is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/projects instead. It will be removed on 2027-01-31.</p>
+<p>Setting billing details (billing emails, address, company, VAT ID, currency, extra text, payment card) requires the organization billing permission (organization:billing:write or role:organization:admin). The response omits billing data for callers without it.</p><p>The API endpoint /v1/project is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/projects instead. It will be removed on 2027-01-31.</p>
 
 > Body parameter
 
@@ -22893,7 +22893,7 @@ curl https://api.aiven.io/project/string \
 This operation is deprecated
 </aside>
 
-<p>The API endpoint /v1/project/{project} is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/project/{project_id} instead. It will be removed on 2027-01-31.</p>
+<p>Changing billing details (billing emails, address, company, VAT ID, currency, extra text, payment card) requires the organization billing permission (organization:billing:write or role:organization:admin). The response omits billing data for callers without it.</p><p>The API endpoint /v1/project/{project} is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/project/{project_id} instead. It will be removed on 2027-01-31.</p>
 
 > Body parameter
 
@@ -41618,7 +41618,9 @@ curl https://api.aiven.io/project/string/service/string/pg/available-extensions 
   "extensions": [
     {
       "default_version": "string",
+      "extwlist": true,
       "name": "string",
+      "trusted": true,
       "versions": [
         "string"
       ]
@@ -43495,7 +43497,9 @@ curl https://api.aiven.io/tenants/string/pg-available-extensions \
       "extensions": [
         {
           "default_version": "string",
+          "extwlist": true,
           "name": "string",
+          "trusted": true,
           "versions": [
             "string"
           ]
@@ -75418,7 +75422,9 @@ PGAccountQueryOptimizeResponse
   "extensions": [
     {
       "default_version": "string",
+      "extwlist": true,
       "name": "string",
+      "trusted": true,
       "versions": [
         "string"
       ]
@@ -76922,7 +76928,9 @@ OsAvailablePluginsResponse
       "extensions": [
         {
           "default_version": "string",
+          "extwlist": true,
           "name": "string",
+          "trusted": true,
           "versions": [
             "string"
           ]

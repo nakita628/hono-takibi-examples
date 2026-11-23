@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "192f1d688b1473028aa6b3c953e01504bed530c83069e2ba698e51f3c128f9e9",
+    "sources": {
+      "https://raw.githubusercontent.com/appwrite/appwrite/1.7.x/app/config/specs/open-api3-latest-server.json": {
+        "etag": "W/\"fdc63afd534d6ec18b34c19ec708dab027ef02ee6ddb92f323e9e5f401011b5b\"",
+        "sha256": "8c7ac96e810a307a8634f5e7a28b1605b2f6940b512369552e0fd159ae3a2fd6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

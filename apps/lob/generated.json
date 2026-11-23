@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fca18b87210cd4222a66a0ac9a1a338f07e214e490bde6de58c7d5fb9a16ef94",
+    "sources": {
+      "https://raw.githubusercontent.com/lob/lob-openapi/main/dist/lob-api-bundled.yml": {
+        "etag": "W/\"db24c6b85d509bcfdf8741813432fbb29904d6b702a27be33eefa20dc1e9a074\"",
+        "sha256": "dd725a9f981b653e3a35068ad95a1f83ede3a7c00a73f7cea2b37cfb30fed2f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

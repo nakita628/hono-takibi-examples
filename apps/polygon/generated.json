@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e34c83f994e6c54877b0ebaed7bd9db9d3a36f372682247671810a1a7d53194b",
+    "sources": {
+      "https://api.polygon.io/openapi": {
+        "sha256": "286f5f41fca16e9d246cee6d9ec5636265da0a0435ee3d41800b40fc632b6f4f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

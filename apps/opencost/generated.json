@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e48da330d4604c55b39d413761f7e440ad178842d49065134a4675cff7908882",
+    "sources": {
+      "https://raw.githubusercontent.com/opencost/opencost/develop/docs/swagger.json": {
+        "etag": "W/\"ba9a249dabaf75af2c39aade61caffa0806283ec553b9fc33c9ac8ae99027cff\"",
+        "sha256": "c4d279a263331ffa9134a8af59a8b2e63b9e3de7f16291a0e0f99015819bed9d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

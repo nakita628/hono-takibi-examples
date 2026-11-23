@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b556f1798a448d56b8ce1b842f49b2916d88f1a80c7fec3cafff71f1b7b29dd",
+    "sources": {
+      "https://raw.githubusercontent.com/equinix-labs/metal-go/v0.30.0/api/openapi.yaml": {
+        "etag": "W/\"55d95b5559ec323520200d75443362d72b62450db30554b1a299767517587929\"",
+        "sha256": "bb748d2aebb9ca20667a01decdf4e2e2f6166abcc44f5b8c7ef2c36adcad670f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

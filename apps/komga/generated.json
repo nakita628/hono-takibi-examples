@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ddc03b8abd9483b57627311add2a1c8d2370281e857740b3f0ed35a45d0b9db9",
+    "sources": {
+      "https://raw.githubusercontent.com/gotson/komga/master/komga/docs/openapi.json": {
+        "etag": "W/\"34392f99831ee4a16f2d1447ccd74a853f1c58e913741109a4c61e0069b80fae\"",
+        "sha256": "522ce16baaf7395ce37113d7dc3504b16aecfa4f40d939b08057e5c256cc3c26"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

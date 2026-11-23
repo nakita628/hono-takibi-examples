@@ -1,0 +1,242 @@
+{
+  "configs/accounting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e62eaad5d60c7e46323af437d000a023fefe083bf106598838f6dbac894a4fcb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/accounting/9.3.0/openapi.yaml": {
+        "etag": "\"17b3169907c83b6617e8b2c3c3cd38af\"",
+        "sha256": "97f783c252fa7c58bbedddde9357dcdd3ff388dff11ad9328732cfa606eaddd9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6468ccc51375955276bab667d809593396755c9a63431065fac2a24628925fa7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/ats/9.3.0/openapi.yaml": {
+        "etag": "\"baabf8ef4ac0e9deb2137de0fff6f56a\"",
+        "sha256": "eacdff638dde056ce405e30d200769a52139073020b317efad34cf5b62e3fa9a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/connector.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f33c2b5733f029a66bd4a194ad92d3f18878cc3c536cf206abb3b0bf77fa91c2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/connector/9.3.0/openapi.yaml": {
+        "etag": "\"11d238f8c449c50ce4485d75876216ca\"",
+        "sha256": "36ac353965c37681276adf15a968117502ef167b8e0bd6c23832d5e1eecdf5e7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b72b641bc428403d17cb6ed6e32f0037ba5d5a355d5d405662dd95a31f9db232",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/crm/9.3.0/openapi.yaml": {
+        "etag": "\"dfe363c5083eb63c83cdc71e9b0c6437\"",
+        "sha256": "726eed86f2f3db59305995c1edebf7faca3c794799aed68f879e44cd0385b728"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customer-support.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "750b2287c9df4e1c8cee330eceebe06b2e4a1d62def929d9ebc4b0df2f950b23",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/customer-support/9.3.0/openapi.yaml": {
+        "etag": "\"373f3fc25209ad85cbb4bef19015fe26\"",
+        "sha256": "a3c19cf93b8783123699e906e2114158bb490c336452070d84d08871b61d8331"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ecommerce.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b75fb9958876adae6c8a296cc1f6408fa9832a54ad8cc889fce2fbe6a40a05cd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/ecommerce/9.3.0/openapi.yaml": {
+        "etag": "\"3a0b0b14434f9716f8235a6a1b9c9309\"",
+        "sha256": "4b2b0ba7235f7d8c1cad90840856c3612a8a3d11f335f9c566730daf16a11334"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ecosystem.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe5d07e8444709b0c5c4308aa81d2aec1a3bb467bd1e6435b8fd693303ec94df",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/ecosystem/0.0.6/openapi.yaml": {
+        "etag": "\"5d055056ea57d156cf9a8fcbfac0c485\"",
+        "sha256": "cc71b99541ea9d91b303d05b8b1c60dfd0bb5ff3c85f907c1bc7c9289aa361d3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/file-storage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "96c402b94be9934342bc16a606b60e7ed629ed0053b9faaff7c81850f7dc0bbc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/file-storage/9.3.0/openapi.yaml": {
+        "etag": "\"db2981e8d6cff713ef18bddf65fe4df7\"",
+        "sha256": "30fefb5f08684a82eb62e199fc92c8fc2616dac388656af1d67683c1bcbeba91"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hris.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b8256dd3c5b41f371bd624a22bbcbec5465bd5392e17ba319aef0de6c1c2c34a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/hris/9.3.0/openapi.yaml": {
+        "etag": "\"60503e61ccdd64fb25d47f44655305dd\"",
+        "sha256": "04463e744f89451200c4e14c274889f4593df70c416526eb70d6ca22b84fb1f5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/issue-tracking.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "02c34594563be06758a22293deaeda6273ad751a4fd59706f30afe8e5b5b9fed",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/issue-tracking/9.3.0/openapi.yaml": {
+        "etag": "\"510c91384b41be243058fac0a8aabd2f\"",
+        "sha256": "660146d59f377ca88fa3fc83e019cdb871a63e22716062ed3f00eabe684ade75"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lead.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "161c46e2abc031dfda2aeeeee8cd2495c9d039efd5a0a23c55c11a2f8b309326",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/lead/9.3.0/openapi.yaml": {
+        "etag": "\"fe27ebf42d7af9d83dadcfcae528ab4d\"",
+        "sha256": "644d75af25026eb22b5a4d116ea066696750e34eef5c31da7d3a59b43dee9518"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pos.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "997b3434326577f48c68bd692b2cc89c31cd19c40150f3949fd064d29ede71d1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/pos/9.3.0/openapi.yaml": {
+        "etag": "\"a173c9bfa8d58ed6b5c192cf4f655e0d\"",
+        "sha256": "0247adf51b02cf5984c265388762ddd8da839c4624920ef0f17a7b4d975e5777"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/proxy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c78c8febb8cae259000b6db2b04864a158f01cbb0b0164ed3f84f2550550b3e8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/proxy/9.3.0/openapi.yaml": {
+        "etag": "\"d86cab2080b7ae716bea6b1695d779a4\"",
+        "sha256": "4f6016ebada2d1449b991ce50a4a8c4fc105561fcd76fcb74d81138ab923a666"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7a048b2271709b980a24c1b8662c86bf658bf84c56839da1d95b64c0f61b1168",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/sms/9.3.0/openapi.yaml": {
+        "etag": "\"d174f5f4042e214f4bd4ab1007bdc443\"",
+        "sha256": "d4e5c7244dcaed875513ce8dfed7b50f7fc7cad7b86fdae0f4d88ed0768f2f0e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vault.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d67a44849f723559bf27ef4f52e29e11aeb96cf5c01ee2ef38f9aacfcd93be10",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/vault/9.3.0/openapi.yaml": {
+        "etag": "\"fc98b5f277988c28af092149cfd26249\"",
+        "sha256": "a17623c6b90cfaf1dbce38b773f7e22f6e673029d4d6ef057735d48e8eb024bd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webhook.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "745c5c85064de8732c3373b70f997093d17b5dc213a161837352967e60a2e61e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apideck.com/webhook/9.3.0/openapi.yaml": {
+        "etag": "\"4f1a1999dc4a7f43fba475ed69789913\"",
+        "sha256": "c51e6835eed71af2872f549dfcfdf5918202ed554c6695f584e961590e06b385"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

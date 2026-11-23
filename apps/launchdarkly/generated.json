@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "34c451b5902fcb8837c79b88c78918dac9d20e7c467fe9faf8ac2e0c2e3320f9",
+    "sources": {
+      "https://app.launchdarkly.com/api/v2/openapi.json": {
+        "sha256": "2f1b6f0eb5b4b84567af676da4556ac38a615f2d0d5936cce035c606fd016036"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

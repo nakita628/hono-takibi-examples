@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "34e802f37998af941d65f1b42d0ebfa9424a56cc81e090cff66ec62c278f7b24",
+    "sources": {
+      "https://raw.githubusercontent.com/owncloud/libre-graph-api/main/api/openapi-spec/v1.0.yaml": {
+        "etag": "W/\"6c70e95bb79b4a65d6fa3ea487b7d2797a278a16ecf4a9ef7a7a18d28da5d920\"",
+        "sha256": "1f551b08c3212d0c59d00cd4a39ecb28bd3331b2a8a60950eadf932e1acbfb28"
+      }
+    }
+  }
+}

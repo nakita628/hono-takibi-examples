@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6658295303dda1f3c22dd83d2f9de7762f374d4c4386c0d7ec66ce58694af765",
+    "sources": {
+      "https://raw.githubusercontent.com/canva-sdks/canva-connect-api-starter-kit/main/openapi/spec.yml": {
+        "etag": "W/\"e7a42e23b21e2d0b9224a07ded6c5c0c21b5ff43a76cdb27cdfe290db6d7fb9f\"",
+        "sha256": "8579f6f28069ee5b8e71cd07960b8ce5641a8b10fb55aa94aefa8cb32600c507"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

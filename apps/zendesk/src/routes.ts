@@ -3662,7 +3662,7 @@ const UserForAdminSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The user's primary email address. *Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)",
+          "In responses, the user's email address selected for notifications. This can differ from the primary email address if the primary email is unverified or undeliverable. Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)",
       }),
     external_id: z
       .string()
@@ -4003,7 +4003,7 @@ const UserForEndUserSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The primary email address of this user. If the primary email address is not [verified](https://support.zendesk.com/hc/en-us/articles/4408886752410), the secondary email address is used',
+          "The user's email address selected for notifications. This can differ from the primary email address if the primary email is unverified or undeliverable.",
       }),
     iana_time_zone: z
       .string()
@@ -26173,12 +26173,12 @@ const SatisfactionReasonObjectSchema = z
   .openapi('SatisfactionReasonObject')
 
 const SatisfactionReasonResponseSchema = z
-  .object({ reason: z.array(SatisfactionReasonObjectSchema).exactOptional() })
+  .object({ satisfaction_reason: SatisfactionReasonObjectSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('SatisfactionReasonResponse')
 
 const SatisfactionReasonsResponseSchema = z
-  .object({ reasons: z.array(SatisfactionReasonObjectSchema).exactOptional() })
+  .object({ satisfaction_reasons: z.array(SatisfactionReasonObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('SatisfactionReasonsResponse')
 
@@ -42736,30 +42736,16 @@ const DynamicContentVariantsCreateManyRequestExampleExample = {
 
 const DynamicContentVariantsCreateManyResponseExampleExample = {
   value: {
-    variants: [
-      {
-        active: true,
-        content: "C'est mon contenu dynamique en français",
-        created_at: '2014-04-09T19:53:23Z',
-        default: false,
-        id: 23,
-        locale_id: 127,
-        outdated: false,
-        updated_at: '2014-04-09T19:53:23Z',
-        url: 'https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/23',
-      },
-      {
-        active: true,
-        content: 'Este es mi contenido dinámico en español',
-        created_at: '2014-04-09T19:53:23Z',
-        default: false,
-        id: 24,
-        locale_id: 126,
-        outdated: false,
-        updated_at: '2014-04-09T19:53:23Z',
-        url: 'https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/24',
-      },
-    ],
+    job_status: {
+      id: 'V3-29e0814a9a29cd66c201831c1e218429',
+      job_type: 'Bulk Create Variants',
+      message: null,
+      progress: null,
+      results: null,
+      status: 'queued',
+      total: 2,
+      url: 'https://company.zendesk.com/api/v2/job_statuses/V3-29e0814a9a29cd66c201831c1e218429.json',
+    },
   },
 }
 
@@ -42813,30 +42799,16 @@ const DynamicContentVariantsUpdateManyRequestExampleExample = {
 
 const DynamicContentVariantsUpdateManyResponseExampleExample = {
   value: {
-    variants: [
-      {
-        active: true,
-        content: "C'est mon contenu dynamique en français",
-        created_at: '2014-04-09T19:53:23Z',
-        default: false,
-        id: 23,
-        locale_id: 16,
-        outdated: false,
-        updated_at: '2014-04-09T19:53:23Z',
-        url: 'https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/23',
-      },
-      {
-        active: true,
-        content: 'Este es mi contenido dinámico en español',
-        created_at: '2014-04-09T19:53:23Z',
-        default: false,
-        id: 24,
-        locale_id: 2,
-        outdated: false,
-        updated_at: '2014-04-09T19:53:23Z',
-        url: 'https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/24',
-      },
-    ],
+    job_status: {
+      id: 'V3-98953fc49904266ca361ee711cdf71a8',
+      job_type: 'Bulk Update Variants',
+      message: null,
+      progress: null,
+      results: null,
+      status: 'queued',
+      total: 2,
+      url: 'https://company.zendesk.com/api/v2/job_statuses/V3-98953fc49904266ca361ee711cdf71a8.json',
+    },
   },
 }
 
@@ -47400,23 +47372,21 @@ const SatisfactionRatingsResponseExampleExample = {
 
 const SatisfactionReasonResponseExampleExample = {
   value: {
-    reason: [
-      {
-        created_at: '2011-07-20T22:55:29Z',
-        id: 35121,
-        raw_value: '{{dc.reason_code_1000}}',
-        reason_code: 1000,
-        updated_at: '2011-07-20T22:55:29Z',
-        url: 'https://company.zendesk.com/api/v2/satisfaction_reason/35121',
-        value: 'Agent did not respond quickly.',
-      },
-    ],
+    satisfaction_reason: {
+      created_at: '2011-07-20T22:55:29Z',
+      id: 35121,
+      raw_value: '{{dc.reason_code_1000}}',
+      reason_code: 1000,
+      updated_at: '2011-07-20T22:55:29Z',
+      url: 'https://company.zendesk.com/api/v2/satisfaction_reasons/35121',
+      value: 'Agent did not respond quickly.',
+    },
   },
 }
 
 const SatisfactionReasonsResponseExampleExample = {
   value: {
-    reasons: [
+    satisfaction_reasons: [
       {
         created_at: '2011-07-20T22:55:29Z',
         id: 35436,
@@ -62941,7 +62911,8 @@ export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyR
   path: '/api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/create_many',
   tags: ['Dynamic Content Item Variants'],
   summary: 'Create Many Variants',
-  description: '#### Allowed For\n\n* Admins, Agents\n',
+  description:
+    "Creates one or more variants. See [Create Variant](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#create-variant).\n\n#### Response\n\nThis endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.\n\n#### Allowed For\n\n* Admins, Agents\n",
   operationId: 'CreateManyDynamicContentVariants',
   request: {
     params: z.object({ dynamic_content_item_id: DynamicContentItemIdParamsSchema }),
@@ -62956,11 +62927,11 @@ export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyR
     },
   },
   responses: {
-    201: {
-      description: 'Created response',
+    200: {
+      description: 'Success response',
       content: {
         'application/json': {
-          schema: DynamicContentVariantsResponseSchema,
+          schema: JobStatusResponseSchema,
           examples: { default: DynamicContentVariantsCreateManyResponseExampleExample },
         },
       },
@@ -62975,7 +62946,7 @@ export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRo
   tags: ['Dynamic Content Item Variants'],
   summary: 'Update Many Variants',
   description:
-    'Updates one or more variants. See [Update Variant](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#update-variant).\n\nYou must specify the variants by id in the body. To get the variant ids, see [List Variants](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#list-variants).\n\n#### Allowed For\n\n* Admins, Agents\n',
+    "Updates one or more variants. See [Update Variant](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#update-variant).\n\nYou must specify the variants by id in the body. To get the variant ids, see [List Variants](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#list-variants).\n\n#### Response\n\nThis endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.\n\n#### Allowed For\n\n* Admins, Agents\n",
   operationId: 'UpdateManyDynamicContentVariants',
   request: {
     params: z.object({ dynamic_content_item_id: DynamicContentItemIdParamsSchema }),
@@ -62994,7 +62965,7 @@ export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRo
       description: 'Success response',
       content: {
         'application/json': {
-          schema: DynamicContentVariantsResponseSchema,
+          schema: JobStatusResponseSchema,
           examples: { default: DynamicContentVariantsUpdateManyResponseExampleExample },
         },
       },
@@ -74307,9 +74278,76 @@ export const postApiV2TicketFieldsTicketFieldIdOptionsRoute = createRoute({
   tags: ['Ticket Fields'],
   summary: 'Create or Update Ticket Field Option',
   description:
-    'Creates or updates an option for the given drop-down ticket field.\n\nTo update an option, include the id of the option in the `custom_field_option` object. Example:\n\n`{"custom_field_option": {"id": 10002, "name": "Pineapples", ... }`\n\nIf an option exists for the given ID, the option will be updated. Otherwise, a new option will be created.\n\n#### Response\n\nReturns one of the following status codes:\n\n- 200 with `Location: /api/v2/ticket_fields/{ticket_field_id}/options` if the ticket field option already exists in the database\n- 201 with `Location: /api/v2/ticket_fields/{ticket_field_id}/options` if the ticket field option is new\n\n#### Allowed For\n\n* Admins\n\n#### Rate Limit\nYou can make 100 requests every 1 minute using this endpoint.\nThe rate limiting mechanism behaves as described in\n[Monitoring your request activity](/api-reference/ticketing/account-configuration/usage_limits/#monitoring-your-request-activity) in the API introduction.\n\n#### Field Option Limits\n\n* 2000 options per ticket field\n',
+    'Creates or updates an option for the given drop-down ticket field.\n\nTo update an option, include the id of the option in the `custom_field_option` object. Example:\n\n`{"custom_field_option": {"id": 10002, "name": "Pineapples", ... }`\n\nIf an option exists for the given ID, the option will be updated. Otherwise, a new option will be created.\n\nIf the `id` is omitted, the endpoint looks up an existing option with a matching `value` and updates it (returning a 200 status), rather than creating a new option. A new option is only created if no option with the given `value` exists (returning a 201 status).\n\n#### Response\n\nReturns one of the following status codes:\n\n- 200 with `Location: /api/v2/ticket_fields/{ticket_field_id}/options` if the ticket field option already exists in the database\n- 201 with `Location: /api/v2/ticket_fields/{ticket_field_id}/options` if the ticket field option is new\n\n#### Allowed For\n\n* Admins\n\n#### Rate Limit\nYou can make 100 requests every 1 minute using this endpoint.\nThe rate limiting mechanism behaves as described in\n[Monitoring your request activity](/api-reference/ticketing/account-configuration/usage_limits/#monitoring-your-request-activity) in the API introduction.\n\n#### Field Option Limits\n\n* 2000 options per ticket field\n',
   operationId: 'CreateOrUpdateTicketFieldOption',
-  request: { params: z.object({ ticket_field_id: TicketFieldIdParamsSchema }) },
+  request: {
+    params: z.object({ ticket_field_id: TicketFieldIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              custom_field_option: z
+                .object({
+                  id: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64(),
+                    )
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      type: ['integer', 'null'],
+                      format: 'int64',
+                      description:
+                        'The id of an existing option to update. When omitted, an existing option with a matching value is updated instead (see value)',
+                    }),
+                  name: z.string().openapi({ description: 'The display name of the option' }),
+                  position: z
+                    .int()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The position of the option in the list. Defaults to the last position when omitted on create',
+                    }),
+                  value: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The value stored for the option. Required when creating a new option. When id is omitted, an existing option with this value (including a previously deleted one) is updated instead of creating a new option',
+                    }),
+                })
+                .openapi({ required: ['name'] }),
+            })
+            .openapi({ required: ['custom_field_option'] }),
+          examples: {
+            default: {
+              summary: 'Create an option',
+              value: { custom_field_option: { name: 'Grapes', position: 2, value: 'grape' } },
+            },
+            update: {
+              summary: 'Update an existing option',
+              value: {
+                custom_field_option: {
+                  id: 10002,
+                  name: 'Pineapples',
+                  position: 2,
+                  value: 'pineapple',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
   responses: {
     200: {
       description: 'Success response',
@@ -74407,6 +74445,38 @@ export const putApiV2TicketFieldsReorderRoute = createRoute({
   description:
     '#### Allowed For\n* Admins\n\n#### Request Parameters\n\nYou can pass in the following parameter in the payload:\n\n| Name                | Type   | Comment\n| ------------------- | ------ | --------\n| ticket_field_ids    | array  | An array of ticket field ids. Example: "[2, 23, 46, 50]". Not all ticket_field_ids are necessary in the payload; only those provided will be assigned to the first positions. Missing IDs will be assigned incremental positions automatically.\n',
   operationId: 'ReorderTicketFields',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ticket_field_ids: z
+                .array(
+                  z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64(),
+                    )
+                    .openapi({ type: 'integer', format: 'int64' }),
+                )
+                .openapi({
+                  description:
+                    'The ticket field ids in the desired order. Not all ids are required; only the ones provided are assigned to the first positions, and missing ids are assigned incremental positions automatically',
+                }),
+            })
+            .openapi({ required: ['ticket_field_ids'] }),
+          examples: { default: { value: { ticket_field_ids: [2, 23, 46, 50] } } },
+        },
+      },
+      required: true,
+    },
+  },
   responses: {
     200: {
       description: 'Success response',

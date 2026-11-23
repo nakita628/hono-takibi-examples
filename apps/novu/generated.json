@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3d3b678a5afd078a591e7c92eee4c8cd07fb8cf1f47538d245c6063d7a46b572",
+    "sources": {
+      "https://api.novu.co/openapi.json": {
+        "etag": "W/\"19abaa-rs1qOBluwyXH9BenVUy58fNQe48\"",
+        "sha256": "5d71145d315f7bd2e13454d6579d1e7800031e597e78b082f6cfaf3f68d4b7a4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

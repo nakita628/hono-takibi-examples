@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2477e19b3d1fc8dfccf41ab021b5622d61d8267a1df22a6931c27cba9055ee0d",
+    "sources": {
+      "https://raw.githubusercontent.com/ollama/ollama/main/docs/openapi.yaml": {
+        "etag": "W/\"b40207c5c0a989547f7a0ea274bf4f61858e2c525eb78cf45562e4acb83c8b33\"",
+        "sha256": "d8e08be41dd858c933c32bef5ee8d0c5faf7d7462069a49b368731cfbceaab03"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

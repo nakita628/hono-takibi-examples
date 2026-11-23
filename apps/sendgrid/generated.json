@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f546f569f2600d9c94f1ddd04b051efdbca3f456001d231b44fcb4cbd4c85dcf",
+    "sources": {
+      "https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/json/tsg_mail_v3.json": {
+        "etag": "W/\"b22bb3798cab53771da84aa0602a0954ca41b04702a5204e5cb1e188f5e4bb59\"",
+        "sha256": "1bf9b256780b4c32a48e054eb9a8f93c03b586f9586d12b0ebbcdde9c170fac3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

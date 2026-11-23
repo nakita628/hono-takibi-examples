@@ -3585,6 +3585,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 include_architecture_wildcard?: boolean | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {
@@ -3618,6 +3621,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 include_architecture_wildcard?: boolean | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {
@@ -3638,6 +3644,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 include_architecture_wildcard?: boolean | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {
@@ -9022,6 +9031,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 name?: string | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {
@@ -9072,6 +9084,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 name?: string | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {
@@ -9090,6 +9105,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 name?: string | undefined
                 page?: bigint | undefined
                 per_page?: bigint | undefined
+                sort?:
+                  | ('id' | 'id:asc' | 'id:desc' | 'name' | 'name:asc' | 'name:desc')[]
+                  | undefined
               }
             }
             output: {

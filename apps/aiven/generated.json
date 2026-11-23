@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "97c3d965af4e30bd7010d261e76f16426814c0ec1eab2dec607cd27711556084",
+    "sources": {
+      "https://api.aiven.io/doc/openapi.json": {
+        "etag": "W/\"6b0375b9-212a95\"",
+        "sha256": "794c376298dc451ac6b68af8cbc4a56fc206ad52713b2a50ada46d338abcbe98"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

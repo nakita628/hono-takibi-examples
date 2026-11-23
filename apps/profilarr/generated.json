@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aa4b87b6eb977ae70578157ebbce67df97ff4cb9556b66b235cc50f5c838ac06",
+    "sources": {
+      "https://raw.githubusercontent.com/Dictionarry-Hub/profilarr/develop/src/lib/api/v1.openapi.json": {
+        "etag": "W/\"623bfd0763c4eee312e2d08ec1ee5861ad17a2f03b27a106dbc36f66c61df15e\"",
+        "sha256": "32c5f1879745e69d8429f9c81cd8c09f7984d8a731e2fe758164f8a2cc414aa4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

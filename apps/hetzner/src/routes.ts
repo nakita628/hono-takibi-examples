@@ -1334,7 +1334,7 @@ export const getActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -1361,7 +1361,7 @@ export const getActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -1550,7 +1550,7 @@ export const getActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -1577,7 +1577,7 @@ export const getActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -2110,7 +2110,7 @@ export const getCertificatesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -2137,7 +2137,7 @@ export const getCertificatesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -2590,7 +2590,7 @@ export const postCertificatesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -2617,7 +2617,7 @@ export const postCertificatesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -3090,7 +3090,7 @@ export const getCertificatesActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -3117,7 +3117,7 @@ export const getCertificatesActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -3306,7 +3306,7 @@ export const getCertificatesActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -3333,7 +3333,7 @@ export const getCertificatesActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -3595,7 +3595,7 @@ export const getCertificatesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -3622,7 +3622,7 @@ export const getCertificatesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -3908,7 +3908,7 @@ export const putCertificatesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -3935,7 +3935,7 @@ export const putCertificatesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -4003,7 +4003,7 @@ export const deleteCertificatesIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -4030,7 +4030,7 @@ export const deleteCertificatesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -4516,7 +4516,7 @@ export const getCertificatesIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -4543,7 +4543,7 @@ export const getCertificatesIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -4754,7 +4754,7 @@ export const postCertificatesIdActionsRetryRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -4781,7 +4781,7 @@ export const postCertificatesIdActionsRetryRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -5013,7 +5013,7 @@ export const getCertificatesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -5040,7 +5040,7 @@ export const getCertificatesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -5525,7 +5525,7 @@ export const getDatacentersRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -5552,7 +5552,7 @@ export const getDatacentersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -5823,7 +5823,7 @@ export const getDatacentersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -5850,7 +5850,7 @@ export const getDatacentersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -6364,7 +6364,7 @@ export const getFirewallsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -6391,7 +6391,7 @@ export const getFirewallsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -6960,7 +6960,7 @@ export const postFirewallsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -6987,7 +6987,7 @@ export const postFirewallsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -7460,7 +7460,7 @@ export const getFirewallsActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -7487,7 +7487,7 @@ export const getFirewallsActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -7676,7 +7676,7 @@ export const getFirewallsActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -7703,7 +7703,7 @@ export const getFirewallsActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -7981,7 +7981,7 @@ export const getFirewallsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -8008,7 +8008,7 @@ export const getFirewallsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -8316,7 +8316,7 @@ export const putFirewallsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -8343,7 +8343,7 @@ export const putFirewallsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -8412,7 +8412,7 @@ export const deleteFirewallsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -8439,7 +8439,7 @@ export const deleteFirewallsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -8925,7 +8925,7 @@ export const getFirewallsIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -8952,7 +8952,7 @@ export const getFirewallsIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -9227,7 +9227,7 @@ export const postFirewallsIdActionsApplyToResourcesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -9254,7 +9254,7 @@ export const postFirewallsIdActionsApplyToResourcesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -9530,7 +9530,7 @@ export const postFirewallsIdActionsRemoveFromResourcesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -9557,7 +9557,7 @@ export const postFirewallsIdActionsRemoveFromResourcesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -9866,7 +9866,7 @@ export const postFirewallsIdActionsSetRulesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -9893,7 +9893,7 @@ export const postFirewallsIdActionsSetRulesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -10125,7 +10125,7 @@ export const getFirewallsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -10152,7 +10152,7 @@ export const getFirewallsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -10660,7 +10660,7 @@ export const getFloatingIpsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -10687,7 +10687,7 @@ export const getFloatingIpsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -11204,7 +11204,7 @@ export const postFloatingIpsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -11231,7 +11231,7 @@ export const postFloatingIpsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -11704,7 +11704,7 @@ export const getFloatingIpsActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -11731,7 +11731,7 @@ export const getFloatingIpsActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -11920,7 +11920,7 @@ export const getFloatingIpsActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -11947,7 +11947,7 @@ export const getFloatingIpsActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -12242,7 +12242,7 @@ export const getFloatingIpsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -12269,7 +12269,7 @@ export const getFloatingIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -12629,7 +12629,7 @@ export const putFloatingIpsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -12656,7 +12656,7 @@ export const putFloatingIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -12725,7 +12725,7 @@ export const deleteFloatingIpsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -12752,7 +12752,7 @@ export const deleteFloatingIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -13241,7 +13241,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -13268,7 +13268,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -13511,7 +13511,7 @@ export const postFloatingIpsIdActionsAssignRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -13538,7 +13538,7 @@ export const postFloatingIpsIdActionsAssignRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -13779,7 +13779,7 @@ export const postFloatingIpsIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -13806,7 +13806,7 @@ export const postFloatingIpsIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -14038,7 +14038,7 @@ export const postFloatingIpsIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -14065,7 +14065,7 @@ export const postFloatingIpsIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -14279,7 +14279,7 @@ export const postFloatingIpsIdActionsUnassignRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -14306,7 +14306,7 @@ export const postFloatingIpsIdActionsUnassignRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -14541,7 +14541,7 @@ export const getFloatingIpsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -14568,7 +14568,7 @@ export const getFloatingIpsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -15197,7 +15197,7 @@ export const getImagesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -15224,7 +15224,7 @@ export const getImagesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -15697,7 +15697,7 @@ export const getImagesActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -15724,7 +15724,7 @@ export const getImagesActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -15913,7 +15913,7 @@ export const getImagesActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -15940,7 +15940,7 @@ export const getImagesActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -16233,7 +16233,7 @@ export const getImagesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -16260,7 +16260,7 @@ export const getImagesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -16610,7 +16610,7 @@ export const putImagesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -16637,7 +16637,7 @@ export const putImagesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -16705,7 +16705,7 @@ export const deleteImagesIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -16732,7 +16732,7 @@ export const deleteImagesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -17218,7 +17218,7 @@ export const getImagesIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -17245,7 +17245,7 @@ export const getImagesIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -17474,7 +17474,7 @@ export const postImagesIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -17501,7 +17501,7 @@ export const postImagesIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -17733,7 +17733,7 @@ export const getImagesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -17760,7 +17760,7 @@ export const getImagesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -17895,6 +17895,28 @@ export const getIsosRoute = createRoute({
           },
           example: 25,
           default: 25,
+        }),
+      sort: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.enum(['id', 'id:asc', 'id:desc', 'name', 'name:asc', 'name:desc'])),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Sort resources by field and direction. May be used multiple times.\n\nFor more information, see "[Sorting](#description/sorting)".\n',
+            name: 'sort',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['id', 'id:asc', 'id:desc', 'name', 'name:asc', 'name:desc'],
+              },
+            },
+          },
         }),
     }),
   },
@@ -18114,7 +18136,7 @@ export const getIsosRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -18141,7 +18163,7 @@ export const getIsosRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -18291,7 +18313,7 @@ export const getIsosIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -18318,7 +18340,7 @@ export const getIsosIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -18796,7 +18818,7 @@ export const getLoadBalancerTypesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -18823,7 +18845,7 @@ export const getLoadBalancerTypesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -19122,7 +19144,7 @@ export const getLoadBalancerTypesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -19149,7 +19171,7 @@ export const getLoadBalancerTypesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -20981,7 +21003,7 @@ export const getLoadBalancersRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -21008,7 +21030,7 @@ export const getLoadBalancersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -23581,7 +23603,7 @@ export const postLoadBalancersRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -23608,7 +23630,7 @@ export const postLoadBalancersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -24081,7 +24103,7 @@ export const getLoadBalancersActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -24108,7 +24130,7 @@ export const getLoadBalancersActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -24297,7 +24319,7 @@ export const getLoadBalancersActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -24324,7 +24346,7 @@ export const getLoadBalancersActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -25898,7 +25920,7 @@ export const getLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -25925,7 +25947,7 @@ export const getLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -27626,7 +27648,7 @@ export const putLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -27653,7 +27675,7 @@ export const putLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -27842,7 +27864,7 @@ export const deleteLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -27869,7 +27891,7 @@ export const deleteLoadBalancersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -28355,7 +28377,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -28382,7 +28404,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -28830,7 +28852,7 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -28857,7 +28879,7 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -29167,7 +29189,7 @@ export const postLoadBalancersIdActionsAddTargetRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -29194,7 +29216,7 @@ export const postLoadBalancersIdActionsAddTargetRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -29448,7 +29470,7 @@ export const postLoadBalancersIdActionsAttachToNetworkRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -29475,7 +29497,7 @@ export const postLoadBalancersIdActionsAttachToNetworkRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -29704,7 +29726,7 @@ export const postLoadBalancersIdActionsChangeAlgorithmRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -29731,7 +29753,7 @@ export const postLoadBalancersIdActionsChangeAlgorithmRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -29969,7 +29991,7 @@ export const postLoadBalancersIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -29996,7 +30018,7 @@ export const postLoadBalancersIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -30224,7 +30246,7 @@ export const postLoadBalancersIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -30251,7 +30273,7 @@ export const postLoadBalancersIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -30480,7 +30502,7 @@ export const postLoadBalancersIdActionsChangeTypeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -30507,7 +30529,7 @@ export const postLoadBalancersIdActionsChangeTypeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -30734,7 +30756,7 @@ export const postLoadBalancersIdActionsDeleteServiceRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -30761,7 +30783,7 @@ export const postLoadBalancersIdActionsDeleteServiceRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -31001,7 +31023,7 @@ export const postLoadBalancersIdActionsDetachFromNetworkRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -31028,7 +31050,7 @@ export const postLoadBalancersIdActionsDetachFromNetworkRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -31242,7 +31264,7 @@ export const postLoadBalancersIdActionsDisablePublicInterfaceRoute = createRoute
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -31269,7 +31291,7 @@ export const postLoadBalancersIdActionsDisablePublicInterfaceRoute = createRoute
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -31483,7 +31505,7 @@ export const postLoadBalancersIdActionsEnablePublicInterfaceRoute = createRoute(
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -31510,7 +31532,7 @@ export const postLoadBalancersIdActionsEnablePublicInterfaceRoute = createRoute(
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -31804,7 +31826,7 @@ export const postLoadBalancersIdActionsRemoveTargetRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -31831,7 +31853,7 @@ export const postLoadBalancersIdActionsRemoveTargetRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -32372,7 +32394,7 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -32399,7 +32421,7 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -32631,7 +32653,7 @@ export const getLoadBalancersIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -32658,7 +32680,7 @@ export const getLoadBalancersIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -32870,7 +32892,7 @@ export const getLoadBalancersIdMetricsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -32897,7 +32919,7 @@ export const getLoadBalancersIdMetricsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -33252,7 +33274,7 @@ export const getLocationsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -33279,7 +33301,7 @@ export const getLocationsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -33439,7 +33461,7 @@ export const getLocationsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -33466,7 +33488,7 @@ export const getLocationsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -33984,7 +34006,7 @@ export const getNetworksRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -34011,7 +34033,7 @@ export const getNetworksRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -34391,7 +34413,7 @@ export const postNetworksRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -34418,7 +34440,7 @@ export const postNetworksRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -34891,7 +34913,7 @@ export const getNetworksActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -34918,7 +34940,7 @@ export const getNetworksActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -35107,7 +35129,7 @@ export const getNetworksActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -35134,7 +35156,7 @@ export const getNetworksActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -35421,7 +35443,7 @@ export const getNetworksIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -35448,7 +35470,7 @@ export const getNetworksIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -35796,7 +35818,7 @@ export const putNetworksIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -35823,7 +35845,7 @@ export const putNetworksIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -35892,7 +35914,7 @@ export const deleteNetworksIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -35919,7 +35941,7 @@ export const deleteNetworksIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -36405,7 +36427,7 @@ export const getNetworksIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -36432,7 +36454,7 @@ export const getNetworksIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -36668,7 +36690,7 @@ export const postNetworksIdActionsAddRouteRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -36695,7 +36717,7 @@ export const postNetworksIdActionsAddRouteRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -36963,7 +36985,7 @@ export const postNetworksIdActionsAddSubnetRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -36990,7 +37012,7 @@ export const postNetworksIdActionsAddSubnetRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -37219,7 +37241,7 @@ export const postNetworksIdActionsChangeIpRangeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -37246,7 +37268,7 @@ export const postNetworksIdActionsChangeIpRangeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -37476,7 +37498,7 @@ export const postNetworksIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -37503,7 +37525,7 @@ export const postNetworksIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -37739,7 +37761,7 @@ export const postNetworksIdActionsDeleteRouteRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -37766,7 +37788,7 @@ export const postNetworksIdActionsDeleteRouteRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -37994,7 +38016,7 @@ export const postNetworksIdActionsDeleteSubnetRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -38021,7 +38043,7 @@ export const postNetworksIdActionsDeleteSubnetRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -38253,7 +38275,7 @@ export const getNetworksIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -38280,7 +38302,7 @@ export const getNetworksIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -38796,7 +38818,7 @@ export const getNetworksIdMembersRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -38823,7 +38845,7 @@ export const getNetworksIdMembersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -39253,7 +39275,7 @@ export const getPlacementGroupsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -39280,7 +39302,7 @@ export const getPlacementGroupsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -39552,7 +39574,7 @@ export const postPlacementGroupsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -39579,7 +39601,7 @@ export const postPlacementGroupsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -39737,7 +39759,7 @@ export const getPlacementGroupsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -39764,7 +39786,7 @@ export const getPlacementGroupsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -39949,7 +39971,7 @@ export const putPlacementGroupsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -39976,7 +39998,7 @@ export const putPlacementGroupsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -40044,7 +40066,7 @@ export const deletePlacementGroupsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -40071,7 +40093,7 @@ export const deletePlacementGroupsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -40636,7 +40658,7 @@ export const getPricingRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -40663,7 +40685,7 @@ export const getPricingRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -41192,7 +41214,7 @@ export const getPrimaryIpsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -41219,7 +41241,7 @@ export const getPrimaryIpsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -41753,7 +41775,7 @@ export const postPrimaryIpsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -41780,7 +41802,7 @@ export const postPrimaryIpsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -42253,7 +42275,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -42280,7 +42302,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -42469,7 +42491,7 @@ export const getPrimaryIpsActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -42496,7 +42518,7 @@ export const getPrimaryIpsActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -42954,7 +42976,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -42981,7 +43003,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -43197,7 +43219,7 @@ export const getPrimaryIpsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -43224,7 +43246,7 @@ export const getPrimaryIpsIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -43529,7 +43551,7 @@ export const getPrimaryIpsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -43556,7 +43578,7 @@ export const getPrimaryIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -43898,7 +43920,7 @@ export const putPrimaryIpsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -43925,7 +43947,7 @@ export const putPrimaryIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -43994,7 +44016,7 @@ export const deletePrimaryIpsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -44021,7 +44043,7 @@ export const deletePrimaryIpsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -44271,7 +44293,7 @@ export const postPrimaryIpsIdActionsAssignRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -44298,7 +44320,7 @@ export const postPrimaryIpsIdActionsAssignRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -44536,7 +44558,7 @@ export const postPrimaryIpsIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -44563,7 +44585,7 @@ export const postPrimaryIpsIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -44795,7 +44817,7 @@ export const postPrimaryIpsIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -44822,7 +44844,7 @@ export const postPrimaryIpsIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -45036,7 +45058,7 @@ export const postPrimaryIpsIdActionsUnassignRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -45063,7 +45085,7 @@ export const postPrimaryIpsIdActionsUnassignRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -45164,6 +45186,28 @@ export const getServerTypesRoute = createRoute({
           },
           example: 25,
           default: 25,
+        }),
+      sort: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.enum(['id', 'id:asc', 'id:desc', 'name', 'name:asc', 'name:desc'])),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Sort resources by field and direction. May be used multiple times.\n\nFor more information, see "[Sorting](#description/sorting)".\n',
+            name: 'sort',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['id', 'id:asc', 'id:desc', 'name', 'name:asc', 'name:desc'],
+              },
+            },
+          },
         }),
     }),
   },
@@ -45593,7 +45637,7 @@ export const getServerTypesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -45620,7 +45664,7 @@ export const getServerTypesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -45968,7 +46012,7 @@ export const getServerTypesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -45995,7 +46039,7 @@ export const getServerTypesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -47536,7 +47580,7 @@ export const getServersRoute = createRoute({
           }),
       }),
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -47563,7 +47607,7 @@ export const getServersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -49360,7 +49404,7 @@ export const postServersRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -49387,7 +49431,7 @@ export const postServersRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -49860,7 +49904,7 @@ export const getServersActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -49887,7 +49931,7 @@ export const getServersActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -50076,7 +50120,7 @@ export const getServersActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -50103,7 +50147,7 @@ export const getServersActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -51352,7 +51396,7 @@ export const getServersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -51379,7 +51423,7 @@ export const getServersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -52652,7 +52696,7 @@ export const putServersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -52679,7 +52723,7 @@ export const putServersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -52870,7 +52914,7 @@ export const deleteServersIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -52897,7 +52941,7 @@ export const deleteServersIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -53383,7 +53427,7 @@ export const getServersIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -53410,7 +53454,7 @@ export const getServersIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -53648,7 +53692,7 @@ export const postServersIdActionsAddToPlacementGroupRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -53675,7 +53719,7 @@ export const postServersIdActionsAddToPlacementGroupRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -53904,7 +53948,7 @@ export const postServersIdActionsAttachIsoRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -53931,7 +53975,7 @@ export const postServersIdActionsAttachIsoRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -54195,7 +54239,7 @@ export const postServersIdActionsAttachToNetworkRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -54222,7 +54266,7 @@ export const postServersIdActionsAttachToNetworkRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -54469,7 +54513,7 @@ export const postServersIdActionsChangeAliasIpsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -54496,7 +54540,7 @@ export const postServersIdActionsChangeAliasIpsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -54734,7 +54778,7 @@ export const postServersIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -54761,7 +54805,7 @@ export const postServersIdActionsChangeDnsPtrRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -54998,7 +55042,7 @@ export const postServersIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -55025,7 +55069,7 @@ export const postServersIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -55260,7 +55304,7 @@ export const postServersIdActionsChangeTypeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -55287,7 +55331,7 @@ export const postServersIdActionsChangeTypeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -55760,7 +55804,7 @@ export const postServersIdActionsCreateImageRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -55787,7 +55831,7 @@ export const postServersIdActionsCreateImageRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -56027,7 +56071,7 @@ export const postServersIdActionsDetachFromNetworkRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -56054,7 +56098,7 @@ export const postServersIdActionsDetachFromNetworkRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -56265,7 +56309,7 @@ export const postServersIdActionsDetachIsoRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -56292,7 +56336,7 @@ export const postServersIdActionsDetachIsoRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -56503,7 +56547,7 @@ export const postServersIdActionsDisableBackupRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -56530,7 +56574,7 @@ export const postServersIdActionsDisableBackupRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -56741,7 +56785,7 @@ export const postServersIdActionsDisableRescueRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -56768,7 +56812,7 @@ export const postServersIdActionsDisableRescueRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -56979,7 +57023,7 @@ export const postServersIdActionsEnableBackupRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -57006,7 +57050,7 @@ export const postServersIdActionsEnableBackupRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -57262,7 +57306,7 @@ export const postServersIdActionsEnableRescueRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -57289,7 +57333,7 @@ export const postServersIdActionsEnableRescueRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -57500,7 +57544,7 @@ export const postServersIdActionsPoweroffRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -57527,7 +57571,7 @@ export const postServersIdActionsPoweroffRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -57737,7 +57781,7 @@ export const postServersIdActionsPoweronRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -57764,7 +57808,7 @@ export const postServersIdActionsPoweronRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -57975,7 +58019,7 @@ export const postServersIdActionsRebootRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -58002,7 +58046,7 @@ export const postServersIdActionsRebootRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -58242,7 +58286,7 @@ export const postServersIdActionsRebuildRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -58269,7 +58313,7 @@ export const postServersIdActionsRebuildRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -58479,7 +58523,7 @@ export const postServersIdActionsRemoveFromPlacementGroupRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -58506,7 +58550,7 @@ export const postServersIdActionsRemoveFromPlacementGroupRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -58730,7 +58774,7 @@ export const postServersIdActionsRequestConsoleRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -58757,7 +58801,7 @@ export const postServersIdActionsRequestConsoleRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -58968,7 +59012,7 @@ export const postServersIdActionsResetRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -58995,7 +59039,7 @@ export const postServersIdActionsResetRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -59215,7 +59259,7 @@ export const postServersIdActionsResetPasswordRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -59242,7 +59286,7 @@ export const postServersIdActionsResetPasswordRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -59453,7 +59497,7 @@ export const postServersIdActionsShutdownRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -59480,7 +59524,7 @@ export const postServersIdActionsShutdownRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -59712,7 +59756,7 @@ export const getServersIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -59739,7 +59783,7 @@ export const getServersIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -59933,7 +59977,7 @@ export const getServersIdMetricsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -59960,7 +60004,7 @@ export const getServersIdMetricsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -60313,7 +60357,7 @@ export const getSshKeysRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -60340,7 +60384,7 @@ export const getSshKeysRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -60469,7 +60513,7 @@ export const postSshKeysRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -60496,7 +60540,7 @@ export const postSshKeysRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -60627,7 +60671,7 @@ export const getSshKeysIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -60654,7 +60698,7 @@ export const getSshKeysIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -60822,7 +60866,7 @@ export const putSshKeysIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -60849,7 +60893,7 @@ export const putSshKeysIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -60917,7 +60961,7 @@ export const deleteSshKeysIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -60944,7 +60988,7 @@ export const deleteSshKeysIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -61505,7 +61549,7 @@ export const getVolumesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -61532,7 +61576,7 @@ export const getVolumesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -62193,7 +62237,7 @@ export const postVolumesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -62220,7 +62264,7 @@ export const postVolumesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -62693,7 +62737,7 @@ export const getVolumesActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -62720,7 +62764,7 @@ export const getVolumesActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -62909,7 +62953,7 @@ export const getVolumesActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -62936,7 +62980,7 @@ export const getVolumesActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -63238,7 +63282,7 @@ export const getVolumesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -63265,7 +63309,7 @@ export const getVolumesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -63619,7 +63663,7 @@ export const putVolumesIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -63646,7 +63690,7 @@ export const putVolumesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -63715,7 +63759,7 @@ export const deleteVolumesIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Request succeeded.' },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -63742,7 +63786,7 @@ export const deleteVolumesIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -64231,7 +64275,7 @@ export const getVolumesIdActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -64258,7 +64302,7 @@ export const getVolumesIdActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -64537,7 +64581,7 @@ export const postVolumesIdActionsAttachRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -64564,7 +64608,7 @@ export const postVolumesIdActionsAttachRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -64795,7 +64839,7 @@ export const postVolumesIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -64822,7 +64866,7 @@ export const postVolumesIdActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -65033,7 +65077,7 @@ export const postVolumesIdActionsDetachRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -65060,7 +65104,7 @@ export const postVolumesIdActionsDetachRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -65287,7 +65331,7 @@ export const postVolumesIdActionsResizeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -65314,7 +65358,7 @@ export const postVolumesIdActionsResizeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -65546,7 +65590,7 @@ export const getVolumesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -65573,7 +65617,7 @@ export const getVolumesIdActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -66369,7 +66413,7 @@ export const getZonesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -66396,7 +66440,7 @@ export const getZonesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -67299,7 +67343,7 @@ export const postZonesRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -67326,7 +67370,7 @@ export const postZonesRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -67853,7 +67897,7 @@ export const getZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -67880,7 +67924,7 @@ export const getZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -68459,7 +68503,7 @@ export const putZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -68486,7 +68530,7 @@ export const putZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -68677,7 +68721,7 @@ export const deleteZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -68704,7 +68748,7 @@ export const deleteZonesIdOrNameRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -68777,7 +68821,7 @@ export const getZonesIdOrNameZonefileRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -68804,7 +68848,7 @@ export const getZonesIdOrNameZonefileRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -69277,7 +69321,7 @@ export const getZonesActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -69304,7 +69348,7 @@ export const getZonesActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -69493,7 +69537,7 @@ export const getZonesActionsIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -69520,7 +69564,7 @@ export const getZonesActionsIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -69964,7 +70008,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -69991,7 +70035,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -70209,7 +70253,7 @@ export const getZonesIdOrNameActionsActionIdRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -70236,7 +70280,7 @@ export const getZonesIdOrNameActionsActionIdRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -70489,7 +70533,7 @@ export const postZonesIdOrNameActionsChangePrimaryNameserversRoute = createRoute
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -70516,7 +70560,7 @@ export const postZonesIdOrNameActionsChangePrimaryNameserversRoute = createRoute
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -70730,7 +70774,7 @@ export const postZonesIdOrNameActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -70757,7 +70801,7 @@ export const postZonesIdOrNameActionsChangeProtectionRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -70975,7 +71019,7 @@ export const postZonesIdOrNameActionsChangeTtlRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -71002,7 +71046,7 @@ export const postZonesIdOrNameActionsChangeTtlRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -71218,7 +71262,7 @@ export const postZonesIdOrNameActionsImportZonefileRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -71245,7 +71289,7 @@ export const postZonesIdOrNameActionsImportZonefileRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -71761,7 +71805,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -71788,7 +71832,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -72207,7 +72251,7 @@ export const postZonesIdOrNameRrsetsRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -72234,7 +72278,7 @@ export const postZonesIdOrNameRrsetsRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -72498,7 +72542,7 @@ export const getZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -72525,7 +72569,7 @@ export const getZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -72824,7 +72868,7 @@ export const putZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -72851,7 +72895,7 @@ export const putZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -73112,7 +73156,7 @@ export const deleteZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -73139,7 +73183,7 @@ export const deleteZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -73425,7 +73469,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeProtectionRoute = c
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -73452,7 +73496,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeProtectionRoute = c
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -73739,7 +73783,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeTtlRoute = createRo
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -73766,7 +73810,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeTtlRoute = createRo
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -74075,7 +74119,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsSetRecordsRoute = createR
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -74102,7 +74146,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsSetRecordsRoute = createR
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -74422,7 +74466,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsAddRecordsRoute = createR
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -74449,7 +74493,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsAddRecordsRoute = createR
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -74758,7 +74802,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsRemoveRecordsRoute = crea
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -74785,7 +74829,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsRemoveRecordsRoute = crea
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {
@@ -75092,7 +75136,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsUpdateRecordsRoute = crea
         },
       },
     },
-    '4xx': {
+    '4XX': {
       description: 'Request failed with a user error.',
       content: {
         'application/json': {
@@ -75119,7 +75163,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsUpdateRecordsRoute = crea
         },
       },
     },
-    '5xx': {
+    '5XX': {
       description: 'Request failed with a server error.',
       content: {
         'application/json': {

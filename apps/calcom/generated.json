@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "da1d0cef69d903be321457d60b6040a113ded04840253db50d540955d2b1e7b8",
+    "sources": {
+      "https://raw.githubusercontent.com/calcom/cal.com/main/docs/api-reference/v2/openapi.json": {
+        "etag": "W/\"260abb28170b4a59273e5ff91fba415ed05b8f3e90019d10ae0e74206ecb2ca5\"",
+        "sha256": "cac5ec02a46bfcb9a2cdab8263e778a0dc61cc6b2cd4ffddc04639ddf8987e65"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

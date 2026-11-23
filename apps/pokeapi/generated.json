@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d53ccbd53ca8ffb59ebc8014e0fd154346881bdc0892916b0202f9e95148bfaf",
+    "sources": {
+      "https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml": {
+        "etag": "W/\"c5e43822475ee0befb4f67d5211fa29a27a860c290ff14c1184f857f262c8a57\"",
+        "sha256": "497e8c4aec10e259a93c5c61f79daf418cee65c1f5e1c748ce1e4cc7c4a7805c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

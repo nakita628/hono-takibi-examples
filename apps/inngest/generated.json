@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "feb602e7acd7bb85e3640740b63af340d8195966ead3eb18363dfaff8056a82e",
+    "sources": {
+      "https://raw.githubusercontent.com/inngest/inngest/main/docs/openapi/v3/api/v1/spec.yaml": {
+        "etag": "W/\"7ef45bbb4f1c320aae14b9e27e81065e111e47231795c92aa2ecdfee0b9879e5\"",
+        "sha256": "b3d93345d30ce487668c72a6d95ef932fad1860573b66cc8727289c404cfe7da"
+      }
+    },
+    "typecheck": {
+      "errors": 4,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×4",
+      "issue": "spec: a response object is used as a schema (`$ref: '#/components/responses/Webhook'`)"
+    }
+  }
+}

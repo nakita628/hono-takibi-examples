@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "15c66a4f75b9597502be9c9efa0e1757fdbe29e4c265341a62c3a06ad1570b61",
+    "sources": {
+      "https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json": {
+        "etag": "W/\"c01226089c86d31088006e81cd97144c3dd7ef283653eddcb5e92801ad8a6f2b\"",
+        "sha256": "3ae9be006961b2f5f659ddde7a975daf2d2133ab157d9db7fef751c7bd441e7c"
+      }
+    },
+    "typecheck": {
+      "errors": null,
+      "reason": "killed for lack of memory (15 GB)"
+    }
+  }
+}

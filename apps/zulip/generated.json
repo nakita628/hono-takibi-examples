@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f707d338acea7c9bf97fa943a4d5304d6b5a3d78b8273ce7592dc8cd998e50e",
+    "sources": {
+      "https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml": {
+        "etag": "W/\"c8608d75dcf1314d3f6f0a20775dc98f61bdb9800d205e869e8e2a67b94d775f\"",
+        "sha256": "3bcbde123a9a1a8105a2bd4433473e83a1e7adfd74f570b6b8ca58975f2dee15"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8a4e4959479c9452f31b1cb5c3bc4fe53d780b9e522fdc34b6de5c353b0299dd",
+    "sources": {
+      "https://raw.githubusercontent.com/revolut-engineering/revolut-openapi/master/yaml/business.yaml": {
+        "etag": "W/\"16d0d0b238ebc8bff5609e4e5f0eba9face7b85f3529c26e5c84b9fb6f0f7d16\"",
+        "sha256": "471c155e103578a1ea5721f95ec63cf0b0fd82433666e2feb574aca7a684677e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

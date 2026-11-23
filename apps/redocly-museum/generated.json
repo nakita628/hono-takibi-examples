@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3e34753191ee49775ab087b7c5fb4c6ab71db56836ea8d5c6aeca35926e8d749",
+    "sources": {
+      "https://raw.githubusercontent.com/Redocly/museum-openapi-example/main/openapi.yaml": {
+        "etag": "W/\"c4a08897f64db8cdd47c820bfabf68f404b1ff75b5dc2a3617a86e1fba6d12e5\"",
+        "sha256": "2d88e96a1860382fa86e15af892c50d95ae81d53324ac9b07aa9e6a72a8974aa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

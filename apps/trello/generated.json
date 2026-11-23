@@ -1,0 +1,19 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "299fd8b67a2f532a64989a7b3b90ef5f1773f1696aaf7078c95d9bc13082244f",
+    "sources": {
+      "https://developer.atlassian.com/cloud/trello/swagger.v3.json": {
+        "sha256": "b07c97d06e93f7caff661a307e86f2b58c1f97591614ac8179f8e31bda27334b"
+      }
+    },
+    "typecheck": {
+      "errors": 1,
+      "where": "`routes.ts`",
+      "codes": "TS2769 ×1",
+      "issue": "spec: the `attachments` query parameter is `type: string` with a boolean branch in `oneOf` and `default: false`, which the string type rules out"
+    }
+  }
+}

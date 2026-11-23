@@ -1,0 +1,242 @@
+{
+  "configs/buy-deal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d62b926c0e46fe51865b8eba4836fa164b787f5ffa42fe62608e700236f7bfb1",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/buy-deal/v1.3.0/openapi.yaml": {
+        "etag": "W/\"cccf4963d1746b349f61adf5ebf790ff5c5fa902d7d0b4420a63da0559784900\"",
+        "sha256": "590b8f8a75d1807a699e2c935c9eae4d7bde81fb0476b2f919d84876b51bab8c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-catalog.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0cf0bc96534246c19888c3011eba735ba72bf9814f6c8ad17e7ef85f58b835bd",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/commerce-catalog/v1_beta.5.0/openapi.yaml": {
+        "etag": "W/\"9d7879f64aef9cd58f4574a70c31c0650cb0672704187ec0c5815c243b1e07e9\"",
+        "sha256": "027affa4e46efe8dc9b7946c9fb40a8d1be59407716dac7e313f1f0938f9c0a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-charity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e45ed98f17341961ccd995291ea859038f113db619c5104ef923d3b11d832236",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/commerce-charity/v1.2.1/openapi.yaml": {
+        "etag": "W/\"20b22ae81ff655afa7d341a2742878c6e5c8d3124695e56dcc2e50e82dfbebf0\"",
+        "sha256": "5082ba9205f429b0661c9e375bff09239d8039dff2438769c97e2377ddfb2f73"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-translation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "41fe7487b0c7bc5d52fe2b7dd03f354d2ced107bcc716505ee60c2d244a427be",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/commerce-translation/1/openapi.yaml": {
+        "etag": "W/\"4367517f4e334eb67a4b0bdedabf44002897cf97e3e88dfc4517468efa631868\"",
+        "sha256": "1f6f9a1c2a9dd57e7b19ac8ff1bb8c1e67d715497268e599862ecfe1ffcd086d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/developer-analytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "09aa5acb1dcebdbabd32f154120654957b591efe68c95e9398cb1633546daa9c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/developer-analytics/v1_beta.0.0/openapi.yaml": {
+        "etag": "W/\"da1bdbf601ee82617ce8a4952cc886878014d961abf953fc03f8cea07a2f369b\"",
+        "sha256": "72cd707d6d263b7142a646e12b5d62d2fd1b1116b22700e7569b041e522d96eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-account.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5f42298b5f94f0c382afa5b5290dc600af561d2c17d3040b95f017f9d3169e1e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-account/v1.9.0/openapi.yaml": {
+        "etag": "W/\"1fb77a90cb383e3210956428db592f61cece1900fa34a06fa1f2ff34363786e8\"",
+        "sha256": "009ae7147d8922c4c80e4821afe8b3b2874222d29b1ffe7c71173d7b53fa7275"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-analytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9d2e0de2c9bf33fc805cd076d3214a5645ed5b00fe9fe46c7b6c1ff5c11b4667",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-analytics/1.2.0/openapi.yaml": {
+        "etag": "W/\"5613caa59a0b55e62c90791e389f3ec90d1f0fb16ea6ed83bd218be57172bd3b\"",
+        "sha256": "28cb3d71c247288f96a96b1ecbd357b051476c1145d079537769069faecd92a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-compliance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bbeaef964b22c9b53ee614979d454315fb3c0a0d516b588b28bf14e23c94d40c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-compliance/1.4.1/openapi.yaml": {
+        "etag": "W/\"3ea4af415fa7eb622454a8e5b07bfbac088557e218734707675e066ba73c99d7\"",
+        "sha256": "d1076bed68f2137a65c4acd4def149badd8e182cb8fdcb7e5749c9fd141b993b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-feed.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "772c6270aaa9f7e3d1777f2adc62dce41216918d4416c5cd0a37afceabfc84ea",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-feed/v1.3.1/openapi.yaml": {
+        "etag": "W/\"f283df8e0d9b4204817ee014111637c233e3702be128e5b337591570975d21ca\"",
+        "sha256": "7cef3522c40782d1ecc3cc30bea902eaf52fc26adfacdb286881a013cefc9e22"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-fulfillment.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce61110bb9c1a446da9ee9ebbf701893de1d024febd3e37a0afd33af2ab90721",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-fulfillment/v1.20.0/openapi.yaml": {
+        "etag": "W/\"dcae6816365a556808548a44142131c012bdfdffeabafd4e883de3bac8f31738\"",
+        "sha256": "4b2d4db423a88a3a2957581718f502262f883908c3821ba6d2fc79d0f84910e2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-listing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "57066395828901900521f283fcee14c7e3f695ae2c4bf32455ad4bd46ea0808e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-listing/v1_beta.3.0/openapi.yaml": {
+        "etag": "W/\"e60974ae3126450c6d0221499d55345113068f4d02b667581e51148482f96ea4\"",
+        "sha256": "99dba6d38d3fc7a48f896284c8d452218291942d1e5d6e9bdd528c9d124d9585"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-logistics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b0ad01287d6d60f4a940737b18526b2ba909ce9d8df305dc8d9c64a467ab668",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-logistics/v1_beta.0.0/openapi.yaml": {
+        "etag": "W/\"edc5330425fc59b6dae662130a4fe7bb448e84ea9f18bd6ec518d44a085ed774\"",
+        "sha256": "7e7f4169286f6d076c4eca516b9579284b5b67333b0fe4768482d3053bc76e8d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-marketing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "22fe8588bdaeb1877b0ed65ddc146f43546fff5c1363557fd7e395dc0308d306",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-marketing/v1.15.0/openapi.yaml": {
+        "etag": "W/\"c1bfe97346e799c417815a30708f69acd8c08fb50945a17aa0fad9c9c67b8a49\"",
+        "sha256": "6992d6aff2764c3aa1a1f4732aa931d5d55bc1780b5b6d6bcece694ea6d48031"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-metadata.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "816cfbdb28572d9268637798dea0ede5c94b782fdc1867baf6bdff5af12f3b88",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-metadata/v1.6.0/openapi.yaml": {
+        "etag": "W/\"28e6fbf13bcfbfad12c26c318aecfe99376de5aefda843d959e601cb11b8ed59\"",
+        "sha256": "626110bf4343fee3aef0d82ed5de1a93ca2b3bf1eb9d59dd26dee175b7c5236a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-negotiation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "84b79072788d28b1497db51174121885c4e4ae52c965c9019309becc6f2ff1df",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-negotiation/v1.1.0/openapi.yaml": {
+        "etag": "W/\"2dc13b63dd488b6b1ff06493339f658356cf504ce603b391cb0e0119685393f0\"",
+        "sha256": "d4ace7778b510f211fee5e3f3ddf68600792075a24c9866989c3dfa46e5ef231"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sell-recommendation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "22629c1adb541766de04878d443cdd96a2ed7c92c6087efb9e0573a7d96b8c24",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-recommendation/1.1.0/openapi.yaml": {
+        "etag": "W/\"0ea500822879768b45899cb2c4dc62a900e93636aaf8bb42dff4c7232f4f0114\"",
+        "sha256": "5933a47b3e2cf6680d7705ccce93698a7c9f266b5403839a315e8c27eb1e47f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

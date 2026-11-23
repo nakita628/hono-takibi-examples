@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "085c910ba2380422f9574ccce54a1c2b199a64ac62c041a10e1575ad95b7d6b1",
+    "sources": {
+      "https://raw.githubusercontent.com/supabase/auth/master/openapi.yaml": {
+        "etag": "W/\"8cfcc414ad19834798275a860b2537caea5ca9f1d479a5215783e1a156403369\"",
+        "sha256": "b5da4fd2a652152051200c002326fc9dac78c88512776325da1446fe3391452d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

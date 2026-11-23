@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "51d1ee229bb2b37fbb8d9df7b5d3ef41b89fd04bffbbe27b122a84a20a7bdf96",
+    "sources": {
+      "https://raw.githubusercontent.com/ory/hydra/master/spec/api.json": {
+        "etag": "W/\"94f60ce0746f282d75079fa500754dcbc2eef557f4efbfcafa750cb3f614ae00\"",
+        "sha256": "87a665c20e1edb7c942d4b5bbe3b918dbb3dde053c3c8bf746001d92ab6d41f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

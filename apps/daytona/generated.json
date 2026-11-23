@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "31ed4f85ec7c873686f652b7aa93774d91874218cefaa94953f3492c7c0a1922",
+    "sources": {
+      "https://raw.githubusercontent.com/daytonaio/daytona/v0.190.0/libs/api-client-go/api/openapi.yaml": {
+        "etag": "W/\"343212b6db2dc73d1bdd15da74bacacbba44ac6261ca6cfd84bfb4f83d8c0afd\"",
+        "sha256": "7dce26780cd898e7f55d1956d90334df5f8c318f4b5fdda5ad56d008d8d43613"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b16f5cbf7e6b48ebff5742ba1787a4e32a2dd606a4647073829aa49ca076785a",
+    "sources": {
+      "https://raw.githubusercontent.com/cvat-ai/cvat/develop/cvat/schema.yml": {
+        "etag": "W/\"57532947c07ea0164dc473654cb1d5e52dfdd2f4c832b021c58e40cbfc5f801a\"",
+        "sha256": "2d83824545648421556473e7f39c8d6fa88a725ef483de07abab807c6e7679ad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "configs/app.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c0703267af3aa27a7364be4fc46250e21ca2bc2a8192d78dcc643dd4c19fec8",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoft/CCF/main/doc/schemas/app_openapi.json": {
+        "etag": "W/\"76f588c5161666b6c4a92fe6e4abf089f9ea136abb695a816ba5c09705ec0654\"",
+        "sha256": "c744906ba9dbd9b5882c9909ee798f8c99b142c06c8038602cc2a953b55e707e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gov.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25e4b813ae20ce1854dd15e26778b67874ec216c3114c523752aa61e7ea7eb7a",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoft/CCF/main/doc/schemas/gov_openapi.json": {
+        "etag": "W/\"95e6fecbdb11d3e238a7b66869e59547f04c06c3a9a7461502338caf45ba57dc\"",
+        "sha256": "da949e6fe10baadd88f2afde49843cff9bb9864149f878c0e5214be6ab3f6dfe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/node.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fbd2c9f2565108cb56e2eace71b5a13df80e245f6d2b4788bdd05dc8df909d70",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoft/CCF/main/doc/schemas/node_openapi.json": {
+        "etag": "W/\"efc99e07c8733a2adf18bf600da3c86313a6aa3f77b70ca60eaeed5992125f57\"",
+        "sha256": "5814560b2345ff81cde87a38665d7476b3a6972dab3b0be616befd8c94db6390"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

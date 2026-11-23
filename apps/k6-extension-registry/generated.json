@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "9d0dab763361ca91e8e1dbc05793d59d7a31879ca5b3ce135adadc7eccab56ec",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/k6-extension-registry/main/openapi.yaml": {
+        "etag": "W/\"009446ecad042e297f718c016a4534f642aadd609c98fc6b2317022dde9b8301\"",
+        "sha256": "5278c90f2cbd1ba09e38e587dd4c9560d1ce5c049c46f7af129e6803075f264a"
+      }
+    }
+  }
+}

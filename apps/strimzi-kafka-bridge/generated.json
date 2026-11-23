@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f4f7af842a887fc47d65a86e105099e402d41d9eec5849d36251d017a22094bb",
+    "sources": {
+      "https://raw.githubusercontent.com/strimzi/strimzi-kafka-bridge/main/src/main/resources/openapi.json": {
+        "etag": "W/\"22efbf75237d73c2ba0fd747e2c07cdb7c8aa207ec70801727f2e444fe75ac7f\"",
+        "sha256": "3871c0bd381031a9a870ca7c01bfb2ce3bb2515cff1bd85fbd0d69290a7046a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

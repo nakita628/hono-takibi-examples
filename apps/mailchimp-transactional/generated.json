@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2dd23ceb917cc982af325d5dc7264d38d1bebf81c44f3b9ff24b248091b4d56f",
+    "sources": {
+      "https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json": {
+        "etag": "W/\"5523ef13d2ce7a380d4c325092264a7f383c96333bb497b335a4c73076d2f2db\"",
+        "sha256": "c7e5fe9ee7376cf7becdfc3f12c8ea5d276e06b8da60687938506b4be339915c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

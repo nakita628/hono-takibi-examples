@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6dd1024ef7d121d833bbf5f12139cb26348d0bd48598e57098a9d193e175f298",
+    "sources": {
+      "https://raw.githubusercontent.com/upstash/docs/main/qstash/openapi.yaml": {
+        "etag": "W/\"9ea2d193d029cbe58660cb7458e3dad536c6685c376e4ba540a4dba956ee47f3\"",
+        "sha256": "0c3b83ef4770967343bb7fe96fbf4ed4e636ac65fa7cae095d2cea66e074e3cc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

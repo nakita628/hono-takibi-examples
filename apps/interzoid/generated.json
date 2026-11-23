@@ -1,0 +1,302 @@
+{
+  "configs/convertcurrency.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d2be48f09aa8fb8896309f97f5336a850a91220f8f10db5942f83ffec198d9b7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/convertcurrency/1.0.0/openapi.yaml": {
+        "etag": "\"15366ffa222d7589116901dffeb7a271\"",
+        "sha256": "59eae4ed3a7d79d6dc25bd0d82c4a743ed794d7654294499e05025cfc12e9534"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getaddressmatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aec9789cc94561d688c8a035860ddc011ee3873b63aa4e0a54c234009bf6a531",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getaddressmatch/1.0.0/openapi.yaml": {
+        "etag": "\"e11adbe536a6102e3c20694ccfd48c07\"",
+        "sha256": "d62d31ef167d5c6dc4d88882ddf678deea3e98c54a39c68f40fc7fe3c6b48c12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getareacodefromnumber.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4ec7608ffa83c9630149a03dcc2bd6fd261ca51e7a7349c0436c36fd7cf09322",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getareacodefromnumber/1.0.0/openapi.yaml": {
+        "etag": "\"39b06a895fc66d21d11db0a04332b4bb\"",
+        "sha256": "11db02c5cfa25fa8489eb650013f3748442f823b06bfd72780282a9da05c0343"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcitymatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e619f6bbc46937bf7fa2fb89f4ce867abcd10415f779a2b0349516c70b631d6f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcitymatch/1.0.0/openapi.yaml": {
+        "etag": "\"e72c31a8aba7f253460600ed46c46fad\"",
+        "sha256": "5c2c4f27065588e0898f2508f94110f48006c6f9c5242a04d807cd8216795568"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcitystandard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "330786b417dc17a9067d331644270153c471198abbc74242f0c644a836c93248",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcitystandard/1.0.0/openapi.yaml": {
+        "etag": "\"a4d059455a4e67d79eed708c1af7c692\"",
+        "sha256": "7d81765b56d2b236683066a686ea1fbaa6ce3a8afbcde16e59bad2b813f0db82"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcompanymatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8ddb869cb558d00cc93b05918e45312842f484f21cd8dcc48265ec818608742e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcompanymatch/1.0.0/openapi.yaml": {
+        "etag": "\"03d91f6c32a4ef242cc04387b7f49955\"",
+        "sha256": "eea6db0d34d326b460435ae0c914ff90a980e90e694aa1b1810133378b199ffb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcountrymatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "594ab8029ba11dbce6ca92457d27ff08580f3cada9a3f148b413ff3d1c8e5c73",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcountrymatch/1.0.0/openapi.yaml": {
+        "etag": "\"6db209a4751cfd0a120dbaf16697c27e\"",
+        "sha256": "17070b4bcbbcbeb99464a222f5feb8fe1618177bc36ad9fa39e7e6c00512f15b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcountrystandard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95490aab48083722cf67a61f57f63ae42e55ccd7e407c46d3ab08afc5abd0fc4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcountrystandard/1.0.0/openapi.yaml": {
+        "etag": "\"5340254aad501259a8b952e109cabe93\"",
+        "sha256": "870bc8ff2535a1a37a9d0e6f0198b8fa235480eb8d43df22ffdc963a628b5a26"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getcurrencyrate.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7dfc8a5a79e2d88bc3df1e9de4471d77159ec1d7e00f6f234abe35626762fd5b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getcurrencyrate/1.0.0/openapi.yaml": {
+        "etag": "\"383431d5de0d48f815f9734eaedbdc55\"",
+        "sha256": "95d51f5b86a21afa35e1eb3a3ab7e8a273323645795ac7c7dc5ab0cdacabc4de"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getemailinfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c04bb81cfa64013a0c867cc2c1f0390952ecba1b099015c245691fd38c0c0844",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getemailinfo/1.0.0/openapi.yaml": {
+        "etag": "\"d0ef1e24d02d7ff73b7cb1540a5023e4\"",
+        "sha256": "452d7bbcbb24a7fc493e4c200ad5965c3d386f2a27f02859bc874e200a3b28fc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getfullnamematch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2987b72ee5f4c6c8f7a337ee824a24c2f18805b7e31fa6c36f718cdcb3d258b3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getfullnamematch/1.0.0/openapi.yaml": {
+        "etag": "\"e255d9028b5870512711b3612886a6bf\"",
+        "sha256": "9eb5df54c547df3513b0724bebd64692956a14d9d80471751c7d0e8eccaa74e5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getfullnameparsedmatch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9f63c5a2723d4cc2036436956457d18bf28097f4c3995bf33706e4e50faa0c61",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getfullnameparsedmatch/1.0.0/openapi.yaml": {
+        "etag": "\"0e3404a3192cdabbef1817e6944fc129\"",
+        "sha256": "189802d8332534781c11b853cb46774fa6ad848e5a5c403b9afd24c3fdc02abf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getglobalnumberinfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "936d2cc6b0f104724525500a81c1a9318caff53357bbafe80c1c3db3032f847f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getglobalnumberinfo/1.0.0/openapi.yaml": {
+        "etag": "\"76871c31bc1de51acc8ed47ae84f4542\"",
+        "sha256": "eb2ca832b136a79a5abe694cbed75125dad67f7c560ba7e0a8e489a789c36974"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getglobaltime.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "608b5883984ad24384cc958c0bf9deb2419b007f24b4c70b44232cfe7728b800",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getglobaltime/1.0.0/openapi.yaml": {
+        "etag": "\"0fd4a715cabe68782b1ccca95896e4b7\"",
+        "sha256": "7883b4240a640d573dbbd32efad756ebaac96786c1c1106200914ed72104b46b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getstateabbreviation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "15629c91441635d1ce8c45bb647edec705345376075cb6b66dbc2e5d07f00873",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getstateabbreviation/1.0.0/openapi.yaml": {
+        "etag": "\"4ff0a069ccf77634af6d52137cc18fb9\"",
+        "sha256": "08a0c9f03d70d48d26b5da042d28cccc05da817dcc2bc7c88429db63e9084c24"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getweathercity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "02fdf66bc5d3f767c74ca2f69a6e4e1ffaf5238a040187c36c3360d55ac28755",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getweathercity/1.0.0/openapi.yaml": {
+        "etag": "\"7e65b51f6e633a7bb4132dcb0d2d7b86\"",
+        "sha256": "8c791aaae29fbe07b3bc6b36cadc3a9ddf5011be68279a95389c9e8228be6cb2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getweatherzip.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "694ada8c7bf674108745e9f30ae5c37bb29f9b137a806a79e0b2a12565cf802a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getweatherzip/1.0.0/openapi.yaml": {
+        "etag": "\"21c90356a10e97ab3b30e0d98825bf35\"",
+        "sha256": "a3094afca5efca7a567719513ae10435223e70cc810d44c312a30635497da299"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/getzipinfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffb7a2b725dc5d2fedc914e6e029b141bdb78e7f6edee4d36ac06d474e133147",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/getzipinfo/1.0.0/openapi.yaml": {
+        "etag": "\"05962d6c61f575fc17eb46f58fb99c1c\"",
+        "sha256": "e53e6e8f54a07a638c4f534d667a24bcd0897ceea594d8583be468f054a6f53f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/globalpageload.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6e2c231fdbcad127278af07cc03559d6d038aaca6662dffadb37c71c68223c37",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/globalpageload/1.0.0/openapi.yaml": {
+        "etag": "\"c75c91a5de68da6f932e30a578430f56\"",
+        "sha256": "f804c08524fd324c62d2d35ed5e79296fa96425ec59254f0b94b06a18888ce3d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lookupareacode.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c19dde02dbc99615f44a5ec857dc226e1d2b5050b96bca8e2f7fd5177bf3882",
+    "sources": {
+      "https://api.apis.guru/v2/specs/interzoid.com/lookupareacode/1.0.0/openapi.yaml": {
+        "etag": "\"51e7f221489498569fed95929becb301\"",
+        "sha256": "3a054c88e80b2a3817a9514de9b30bfd189070265c30f97d28ff980b50d4906e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

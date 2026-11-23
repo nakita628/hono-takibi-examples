@@ -1,0 +1,2717 @@
+{
+  "configs/aaharjh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "429bb73daf6b39a3667d1e7a4321a93479649c9f42e835fb3f6a305c00bf1cef",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aaharjh/3.0.0/openapi.yaml": {
+        "etag": "\"4011e9ecf73586bdedb8d866e8c0c822\"",
+        "sha256": "88290a5301970aa71d6562f8ea2c8b5dc7fc254b9d321abb7d41ee4a3d074d55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/acko.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f182ed6b98fe00ad411fbae2f13ac2a02665694e7540423e6820cc694e4d52c8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/acko/3.0.0/openapi.yaml": {
+        "etag": "\"62feb661e00e1a345d996284eb6aa222\"",
+        "sha256": "d68953b5af3e94da180c9e23e0cea630418c2d947d6ede099155195bd04dab7b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/agtripura.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "48599b6aa4a4ab0efc74a2ef7031cf20743b08f1131c73367ff034fa4e95023d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/agtripura/3.0.0/openapi.yaml": {
+        "etag": "\"3eb868aa9a42c77b80691dbc5d98ec53\"",
+        "sha256": "d810e953ef4f8e7f36eae58d3e6a77071df1526be8cbb6ac32e5609ffcbc7d53"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aharakar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "243c41de137da99731442500593c58002f93bcd38d6f246e31b1c9f471407ad8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aharakar/3.0.0/openapi.yaml": {
+        "etag": "\"ab86b0fbe36d5cb7c6c377ffe327a34e\"",
+        "sha256": "2cdeadf41aa93bbf07bf336d88c45761d93bbdfb42f3e589d0df9d2b11b2857d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aiimsmangalagiri.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3fb9b041424ee34ee93a21cda6fdff9d00a19190706a274c81fb4f8bff9b87aa",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aiimsmangalagiri/3.0.0/openapi.yaml": {
+        "etag": "\"9796e791a02a504a1b7bcafadf787d17\"",
+        "sha256": "8081f8c9437b3c98f69673a117cbdd512b5e35721ab380b7aa7bd495fc9e4df1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aiimspatna.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a180b113ad1dc68418aabef08b1b4228f56387b719958127b8770736f4de39db",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aiimspatna/3.0.0/openapi.yaml": {
+        "etag": "\"1d8943a1323c7e84b9bc476e9c7b64f4\"",
+        "sha256": "943e489e4bb82de198aa5bb1cdf47e9e6609223b97d4a3a95bc359a58cf3b6e8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aiimsrishikesh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8b535ba1b1f17108adb6504b7d5b7688ac0942e01f493d89eb602d6e3cfbd420",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aiimsrishikesh/3.0.0/openapi.yaml": {
+        "etag": "\"c6074518a76cc50553d68934c2d8ea14\"",
+        "sha256": "e98a86b15eb4d4d5eb3fb6b74b877e689c4a7801923ebee7dd5c1fe7eb952ea9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aktu.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "70796493e79b45b0331ce69fd46667896c43ced667b292d98367306e3ccc22f8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/aktu/3.0.0/openapi.yaml": {
+        "etag": "\"b0f106097f10e2a9f81a8c1e4d9dda0b\"",
+        "sha256": "f461565ee9fb1dc0071ed284baea8bb778b67c0f5d03da805eb0a939faec4236"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apmcservices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "86fca5aae0aeb8893fcc8606661f1c13b1ba2c8aee645339bd5f69ed5f6e1d85",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/apmcservices/3.0.0/openapi.yaml": {
+        "etag": "\"15bd7bdb99d6ea35e87d128bda210803\"",
+        "sha256": "c327d3fe2d575e426c95a1d56035ba99e412fd0d8623e23e91cb00ec82e3484b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/asrb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0878efe58dc0c26be9772f21b24c2b08d103512234524a25ede128e9b1c1c118",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/asrb/3.0.0/openapi.yaml": {
+        "etag": "\"72fdd1c51d0e594e80b774066c1f43e6\"",
+        "sha256": "9efaa42354b5768a61b0df0fb60d1ac0ed9c9ac3d44f31163a01fd7d9b39e5db"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bajajallianz.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a9077769a5cfdc8939ef5bb45ee22989f112a90c8d82e8623947577b5139b1d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bajajallianz/3.0.0/openapi.yaml": {
+        "etag": "\"12597647c68a9f3d22efe39d23e300d5\"",
+        "sha256": "e194c8485ea9c69693f510b29ff56ce51676aa8a6080c686e4e5455a30c6ca3c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bajajallianzlife.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0ed05bfdce90b1f986a254c22f094e1f78a52636b3e1bb782671ff384b06ff0d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bajajallianzlife/3.0.0/openapi.yaml": {
+        "etag": "\"e56b0f874a4ec8b800faaf1071580891\"",
+        "sha256": "e54b626eb5f64fcb4893eec10ba0a25f4cf05ccf72d8537bf4e765558ac27c6c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/barti.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4397947e348160a2e4441d73343d164af41dce717d332abfc74e9d5099c2b8d0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/barti/3.0.0/openapi.yaml": {
+        "etag": "\"c6d001c8d626fcb8087f15516bf509d4\"",
+        "sha256": "0633ee6b90112c2b36471abd1df7e8b4566ca6513b531896668531adec8a1c0f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bharatpetroleum.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d275044b1a67e907487a333a3bec71438570a631db8eafe9bd1298878a3bee1d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bharatpetroleum/3.0.0/openapi.yaml": {
+        "etag": "\"eb3d183859479d5b73c1abed8415014a\"",
+        "sha256": "c3ea3f1ebf95c26a58fbcf7799229bc4b24b1a06d0e5ca708b966507382ca311"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bhartiaxagi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "54b13980f4542d3bfc1f2b25ec238c3d10d865f9906294f0f949136b4177c931",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bhartiaxagi/3.0.0/openapi.yaml": {
+        "etag": "\"626b79d3f65e3cc71d6501f4e62707b9\"",
+        "sha256": "26ba2bc659ce7cfbf98dcaa15bdd57a3b4f9809c386a6e13a62fbb576b8e68eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bhavishya.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8513a3be48fade9a97e1e42564c3687f32f08dc87433f227f2962b53b72c42a4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bhavishya/3.0.0/openapi.yaml": {
+        "etag": "\"0203c0eefd786d1c86bbad1a49adaf3a\"",
+        "sha256": "88a3daf9548caa0c512aa8b2448a22c6aee65fde6547ab5a5a9cad792cb01df1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/biharboard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4fc736187beb66116c61fe580ec891f2f455f079539768f4c2a29b12aeffa79c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/biharboard/3.0.0/openapi.yaml": {
+        "etag": "\"d3c1be408b1e44d4ef4c9be05a6cc3e4\"",
+        "sha256": "d29ed07b18ae990a9eec183e2d3db91deacbc16b4c70ab602ced4c4fecaafdd0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bput.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4d2bad3e9b175189ab4ea2337f126f04cbd0510853b5675b702cc3c9fac4a6fb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bput/3.0.0/openapi.yaml": {
+        "etag": "\"efdbbeb505d860e701d7de0bdeadbef0\"",
+        "sha256": "b342a3e0da020271af5b599150fc21c439cddf2c8747d767c4de0f042d895476"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bsehr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "65242b252bc5802e6572fa143e2c7e15337f8e46a166c1bbf74876a61c1b61bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/bsehr/3.0.0/openapi.yaml": {
+        "etag": "\"c62da264e3a3d49788780e01dfe5933b\"",
+        "sha256": "e11cbccf598b10fdfbbc26c8e579f224c96b4a3d690ce357980b823c09352286"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cbse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c93c81117f4f6171b01de12c0f6a5c27f8ac3b072b8598d4052084c79a779683",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/cbse/3.0.0/openapi.yaml": {
+        "etag": "\"38ea65fbd3b4df7458afff45546343d4\"",
+        "sha256": "3dfd665d86b919bf7d2743ed0ec21cc2615d65efd5acb8037d17ec78be18fc0e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cgbse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c84ac1cd6cabe7f623f6d7e28c20b7865053fa46da16a1d4fb21471307e77af",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/cgbse/3.0.0/openapi.yaml": {
+        "etag": "\"8de1cc40637db9f6e86637a18df876bc\"",
+        "sha256": "b1e2f33f2b57a2f03a255f2a2d115563e0c8ee8ccf8e07b08ac591b97a74818f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chennaicorp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c11a300423cfb473443220cc5ff5166431d1f7d9a9edaf254e52132efd0b106f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/chennaicorp/3.0.0/openapi.yaml": {
+        "etag": "\"af9b72a70df409677001a76ed635d308\"",
+        "sha256": "a255549796d9ff9ea3bfbd6aba2c06ae68ec9c2c986d0933377edcc719fcb59a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chitkarauniversity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "39744289d7d53fbd996e0ac344f3080dbc3599cb0009e07911e28786c4122d8a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/chitkarauniversity/3.0.0/openapi.yaml": {
+        "etag": "\"7264ef248e37342504f4ebf1aadc3fd0\"",
+        "sha256": "411bd17f7003b6be15840a9707b91a8dc0a5110caf2fda314d4a5d69a522af36"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cholainsurance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "df84fc87d677fde7ba23f53fc6e225c02500c357d3bc19d3229214f26a8bb698",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/cholainsurance/3.0.0/openapi.yaml": {
+        "etag": "\"ee778057a993b5bed0b902544d2cf864\"",
+        "sha256": "6c3b0a6299eedce54f53f12cf5d478295c169cd4cce85bb79f3a8551f2ed8e3c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cisce.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb9a1c3bff5690ddce031a150500919b3de610adce303132ad856c2f8d32cd5b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/cisce/3.0.0/openapi.yaml": {
+        "etag": "\"7da93ac576944e062b65b28272287d9c\"",
+        "sha256": "6a0b77be7c29d660906d02c5dc8eb67a72cf487439579a2802504bb9401e4144"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/civilsupplieskerala.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "92f524a7399a19737c25e46f2efb4fcfad1a3ccaf2bdab15818f8e4ab54be582",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/civilsupplieskerala/3.0.0/openapi.yaml": {
+        "etag": "\"d96f0cc8f224e3dbb2b22566f5efb0b6\"",
+        "sha256": "2bf97f1141d10170cfa8e5d7e5330c3e9feb9e779290149b543cbb5b723ee1bb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cpctmp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a7dc4c0abd239c09bd9598374cd408c90f7f7a8b70d1ee09a5004bd38466783c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/cpctmp/3.0.0/openapi.yaml": {
+        "etag": "\"e92f341ebdfe5ad0a42429d874ef8b14\"",
+        "sha256": "6cf7b46f8cda0bfd4e4c64166274e21826ad44a158033c89d33058d2736aaa98"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/csc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "577be3c186f68fed29ff8361b0eaeb75888f00b486df6792d19deece92eb4234",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/csc/3.0.0/openapi.yaml": {
+        "etag": "\"3be93ae1e10e53e8244b1ca75e706c3d\"",
+        "sha256": "a48f030151e26372daaf246fca9ad1a2fda59175b87168e744329332dc70c4f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dbraitandaman.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eaa2b9e6fa39e4ccb8656811c2781075ad3d47a436e5a86034f44188ad1f87b8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/dbraitandaman/3.0.0/openapi.yaml": {
+        "etag": "\"0b938eca53d8b6bede9d324570138f36\"",
+        "sha256": "66b16b834b377487daf9fc559501c68ad210fcc8f1c793be5aef97cb4486ccde"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dgecerttn.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b095c8037818fef10f063cc61d8af327845ce1eb41bebad454d6a4be6bf3b469",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/dgecerttn/3.0.0/openapi.yaml": {
+        "etag": "\"680975b0279c3dca338a16688cc45951\"",
+        "sha256": "285afcd7cedaa0ad9f01e5e86bf6adf6e2696bde9ae7565055a128080bba526c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dgft.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1975de3988990a6a442704c7abdce0233842ec45b0f27312c56c132830bc8b2a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/dgft/3.0.0/openapi.yaml": {
+        "etag": "\"4ae64e67994631a7c5f94df52da574de\"",
+        "sha256": "a9ce0f7d864cea20f0210fb90c967357892a2ac5e9936a5dfa31edf1833e5c1c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dhsekerala.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4fcccb46455b3ef758c2beeb3b9b31b3794f3bdd31d0e9d83728228060de1405",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/dhsekerala/3.0.0/openapi.yaml": {
+        "etag": "\"d0d7a02b43f6d309a39ad4d7a297c055\"",
+        "sha256": "03642318524aba17c927f87d6c9b831ca17afdd51e1e6500cfd53bb631d8a094"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ditarunachal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d88f039db2c3e283f78aa808efa4c5a6226ad29bcbce60ab0ad8533c442b3815",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ditarunachal/3.0.0/openapi.yaml": {
+        "etag": "\"bc56d6ffd1eeeb0e06fd81e408876531\"",
+        "sha256": "b1ed58d9a3a36228d073b39f45b8f2e1fab8c1ec82ad78fda8406f33a499fa91"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ditch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "92dd8c82c1eac95b567640b1bab77f5b1df8ab60b40eba742996ec99889aea48",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ditch/3.0.0/openapi.yaml": {
+        "etag": "\"05ea73af1297579d5822b4f2facc0b31\"",
+        "sha256": "ab3f5a9c32ad7786971d9004824fd6265620f2f470508cb94837e75685d514c6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dittripura.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1867e61fb8ed222710872407442a10ce91aa4d8b957272627870979bc5b48b6a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/dittripura/3.0.0/openapi.yaml": {
+        "etag": "\"f814a594bb487989e82452dfab57a91e\"",
+        "sha256": "e80c34fc46c8c959ec33d4e28a0ad10a72cdf71d96b862ae692485e7f1718a1a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/duexam.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2399d2757b540306c90c0dc408b108c53c2a2f018ac35914876aa70b81506a13",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/duexam/3.0.0/openapi.yaml": {
+        "etag": "\"659bf3cd1001cb848708be9b6993c476\"",
+        "sha256": "ac7d7e48a92e851098074078c345af0ba4a091818edaa7e203303008bedff7f9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictandaman.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0ddccc542200f6a8d4a7df5a8a261b3a8f64bf0ee30ceaa10d8a59a05c53053c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictandaman/3.0.0/openapi.yaml": {
+        "etag": "\"fd4461a440283813ccc915eee086f7b2\"",
+        "sha256": "bdcb0316efc1dd7f93ed5602a7eb44ef1a9bc661be21731765d0b458e688edc5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistricthp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e01274978d9c40295407906f2e264a589ecd188ff22fa68d871f9967e4e2a604",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistricthp/3.0.0/openapi.yaml": {
+        "etag": "\"b58586de4d974433d29d90f2b8ca0851\"",
+        "sha256": "9a7060e8ee06461c56c8f16f98877fe1714a0c07728c9b15091370f85e627153"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictkerala.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cbc061636ea17af8679060741165523dcfba4ef158d33e6e8f79c22eda2d4664",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictkerala/3.0.0/openapi.yaml": {
+        "etag": "\"6474796f6787cc15ae4be09e510521c4\"",
+        "sha256": "e4d1f71fb46abaec8f8ebdd39e25c3bd1beb5c761ee70217dbb536fadd39706e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictodisha.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e73e5066b15aa16a79fdc93f926c0cbd7567439cbc8acc43749f34765ceb32bc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictodisha/3.0.0/openapi.yaml": {
+        "etag": "\"e4cd5fbde5ee055c0da85650d64827db\"",
+        "sha256": "c7152a34fd4948088ad4b2f479a757c4b4ddcd5faf022e75c3b8b1b3b8a863ff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictodishasp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "942451bbbcc28c4852951b14827893ac81ba961530f8fc5e80d177367aa8b4b2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictodishasp/3.0.0/openapi.yaml": {
+        "etag": "\"1fe2877f66494048290ea7ecaa68183e\"",
+        "sha256": "f9d2d9b3c4897d07dd92ab9ffbe2230e410bf0dcecb2c1be8b5724c18da9df0b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictpb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e5f1713a5213ee6f56ae48a09e2c9b685165752e725a4787eee6cd7b16834942",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictpb/3.0.0/openapi.yaml": {
+        "etag": "\"2430b0f88c59bb2942c3eddd79718288\"",
+        "sha256": "ad957933c0f9d1ca006a6b1887676fc3ebd48690d006a9e9da057900077f7e31"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/edistrictup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "24d2a0d46278b6cea1b2f5e93954e81318d4444bd018294a3698692ce0f93dbb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictup/3.0.0/openapi.yaml": {
+        "etag": "\"219ce14ba0abb0b643425245742e3ae6\"",
+        "sha256": "40fbc5c2f2e524b8973d24a377a1c1d34f4aca782a671dca026eb4adfe8ff832"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ehimapurtihp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "004a54d7b0f79f88ce86b177e3ad644bfe0d1ec8e66caf04a65080d65767db1e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ehimapurtihp/3.0.0/openapi.yaml": {
+        "etag": "\"4490f33b23d7d6fec74a5db7c82a6ee2\"",
+        "sha256": "d59bfbe8491783862d46bbcded9b4695efac517be12a6af76c4b858e1f489459"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/enibandhanjh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3215ca2a72608bbda91fdb003aeb067c92a651b66c2287f03c8f3684bb8c480b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/enibandhanjh/3.0.0/openapi.yaml": {
+        "etag": "\"e94093ad34e5b56f515a9d4851e5c4e4\"",
+        "sha256": "c248489e49cdd3f0fef0e0f9263807481f37537feaf3caa1c4533cd071fb6dc5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/epfindia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "11d6bc786ac8554e002d535b90ff76134e2999695ba162656d39ddb2d8f1787f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/epfindia/3.0.0/openapi.yaml": {
+        "etag": "\"7338fc236e6eefc598ad384d8297f964\"",
+        "sha256": "86be825d1e4d09caa09ccc4a4567f1dce0b648bc2ca8cab3f51e47b447abc4b8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/epramanhp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d5466d2514e4b042055ba37467b4770ac12299be06637baead6c86a3f6942ab1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/epramanhp/3.0.0/openapi.yaml": {
+        "etag": "\"722066ea750ac005a1e0451dcb5aade4\"",
+        "sha256": "b55b6c0955b1d1c7e9d34e9293778c780e5c8fffa543b73b2e3b2616a5529585"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/eservicearunachal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "74a1855053864681aac0542098c2aa9ff0d0d462605b946b158157422303491f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/eservicearunachal/3.0.0/openapi.yaml": {
+        "etag": "\"0058b706627ebef30156689322c3a3f4\"",
+        "sha256": "69ef11cda59012a5ad04555e0190696de1a79f9560cce12bacb990df5e4da9be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fsdhr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dd1894defb5fac9357484bd5a393ba8c2e08aaba7d58b47ef89a81e82a1fb359",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/fsdhr/3.0.0/openapi.yaml": {
+        "etag": "\"262a82896d92d51d19ad89e472acb2f0\"",
+        "sha256": "50a67a13d8b16c28d2b62bada967314e2174bd24a3888e6667e69460dc1900a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/futuregenerali.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "050e941b75bf8c76f7db8bf6f32a7525825e7442a43c0ecf5a6f31ce215ffd7c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/futuregenerali/3.0.0/openapi.yaml": {
+        "etag": "\"383139d96d5b83f83b22d727aac3f05f\"",
+        "sha256": "a1804eb1404d7b24f703fc868fe3b6b1b1ef2cd083b749d03c30cce5a02fdf29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gadbih.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e0d20997e26a852b43e90a874a907053446b98940bb66359099c5e388249a415",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/gadbih/3.0.0/openapi.yaml": {
+        "etag": "\"542fc3f5bc9cb25c5c297f34b4f05074\"",
+        "sha256": "1a6fb391cf0b0c343634b1e2eaa4aa114b588a3152b55d67d15ed57f46ad0479"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gauhati.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c1760b3af53cfd22835fa8e689af55e14b52dc8f88e7f01af32bf05934334d8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/gauhati/3.0.0/openapi.yaml": {
+        "etag": "\"f92e43a7b25d465679d0a6d2a7b56e5e\"",
+        "sha256": "f4bf783268865400b373514bbd4e03166ac6fe39c1341e1f18db8a1711ec0e1a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gbshse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "76a7f9dca4cbfb427362aa5afecb47f09ee8c007a143f48fb37b1961c6ec300e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/gbshse/3.0.0/openapi.yaml": {
+        "etag": "\"d4166d72bd425ed5baf609306ad2e4f1\"",
+        "sha256": "113310a7b59a5416922f662227836b5eb80de559a9bcdd4646499fb9d01fd2cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/geetanjaliuniv.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6b5639f6117fa09f227e8b7a88e3acf106e1cead4940248d17a1194629fde554",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/geetanjaliuniv/3.0.0/openapi.yaml": {
+        "etag": "\"cca227203237394bfe1c431e257a591a\"",
+        "sha256": "1c7f9f41c08d510feb2cf80734f043de012d556ff5f891bff856bae4d6e23496"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gmch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c7b169db3116828de44f692d716616810fe63b5d17e012e4003d2e480df0e86b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/gmch/3.0.0/openapi.yaml": {
+        "etag": "\"954a88c00775fd614841857cddb28c64\"",
+        "sha256": "0ade8b9021a001b4eb8ae1537147a55a1c33a4fc22174521b799c9eb7ab18b68"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/goawrd.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9cbc8274d690c496632b69749ebef7424dbfe50290b9102e530289036b550d7c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/goawrd/3.0.0/openapi.yaml": {
+        "etag": "\"8972065bd774fecf7d0dd22e5d1ceee2\"",
+        "sha256": "7807bc2132319001af565564ef940ecbc48b2006968705665d506d99c32bf403"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/godigit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "edfc6c08ce625f54aa606be053941db7482403e4d61c812c5571b343bdec8c8e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/godigit/3.0.0/openapi.yaml": {
+        "etag": "\"3184933f3a277c7cbad04975129bac5c\"",
+        "sha256": "3d264188770e994c6e37dbe288b1b835d95bbb321540d4e1b6c107e3bc72fa23"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gujaratvidyapith.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "09c3278c7d8a4b3b7323ba69f0f6b0c7120ffc8759d0c4065e8d952e674b6f26",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/gujaratvidyapith/3.0.0/openapi.yaml": {
+        "etag": "\"9d416cdc06809b79c395286803180cfb\"",
+        "sha256": "fbbafc4b249b745271f5aea69e647258d0a88c43e9441fda9de5b2bb36599cc5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hindustanpetroleum.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9cb2bf30bd7153861960d892d1e3d656b3195610617ae8a9b802e8444e6c0d22",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hindustanpetroleum/3.0.0/openapi.yaml": {
+        "etag": "\"52f4de797647fbf08e4420101ff9302e\"",
+        "sha256": "f1796f58f8ab1aaa688cc6b84faaf1b148dfe13656c18c8cb675e87ab528f8ab"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hpayushboard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ad4b308f6bacbf062fcaa3bab0f8d6ca7fb699e7a0d5619bb1b56130493eb52d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hpayushboard/3.0.0/openapi.yaml": {
+        "etag": "\"cf866dde653f20ef96c893b7796e0fd1\"",
+        "sha256": "911da2a568c9c9639d633c96f4931f7366ac987502a79f3f0e42f092cab55c6a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hpbose.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f99ae1305825ed30d8bd276b473e1cedfa87dc5b6082c4f8e566ed6e2d039e2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hpbose/3.0.0/openapi.yaml": {
+        "etag": "\"a7c8219586a2504dc139eef6aea98148\"",
+        "sha256": "f1bbdc6a32a1cb44b9d4c31a53aa1d750bb886973b23c2e811f0e18f92e6f1d5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hppanchayat.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "529d3a199628ddad4deea77e4d3602da50cc978dc38e2bb80e17d32a1941501a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hppanchayat/3.0.0/openapi.yaml": {
+        "etag": "\"67d246dced5efcc1e57a3b703bea1f32\"",
+        "sha256": "a81fba58963f1c9d0515b4ae439a5347b5fa5367a21288360cd33441f389faa9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hpsbys.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4a6613bdc9d980f79b6bfc2dac4450adc0ba16e05cdd9eb095bca91a19864768",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hpsbys/3.0.0/openapi.yaml": {
+        "etag": "\"5edb7fbcd5f9386d2f7ecb8beef0da8c\"",
+        "sha256": "b98bffb22cb900a9715c7c41c4632e0f4973c71ef10304b8b285112711ee5c15"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hpsssb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7ce5c97d3c4c7e5aeec8594d870afd7b67705b4320ea9d9448699babcf8e9f52",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hpsssb/3.0.0/openapi.yaml": {
+        "etag": "\"1aaf654ef84231ccb1dece58244ab9ef\"",
+        "sha256": "d3624e40d45169df035ab98e0bafb2e19d97e325a14c4dc8a79be80da279e6db"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hptechboard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3721392cec2da9aac2539bb3b16b802ba22d41497ed56d38679f9c1e9e70add8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hptechboard/3.0.0/openapi.yaml": {
+        "etag": "\"05845a342a3fa09946f423b6d64b8e0d\"",
+        "sha256": "e437d5d53f1677a06b9e6ea1002fac3a31bc641b6d23df1439414259193fe836"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hsbte.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6903dce0b3f5c86f5c4122672998567736c103ae86e514c139405ba4d7bb7d0b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hsbte/3.0.0/openapi.yaml": {
+        "etag": "\"deefc1ad434b02d53bd91feba33b3065\"",
+        "sha256": "2ee4cceb1a1be5216e0aa16a3d1e24b5914f3c753c24c7b8648eeaf8c1937a2b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hsscboardmh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1e3d7f3c1830eca3bc06cbc457b468435c7a346640d6f63bbbbefeab13a5dc29",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/hsscboardmh/3.0.0/openapi.yaml": {
+        "etag": "\"dc6b740e7c09d48202fd4aeabd76083f\"",
+        "sha256": "0948e0eb71f01a4f9719b53c01f4bbc97bfaccff9bcdb4d61e4864fdf4e0f541"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/icicilombard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "af14e81dd91d9a8f5e9bb0c06a3cab4fb07f452ce9b46df155e31fe67d3d2ba4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/icicilombard/3.0.0/openapi.yaml": {
+        "etag": "\"21e0b84b8cdf2e0dfc200fb605fadc6e\"",
+        "sha256": "7391f1a9cc3a233c40004d437f7db6c9f4d30a09c57bf5013275f302c0d2b5a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iciciprulife.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "72fa57217bb8a02d5bd12c4adc0dd1bdf9e1ca10341718dfe74799060d0220b6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/iciciprulife/3.0.0/openapi.yaml": {
+        "etag": "\"03ef4fb3400530a1c515e9a616922bb0\"",
+        "sha256": "8868062e0100c8a5fe8e7c1db867c5d98840fb77b57ace0876932349457c03a9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/icsi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d50ca67d124104e8b4469712f00ce6f3821fe3241cde5928c89e696bf064f07b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/icsi/3.0.0/openapi.yaml": {
+        "etag": "\"d626e8fe0478fc0662f0ac1b496aabaa\"",
+        "sha256": "95ec1beb9941f03621267fa20d7567b38a58ec5d7bdb0a10ba504ac79e1b5234"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/igrmaharashtra.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "510d1160862f0feed70d01ae457133553e04c03e19da4df8f63adc2cbb357ab2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/igrmaharashtra/3.0.0/openapi.yaml": {
+        "etag": "\"9b0822588c694c7bfec283a627eb4ac8\"",
+        "sha256": "8a5846c0e28e691b9debf61de5c6ef393f5982353580c1be4e4cdb9df1972174"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/insvalsura.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2ddb9ab6b9812b75db4de3285f8539c4b206759b098a6093ec8dad536d55d360",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/insvalsura/3.0.0/openapi.yaml": {
+        "etag": "\"9f7764c6b35a6cf025f76c0880ec811a\"",
+        "sha256": "a960dc05e4a29a9fee0e34bc3a49a82efb8e1e3c5ac63afa47ddfeb152c4b639"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iocl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8371a445ffecd779dc87e4762806f3bc3d9bd5d98dd1b94a316527626fd3867e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/iocl/3.0.0/openapi.yaml": {
+        "etag": "\"b814b84c0570ee5d691ed3ea801a0bda\"",
+        "sha256": "b03506120cb1c089d5ebd684837f2d978423c534bd1da0f3b611de6b28d31108"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/issuer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0fc8513107b2daa987648347ecd07c325137b2cc759c1d069c380cfbaf3e4461",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/issuer/3.0.0/openapi.yaml": {
+        "etag": "\"058e15d4f15faab321d3edf41bb881c4\"",
+        "sha256": "00893320f39c3cd80c02d2fa10afbe76b1eb7519fff92754ae1a838019cb487a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jac.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f94d3709e8b050d16389cee191d7914184f2dbdb6b59b7b54d5867b90df17140",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/jac/3.0.0/openapi.yaml": {
+        "etag": "\"8b82f1aaaa58d76636faf213f9b685ed\"",
+        "sha256": "1bc033d6687036ee53bbb5b633d3a7b7753bf3f8e2a5a61223329fe3846b2f46"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jeecup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4eb70ea96fa87ebb7a5c65baa6ed9abb72160a068c4dcea980d71b77fd20ad53",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/jeecup/3.0.0/openapi.yaml": {
+        "etag": "\"fb8e50f0521a5ace5e21247a666a84a0\"",
+        "sha256": "48d6edba7afc6451ef19b98c2488a00520abe1aa58289a430aec3a6e3ecd8bd0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jharsewa.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8808e1d13d0d545471f3557e484a1e6d63112818d6b68f3ecf4d8348105afe71",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/jharsewa/3.0.0/openapi.yaml": {
+        "etag": "\"4b98737fd7e19aab1b9831ad4cc61eed\"",
+        "sha256": "95a45aa97728fddbf6870e6285a29884cfabce2e699331bf37721d0df6c133b5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jnrmand.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dd2a59f863b48cdc84f1c3c87e8e922c88006dfeee38c0246b24a803e91bbb77",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/jnrmand/3.0.0/openapi.yaml": {
+        "etag": "\"65d1ad456454b6d48e9e115847afe399\"",
+        "sha256": "83440a8e4007c88c61e0bf5b8dcb4c0fa219985033b76d233d9445b1ed284ea6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/juit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c590d3d35c49677ef2074b7c6aa4b1add5cc1472a6dd48f6c5dcf46e4862c946",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/juit/3.0.0/openapi.yaml": {
+        "etag": "\"6bf1bf84aedf25ddced1d776792f80e8\"",
+        "sha256": "d14e90f0150adb2d6dceeb24fbcc2d5c00700d67bc4691297b2435866cab6ba6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/keralapsc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3dec54d25186ef719a13f7cfd41cc62be6083987fa579bd8a67e702715935b7f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/keralapsc/3.0.0/openapi.yaml": {
+        "etag": "\"8141d1edd22431fb4178a8accd4c4f6e\"",
+        "sha256": "57d0556de731b4e3680a0cd2ca5ba5b720f372a3c46bbc57405c200a2f412466"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kiadb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "50ac21f79fa669d4569cb42b6606c83f54159d25445879836cd6fc11b36d6057",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/kiadb/3.0.0/openapi.yaml": {
+        "etag": "\"ab2df306180981ce60555efef7903256\"",
+        "sha256": "534d342d4d45c7f41a7ea261decb87ff3e99a3478a81ef0df9515f43f29add7a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kkhsou.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c32856a9d6d71276e7c3b0f3d184e3fab04945b3049fe12130f9c4196fe1b814",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/kkhsou/3.0.0/openapi.yaml": {
+        "etag": "\"7fa7c2d675eb68762b4eee067ae8081f\"",
+        "sha256": "e9588b355a754940da4228b8bd798eb10c401497b7fb760c8c01cf4dcce61fd2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kotakgeneralinsurance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "36371f977169146b42a94d7813dc5d573d9552b2d8897db0e288f764e58d67f9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/kotakgeneralinsurance/3.0.0/openapi.yaml": {
+        "etag": "\"17882d5ffebea6458180d4bb15dc0a42\"",
+        "sha256": "0886c32fd27881fc41964f8e48efe76f03006b69ffc41342252f468f40182987"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kseebkr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab423dac1a6f2da0811b68be13d4f0603671752dbc0628e4353510f7b26ec44d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/kseebkr/3.0.0/openapi.yaml": {
+        "etag": "\"2d805d2dabd4b039438b68a03696cece\"",
+        "sha256": "a49b0ff09d6240685f6a45ce68271f017b150c70ca50f5e10c76e1410ec29d92"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ktech.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "afa689586cf46ca1461e5f34f54ae73955459af074b208120765f219b8c3ce4f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ktech/3.0.0/openapi.yaml": {
+        "etag": "\"da453c71abe1f6c024ff02b6cfb802d3\"",
+        "sha256": "f1f9e9e9c2d8bc23f740dbbd9c3135b103c38caa8a1fca0f0feb0e629b5b73fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/labourbih.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d278fdedbbdb820f3287ed26e5923bd22f5faf08b6c84d2e818efd1e403014ff",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/labourbih/3.0.0/openapi.yaml": {
+        "etag": "\"fc03defcfd5bb95b5dfffd8b4afb35d0\"",
+        "sha256": "3c8cc78c601d4fc1e8797e1db766616ad9c6b7af764190810c93543c1dd0141a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/landrecordskar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5a4165fa81ccbcc2b16c343e7f66ae48707a75ccc1ba0f7abedd3a7101cda849",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/landrecordskar/3.0.0/openapi.yaml": {
+        "etag": "\"3bd25d09babb1086f0300b4fcedd44ce\"",
+        "sha256": "bf7a6530fedcb70fcd71710fd46a43fca5aa61aa9a2006229c710f2e2ebc4ccb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lawcollegeandaman.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffe1d8e21dd1375af73dcd7e6edec8e5de9c373fa85487443b96b0a3a2cfacff",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/lawcollegeandaman/3.0.0/openapi.yaml": {
+        "etag": "\"28646027430839dd574ac7f6839f65da\"",
+        "sha256": "7ad0d75d7f0ad19947f4656b5fa0f9ee7d7013f4df07ea7916362a71e5e6ceef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/legalmetrologyup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ee5bac5da807a79a918044a10b21f570102ad25ff2c423d52c90289e3b124230",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/legalmetrologyup/3.0.0/openapi.yaml": {
+        "etag": "\"f427830f048956ec555b5e5e995dcebf\"",
+        "sha256": "2d26b837fc6bd7c740ba2194530251e6339d2293e223984c3aada9592d288ad7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/licindia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "89dd6e555bc9b347601f1ebbf002c2d53ae9f715c6c045b34b4238c0ef8dadbc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/licindia/3.0.0/openapi.yaml": {
+        "etag": "\"fd2f05f98248e0d728bb6e2a2964ce83\"",
+        "sha256": "0e3ee9ca1143401c73fe4beb56f7f8881c98d38f912f95cd2408b5cb632b884b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/maxlifeinsurance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f0f28aba80760a5e1373c2c88b8e32ef26025ba095cf55c9cb092c463c4ec9a7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/maxlifeinsurance/3.0.0/openapi.yaml": {
+        "etag": "\"28da3ffc685c61da7cd91739ea5de339\"",
+        "sha256": "e1b12b3098905bf084d35f98d6e2f6fb9ceca79bd60ac6037c3df018e490fbe3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mbose.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "96c52793b68e5ecb27dca5e395ae8f7b65da9e41b25580a49132c893dc5f816f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mbose/3.0.0/openapi.yaml": {
+        "etag": "\"ee37524be2784618eb4ee79117d5eeca\"",
+        "sha256": "4bf8c999a39dad6f8c3ea1fae39752b74a2573039cc78768b2784b1872435c85"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mbse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "90b3b7710c59c22162d2d836da9006900f1e354405787f6c2b8318f34328ca8f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mbse/3.0.0/openapi.yaml": {
+        "etag": "\"88d7f628cf595d8c04afc6d1fb1659ec\"",
+        "sha256": "936c37942cea1f19cb684657d07e3dbdc64262a7c6dd9b069214441d98fbff04"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mcimindia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b0a6a0e8884a524827989743be3ced6c40448e242ec80a276b9ef3bd8bba23f7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mcimindia/3.0.0/openapi.yaml": {
+        "etag": "\"b6d0ed263723cfd64653c24895b41e8d\"",
+        "sha256": "83748daada087ac4738a7b926c5e4229b83d0789109732b82d5d2caacb5e6d0c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/meark.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2d136527152eb7066dcff6d0b644c5854a8cd01a704abf68a41ef24ae215af7c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/meark/3.0.0/openapi.yaml": {
+        "etag": "\"34d26b48078c90acb793f526cf291e33\"",
+        "sha256": "c7389b6c1eb9862205991b63673d2bac3b03304d3b132e42960ceddb45d64fef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mizoramlesde.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2cd705801e9b197140632eb51eb340edc591775af7b407e069eebda7d2603265",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mizoramlesde/3.0.0/openapi.yaml": {
+        "etag": "\"48637fa0be9e7d4f42712589e8686d48\"",
+        "sha256": "9765a49cc771e4b10010eb7d6499c2184d5f3c56bf41ee1e867c9771db5871dc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mizorampolice.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b5f69fc9e7da196ad60b8d73138a61a9089df132b8935225cc2607f38808bbcb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mizorampolice/3.0.0/openapi.yaml": {
+        "etag": "\"27fe45d0060b638d33e0b98c4019a65b\"",
+        "sha256": "82f52f0782d8e2844b604c222de940fa42756049f9fe1f487157bdb10085fb05"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mpmsu.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6271920feec1afb40611e209058c94af83e98b1e6eaf086f46ace85bcd4e6b51",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mpmsu/3.0.0/openapi.yaml": {
+        "etag": "\"11dd6da3f721d860c1a398a5125c8a84\"",
+        "sha256": "e70f6afbf180ed041968789860bec10c2aace05615e9e2bf6790298162d48d65"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mppmc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "85dd1714d9ad693c14f36db26c16ef7076532a23e3d4850ac9b3ffcdc7f19b0a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mppmc/3.0.0/openapi.yaml": {
+        "etag": "\"6694f5f94e63b8841a9efa8a9b1fa0e9\"",
+        "sha256": "6d36cb77859c1f918e0df62002b24ff8cfa0fa1426124cff7b58a837d6580fbe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mriu.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0d706a4f31a9b43c64a54109dd96d364102fac0da2b7393eee31ad17600d96cf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/mriu/3.0.0/openapi.yaml": {
+        "etag": "\"7af30204a860322c701e65f7942e8135\"",
+        "sha256": "a14a541d6a6863bc0f10bfce54a6d29ac9355805b08e61f483faac81fcec4470"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/msde.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a4cba4c3a40fc33f92e9d110e4bf48234f8324dc45120e62635404a40cf73fb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/msde/3.0.0/openapi.yaml": {
+        "etag": "\"f7facd9bab50e6566250d6f08162340b\"",
+        "sha256": "e8d94960a533834a51a470ed34857fd8c3105fa7c235c25f43723c95a95790c0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/municipaladmin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3df7ea4bb4fc2ecb8ef18e85fb17dd879ef4eda517cfacadcc46480bd8d2de55",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/municipaladmin/3.0.0/openapi.yaml": {
+        "etag": "\"c03e6ecf222fe4d2f21f3d46b9e0abed\"",
+        "sha256": "2cd51680b1f73f843e1edd4915391fd2dd1aec8163c1e81c4130ce136102c374"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nationalinsurance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0e833a54f5bf00fd622fd0c0b870657c9ae2557c9cee91a9cc0406120324b0ce",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/nationalinsurance/3.0.0/openapi.yaml": {
+        "etag": "\"4b1a0c2719150c2571d831a616b89771\"",
+        "sha256": "7f9826edfa2029dced4a84d645f392ad7146a37d6b6708bde6cc2570e8a3a872"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ncert.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "45aae60c0207a6a00d162f7ecd85d1f5788b3c603c63c0a5a352b14b3f0b4bd3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ncert/3.0.0/openapi.yaml": {
+        "etag": "\"c9accf401d722711dbf12867f5b6d6d9\"",
+        "sha256": "9fbff64722749031879158040b0608c74aee97303857349f37d06dd7a2371ef6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/negd.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6f45b7e1e19afa53e9db792f406e2e404245dc055cf0dd5265b21966cc85b597",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/negd/3.0.0/openapi.yaml": {
+        "etag": "\"0e86d3b7b6c6d14cd2df7ba0256b9bb3\"",
+        "sha256": "b6076593ea3fdc87830fdc75bb99eff3498b2be82d3a2d5fff413c112df94260"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/neilit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3b43becdea563e185d0232fe4980213ee957fdcc2cf8ebc450acc17ca15cef45",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/neilit/3.0.0/openapi.yaml": {
+        "etag": "\"df4518e559fc82ec81e3a6daa91433c1\"",
+        "sha256": "9a9e2fa671e1c466a4cf9ae4cef0479117034be8648630f78a3f9be1ab47cc72"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/newindia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "992e142ecb4eeaf95580c18140b14c2da3b5062f8ef941dc75aa486ac4deded2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/newindia/3.0.0/openapi.yaml": {
+        "etag": "\"19c21ab5908ec4bf66771c51a64d6565\"",
+        "sha256": "99bf9e061bbb6e2a882ec2fac4c5de7fbc17e840ee620dee33457f2cffcb4dd1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/niesbud.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1fb9d44193dbd2ea82aef595277906dc4ed892482813ebafc2469b905d8d280f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/niesbud/3.0.0/openapi.yaml": {
+        "etag": "\"7a4a00726bcb4775e8c19af3138dd3ff\"",
+        "sha256": "a1e1fb2b69f6c5dd9b36bbb091b2afac6016b76e4ec48b494ea384a569c91986"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nios.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe79ce097ee329edc2f2c093dfd7dd19602d2674b3e049a3702be91aa5457085",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/nios/3.0.0/openapi.yaml": {
+        "etag": "\"7f4a488288b4c897ab54633514afebc1\"",
+        "sha256": "f2c9491c55571aa974b8e1240a643e7b042d1c86e1014d2ac1db385ec4a8f06f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nitap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "692096579291a89075bb5231a43566ee0d468a8a17c997e8ca1ef7c5e3b0dbec",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/nitap/3.0.0/openapi.yaml": {
+        "etag": "\"23f2521edb41dc70e492f0ad8b371f47\"",
+        "sha256": "48ed797494fd4f96a81d3b8f0c45e6e67e1c09fb5bb94eb880fe54e67a50dea5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nitp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4127bf488b3875df2b28fa22040bb13f086998b76513ca0789dca1b8162799fe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/nitp/3.0.0/openapi.yaml": {
+        "etag": "\"b196179685aa67647fd914dfa863fa83\"",
+        "sha256": "50bba91428ee830e7589c5b96e50848e68312c85fc63d7acd92c43c8f8dbfe9d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/npsailu.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8ebeb72815afc2fc87670c67cbddb7871256d125db604498b917d54f30b5849d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/npsailu/3.0.0/openapi.yaml": {
+        "etag": "\"9ca7b69ed555b4eaa42af724127d24a8\"",
+        "sha256": "a0d4202a333d80513b4bad784fa8abf575d7c8596ab28cc0a3272705a1003266"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nsdcindia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4c9f1ff00f7df6930385bbad90ffb27c63d4c76b6f6f792d6b23ae4ea0662276",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/nsdcindia/3.0.0/openapi.yaml": {
+        "etag": "\"d718fe4cd1465a4d30ec958003741cd6\"",
+        "sha256": "a0a1a0cb2f8748621529347c3094fec08f417bf6e7e44b431c45e34e189f004f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/orientalinsurance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "10b43cd07b9ed8673364f01f0bad7688d483693bd9b16fc468db25cde4501404",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/orientalinsurance/3.0.0/openapi.yaml": {
+        "etag": "\"109c0da41a9659cf9bd14b80b7131e96\"",
+        "sha256": "7a85af79d33d323007ae8748c94a9c77f3dfa4de0c4889c0c3c17475e76cb3fd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pan.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d05d88eea601f62ed9d860c56e69fdb3053a7e6b7d256097aacfd1a28b8d6c09",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pan/3.0.0/openapi.yaml": {
+        "etag": "\"3c4b9213b9eab899e54962ac85cde8d8\"",
+        "sha256": "d9b2de58ab46d02273a4582ffa1b65e2ca0ebc85d27fcc65cae1799936af7a88"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pareekshabhavanker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d014b54aea4ec2ec9734d02a14c3ceec298d2a49d913fe72a91c649fe3d81404",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pareekshabhavanker/3.0.0/openapi.yaml": {
+        "etag": "\"85d121acfee1d105b7173e28ecde210e\"",
+        "sha256": "d9897bfbf4707bc490191816e12f533d75b3a646513aee49a90cbb3138028860"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pblabour.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e41b1e8136f782b6d163aec25f4488c544ef18052d1a2bc245e2121c29f2c57a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pblabour/3.0.0/openapi.yaml": {
+        "etag": "\"fca4c612b5266a26105072251ed34689\"",
+        "sha256": "2fd8bacb832d18f75e82eb4c1e8b9e3d76407ce1993e3ff82d6ebe6cc5bf573f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pgimer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1de948cf28f4593154c5ddf3ce2596fe0e3bdadad788c65a91e5b5021ab8446f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pgimer/3.0.0/openapi.yaml": {
+        "etag": "\"55d82d9ba421b044aa5b0e9f960ee6e4\"",
+        "sha256": "11b82701a4ab0da3fe1e30fe490f49c02a55074f3050c0038a3004b2e5e4789d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/phedharyana.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "595cc8b90b0161c695cc4089e5a7a8dcc33b50849aec4f491ccf03eee6513687",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/phedharyana/3.0.0/openapi.yaml": {
+        "etag": "\"2f6f80f79c6920c93c2c648885aa979a\"",
+        "sha256": "60ae89eb37400e8c9d557d1f5b429fd1c63a5a7477436d8566ede97ff474caa7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pmjay.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "57af418a8bbe26c26dacb0a343159bfb58758897992f5a4aff6408250166d696",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pmjay/3.0.0/openapi.yaml": {
+        "etag": "\"305090373f1fc16c7081ce1bd29020c0\"",
+        "sha256": "ca976e5926777d99b6f0879770db2a9bd974bfc13446f2123a5d01a9204b6fe3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pramericalife.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f59fc5437542eb36b6c40d2f9ff493611ce02efde24089e4855a7bb6c1408c4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pramericalife/3.0.0/openapi.yaml": {
+        "etag": "\"a72605acd8197fe5ec98d6a9171b6185\"",
+        "sha256": "b514366ff555477c683caa4d5284ea14334afafbc9c39784be1e3019387ddc5f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pseb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "163152fc67ba0c8e5b59514286cb392b50401cfa582d504c75e63465b8dbfadc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/pseb/3.0.0/openapi.yaml": {
+        "etag": "\"7a83de5d07d4e628db49813982283f09\"",
+        "sha256": "1ca05ff316d84e924d32810bc8d25e02fb8eb5803fc5d2c5b572c6d84bd59c05"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/puekar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e6283da505d7df70593154de2fe4fb1b85d7ba0ee3356f4a1c7f2de9a5311eba",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/puekar/3.0.0/openapi.yaml": {
+        "etag": "\"af6ff9d57e1d08dc474809a0db1c76e5\"",
+        "sha256": "4b5fb8ae6f9b4b7611e9f042f79265a1a11c24ad75826fe9970e570fcb6c10a4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/punjabteched.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6823141212d33993a2a0232dd7b2939577d0ddf4e5492139661f8a4ab255d73a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/punjabteched/3.0.0/openapi.yaml": {
+        "etag": "\"9dd033adfba5040729bdbb3b21eb476c\"",
+        "sha256": "6003a824d56361906b2e60d56d1d9c7990613d6f2058d572c3eb8f1d28198e2b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rajasthandsa.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "32e4b75d7315bd213a881e6d5968a8b30dad80ab17c09ca8e99dba52aca4e6f8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/rajasthandsa/3.0.0/openapi.yaml": {
+        "etag": "\"64b063c2736e68366cd1686fbde5c1a7\"",
+        "sha256": "d7f5de3aa0d380f67eb1b20de3c853429b368ec6d29dcf915b7a6a868259b65b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rajasthanrajeduboard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f7d92661d27c799e3fc8f1bbb1cd096378be54923af2f8c162ec5e1b81f2876d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/rajasthanrajeduboard/3.0.0/openapi.yaml": {
+        "etag": "\"f43717b7146ababd9cc4a1b8b8cfb8e0\"",
+        "sha256": "65a0c001efb04a48d5231c86b79079c2306dbe8da215762ba5dfc50dd8aa62cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/reliancegeneral.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "579ebf9a1259c30033269e237461a033b54337fc07add02b1feda4cd60866118",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/reliancegeneral/3.0.0/openapi.yaml": {
+        "etag": "\"0accaacacf613509b03cd9cfc7c48415\"",
+        "sha256": "07f987e11a4e34bfb87129fe5e6a11278a0f46227f385c49e851d5ed04122f3b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/revenueassam.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f94e74748c2c8f506989cbee60691c35d77be68e9244d465756e21145bf48d7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/revenueassam/3.0.0/openapi.yaml": {
+        "etag": "\"89c00d3314ed0cd0da71811f0100fb3c\"",
+        "sha256": "f4a5f3e03a892dc5620007880499e9e57c1f989b2e551fff170a0d01dd3335f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/revenueodisha.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cc81452f95634b9d85edc62bc1ea4112e2da2d5793b56ddd1f506e478487c083",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/revenueodisha/3.0.0/openapi.yaml": {
+        "etag": "\"c81261f60b22c65732025d8ad9f7ae0e\"",
+        "sha256": "92b125b6d2638790a6b35c3439a3b4d671f63c70392e7f40cbbd94fef7918695"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sainikwelfarepud.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b98ffbec90339cc4ca7bbc4139147fb564c58ad3dd635a993103502392db7200",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/sainikwelfarepud/3.0.0/openapi.yaml": {
+        "etag": "\"b581cce66fbe255b05b0aa759d0ab001\"",
+        "sha256": "c1b5c3120db834daf1f7043954d3f6091ebfc3c881944f38b028804ca7dca706"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/saralharyana.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e5fdc90be6b4de25acc8d48d9e74f62b5d23eb0f45b20a783cb13cf9d321079a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/saralharyana/3.0.0/openapi.yaml": {
+        "etag": "\"6c0c1402335f42fea31d6ee834f5d677\"",
+        "sha256": "3bd39ca2187f70b516e5785a2d36d6026166a1d4ab0276093eaa8848e03c6bff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sbigeneral.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cf6dd5c488eb013475e913f068886cb963cb8870420fc4644292fd42b8992436",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/sbigeneral/3.0.0/openapi.yaml": {
+        "etag": "\"ac354ba9638985a0ae42ef545bcfccfd\"",
+        "sha256": "2355776645abe053ae5e9f266e234fc9669de575e0030c4dc9c974f14dc0dd3e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/scvtup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5c7f4f63903f9a6cd2a1588f94fa37d10f47a54f27413ed86d11222a5ce80b0e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/scvtup/3.0.0/openapi.yaml": {
+        "etag": "\"68c2434e5dfe5f9f177135ca57677861\"",
+        "sha256": "cdfefd4a48ef1551dc779ea5a7d8b7a54513e4f0cf4d5d218ab7b4f882a0e2c4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sebaonline.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5e9b1e70b2f44680d269cc09a2ddb37c8aa52ce8d013edb2f1ad1057b966fff1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/sebaonline/3.0.0/openapi.yaml": {
+        "etag": "\"c32495273d9e9d3ef5467af7c50add85\"",
+        "sha256": "0af1354d881db65fc75e19d3959a3c5094b09bccc0bae8b7501e7b7992fd072f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/statisticsrajasthan.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c39829b86014e4eac076aff7c12220fc1ac373457028dcc4a1cddb53fbad7b8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/statisticsrajasthan/3.0.0/openapi.yaml": {
+        "etag": "\"99f34039b4d5ddb4bce463ec1a1b4234\"",
+        "sha256": "e23e13c068c4546b184fc39d476374008fad94de79b0a32c28abe5969cd0a24d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/swavlambancard.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "82a65ac955d3fa43aaf0ce3f21c0c4f43dd8d895e317a1e0369c605332d0c8af",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/swavlambancard/3.0.0/openapi.yaml": {
+        "etag": "\"b1b5f6872e74db260d80a721813faf92\"",
+        "sha256": "a41c436189133caddc0d2a156632ed278606b8204745feb02f268288dfcd91c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tataaia.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bc71c48b484f0de0c039283225e8604edee817e6bae84a26f0bfe6cb0777d27b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/tataaia/3.0.0/openapi.yaml": {
+        "etag": "\"297932023edb80e5ada54cef1a2db0b0\"",
+        "sha256": "65d376c5be123b20e1f445c10841c9a6216a3ef27f7256d798976893c0140912"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tataaig.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "755e02c565997c44c0e5bf43005544ff2d492ee3dbc87dbfc9555c4076346e92",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/tataaig/3.0.0/openapi.yaml": {
+        "etag": "\"19a8744c849b17e308d1739ffcbaebe5\"",
+        "sha256": "52953b979ceb47847cbdd63229e684d7ddd43789734c5b558affcb7a19251aed"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tbse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7405b329ab0fc35facb5fd950c37b7a26265292ef709548fed53aad6a4a6cd16",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/tbse/3.0.0/openapi.yaml": {
+        "etag": "\"9fd4540faf78a932b2e0b44444d6c61b\"",
+        "sha256": "9738f4370a1458ccb7f4c51721ad0b24953cadc74c08e569ee6cc7c37216f7a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "36a805b3ca6a43c19f1423d936a1e9b74e79aebb290867f8cafbd3c6d4ff093b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transport/3.0.0/openapi.yaml": {
+        "etag": "\"3609c7ecca300e0e246cbd31fdf8111c\"",
+        "sha256": "8cac46cb34f714bac57d459d4832881f0a732728fd78eaea7e1b37dd2dc40156"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportan.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5df62713a708cc041fb066ef83cf04f50e98563b4eed4350fe49202baf6a58e8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportan/3.0.0/openapi.yaml": {
+        "etag": "\"709fdd7184ad39d4478da9ec82a20b85\"",
+        "sha256": "9962ad5ecc2aedb0bfba2481171b99223af27785a971f0d818979d9b904cfc1e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a1cd952f481f90ff48cd05e280195d9a55ce6ea7bbf34c78a091e853c6863007",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportap/3.0.0/openapi.yaml": {
+        "etag": "\"7bc3cbfe4cc4d50d04531768c89d172a\"",
+        "sha256": "c64a581bfa12b7bc8a53cd9b9f85630288f69ab80014f81f1b22e7624cfb7652"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dcdc7feb807e4cc7d684a7acfe87f4abe2349a9a07475a5020456e25c844119f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportar/3.0.0/openapi.yaml": {
+        "etag": "\"e6723fe80f13414866906ea60be154d6\"",
+        "sha256": "02b3cabe7cfb6c4ca162d802c67f1aab42929639a6cc4ca044c02972aeee325d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportas.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1e4a80a9559505316baa04bc3d72c5f1e37bca87820ee08f8120be19f7d75c1a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportas/3.0.0/openapi.yaml": {
+        "etag": "\"32b8f3b6c1ec77fad1d6886401118e3c\"",
+        "sha256": "af817bb2452cc87a130da871814c2290b50a12c7fbf1ce0ad747172f66acb91a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportbr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c96a931c1ca81277e4f42974762234397ac529084a15e44f5fd6101050750f2e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportbr/3.0.0/openapi.yaml": {
+        "etag": "\"d30d05b63d89a150e58927dac3e5fa18\"",
+        "sha256": "bbc05da885e98cb8fa9c30390d3c9bf39ddedb1040008a0869c54881b19299dd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportcg.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6c4e69767c246bce6f86bb48b97cd0acb189912b32f509a552d0e546886ad268",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportcg/3.0.0/openapi.yaml": {
+        "etag": "\"862cf556ddb8746f2bae581eff357f3a\"",
+        "sha256": "7f5c10ae5bc8ef2746f4778771d7d96582a961f088c246f843567e2f3fc5340a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportdd.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ead7a88fbc166638fc75049a7e0dbb66addb96516ac33cc5a20af2589fe9c6c7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportdd/3.0.0/openapi.yaml": {
+        "etag": "\"6fca911a7cf309a5742b4e0d8f1a7145\"",
+        "sha256": "c76c1684ef46db110c5d8b3d3a6889efe599c8c1cac34d182e24a6453cc7f835"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportdh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f5870c47c0768fd405f49c97a094feaae5c5969dce2768469b323d96a08cef40",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportdh/3.0.0/openapi.yaml": {
+        "etag": "\"9a820c3683f0a68c513d9a774c04edb9\"",
+        "sha256": "7930ac8f84dbd4ee8323de7e0f220c2cbb4a6cec61b5f3a1e5df945a64a7a2f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportdl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab879a3e2218c2447ab264033249c5c594cf73b2ce81891fa51eba32989188eb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportdl/3.0.0/openapi.yaml": {
+        "etag": "\"12f01a308cd8bf4f7ff6bb1948de63ad\"",
+        "sha256": "8726f82d6cdda0ad177d4680fff53c6f1aef7bb1c42a7f2707ad5b6da7a9d959"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportga.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4d5eb06afa8ad4a07720cd84cfed47feea24ebf473552c17d4b298acffc41c43",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportga/3.0.0/openapi.yaml": {
+        "etag": "\"b60f391c7c33fb44e704bc6f34f7b382\"",
+        "sha256": "838af05134e5a2766b0f243696c2a766307ad653f972582eeec0a5cae0dc85f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportgj.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "acf9e1b38c0fd1d9102d76419a17a84f6393cc9f15828bb7450eb64d4bbb6341",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportgj/3.0.0/openapi.yaml": {
+        "etag": "\"d9ffd132efcb3b8155f4844eecfcd079\"",
+        "sha256": "a9e08ab0f94ac2ed6f57e90b95acd003d297994ef3cc2a0d938798221ef636d2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transporthp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "551c04033001be6eb2b7f8a009ed6a5787eec9ec49cb972b449d56fe89533ca2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transporthp/3.0.0/openapi.yaml": {
+        "etag": "\"fbfe6468ab0110890ac54b83b4842c12\"",
+        "sha256": "caa9554200cc84a153cc7d9cd698cb8da0753553a857e63c0c83ca9b3fb9a9a4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transporthr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "176cf43dbf845489eae22218badade0d59436127405dac85159ab1c90e081cc5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transporthr/3.0.0/openapi.yaml": {
+        "etag": "\"bfd3e4311e35668a5a68d986a93ecdfd\"",
+        "sha256": "24cd298c7d6b2efe300b32507fa021769107db9992f37ac02184c5b63a99731d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportjh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "53c04e6b74133dbf2a4027107d866a55ae93fffd36b7560ec5162e577a361f2e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportjh/3.0.0/openapi.yaml": {
+        "etag": "\"c7bb92a255648dcfc871ede14deedfe8\"",
+        "sha256": "59edc79db8c979dcab3fd094089ce7fc016ba1a85b5979b14946f209b85f39b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportjk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eaf0580869664f55e0bccf6f66bcc3f93ab6b003ba724a158ef9f2ff5b6c43ab",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportjk/3.0.0/openapi.yaml": {
+        "etag": "\"4d5ac03e1118a05d5ca3fc57a67c8182\"",
+        "sha256": "76c2eb816ff07876bab66ebac189f7263f6fd197ecb90d35a60031555c3ef113"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportka.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "267872434daa54c2fb120fd1a99bbe4ce27cda6df286442157283d328aeda9d2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportka/3.0.0/openapi.yaml": {
+        "etag": "\"8249c20a6cfc3973030dd01d52ff8960\"",
+        "sha256": "aff5dbabd130cfb4386666216f42d2afb86456b396501a66acad948bf09fc9c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportkl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e80876c450f772ebf2e2307b3865ec3827b89dd64c2c2cdfdafb3d9cf38a0fbe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportkl/3.0.0/openapi.yaml": {
+        "etag": "\"f70daa5f3b13da0f270d7a54ff7d6498\"",
+        "sha256": "7111a812868a5c42255d1a8dda696e16202635d3ea334328f7b11120238d90b9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportld.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9db2c1d703436126e04ccb492ae85b0330017b9a930ba699102d49ba1b4d80cb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportld/3.0.0/openapi.yaml": {
+        "etag": "\"05c1388f89aa2db5ffd835a8f335d6b4\"",
+        "sha256": "b260e4be8ada6680080e3fbbac0df10a674c62f145d24affef0ef17e9ef65f7a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportmh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7da1bbbf965cabb2672bb77263930cffe2f8b5b88b3a4793da3eaa262f0c0328",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportmh/3.0.0/openapi.yaml": {
+        "etag": "\"a8e48b449e2c7156bc60719cbb11558c\"",
+        "sha256": "ab47f91d7c95362d74e8bbf232ed2d41a4114d93b6d999193f0b31c8aecf8055"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportml.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ccfeb34deed8fc1a978f388bdb85fb56f295fc7e50a4686e2a56363b05d8d352",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportml/3.0.0/openapi.yaml": {
+        "etag": "\"886801dd7b030f68287e7a646ac6ab08\"",
+        "sha256": "97d3d5833fb0a65da34acb9a53857a3bb7214b3464b9165506e41f4486e130e3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportmn.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "77f6664158d1fd45025387fdc04f62c422f67f3d5f38d13e4f0f3b7e88fd52af",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportmn/3.0.0/openapi.yaml": {
+        "etag": "\"d728c0a7c80b1b23b2c9ab69ce3a9d93\"",
+        "sha256": "ee0cf6e565fcacddfa6880ff4e6c916c16bc30b49327378222e215d30b991527"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportmp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "688d37ef18ef5570cf642bcb6f47ce53633849078937ceaac47722ae974c3d2c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportmp/3.0.0/openapi.yaml": {
+        "etag": "\"7ea3c9a7a4dd52cf14039438349833f9\"",
+        "sha256": "5658abd82edb31ed3620ef4ceb6f8e24dc84d1debd533f24b28d1a96b5d66ae3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportmz.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95996fd4d62af1a48fd083c32f6aae8df25c23402058e4487894d342f1978c20",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportmz/3.0.0/openapi.yaml": {
+        "etag": "\"bda83d99f0fa2db7dc8dbc599556735c\"",
+        "sha256": "40a66f840ab1e39eb3b8257cce322f910289180bb16befa930965d3008efb220"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportnl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5f42cf9effe8e1a58b1bbdb65cc818f6829ea715ae0e72eb76bf41275ba39bed",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportnl/3.0.0/openapi.yaml": {
+        "etag": "\"3af97008c5496d43319aea8b950a29d5\"",
+        "sha256": "533f6dd55624f31ad7c87070f1fadb6239c89c7d8e35ea3faa5d31b7dc7bdce1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportod.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9755997750481a149e1497093f2c67784246a84d7dc59a3b63bcc1d718bd1aff",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportod/3.0.0/openapi.yaml": {
+        "etag": "\"fa7c50e5903ac527273ee111125dfb4f\"",
+        "sha256": "6935fc109973184e5c2b199b27934fedfa7bffdf0355f42480e475f5238e9a57"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportpb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7879ba1a0adb797ebe2b0e954771b58b02c6c56b44f82c0796aca7e13a3a17ba",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportpb/3.0.0/openapi.yaml": {
+        "etag": "\"8c8a4ea2a3545837cecc769f7e9dea52\"",
+        "sha256": "6b02a9ea2bb1144899ddc787651122046641a6ed53ff2a514c4cb6d577a833bf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportpy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "740c3c0eade50aa3fcda1eda468bddbe449d9bddc252b0960d03bfa788f2907e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportpy/3.0.0/openapi.yaml": {
+        "etag": "\"3e35f3440d2bff38a1cfb3a3ef20e498\"",
+        "sha256": "3c77a4cd4d519ae48a9af85771ce3d92fff5239688bb0690fdb0a686cd75ae81"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportrj.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a85647bf0ed680c1819c346a71d121862a598f5957bd58371de4393ca455fd0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportrj/3.0.0/openapi.yaml": {
+        "etag": "\"a2b75a44d505cc12ca7e9ee437080b09\"",
+        "sha256": "8aac026a0300c648b59da4c1ffd80de750160f2fe9704444b41226356fe54228"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportsk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "59622b6c70b0664673c682df55404dfb47b777d1919831c2c712aa8dcae9d953",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportsk/3.0.0/openapi.yaml": {
+        "etag": "\"01c8fb73ff4a5d178fe9830faab8a8d5\"",
+        "sha256": "6e14c46e6aaa6c0d13f2ee153885f62c041fc47b8758debe8ef332aee95cfacc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transporttn.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9075bcbf659a5d004ac98f3d19d245b0d5e71dbadd8c4725d35f08dffe6aca01",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transporttn/3.0.0/openapi.yaml": {
+        "etag": "\"7056339634398c2348be724d359d2c12\"",
+        "sha256": "7db518d23317d1a41ebea7f83c6199e5688e5255b07fb2ec42ad19bbcbac078f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transporttr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "28975cb98e53ccdac354b83e7321733e4a78c0452cf8365cf9850cf183fa5381",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transporttr/3.0.0/openapi.yaml": {
+        "etag": "\"bfba24650c6a8bdea306f2d1686a946c\"",
+        "sha256": "5fb3c592c8a7887c653b2b7e1d030240c9c7fefebe394edbd0132a3d4c12076f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "78437d3c4a177958fc2b34901cf4db8e98dc34e9f8bf2039db27e77687dfa62c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportts/3.0.0/openapi.yaml": {
+        "etag": "\"03e927b60eea3f00cc2e4a5f59ab5aeb\"",
+        "sha256": "148742bcfa8d7c384029b0c3346aadbb1cd8c45b612f8a8b8bd9ed8aa9a4f1eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportuk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "12333eda291bdc5455e7f52f50f9e726e3e072a13507ce70ef4a365716c0a2d6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportuk/3.0.0/openapi.yaml": {
+        "etag": "\"b4988b7c70edfc1c2abb9c1e35ea0850\"",
+        "sha256": "a4ccf024b628a72bea5f2855b2297a959d1b523cfb4e5a9b77fb0a71713bcb0a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0dce8956e1d8b21a71da5c67deabadbbfa335a54c1d7a2ee96df4bdbd15f28e4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportup/3.0.0/openapi.yaml": {
+        "etag": "\"698e67f409489954c814b124af42e87e\"",
+        "sha256": "61e0c54af96811c9a171ac7d58d8902189025ffeee548672a9690ecfbaa6a928"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transportwb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "776650e6e4de5a9311d3872cbfa1b9afd79176ab749b48f4a3ba3437d3dda950",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/transportwb/3.0.0/openapi.yaml": {
+        "etag": "\"440a5b8c3cf5f94c7030c792a287ce80\"",
+        "sha256": "f06a8806cb1543f1e602cc34bcb444cc18cb8adcf88e2775c013ace66519d121"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ubseuk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "64ca0febb37147249df1f2ffac0913a6bb225b445383a4fca9406851cc0f2e6c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ubseuk/3.0.0/openapi.yaml": {
+        "etag": "\"93c1ad4901af6f8c834aaa27595e1a42\"",
+        "sha256": "9a6a139fe2383ba75f30a92e9633b3d87dd0f1dd566ad58182212f32c874da55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ucobank.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d6da7aa111a8b4dc4a3a8a719d76b000707c1729ff1e92a0a3e2e45328a34755",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/ucobank/3.0.0/openapi.yaml": {
+        "etag": "\"292eb17053616594be15a137609c6430\"",
+        "sha256": "5052b91d6cede77412803a0ded8c2d35ae3f7a625ed8c9d5a33c737c104677ec"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/uiic.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c4508625e798775099171186afa41b164d2ab16c989eb4eb08642972cd759bd7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/uiic/3.0.0/openapi.yaml": {
+        "etag": "\"c0d4e6bf2a663fc4240286792264ed21\"",
+        "sha256": "875a89da8723ae496877f8cfde1c0528dd1321688d6666ed8deacfc05dc0189c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/upmsp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d93254f196c62d681e32e56fdf51d537b02f419c75ccad1105e10745a6d10640",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/upmsp/3.0.0/openapi.yaml": {
+        "etag": "\"c0d20ca91e500e2dacd717ad4bd5fdbe\"",
+        "sha256": "77d0314922e982d00b2b26531d35824531c9d3986c0c0e93a7b3878e35b841be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vhseker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5676800b59fd3bdafc0b99c969fb3cfa62968832107b05d442328cbddb53bc6f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/vhseker/3.0.0/openapi.yaml": {
+        "etag": "\"682af29543885e54f759a4218ce67303\"",
+        "sha256": "7a861426b4ee6e129cfcca39b324d9a3567cb87ffa49aff0675ee2d88a4ef5eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vssut.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f6855d8a8725c9a01a4e8883fdcee5837f840a82d5626f282effdfbe246a980",
+    "sources": {
+      "https://api.apis.guru/v2/specs/apisetu.gov.in/vssut/3.0.0/openapi.yaml": {
+        "etag": "\"1e1d0efd9e814465bb2aa678b07f0479\"",
+        "sha256": "8facc3a507b9de57988a8b05eced08c57bb909135649533c87b3293614dfacfd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

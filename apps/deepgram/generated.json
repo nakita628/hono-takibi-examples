@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a666785cf65aaa3351bffb1565d5e1ef0ed443dd20477ae7c2d0db3de6fce268",
+    "sources": {
+      "https://raw.githubusercontent.com/deepgram/deepgram-api-specs/main/openapi.yml": {
+        "etag": "W/\"aa477fa7136775940ab99fa199aa235941b6b383233f3c1b53f82469c460842c\"",
+        "sha256": "3a5eba59cf57e18bb39518dd1f51e4f5578f695bdcbb5ccd5ec0fe66552caad1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

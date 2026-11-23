@@ -1,0 +1,137 @@
+{
+  "configs/abuse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fdf37da69a674f996d5a5b87ebada71f66a3e3e56c5f04850047b0cff2feda99",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/abuse/1.0.0/openapi.yaml": {
+        "etag": "\"07c97bc67b9ec6171d055a6b79792d9b\"",
+        "sha256": "414528335cc5bcbf9f65bac003db3db7a5875d8a5d879f79367cce1a2f5cc0f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/aftermarket.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "16df8bc6247908f2e3c90aafbe8c45057f19fce90f8cc249261067a28070b96b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/aftermarket/1.0.0/openapi.yaml": {
+        "etag": "\"e4bf94ac9d5257ee951680b7c8264da8\"",
+        "sha256": "bc693fa4bba503c9a5c0683f502389ce9ed20d08eed0db9ec3897f4087423795"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/agreements.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "61fc43f76d8cd9bbfc5bcf2e6618d3fd72c4ea8d082b828f7a625238ab194fde",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/agreements/1.0.0/openapi.yaml": {
+        "etag": "\"d78f651be96cf2cea1ee24daf4af2fc1\"",
+        "sha256": "79bac18f0813a906374f1a55a07b6bfd03252896fe4681ab7a379f501b7b325e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/certificates.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "48cf8b8fa902c4548e9ca4ce9704d0b4d0ccbc78741ecf7347b40cc019c1b8db",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/certificates/1.0.0/openapi.yaml": {
+        "etag": "\"e9ce9ea712f264999b1f7e454ed59d72\"",
+        "sha256": "246cb1c9d0cf7800d029ee2ffffc9d733295fbf26d0f0cdec2c9687cba3fad61"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/countries.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e6da4a91c18c26f23a886721ebecaa9d2a408dc97b00e24523e0f712bb66da5f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/countries/1.0.0/openapi.yaml": {
+        "etag": "\"65d3ef3b0e6caf5d6c527ea5c02f70c4\"",
+        "sha256": "8d8920b5815dff570fac780b463f43fac22768be889d79d8915e9786707c7651"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/domains.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "abf14063cbd64c799c677756ee136d6c2b1330f84f38fe7085a4019304bd1d9c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/domains/1.0.0/openapi.yaml": {
+        "etag": "\"0ff9044b6e2fb3b25adb7023f4f44fbf\"",
+        "sha256": "e83e5ebbccc1577f8fceedebafdcc0252d912bb4fd4c89de816dbe5bb35d4514"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/orders.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c855b01eff3722c80153e1f7b1791a3bcdad9f0fab3aba30a8f5f89be4d325c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/orders/1.0.0/openapi.yaml": {
+        "etag": "\"bb443a863dc7e46d7399dec85f5a67ba\"",
+        "sha256": "b70d4bf39446c16d1ec3af371cfc2da355037d482d929409de4435d81e3ca103"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/shoppers.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "28ae52234fe7947d1c2240114ab5e47668163f98e46a42b1d7360efafc33138b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/shoppers/1.0.0/openapi.yaml": {
+        "etag": "\"fa2769fca619f9fa4e5281b02a875b57\"",
+        "sha256": "e7335dc80bd516211ab5a3bf50dc73351d57774435327eb5e8d15dab5c8532c1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/subscriptions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f7781eefb6d87241662441a467443253f6875092a615d1d7f4d8c9fb9bc3e67",
+    "sources": {
+      "https://api.apis.guru/v2/specs/ote-godaddy.com/subscriptions/1.0.0/openapi.yaml": {
+        "etag": "\"934d98ef74b0d41aaa1ac88730cc14fb\"",
+        "sha256": "82b0777d4aea61cc2fe3b30365a6fb44913243b652418d1a45420618c7943085"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

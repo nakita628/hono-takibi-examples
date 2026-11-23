@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "98775f9d481febf5f3a3ad6f323bd9dc991bbf4b3be41023197e25291d9b403a",
+    "sources": {
+      "https://raw.githubusercontent.com/e2b-dev/E2B/main/spec/openapi.yml": {
+        "etag": "W/\"b2a3b194a41325d06138321d70f8d09d3877898c29b06a504338cb17cc620857\"",
+        "sha256": "1c57cfc8a488de39403dd5280efa54aa5a8fe63c5c74c3b4678d4138ac0c32c2"
+      }
+    },
+    "typecheck": {
+      "errors": 4,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×4",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

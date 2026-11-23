@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "573afe62499da1d1fdf05e1d108674f98641b19c7ca16f5daebbc55c4afaab36",
+    "sources": {
+      "https://raw.githubusercontent.com/netbox-community/netbox/main/contrib/openapi.json": {
+        "etag": "W/\"b3f20106915384b3f82f56c9d3857905d9fb5d9c1d46897bf14f3798ec471409\"",
+        "sha256": "67dd18f582896e7a2d24d8582b589be7d0624acefc9c7db0cd592c8ad7721e92"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

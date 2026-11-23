@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "dadacea6f9c8bc15fe9434f0d87a19fabcd56caea609b7776e775dd0e042c314",
+    "sources": {
+      "https://raw.githubusercontent.com/wazuh/wazuh/main/api/api/spec/spec.yaml": {
+        "etag": "W/\"f9d63bd25acd399470ec8a3cfd6734474d2525c47b3e53b182adb8f292b0fae1\"",
+        "sha256": "48ce4947931d80ced8cab4fd80665aa1f28e0618fc1c616d949d42ef25445a13"
+      }
+    }
+  }
+}

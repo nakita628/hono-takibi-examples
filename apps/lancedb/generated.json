@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4e19b04da1e4c7c71f0d8bf8a0e0b3674091e7977073e675280450ce2f18b8a0",
+    "sources": {
+      "https://raw.githubusercontent.com/lancedb/lancedb/main/docs/openapi.yml": {
+        "etag": "W/\"aa12696884977f49e68ed06d7cbef561d75eb7e84c04a67515f6428b9a35340b\"",
+        "sha256": "3aee921acaa50d5f5597d653b6376c64fd2de8fc6066bd9199bc5deb5c702124"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

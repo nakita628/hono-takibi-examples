@@ -1,0 +1,1832 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "91861e723019c962cc449298708172ebdeed15ea3cc5ab783d92eef1e5cbbb23",
+    "sources": {
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/examples/AbortedRunExample.yaml": {
+        "etag": "W/\"8419e6802019f9d5bf72757b76389717221dc398f97eed81620ef4560737db53\"",
+        "sha256": "4f33075bdf74adb0be1714c5eea57ab6c6315176854276a55f59cbb31f38015f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/examples/ListOfRunsResponseExample.yaml": {
+        "etag": "W/\"f4d2058ac633d9402c2f75c9f00993372e8a35d4f618a2992ec3be1e671da1e1\"",
+        "sha256": "bf2e2c7478c462882da38ebf139a2b84871212e31c737ea4d78f4fe69552fb41"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/headers/ApifyPaginationHeaders.yaml": {
+        "etag": "W/\"7031dde29eade09f461119912b03b079ab3661dc805291e5f965b2ebff3a56e4\"",
+        "sha256": "1af2001036736228812b114b193ae15d413d9ed9d68197ca3d166396ba72a273"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actor-runs/abort.yaml": {
+        "etag": "W/\"35954be613a437b82f31f6b1e3c91e4e1cb649b27be684d96e78ec7731fdfe0a\"",
+        "sha256": "93b699bda17389be7dd8d32ef299f218b0d50e97deb7dace4b589a46fd31c386"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actor-runs/charge.yaml": {
+        "etag": "W/\"8c3634e160e8c9223276b648c4582d706621720fea3060be7573ba12f739673e\"",
+        "sha256": "b26421c83ce486fa6006137c4ec5bc0d5773ac6b49effbc8f4a2af3161342284"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actor-runs/metamorph.yaml": {
+        "etag": "W/\"2a1b12cb3562f04d5757b7f187bcfdbac70695bb6e91596325571e48d18f8331\"",
+        "sha256": "6f13f1c546fa4ed6d02472aa2968728d7cc7f9126b7d3d19d7f0832c22faf821"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actor-runs/reboot.yaml": {
+        "etag": "W/\"ddc868efbdbe9eb282a261c39f8b920710de60f7a01f817b26a1fae1aa2eeaf1\"",
+        "sha256": "c05f022a626b163c9a38062faa3c192f7d0e46ac7dddc62fa8edd7ad321a16ff"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actor-runs/resurrect.yaml": {
+        "etag": "W/\"51850f8aef6f260a02ea4b7394ebc77debfb6800d7e17ec9141687f6f3595e6d\"",
+        "sha256": "7ade2e8f000c49314c11039a3bb280765f92dcee776a8673c3eaa7c1748ef8ad"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7D@env-vars@%7BenvVarName%7Dput.yaml": {
+        "etag": "W/\"8ea5b87960933dcf26e919758d6eb74b812054e76dd674008e4642b2f589fff4\"",
+        "sha256": "c3eceeb2a17b7af3ef01508fd16008417d443c0e9674d17f07c47f0724f422a5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7Dput.yaml": {
+        "etag": "W/\"1b378aa5554a3b35f3c2976edc59868137051a64737e490c338a96033b5f5402\"",
+        "sha256": "8040e0feed301fa43805263cba224a06d1ae5cbca2198a45a153bf000ef0e76e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/datasets/dataset-items.yaml": {
+        "etag": "W/\"2ab200307f4ac307b4c3f558dd394842daff517a0c96608689b6cb87464fa880\"",
+        "sha256": "3c1c6f39171cc2f3a7e777476b7ecf5e0a14799c91d4a7a62f7b784699cc53b9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/datasets/dataset-statistics.yaml": {
+        "etag": "W/\"f2eca069ac3a189a71d73f469015c012922af55c65bc1b55c2e4c2efd4bf2177\"",
+        "sha256": "2ad3249c1be2d58ec279825b3d096c15519fdca798b178614c61fca934db5b16"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/datasets/dataset.yaml": {
+        "etag": "W/\"c744058f65e8c017a9f0c85bef165756351309cd9b881fe9b70fd7f9169f2476\"",
+        "sha256": "f1352a5a348c32cc25867fd7df094552b9b72fdc83f48330ccb0d8f37c49b97e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/key-value-stores/key-value-store-keys.yaml": {
+        "etag": "W/\"5715fefe73dc5a86eaffe4d5f2a944f64023faf284a6bf2edb82db66c1e7f9bd\"",
+        "sha256": "7c0f82c0386361ec36f9751eebe2bf95a74abfb822138d0fd7bc4fd158082596"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/key-value-stores/key-value-store-record.yaml": {
+        "etag": "W/\"0e6d9eafc2aedeb69ae0c4cf4694e88498024e1ffd9ef43af161e2f836b3b043\"",
+        "sha256": "4ccee6de7a309a145fbbb1c339ae99e833ab4244d2c9d0b969c57c41e9fc44db"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/key-value-stores/key-value-store-records.yaml": {
+        "etag": "W/\"cdf643889934ae9c50ac5733bd501f678cce8a57fe164cebbaba3f75b6f9ef21\"",
+        "sha256": "6545482c6a03b2b8d2d7d6c715558bbe26e1544a478c3f5e64ecc42c90cf8c88"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/key-value-stores/key-value-store.yaml": {
+        "etag": "W/\"ca95a9ae6b5ce932ee4e559597ab87d5074cf7f84957eed58f895d6a37623740\"",
+        "sha256": "810e73af1fb674c59d32468245fc04f7230d8503f1048913079c8d9e4cfeefa4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/logs/log.yaml": {
+        "etag": "W/\"f8ca695a0302fbce0c9ef7254533b26f61b61ee71a2dc024c3808856ff70d77a\"",
+        "sha256": "2941581273579d3bf3248be435ff0b1b72fee893d3ff76b83e7cc61b240f3a58"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-head-lock.yaml": {
+        "etag": "W/\"9e47300e299e99c92b2620533933fc43d1fcb2d52b25e5e81f3790e571a438c8\"",
+        "sha256": "0199ae7a0cc1728f89932d7e831ee4be05c5326c10f8813295cac77fc43410af"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-head.yaml": {
+        "etag": "W/\"17ebdf47dbbc0447e83af6114e48db4aeb991ba5d75bc3fdf51de29eedfb0b6f\"",
+        "sha256": "4f910fce4a08eb1b6b8e887131025a72fca11fd1f1b3072b912ac1213cf41c19"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-request-lock.yaml": {
+        "etag": "W/\"503e777292d97e2d91701837f6f7f10d938ed753d34c61a3a9071918d6e14dc7\"",
+        "sha256": "c67f613351b6f1ea736898d3ea3c00ff3b7406bbbc34ab8830377996fa7f8b94"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-request.yaml": {
+        "etag": "W/\"72f76047d91c5354e6b5776bbd08b718f07facce9145cbd3ca0db4022c2e8f0a\"",
+        "sha256": "00bb3f7946438f457c9d3b8d7f3a6c11a37b13aee74c5ba93eae7649ff3b446d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-requests-batch.yaml": {
+        "etag": "W/\"92274310824cb53895cccb57d03f012ca86d6cd03423a9bc3a782bae20109761\"",
+        "sha256": "d1664872b4267fb61f5e6769f90c6d721224cd42789b4909677ff768b3f35f34"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-requests-unlock.yaml": {
+        "etag": "W/\"f44e0afe503b006102182af4850a4b7b3f631c25180d04d671926e239eee0889\"",
+        "sha256": "e914603f77b5bf0afa71693817650022dc685f8afd23d474b7b9fd23aa40034d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue-requests.yaml": {
+        "etag": "W/\"cec8fff145270fc5ee0d62fd290e85a2d4a056230e906406e56d0a705b052e96\"",
+        "sha256": "a6778af7fa2bb490e2611b5d8db5942185c4abb1a8812e0cbc0cf6cc19ae5b95"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/request-queues/request-queue.yaml": {
+        "etag": "W/\"7f055ac95d464681ea1749748312d04bdf1808076aca6361ff2d6a2e71b94a40\"",
+        "sha256": "65173f5a80b46c7739e810801d109b0b3f975bafafc1584ed49d908933c9ebdc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/objects/tools/tool.yaml": {
+        "etag": "W/\"5397573687c474d29cad771f93c170b61f3c155ab321ff4f39efea7b8995c2d1\"",
+        "sha256": "be28b2d61575aeac2b9f47bd4693eb5b6a08860b1cb88eac5e8bcbe1108c96a4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/datasetParameters.yaml": {
+        "etag": "W/\"deedac43585c7407420c6528dbcfb95dab5c5670d05c4bb012757fd993956d34\"",
+        "sha256": "568ecbad3fa7e9ab3c79f8e4867278056da162f85197c59e612a4f88873fc31f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/keyValueStoreParameters.yaml": {
+        "etag": "W/\"e0fbe509cd076b95caeee1560e0501af7781b1f8835ad3f31c7e00cbcbe0863f\"",
+        "sha256": "bc474c6868e31e06d5bf98a669b76c460a2ba94abcdce9c41db8d38409654f95"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/lastRunParameters.yaml": {
+        "etag": "W/\"4a4cd564bb2d76022a89f2cd461ad8580919fc1fa215467ca2c34f438a163627\"",
+        "sha256": "19b3525117211d9cc3307c79368f8f74defd01a6dcf6d5425f123b63153ddc96"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/logParameters.yaml": {
+        "etag": "W/\"1bec97077944bdca10b7fa4077bd51ed281f1867d86b267741e1b0e9988d1b94\"",
+        "sha256": "63044728d2bf48938f50cc316f6a7339483692785b4e252ffe69278c7ed7d5e1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/paginationParameters.yaml": {
+        "etag": "W/\"ece84964cac4a550340fe8abd524813f6288fbc92959db1dbf2699fa46da1397\"",
+        "sha256": "1c32c683c318a5424f7a418626141f741cc75042fb9626e87a43d20f9c98db72"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/requestQueueParameters.yaml": {
+        "etag": "W/\"82fc0472493b6c3cd240487b32c250175c1cb2fcb98c2d09fe1e542a1995ef30\"",
+        "sha256": "6d228138ba1e0a99f4e5b23dd600a64bba728e7e651b0d545b7848522506c2eb"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/runAndBuildParameters.yaml": {
+        "etag": "W/\"cf369d333bb378fcc57724c96d7d330efdc1f1be6406398bb5037d542d433d7c\"",
+        "sha256": "2fe1bd1aefabad3f7b4bdb448f00e0b11d33754aab31b850d1144bf0d7e7cc67"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/runSyncParameters.yaml": {
+        "etag": "W/\"c2a745df9b51b71059de748a7b2af44947b35f523104863c7939e0ba6fd25bdc\"",
+        "sha256": "be76f5d963390f214fedcf8bec8b3de630a28be3f4fb6e5efec7665b4dbd30c1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/storageParameters.yaml": {
+        "etag": "W/\"d6f954cbf5fa76c60ce515c0bb9bbdf8c2642270528b22532f82fa0a5790593f\"",
+        "sha256": "155ae2e78f994c9f03c15699dfd276215595ee0404383ef1b0ae6e559ef5c63d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/BadRequest.yaml": {
+        "etag": "W/\"f1ce2915d44dc472748687d189ed9420df5a603cffb7888868c944726a6b62ad\"",
+        "sha256": "d400159d1213b078f608353a77712bcab883a98a5138d4943c3c569343a07e5f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/Conflict.yaml": {
+        "etag": "W/\"3f1393c691a4bebb4a042b639fd55d1f8514cfeb7665baa2065d484c19b6ac87\"",
+        "sha256": "c46ac30f391616b80221dc3d2235ee53a119ae4ff72a7d5ccb4817b97e5b29a4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/Forbidden.yaml": {
+        "etag": "W/\"351cb36d0df2bfdf1f7971309eee0296110a65114d6b77f295605844061f99e8\"",
+        "sha256": "f47c39c53a467ac33ce1b71c20d1f915fa9acaac5f6548d2eb43a0a86881c838"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/MethodNotAllowed.yaml": {
+        "etag": "W/\"beef1b5414e1baed46c9d55354319acd1050a1d7fbc31cada6d3d7056ca4121e\"",
+        "sha256": "e24db8eeefa8fb02a43f032ed44a22cf4d8d39beb55a7746fdb2e72722619643"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/NoContent.yaml": {
+        "etag": "W/\"7bc89f134f9ad5c74b9a9c87c49ee6bb30cab5f1dff53d590557baa78263adea\"",
+        "sha256": "13e608e9da01b6c58a2f5721079ea65cc3a6a846aa45fe4346aab895e04fda91"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/NotFound.yaml": {
+        "etag": "W/\"e6d47850b86ca8548020f346ca11f6702f0dc140d7b5506dddec748298accb3c\"",
+        "sha256": "935021f6ef08e737f58d331c0abb0abf549a4a967641ec9c0d2fdb5caf6539e8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/PayloadTooLarge.yaml": {
+        "etag": "W/\"d6f7d59c54e1fa3d186797f02637bb2d91de312ae929a016ef4113f22681180c\"",
+        "sha256": "b35ab25db6caa93c98af6d0d835520d8ee8ec9b38a36e3c0384b6c98e366d6ea"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/PaymentRequired.yaml": {
+        "etag": "W/\"9091984e9daeb24d0c0b75956ae092e3ca0e071b888c12c220baf87f33b6aeab\"",
+        "sha256": "67545579054881c019dd38780e9e02cb28e994fcf19400a67429d2e531c9dfb4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/Timeout.yaml": {
+        "etag": "W/\"a570c6676fb519bc393d61b82d28515feb3f0e9d798d32586d297517dff22cd1\"",
+        "sha256": "3829aad51a955d2f9a89316b80240c3116eb64a86c45f3259036dd4536f65ef8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/TooManyRequests.yaml": {
+        "etag": "W/\"054c4507ed1a174f3b009c19bb4e3c0e3e752a94522130dd0360cef61a69eef9\"",
+        "sha256": "7f1328d07b4bc5bcd6a9d6d53ee429a5d4ba14d01cb26d42e1b8eb74bcb2f9fa"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/Unauthorized.yaml": {
+        "etag": "W/\"8c2293688da7aafa295d4a2ae17bb26a57c3be83717109bf93f1f5aa324031c2\"",
+        "sha256": "bcea4a98f5e7c73b8c16c62e3775874f2f234ec8fe58b2cf64c16b2a79d6904b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/responses/UnsupportedMediaType.yaml": {
+        "etag": "W/\"c28c6155fa9ccc9047d41ab223565de4483050673e3c106f1d46e78f38f8faf0\"",
+        "sha256": "03288637e30e9aac9ab03fea76c3a61f81d6a00c18e6352c6ea17ae69587395e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/Build.yaml": {
+        "etag": "W/\"c1c941eb62c63e1be0c6412ef8f869fd21932492591b3b47f17e2cd4c62d2256\"",
+        "sha256": "47f025b46dcfab956338c0b25d07c6041bef8e45cb42ad95d18cd72f69303d5e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildListItem.yaml": {
+        "etag": "W/\"a34e10d91c23ad520be6895f5990cce306e6f7859288d55a19c456ec58875c82\"",
+        "sha256": "d1c4aa027d1f628e3d9595ae264cb873ace2b06623991d85e2c9f551c7c0ad92"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildMeta.yaml": {
+        "etag": "W/\"7e6ca0b23d7e3dc60c27e71f7863b4a16874515cd186c7d0ee6fee694be01763\"",
+        "sha256": "d78bf784c4a1afc6554ecfc6fde6511266868c6c837cd63719094541f658f45e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildOptions.yaml": {
+        "etag": "W/\"e5cd4dd95806fcd27728ad4d54ec3024fdc8737db5c5653d278a76afea58511e\"",
+        "sha256": "f04763921da05c70eb4f3e5000cc507761fa3ce25f8de466cf47aa497a91d876"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildResponse.yaml": {
+        "etag": "W/\"ce66f5504c49782b9fa96ddeae1f0f715df610c424831fc3f89881675e64fa42\"",
+        "sha256": "87ea256a38c55471f4e80fdd52e807d513f5118c3fcbf86e5bbd22dd8dfccab9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildStats.yaml": {
+        "etag": "W/\"7b8fbf100143af22149c6443b28f0a97fe9bfa3fc3121e9381c69a856558d5c7\"",
+        "sha256": "badb8572eb17a555c52321a863c14f28a7672c8009999101702304f85cdf8bbc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/BuildUsage.yaml": {
+        "etag": "W/\"a1fd17f7b4c6ed991082652611731370b4c0119d0671f5d34995edce9018ee01\"",
+        "sha256": "a43ab54890270157d264300eff9b69d7c105545feccd81e05219ab9943db2787"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/ListOfBuilds.yaml": {
+        "etag": "W/\"c5dbae62e881c6a2c949dd4d2626c88eaf5c530bfd5cd935eda5d6316c30a9a5\"",
+        "sha256": "d8d484f4c46311b806ea32378f357f0e2b9f012bcf21e964c5b63d0824dc5ef1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-builds/ListOfBuildsResponse.yaml": {
+        "etag": "W/\"d9ab44d221e3e66c32a37b4cb7f09bcb0bd52cf7592b8df9b271bbe291e08c70\"",
+        "sha256": "89b368750a7be279ef6d537b9dbec285e64c419fe4a0d5772a14e55029543f06"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ActorOAuthAccount.yaml": {
+        "etag": "W/\"3174f6f5678a295e9f333d43277807eda92e652909baad8a9e2620308cf2116c\"",
+        "sha256": "2953f7170ed354f1d6023b8f5fc5a271b7849e5d5d7503152a2941bde4ae6f14"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ActorOAuthAccountResponse.yaml": {
+        "etag": "W/\"e74b4ca74c3becfd50947e1302e71fb043efaec2f75ff2c00861b408faa43011\"",
+        "sha256": "3e092007d6d96ece4ce3f7ebc034c9e1d8baf57ae7d9b0a2fa447eca7e0422fe"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ActorOAuthConnection.yaml": {
+        "etag": "W/\"c07b903a15c42a68dd25d8f739f2ed169cdb4e327392e1cfb6ea97bb149417c0\"",
+        "sha256": "963952a99af5b22427c30e26035f759888f140c12e88689362cdb53cd8d41264"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ListOfActorOAuthAccounts.yaml": {
+        "etag": "W/\"29d40958a30bed9401fb921dd5552cae68ba631f302bc40fe6cf57d8134fb838\"",
+        "sha256": "42b2f1eddb527b6e1c1e0221b4f8d02c0de087ed26346e04d1b73960e769bbda"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ListOfActorOAuthAccountsResponse.yaml": {
+        "etag": "W/\"39b393016686c2929eac8d70db89594856a555a661f66cbaaae8371b29cf4044\"",
+        "sha256": "39b5efed4bdb980ba3dc5a15fd73e33533d78fe0ef3221e6cfec5fc4bfa542ac"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ListOfActorOAuthConnections.yaml": {
+        "etag": "W/\"4cdf11aae119dd3ee205b021e357f978c578c0dc53e31118455580bc68df51f0\"",
+        "sha256": "a5f5fecb51ba9be5f39a1e4590fa64e8c532a59e1b3db2fad26c5f617249af4a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-oauth/ListOfActorOAuthConnectionsResponse.yaml": {
+        "etag": "W/\"746fb76f95b9e5ae2fa59280424f8f0ded6cc4bc7c28f6309b79159b4fdb7781\"",
+        "sha256": "51f8b16079e93008b89b47f8b9bf1eb34ec6a63b5ca31d4f725ea5f57a948ecc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/ActorChargeEvent.yaml": {
+        "etag": "W/\"0a63ae04ac47480d6d724fbb2b7a30b8e36acc82d0d94860fc62dcdfdb51efd9\"",
+        "sha256": "5fe041fa9f20482fcb60c0eb5a79961a02dd6fd745f4b19c1edb025a60cc976a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/ActorRunPricingInfo.yaml": {
+        "etag": "W/\"7df88fad9b65c07f63332efab74d86e73d233d7f503851058e2ddda4fd815aa0\"",
+        "sha256": "944fefca9ec84190d65d05ff371faf0720b3f1abb7be94b7c3322217deb961ca"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/CommonActorPricingInfo.yaml": {
+        "etag": "W/\"6b6c0c7034936f7e41c3d5c3bb49c11d0127621ea8cfc9af3fd81b1b994a86b2\"",
+        "sha256": "de0334689f9f657a1dd148f9ce07bf678c4ab5edca2a54f4ae859a700b5caae2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/FlatPricePerMonthActorPricingInfo.yaml": {
+        "etag": "W/\"0b65079208735951ef7795251950c663f59cd4414f667e49b2c2f1ebf34c3b46\"",
+        "sha256": "88b1dc31773774a71892a4d03ee8568c7811d149b7ddb8e292ef2afb9441a02d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/FreeActorPricingInfo.yaml": {
+        "etag": "W/\"7a511e8f52246666a05794ef11fb1727c1f602f8696dc40df4acc127bbf0eb6b\"",
+        "sha256": "092e3c6f6f7390cb8790512bb1120dbe1caca7c1278c64fb34c85bcad9af6b5b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/PayPerEventActorPricingInfo.yaml": {
+        "etag": "W/\"ef9f9f807784ba37ac73fd94282a8436d7f63e8edebb993c71f9259d238e7687\"",
+        "sha256": "aeb5a0b322476d32741f9e6ae1dd8fe88e9c68e9dd0e7ec4ed82058d98755c4a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/PricePerDatasetItemActorPricingInfo.yaml": {
+        "etag": "W/\"f752162b3ca1fc7ed6bd5fe125991296384710d2e5d1955ffd5759f41a0b6f3a\"",
+        "sha256": "7d7cc62bfc2e7d638b95adce812a1db3ee7cc5a78d7f1651bcc31f1dde74df8e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/TieredPricingPerDatasetItem.yaml": {
+        "etag": "W/\"fa861547033a60c216c1e969c33fe91c37e0917b2f354b2901656b0963e84b0c\"",
+        "sha256": "0a11f3d0ebd22061aa921da5e071cfb112eca1919571c07b87417450035d66d9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/TieredPricingPerDatasetItemEntry.yaml": {
+        "etag": "W/\"c198d5b98f030572916dc6a5f09bcf04b5c98126ce50d87359d291fc2123b048\"",
+        "sha256": "e8fa54ff93dd80b4fe10bfcbe7db7d1c277f8747cf66fbaba028a6eaa9eb7d93"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/TieredPricingPerEvent.yaml": {
+        "etag": "W/\"1f50af581195adfdbe3e7d43a9cbbaeadcd7ab21cad869af8244debb986e4921\"",
+        "sha256": "1c92463db297e306fbaf7c1ef09917018c87290b715f9ba88fd26c86f3133370"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-pricing-info/TieredPricingPerEventEntry.yaml": {
+        "etag": "W/\"09f2a035076550e438ac6ecf7428018ab79ccd588389933079ce135ca7aaecdb\"",
+        "sha256": "ab696af628ef77ef3b40ce6eb67b02b59e97cac12e70d49fa336db8982352f6d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/ChargeRunRequest.yaml": {
+        "etag": "W/\"a4bd928afdd8f43b62af88271c8978637cf8deba24519ace69ec1d48ca6af578\"",
+        "sha256": "45ca43517682e8a3ebbdc96c4013d756e0e38548d93df5554ba106a7af69fcd7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/ListOfRuns.yaml": {
+        "etag": "W/\"8c861235736ecd92bfa637e54ff9e658e30ad8b96cf16eb40fc6459f0d925116\"",
+        "sha256": "75b26da513662d9e093e8a4b76c3a861639af39fe8288efc64b3d5cb83637558"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/ListOfRunsResponse.yaml": {
+        "etag": "W/\"ddfe059073926427baeb37082f223c960701493c201ff541693b89c381bc9bb2\"",
+        "sha256": "de645f00ebfb4b5a0d95e7b80bb868a988e42a730abefb0cfadfbec3ce9a517a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/Run.yaml": {
+        "etag": "W/\"986c52109c78d41fb82ea03a78166cd21298b48dc9711dae19d1c514965cfb47\"",
+        "sha256": "04c6d733f44932d75d27e3fc6117a4238442f0c8f7a0c3e96b5d87bef00403a2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunEventUsage.yaml": {
+        "etag": "W/\"84e925eab642d301283ae4a92c25eb7adf20553a2366ed9a5ead3ed3b57c5118\"",
+        "sha256": "644da259c94113d861e2f435f27e59fcfbb7e0260bb9130a0a22b891a80cefd2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunListItem.yaml": {
+        "etag": "W/\"3c23a8960bea5f2c276bd001654749e855fcf542d6584ba392109ce523dead9d\"",
+        "sha256": "ee3d42fef2b937bf1eed05018449ff0655aba99e3e528f0900c537f0c207b8a0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunMeta.yaml": {
+        "etag": "W/\"d36650948b5c0c9b4ca449c7587b868ae3b74f44277312af7e3968c27e039094\"",
+        "sha256": "216bbdfc02fa1780f6c1b78b7d2001d421ba143b542851b8771eb30b235ce9c6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunMetamorphEvent.yaml": {
+        "etag": "W/\"84252b42fbda7804150d5777f23622220c0984c1ac94bd0a529f3b4c97bb838c\"",
+        "sha256": "d55b9252b4812405f822ded2e4b93e60b1cae09398cb1bd55297e394d02e1307"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunOptions.yaml": {
+        "etag": "W/\"f128a84ee316eb90c75e1e110ae6089578a874f5b8f89a555b3b9581385ea673\"",
+        "sha256": "c1e500754290fc525ff09ced81d5ba0b05778fdd3bf0a16eef32091349aeb521"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunOrigin.yaml": {
+        "etag": "W/\"3417189c9f3fcc28bb44839b8df4999d5d653a481f6b307ba52cc97b3d63719c\"",
+        "sha256": "52b0ff46ca71cac8f8eb46735426ba4fc8ca3237b9022ed718d369a70c066884"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunResponse.yaml": {
+        "etag": "W/\"624a3e69e57690d80af720e9c425960c26f45374b5718e6cd5452093f9e646be\"",
+        "sha256": "0e7c130184bc9b530e55cd42500273cb6b00931b8b6f6b1d8783dda61b470687"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunStandby.yaml": {
+        "etag": "W/\"437292cb19788a4167b6b58d1d697000a2ea3fd4605bacec6ffabe2c4814959c\"",
+        "sha256": "49896bb84d28443b2fea10114ab52ec41952fd981447f93adc2c2569a20983bd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunStats.yaml": {
+        "etag": "W/\"b8960cc0dfbf0f6d1f35829660d31f775828219c1e0a243156f1412e419e1e55\"",
+        "sha256": "7b7b8b027e6909fa895f96876aceab7e6b88b44b02c34a43833611547a7dae72"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunUsage.yaml": {
+        "etag": "W/\"96ad76818be5eced54d945cf0a51cdb2dcbe3d6dcf9fb01c755c9bf1afbe64c5\"",
+        "sha256": "cf9d143e3a08cf3159fbd436896ed06771b5012e9705b3e33684553ad9976810"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/RunUsageUsd.yaml": {
+        "etag": "W/\"2fc7726d900822a70f7094a85274fbdf6112fde7af32ecfe1a2f83656c8b2a6d\"",
+        "sha256": "5ec541c3f852b18e4352bc5333e5c834959b3c3c1f63da90a0c2f89a6d4ae743"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-runs/UpdateRunRequest.yaml": {
+        "etag": "W/\"b318caef04cccf9183c23bd8e2bb53b948cb3eb8875a5612584c0f4172c20dd7\"",
+        "sha256": "b2c5c77c5e8c8edd6dcf7299d3b84e26bdaafb325858e9e79e0b36a9fe9e0b80"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/CreateTaskRequest.yaml": {
+        "etag": "W/\"83c312ca883eaa87ceecc1b380d84fb69a3a0ac4acec684aab5dce1ab3cb6c81\"",
+        "sha256": "82889892a8f69625a08128f7ba164cc490bd302c3a8c66e6971a55f3a2e8effe"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/ListOfTasks.yaml": {
+        "etag": "W/\"ee8952620225022073a2d9ddab9e0c92324b9537f489d160342be0600cf11c81\"",
+        "sha256": "a0a5006b86c16bfec4223b235a29638c862520317bfb98eaea8fa324f99ecc78"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/ListOfTasksResponse.yaml": {
+        "etag": "W/\"a51f48c60fdf67a91e0c7a61b52db572b7d71e11192da3ba46222716db45ef77\"",
+        "sha256": "8cf2588d56a2efdb6567d147211870fb9a15d6fe4414e13370cb6c4afe9ba634"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/Task.yaml": {
+        "etag": "W/\"59d6ddd9902f23ab860035f8a2e7d4f5e6322c4bc357e01923641731e8adc861\"",
+        "sha256": "7ef0edec7f20c34b2eddbc144e3e1ca43bfc46ca51a0948c8d40b54b025ff14c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/TaskInput.yaml": {
+        "etag": "W/\"1e38b9fdd295b6037388742aa9ae26a8bf87cbc34e1966f37b06c7ba7ae07a58\"",
+        "sha256": "fbc2623962d8611190465e3159603d777d9bb0ec1ef76b50c864cd28294a15a2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/TaskListItem.yaml": {
+        "etag": "W/\"d7cf3a33bb938fe7a42f8bc3318a8620b1f1214e81ac49057f07eaa4392f3a88\"",
+        "sha256": "e9d1cbc5da1c92fb30301be0c5caefc53ef274603fa9614be611e81f72bff64c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/TaskPublicConfig.yaml": {
+        "etag": "W/\"5cb96d4d63195c1701048385db57b8e5f31d4e5388464ece738a83138a76fcc2\"",
+        "sha256": "d8a6c0ed652d90d0d9d57fd292e00098646b87b948236f7f5b4eef7f0d54771d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/TaskResponse.yaml": {
+        "etag": "W/\"06a46c1da31fc88612ef4cd8aa4f13071691c81e8d5e6dedf13054d254b46875\"",
+        "sha256": "a8adde509eaaeedddf7733115c79ae770ea5e3af4050b2a53956566061d4351f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/TaskStats.yaml": {
+        "etag": "W/\"239500371ef01de81a65ea85c0f5dd9551081a94dea1482e25a7fee538da90f0\"",
+        "sha256": "d945f3e31d7213edc60a13f18d0285580bf5158a09af48006db7b7ce2f071c65"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actor-tasks/UpdateTaskRequest.yaml": {
+        "etag": "W/\"ca4658dc60270ec4c05a56532203e3033603a3a047d86f10194069e9ec122110\"",
+        "sha256": "d6214cdb9892f0a5508d59da7065ad959d1aee66b0b911b843560b428bce4f33"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorDefinition.yaml": {
+        "etag": "W/\"2edc603fdd925f691ae28a209f6d6d74cb0bb1c2db1de0f0ddefa7fddc9739d1\"",
+        "sha256": "4fdfc67cc1f2cd0d7410dafb8c6a30f5b19532b75e7a24f44d5864e501fe6d3b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorDefinitionMeta.yaml": {
+        "etag": "W/\"302d721e60343cbe805a5e9c20bc77cc14e3f4438863d07c018e465144a28754\"",
+        "sha256": "ce2f5bca8cbb061414772ef97b7624cbd32d19464c5705e0c76e367fc4152290"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorListItem.yaml": {
+        "etag": "W/\"5301d971e7159c7edf552edb19ce7e31d0daaa40b7afe8fb34ad9ee67a246e80\"",
+        "sha256": "325c32e774e4d76c787243b150ea19fa374b1ce6ca76bbbf3d21958b92fd70ff"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorNotice.yaml": {
+        "etag": "W/\"e72c94d71c6b8ac8a24f88c119c7ca64211f4e84246699416241c60d94b6f53f\"",
+        "sha256": "a71aa3df048b247963b72e03dd5abf9772ec4237311ddfb051ed58f7ced2082c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorPermissionLevel.yaml": {
+        "etag": "W/\"e6636defbb9305c2a53d02399050be666d36d03075ba9ecacd2d48f7ea54d4a7\"",
+        "sha256": "1ee21fcf16ee4bed1a6bf898af73d43e67613085d88eab800f13bf3f00373568"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorResource.yaml": {
+        "etag": "W/\"7338bbf993f28a6144193fd1e8de8610b43b0416ba8da2423239300acbc9489d\"",
+        "sha256": "42776a82ac4657bf722199f274bc094affa85c28861e174822cda0ef840ecfc8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorResponse.yaml": {
+        "etag": "W/\"ec745245f855639dfac296b99097303bb6ffbc30d852701837cadd935a1a96a8\"",
+        "sha256": "15165a37a6ea167a0ea372557560170be4bce58863665e9630c4762275cde1df"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorStandby.yaml": {
+        "etag": "W/\"074709d04480c8d8a953778857cdb6d126d2142d04b37e28894a3b8bdd014207\"",
+        "sha256": "5645eb269e183b338cb667756c551a58ddcb7c3a05b41fc1f65ad1034bdb579d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ActorStats.yaml": {
+        "etag": "W/\"623e05e722266503656f9e8f76ad17fc2b5c7b0d7118cda309ba13afa12f0177\"",
+        "sha256": "e0404e72c547999802ac1b3bb7fdf33138d53880dd32613b37f2470a50376f48"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/CreateActorRequest.yaml": {
+        "etag": "W/\"bb2511a97746e7881b997475459efce3c2d78b6df3a1c6b0ff0dced041707393\"",
+        "sha256": "77c112e30fd63c81ce9f8ddde749f51d61a110f2baee1ba74fd4039b770863ae"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/CreateVersionRequest.yaml": {
+        "etag": "W/\"0822cc3c5e196f5454228336ab12a55f608ec345990c903a841c546a8cb31e3e\"",
+        "sha256": "88ec6204318b3b06178437b90d778e2b5cb826b52cd75b3e0ad3c41366cd159d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/DefaultRunOptions.yaml": {
+        "etag": "W/\"7963fcb8dd7cc642cab62d75047b82a3e119067506436e24030d6c940ba291f7\"",
+        "sha256": "458ef1dacef6b35da6877231f6a37939d6bdbfeb03caae41fdceee1d8a4bb550"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/EnvVar.yaml": {
+        "etag": "W/\"a55e63c5a293699436eab5c740b6793ff53c749308695c072f34a7685e4c7d31\"",
+        "sha256": "ed388b0ff961e099fd215143eff048b46968a2e8fecdbcc486d961408a4c4429"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/EnvVarRequest.yaml": {
+        "etag": "W/\"66d01624e7ab7b17ddb1c9b988d458a80d79b246bc12559f68bd9b87d22fc565\"",
+        "sha256": "1b02078dfd7b524e194336aaa5cb47c98c37023396844f51849868425c9a48ff"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/EnvVarResponse.yaml": {
+        "etag": "W/\"a61fa160da21103d90607736a2fc2da84f5d8f502f905e42627087dc909edb6c\"",
+        "sha256": "79e4575bcbbc580f196097a8325c5bc591e0deb005b329670a9a9ea15e16bd2e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ExampleRunInput.yaml": {
+        "etag": "W/\"cc1d8a0c5ae7aac057f9860d0d7167be9091422c1b13572d2ffba188a7aa0d93\"",
+        "sha256": "3083b0cad8193a001786de80b81c4e60d0e445fac4e1465ec67614e4f92fb349"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfActors.yaml": {
+        "etag": "W/\"bb1c815e59735b230209ca0b715399af7e9b9f134d0acf2543f7d1d1f448bd24\"",
+        "sha256": "b913beb138e7ad4e49495f1ad02c5833d619618f36addb2b6ab381d587f5acfc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfActorsResponse.yaml": {
+        "etag": "W/\"460985db9f1392f656c18ff547fed13d7c733a59302511d24fe9e04840505dd8\"",
+        "sha256": "dcc5329dfe3c093d8495a1551924b2dc1202f2d21e676338646c9aaae91e1206"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfEnvVars.yaml": {
+        "etag": "W/\"a7fbca6e6feeb3bec59100adcef99dba545cc4593f91d016881ebb205854582b\"",
+        "sha256": "8a624024e29aa7e15462570689f440922230708091cc4f3d967d2675f1264524"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfEnvVarsResponse.yaml": {
+        "etag": "W/\"6a2b2183ce3de78f8b93f004a56c657b26cae8f70c70db4a4195fcb12482d7e5\"",
+        "sha256": "bb619737165256adfd18e7c4743736666c5055210dfa4759c9c7aa16571b53c6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfVersions.yaml": {
+        "etag": "W/\"7db4f8a602fec7758414cdca4e69c9f9501d056362f384e99d6a27ce70e3614e\"",
+        "sha256": "9d1c01a4193a41e389b905270fa6b425469e6f09d88a35aef6570efa359e7fca"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/ListOfVersionsResponse.yaml": {
+        "etag": "W/\"437872a86a8753a21379532f24a7f02bfe484d7f45ad54dd030e4f77a83bf3a6\"",
+        "sha256": "2b70c60bda7273fa38175fd493740f0094699c26ead66eccfba0fa4569e58157"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/SourceCodeFile.yaml": {
+        "etag": "W/\"b0b26f3f7c4c9960211b46555f6ef34c9aaed205478be0b5ff77b7c254e6d6bd\"",
+        "sha256": "341b45b6ca96f5cb0af95ef8aec8bb37509134af0f2c938d630ae8f3c1934e82"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/SourceCodeFolder.yaml": {
+        "etag": "W/\"16626316d0beaee361f6f8880e1d7c63e92e47af48246288b57e2140c618794e\"",
+        "sha256": "983448194a6138bc69c8e757586e3e2dcd83bba21cae07a29642a1da13455e9d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/TaggedBuildInfo.yaml": {
+        "etag": "W/\"f90438d4e6622d24f23a810c95265c0fdaf78dd59ae12c0a1b944f43637589e8\"",
+        "sha256": "c5403d52de7a3db719aa423da91d355cf86e63f36637fb42fda23a5150a132ab"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/TaggedBuilds.yaml": {
+        "etag": "W/\"948c281d05fe74d59cbce052499109ed46ea27b314e17c80623a8cc671960685\"",
+        "sha256": "5d631b24685043155349122951a4543ebebd6f1df1168ee21237f5d3367c6595"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/UpdateActorRequest.yaml": {
+        "etag": "W/\"4aee5e20375bf01d2ea1c72a3de60c4edd570ae8d4d48cbd4a74e78ca21bb6a9\"",
+        "sha256": "54b18ccb8f50ea688b388447b8c78dd2b6521f67bb7c9de22ef47291f00f877f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/UpdateBuildOnPushRequest.yaml": {
+        "etag": "W/\"0684d16e321f7f0c9412c30d915a3783ab770b4fcd42b7078d5798384b08736f\"",
+        "sha256": "ea2f7469ba81f69a8325134f58a177c22ffd92b7250d8d0f6c42ac2cfc4ff13c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/UpdatedBuildProperty.yaml": {
+        "etag": "W/\"530089e056855a665657f1308d3e475030f56cd58d34c4b102404ef5f9f76d1e\"",
+        "sha256": "7036b108792f3748f5009a8ebedd7eb69416ec7a6bd3361ff5251d3f7660048d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/UpdateVersionRequest.yaml": {
+        "etag": "W/\"7b8fe4f1135ac6dc556652514763f106757d400b651bde8e9e8e532a91fd50c0\"",
+        "sha256": "c5607dae8e36fad290cdd31cf770c8b195671d7af1f535a1e30056af9e0730b2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/Version.yaml": {
+        "etag": "W/\"c01c6787c4e3fb8bdb0b1cf3e41e742a2512289215d1c26a66b868cf150c7589\"",
+        "sha256": "0f45e8312af36567c01a0ceb11d056393150f2f90d70579b322c72953db1d7ad"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/VersionResponse.yaml": {
+        "etag": "W/\"b0be66954d079c69109fda8f3201c3fb8cf4ddd046acee22c3650a04f48f7344\"",
+        "sha256": "c007e6fd85d9540499b8c7c717fde74fc0557f95af6dbe60f7dfd6ba15ba1f1b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/VersionSourceFiles.yaml": {
+        "etag": "W/\"c5caf34aecb0ceec8c86312bd9161ead5f3d5f6d2cc217443e92802dca631eef\"",
+        "sha256": "f13fe7972e65c1a1845266a7f8694a71bceb538e942323c364b4d93818fab4c0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/VersionSourceType.yaml": {
+        "etag": "W/\"21717921ce3b4a63961bc60d741399ba529440246e81d7161b7097f675af14de\"",
+        "sha256": "7e96340c7b40b6504dbf3d953052cf0f28b2b2aa7efe375255d6433b363bd093"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/actors/WritableVersionSourceType.yaml": {
+        "etag": "W/\"4e7a0f1616089cf5772a7173c045ed401bf1e2e2b697ca57538871aea4876008\"",
+        "sha256": "b1a73d3f3b0b5a2a8f8f04e7c6a24a457daeac9c12f3cbaa40d139ee5b4ac9d8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/ActorJobStatus.yaml": {
+        "etag": "W/\"2472226e45763dc35204e591bfa28c28379d73afcd583888b1cf1e95845f6c08\"",
+        "sha256": "b4401b4022e9bd0dd70250ce264895e557f0fad6b15bcc8c732c1832c2608c03"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/ErrorDetail.yaml": {
+        "etag": "W/\"22c7c9f3075c4cf1a023a9de4d387ff9d3389db08058a3945de6e058b53b90fc\"",
+        "sha256": "dd046c4f7aa863721b898ae6d169108cd3c83af20cb0f79cb31b217f020f6992"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/ErrorResponse.yaml": {
+        "etag": "W/\"01f670ea77245ef1d85373cbc0585bb98fd393a55700c00cfc24654872486756\"",
+        "sha256": "7c4bf6dc3691cd493449f20341e85ed269589cd258f14a4f54c81aa80a6878a4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/ErrorType.yaml": {
+        "etag": "W/\"c8117fc1fbb2900c0288625a2bac8b32aed6c94d91153d37caadec00651b5735\"",
+        "sha256": "953dcef7f9c02a995d2cfab624230559b95c401969c2c7a68cadc9bb3e1e7eb2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/GeneralAccess.yaml": {
+        "etag": "W/\"926ebef3d445a5163336d1c39fbf6fbd6ae7891f18cca1e9b7bd26daae897d88\"",
+        "sha256": "7ca478c9b43756ffb815443deae0f532f2a69caea9d46c141e03992184d38ede"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/HttpMethod.yaml": {
+        "etag": "W/\"08092fcbf6baccaa2a086a62d2035c2837a609f18592606822eaf1f9330d4b99\"",
+        "sha256": "17c712ebdb01834672b47c2e69917261a0e4a486706b37eace434cc83b7ef899"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/IntegrationTracking.yaml": {
+        "etag": "W/\"17b9d7c8d0f702c4268188bca37563c68f289775ce7a1d1dc1f17a08b2f980ae\"",
+        "sha256": "005a02faa0986968a4ac67f53678e590c30029d6f1f062f648cfe20302bfb3c9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/PaginationResponse.yaml": {
+        "etag": "W/\"be611a7ac9495a72fe8808fef3e0bc0989eeaa4bc10a9900d3cbe7b170234c8f\"",
+        "sha256": "77faf5687a3f6c4aa68a3db166c44485bba2499222b59cd92d6ec2e80c41fd25"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/SourceCodeFileFormat.yaml": {
+        "etag": "W/\"5afc4b5bea01d699646eab4f398bcf3b5b659e672174b1c627dc32f265271eb6\"",
+        "sha256": "3952462282a9dc96f12b2660f098c18a0e05b086a7cb6ba807934e1b34c51bb5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/StorageOwnership.yaml": {
+        "etag": "W/\"ddccd4d26f4d0586013c438e4a2870c9cf09306cde72df90babf8ce75e23abe6\"",
+        "sha256": "19b5a3e154274a0ab171d69d5479f281e9b33c83ae831c1989f28c8f42c9cfc1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/common/TaskOptions.yaml": {
+        "etag": "W/\"2e8c6934e6c0388dd289c632a088cb9bf392e9ec3c611eedee15fdc6947763e8\"",
+        "sha256": "07ae2948e2dea9857db61f0993180fe15189a38553a0c34c86f2e9781ef295f9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetFieldStatistics.yaml": {
+        "etag": "W/\"d36a61e652c3f3bc79d269f7b2f6c2edc718f3da2dcf8d44d05eb0410b5ed635\"",
+        "sha256": "c82a6917fab99b272346caf660256a69ef83901e6b0909ebe5118475a6de793c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetItemValidationError.yaml": {
+        "etag": "W/\"c19200f4c17d69bc4af16490231869bfb36f13f7a5ee2a05dfd11eb430418c8a\"",
+        "sha256": "f9f0dcc83d26c0d6b12fadebb5732c7e4060f789fe946fdacc291bd364249e62"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetListItem.yaml": {
+        "etag": "W/\"1cec967e2e9e3c41e30cad9de536960699d741de20334294cb12a630cc640c7a\"",
+        "sha256": "c114c8de8e0ae023401620559a04345cc7477f8173ac93d919f093d17ea2d6a2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetResource.yaml": {
+        "etag": "W/\"566f59ca4f6eaffc584c2cd10b4a94ea60360c4cbd18e97714bd7d76ffda1974\"",
+        "sha256": "32e97cdd12a4fa8dc1da75f3ad1d43e11b11e9ad2ba36c020699409735fc20be"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetResponse.yaml": {
+        "etag": "W/\"4618e7c87cdd4dd674e96403399887b60d76093f034f4354e70f3d498945b155\"",
+        "sha256": "f903fbdfd18413e2100b0bb01e8c0048d3db6fcbea53b020b852abcc02d562ad"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetSchemaValidationError.yaml": {
+        "etag": "W/\"6e236804f6b1f8879b5c73fec632d42961470cff3542b523aeba7018aff3d3a1\"",
+        "sha256": "b43d54555ed2f2cad0baee5fa742558df1aa064b6694b26e0dde85fd8c406ffc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetSchemaValidationErrorData.yaml": {
+        "etag": "W/\"19b8418fd75e0f44f5700f6b83d84e33cad97ce0df5765d0cb35ea267a5affdd\"",
+        "sha256": "44a1384a8efb5815a90320ed1cf4112b8f7f73b7743169d6c29523b8ef35cdf1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetStatistics.yaml": {
+        "etag": "W/\"9a9221a6c29b30badc368de19d50a93d0bc7714416adc8bd16b7c2349de24eee\"",
+        "sha256": "428d4b92234cd5b1a9581d60c2b8b79cdd787b8b08ea724e0e12d72ab6fe484f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetStatisticsResponse.yaml": {
+        "etag": "W/\"da94945df760c3622b5d1ef2ec3fa591d5d8c2c6d01cbebea2845e24817986fb\"",
+        "sha256": "db891f29a439c1ec645fa2558221d07240b9dd2a9ffc75e974f391993e18fb5a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/DatasetStats.yaml": {
+        "etag": "W/\"80fa125e789d796273ddcb5c0cec73946507ed12adb641aaae2cb8ad24452456\"",
+        "sha256": "8140100d0147a7f953d64168371cc165bbec5eb25fd633f33fd8ad4300ad414e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/InvalidDatasetItem.yaml": {
+        "etag": "W/\"0ba544547abc3f347f0501d748dbd7b9d6f25b358da575b636812c04000a776c\"",
+        "sha256": "e159e667c3a114fa66b1a16f30655a463de1944d8bbff51d44b113c66b89649d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/ListOfDatasets.yaml": {
+        "etag": "W/\"495e55683fa86b962f342916bef1b15e35b965619a17b140c73f523bec41827a\"",
+        "sha256": "447d49d74918c39f1c21e65dd4786bd69788c24ee4545a40f576bdde12dcdd5e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/ListOfDatasetsResponse.yaml": {
+        "etag": "W/\"2304596bb43e376dcfbd9b50a77ecdcd754f47986d36a6d0796f072b20882a97\"",
+        "sha256": "313c9ea8003cc943d90136a6026f62726c2b776cd39bd5941526b4bca99d7a1a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/PutItemsErrorResponse.yaml": {
+        "etag": "W/\"a75505324aebbf01a83be711a404d99f8d8f93bd1d4e416dcb211f4b4391f158\"",
+        "sha256": "b36123bac5c6a3b81ad1c0ba82b519cc9a059cb89c112324240b37b7694cd717"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/PutItemsRequest.yaml": {
+        "etag": "W/\"df51091186db8b4a547a51f00c853157d63cccaebd1982dccd4cacd24241736b\"",
+        "sha256": "6c845796912e13d054c0687c0ff8539ade84ad35f95b04591fca7c1483ee2f29"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/datasets/UpdateDatasetRequest.yaml": {
+        "etag": "W/\"85d0f448a1aac6aae4e2dc8d0aa7ba814bfd4f4b647abb52cbf1e8c81f008ea3\"",
+        "sha256": "c6601cc98aac330a40c9dfd07d54b6c0266fa6e5771cd4330fb89780572a2be9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/CreateGitRepoRequest.yaml": {
+        "etag": "W/\"5014e583d8553aa8d18f7db9b548af01b049717efbde8962ec57adbaea740547\"",
+        "sha256": "e65181e0f5a6179beedac63e3af3460e73dcae351d87ac9a259e95c7823d5139"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/GitProviderIntegration.yaml": {
+        "etag": "W/\"5c8a727c4461aea409e54146a29d84bc1ee87b2de380135c3d64997742d1bb23\"",
+        "sha256": "de2cb92af39ae0a89dabf2d7006ffd2e2bd1ebe072dede544fbc65842acdad08"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/GitProviderWorkspace.yaml": {
+        "etag": "W/\"5736570e7d2d3f6860cdc36f8168887e8956e328d86c1671b3981c670c04de39\"",
+        "sha256": "c3e23191bb61a356e2314a545d720eb517b32181d80c459acb8d05576bcc7708"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/GitRepo.yaml": {
+        "etag": "W/\"c5f46aa4d4ba39ae1f78bda9d6e4731c40765bcfffdeb1ba79bf2c49d54d853b\"",
+        "sha256": "6ad289ae450dc0be2cbfd706e9aa06d89936e5b35e6517223d0554339a1f6f2a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/GitRepoFile.yaml": {
+        "etag": "W/\"1ab4432dc32be5fab54e3dacf823a48340864b7a5e9990d390dfd258710f8c9a\"",
+        "sha256": "09f791af9644011b4dd90452233250760f3d9fe287becb4a8a56dad9d5a78b22"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/GitRepoResponse.yaml": {
+        "etag": "W/\"92081ebd0ef558434062b3c093ee6a8555bc33a074a78bf7603a60e39250b0a6\"",
+        "sha256": "3355540bda2120226aecb4b70fb03cea1c649ecdd70a65e7985b72b26b3f10e0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/ListOfGitProviderIntegrationsResponse.yaml": {
+        "etag": "W/\"92cbd51adefc3f7707663fbd8eae89c4c84af145db2ad2b5e705defc8706634e\"",
+        "sha256": "1e136fd10940e051ac3961af4e1834cfd4184f1de02d1a9a801da1d28f8d3e16"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/RegisterDeploymentKeyRequest.yaml": {
+        "etag": "W/\"e98eb6352bc4e7c1034769ef3797e1267b6c582d2d3d28992b06fb6751b5981c\"",
+        "sha256": "7d670ea32189b851d67a3e3765795d767f883c79c66175a252014fee6601513b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/integrations/RegisterDeploymentKeyResponse.yaml": {
+        "etag": "W/\"d4f9b862b6aadf80e4ac58330fa335d4c0f89be5586720389961a7c60c4dff23\"",
+        "sha256": "25232ecbf344537b88be9ab12323949ba395dfc8e4743421f67fac0953765f90"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreKey.yaml": {
+        "etag": "W/\"c5f52fb5f2afa9fca18ab8e142e7911b104831da240edaf808abdf447fb822b3\"",
+        "sha256": "a99d88fae1b307d3ec3c189cdaac12808d51cf5188c0de4abf828c0b97a0e3b4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreListItem.yaml": {
+        "etag": "W/\"24562bbd8d1988349e094e6117b1f5d3dfc57208dca66ea151b79b77b043d51f\"",
+        "sha256": "5877af0403d7c42bf3c64e498655f63056af1826ed40d2852d8723d4c9da507c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreListStats.yaml": {
+        "etag": "W/\"e6787410d531b52b5f8664c5e8cf1043e6ca8f9112595f6c32cd02c8c0b0b0ea\"",
+        "sha256": "74ad906557ace742f77faa601ba8018968cbab90ae1a0faf5c88484976d35a9d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreResource.yaml": {
+        "etag": "W/\"1260628172bdaa3db231410e70f7a12f41d88a2bc28b5066f56724ff9f03df31\"",
+        "sha256": "8adbb7b7c05856f32b363921078a302fa2a53c9982fc55013ac147c619fde177"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreResponse.yaml": {
+        "etag": "W/\"eb55df998ef2c6afe2d682a58eedd6a3d87605fe4946b2224cfbfbb2e2ad0de6\"",
+        "sha256": "6d23290074c5ac9e03e56f970b605f1359c7981a8bb7df2ec933a71402c0eec7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/KeyValueStoreStats.yaml": {
+        "etag": "W/\"28761be280467adffa8d5c8db16d5e9d9c241a7857a8687e474d1fb6f0686c29\"",
+        "sha256": "68410620335aa5b1580eedb95869778bebc692009bf9508ba5eba06222af204f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/ListOfKeys.yaml": {
+        "etag": "W/\"136a69c91d82b47f092e6891c7ee224d8254fb667b95f9bb8ceeaf2611b2aaf2\"",
+        "sha256": "919d79ea736a5ff9e14b1aa242c825e1c7a1c1ddba1712a01f4639478e534099"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/ListOfKeysResponse.yaml": {
+        "etag": "W/\"0cd6595c4e33320b493689fd23bac19b2734d9f373146b008071cae97cb5594a\"",
+        "sha256": "4208636303a8bed768ad34505c5b897ed1c76b7cb2af6d492387f95bdbaaa22e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/ListOfKeyValueStores.yaml": {
+        "etag": "W/\"ae22d323cd130bc60417731e77d97864ec65f50f36dfe9ad73c10ea76500bdcb\"",
+        "sha256": "fa236cf7a1097f090b0ec1582f5150e67443c065b7ad2292049c4419e1f85ea5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/ListOfKeyValueStoresResponse.yaml": {
+        "etag": "W/\"f7c093e3e28e4dd21fbdcaba9e79b593b9d02e9ee3175982a7851a2256d3de2d\"",
+        "sha256": "9d8c56ca0308f77b033c830b2909b43045a4087aade76a3d44d3c15e5602036b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/PutRecordRequest.yaml": {
+        "etag": "W/\"54955325b093226f0ee9cf3dd0e967e3ea6ce18c816ffda19c04d9529dd1ac70\"",
+        "sha256": "d1813b5320f288cd75f95f902e6d89c8cfa5084cb2efc487131e00dbb87c597c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/key-value-stores/RecordResponse.yaml": {
+        "etag": "W/\"91b927a01e038611805b6059cde81658c93748c34ebd43d29d82474a19700c0e\"",
+        "sha256": "85190ee95aaa9b701482d3d1c7445adf1032f93675bd8891ebc32bf9e3d0f50c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/AddedRequest.yaml": {
+        "etag": "W/\"4c25d686e1ac679ffe992d61a8f1cd096ca3626ee43eea8aa6de111be9a26260\"",
+        "sha256": "28ac6df9639c68ca26c1f493c133f523d0ec0091f73b1975767eec0c7fbd6068"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/AddRequestResponse.yaml": {
+        "etag": "W/\"ba3c77eeaf834d3a06547fad4e3033e8b894b5d1fdb17caf4fa76b40c8eeab7e\"",
+        "sha256": "646cc2580178d25ccd512e0b6178e56feba77c11ba66b4acda4c026d23ac361e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/BatchAddResponse.yaml": {
+        "etag": "W/\"1b98e6bb97de445fddcb618ba632c65ef86d595daae5de4eab431cdbe62e96d9\"",
+        "sha256": "79054af4a341bb2599f6b3c5b6854de5624aee880bbd81a3dab901eab8fec980"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/BatchAddResult.yaml": {
+        "etag": "W/\"8725ba6aa39292b9f3773ae252743d71ba4e242c677e3ab2704695716823cf02\"",
+        "sha256": "f3a12a7ef1c0cffd392dd657dc639158e7644b45115ccc06801631d3a17fc2f5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/BatchDeleteResponse.yaml": {
+        "etag": "W/\"6f4f3ab27243023e2f85a2dd76b706710c80292c9529bcb7f69bbdc0448e66f6\"",
+        "sha256": "b0701577f33e32cdda60061ac134f6eea8cb44d282ded02b2e3c6922e58db05b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/BatchDeleteResult.yaml": {
+        "etag": "W/\"c909e7775c41d736036b96d3fe0542a59ce56cddf5d9d0eaf8d1c533cd3c72c8\"",
+        "sha256": "1398263f105033b7177b8baefc621fcab2f3b64de365400e14b0fb1537d48314"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/DeletedRequest.yaml": {
+        "etag": "W/\"68b00ac3f9690d38b85186dc19d34c66e1c1e3816d457702168f2974a39859ed\"",
+        "sha256": "55b4c89a057ec5d8dd02c976bf7f880d3923fda53a24b6b6ba6b646d67a001ce"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/DeletedRequestById.yaml": {
+        "etag": "W/\"efd60f2ca9ce54e479c01381325d3fda48aac9d5219e4d0dfa32285e030e880d\"",
+        "sha256": "199437af9f40eae08a6a285c6b62135ec3f6d71420e32c974d6ed1bc89d808af"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/DeletedRequestByUniqueKey.yaml": {
+        "etag": "W/\"b6564be4d33bc9c402a2553aeaba3516a44c874c5f906c2ecaa73e832110000e\"",
+        "sha256": "9139731be17e7398d9ff4c7c9ed1d1965a98c3cd1fd39e79814a63a06fcd6121"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/ListOfRequestQueues.yaml": {
+        "etag": "W/\"96016749d8e02f1bdaa8d0bc52e157108642ba9f1e3aee835d43115f6841eebf\"",
+        "sha256": "fff0a4277cb6c63fc76a27958b4494d7d6f6c072c5746125d4e7506effe3136f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/ListOfRequestQueuesResponse.yaml": {
+        "etag": "W/\"350af846825b1ee473ace3690f43cebb305c074f789bc486536f8590e6268ef8\"",
+        "sha256": "d001f08c9a5b938ecedded909e9b62f7e56b993908c4b5f58e5e52b83e9153b3"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/ListOfRequests.yaml": {
+        "etag": "W/\"51083c04171a65ace0d1d30933e49d2f2678015928b205eef2916d42a6e6bbb0\"",
+        "sha256": "72f20c4bf1117c7905cd6d092aa7178435b038de8de084aff74f89bb21d6ce8c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/ListOfRequestsResponse.yaml": {
+        "etag": "W/\"39902c07c7bb1ce14560ad7c61a3347966fa487b17fc371f02e0c87f7652e0d4\"",
+        "sha256": "928fdb0e05f9afdba144c677b01ff780521b0bd7c674a2c73bf9c1ee4ef8f979"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/LockedRequestQueueHead.yaml": {
+        "etag": "W/\"7b6c55cf89db8f7cd7f5e5e085b90104a136bf6b77c5363b4f0de70ce391c6bc\"",
+        "sha256": "7c1a87e3b0246d3cb4085f9fafb2147dc0ee80cb5494faa9ad1b33aed924f337"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/LockedRequestQueueHeadItem.yaml": {
+        "etag": "W/\"588ab55da685f2517dc57234ca1737ac4a7e08fe897a025d1ed13ea006ce317e\"",
+        "sha256": "5fb0cd25911379700ee923f1d36d88ef92c64a4af4cad084b79abdb039be99e4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/LockedRequestQueueHeadResponse.yaml": {
+        "etag": "W/\"8d1240b1d08b8a35e3894c10e4c4d028cb4967340251b0edf0d46d60a753ad5e\"",
+        "sha256": "b43fc8b784573aff3ababf6de4727eb6f1643a23042985cffd03cf78bea78c3e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/ProlongRequestLockResponse.yaml": {
+        "etag": "W/\"084b6c88f8543dc6400e6f5362fb724298f2713c955e4127ad46a9f68a60977b\"",
+        "sha256": "8b744e04946b5cacb49cdd5e2d476a8ca53d442a8dec525f6e95d380fbabce81"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestBase.yaml": {
+        "etag": "W/\"966d21263bfe783c40a01248cc534b4fe4d4df025748597fd71a65597e1acc11\"",
+        "sha256": "9fb5a18b161416eb8727ced2e691ea0978b61e5bed57c79874e2a8ac1baded30"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestLockInfo.yaml": {
+        "etag": "W/\"f50cb6ba9abc105941a9c2716f01d7dd8470a71b458cd1a817f4141bec67493a\"",
+        "sha256": "0fff41eb741480848e06a7303f1d723552d5df284b6fb77dd6847d86d2b2c1d2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueHead.yaml": {
+        "etag": "W/\"1ef43ba2b2b5c3a97ea1d8f11f1a4eb0166fcadd780486571ef0cd03933cd4b5\"",
+        "sha256": "ae97443511edcd64d177deab0371a1ec1dc2e4955bf7b087927aab748e08d2a8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueHeadItem.yaml": {
+        "etag": "W/\"7a94f17ad5022ed5730bf497fe1a661f81cefded748cdb71d19795d14d8400e3\"",
+        "sha256": "cb33fe05afcf36b67c86d48473e1e83f7661f0c9776fc615707c12a2fe90e551"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueHeadResponse.yaml": {
+        "etag": "W/\"dfbdf452ec62e994dd84dcc9115628021c6805638911515bbfaea7e57806b528\"",
+        "sha256": "b8b6ace1b6f4d553d8197fbf8a53732ad3cf0b2400395f837853a2a51c86db23"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueListItem.yaml": {
+        "etag": "W/\"9a9f40af87f041cb62f30c684c7c7479120f27d24b51de45af6d9198d29688a9\"",
+        "sha256": "995c0768bca24c994038ff84e650eed52524ca6b6c9c9fee1a9c54cb055785e6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueListStats.yaml": {
+        "etag": "W/\"463183f3a62f8f99a57d612905b5ad61a313392fb762f4d5630362745cc18e0c\"",
+        "sha256": "35e7bb232673349ee66e1879136fc6b8da55c1633ec015ab62824aef4ffcbbf1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueResource.yaml": {
+        "etag": "W/\"354e48d460383edc6afa916cd42a57811d76cbccca5d8453a3b95390a4e26c9f\"",
+        "sha256": "ac21f2b048dbbf1f22e37923c8b7a6eb088befd411e4791bd560e9e27b7ba8e0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueResponse.yaml": {
+        "etag": "W/\"d0506a71ca79d19401b1516ac40a90260d4e931e823b87bcdee910daa192a78a\"",
+        "sha256": "37ea76f0c88898b241961ecd58de7820318bfb5a2e1bc16aa2fb5f34e0d0b29a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestQueueStats.yaml": {
+        "etag": "W/\"73b10fc5f467b451fcb6ab0e346dc7ebcf73beff8f6bca603a8b5377b751c054\"",
+        "sha256": "8bd8b9d816584c5ccf30a42127b8175d27993fe1276af02699849220a36e05b4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestRegistration.yaml": {
+        "etag": "W/\"774eff30ee98f2649edb0e84d2f9c822f9538dd33eeb45f378832ad47a066225\"",
+        "sha256": "1706f86a2646af96f916cfc27637c06ad8d7507cf4c3d4e26978409899151580"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestResource.yaml": {
+        "etag": "W/\"e000a976f5777a4e3d28cb606acf122a43e3c5903172064f5fd266854843a1f4\"",
+        "sha256": "0ef6e53d8d10cadca0e8e49c8c05eb7337bf1cb1d796a3ca1ca99fd576ea48c9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestResponse.yaml": {
+        "etag": "W/\"6c8a0fa5e48a0d4b8d863a9c70a1955faee423f8505b1506a9505193c1e99f4f\"",
+        "sha256": "ab0fbc5bb1b6fe65b3a3819a555b11c9469d710a2a24d58366d83318e62d749a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestToDelete.yaml": {
+        "etag": "W/\"e2a7f0d2932d44a06b8ef4089818d147ca29b7d568bdb4b776bc76941a2a3ea9\"",
+        "sha256": "c63f872285fcaecc25b5fd96f7248e4f9f5455b11c634074169ea2c72895afbd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestToDeleteById.yaml": {
+        "etag": "W/\"f0cf8e5541134c95d2c1a481b705857ed83287cfaa3c342b6f1db7b5d6dd963c\"",
+        "sha256": "998efe649e0464a2936915215282b4fd7c3dbc35d06dbabb332b3ca8c79f7cb2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestToDeleteByUniqueKey.yaml": {
+        "etag": "W/\"b2ac371be7923d34ea5ab41533e4a1ad65fe9d8d3f32ce782fc109134e41e957\"",
+        "sha256": "0c27f59d93eece562991933b81342a569a302e503144ce1d76f94895b68a684d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestUserData.yaml": {
+        "etag": "W/\"bdd71fe9e2a7cf5d8f39ebe8d776039bcef6a849438402d79ec3cf4c7f397b4f\"",
+        "sha256": "3f0de8ca17659896965130010d46c0009b1e46071034d9066a959b4850ef9556"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/RequestWithoutId.yaml": {
+        "etag": "W/\"604c3fd3af114d96a94232ab53ce673aa3dfcebe67bf92ee78a4dd3454d9d6ff\"",
+        "sha256": "68122aeef91ab4685e9ae57e322c13eff1bcf325e75c3223435791fa2db9eb74"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/SharedProperties.yaml": {
+        "etag": "W/\"c9165c76bfce8e6d0553e9f45703e768fac55a3daca1aa47b8c1a70cf74b6f52\"",
+        "sha256": "105706d0df2934eb8da5661e1576b9dc83759efe9c60766ac3f43ac5b791b369"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/UnlockRequestsResponse.yaml": {
+        "etag": "W/\"157a174ed92dcfdf772a1d1aee9d11f4eb7f6ff421cd59f6731e81a20f390180\"",
+        "sha256": "a778afa9d5b6d0db588fe3abecbdb6a86d07923fbfe576119a7749746170f6f2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/UnlockRequestsResult.yaml": {
+        "etag": "W/\"e4c76561001f3738d9069f5e79c663aea3728be191e536cca83770328647fc35\"",
+        "sha256": "794b7503b39c297743b16b526e09ab378fd46d00c8aa72112b8544920826839d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/UnprocessedRequest.yaml": {
+        "etag": "W/\"395d446968f273adbdfee43ccf20150888b303c59c24e25c47f1385723c7ab9b\"",
+        "sha256": "1c455a5f122b16adf7528ce8f1ac97859e8e49774a1140ea74f4c623ad02d506"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/UpdateRequestQueueRequest.yaml": {
+        "etag": "W/\"982e952ea7e2fffcb75f6279dcd82b47305ad23629dbf341993f3267082500dc\"",
+        "sha256": "6dec45ceb3e673d919f5e64977c0b6669845bab39c859ae666ed17e1d8b43b96"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/request-queues/UpdateRequestResponse.yaml": {
+        "etag": "W/\"de22780d41533ef62801aacdee945efe8c634c7a1e4145aa955c3fbe0736df5b\"",
+        "sha256": "14b1f4b7cfb2e2bb287da00914ee1f0d678350b69670556b272e6e8650290ff0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/CreateOrUpdateScheduleRequest.yaml": {
+        "etag": "W/\"26c6080764df9fc60764f321a6664b62fd81bf921c17f2057a3b0aef1ad19ca1\"",
+        "sha256": "8a0502622017ac8c36837cae7d481a8b116c05aecb461aaed0182b81dd7e7236"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ListOfSchedules.yaml": {
+        "etag": "W/\"cf98d78df4c64b14159fe51cdf333844923bf73252870c801b18fc9f781b8e71\"",
+        "sha256": "1ee1f15dd34636490ec98ec36cc88ad4ba6f85e18b80b19c2b8e85b3ad53c574"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ListOfSchedulesResponse.yaml": {
+        "etag": "W/\"48886aa5728cb568cc895e03766e4e1b5b0f5fb09080030347ee4647689ef8b6\"",
+        "sha256": "75e37d1ceab9bee1406739dbb91d78dffc5218f2b44005f3b54458a5f47b9e2d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/Schedule.yaml": {
+        "etag": "W/\"aa6d6d6aa126a8eb90c843263d1009e3d0b94d64d1d6bc74e3f4c524af1a256a\"",
+        "sha256": "1b45b7f19f99d6a1347c171ff21e3cadd7d0ab2fad3cb2095a39529858b2cec3"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleAction.yaml": {
+        "etag": "W/\"f7bc76fef4f288811c9304ecb24f443f8921688ebe23fbe734fd96215cfa05e1\"",
+        "sha256": "e16a589b9f2e07780687ae63734e84e9a077151f038d4cef7d0f5aa4aa784b66"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleActionRunActor.yaml": {
+        "etag": "W/\"d33198cefc380dfab505fcd5cf1c7d32b47e168742782c105f1d6a186ee9c32b\"",
+        "sha256": "8245940fabd2533cf2445c48d2971dfbe8035e66f321ae4559b3537bd1329e56"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleActionRunActorTask.yaml": {
+        "etag": "W/\"a7c0b43b1fddc6e497384fdd9d6ce4f7d6b4a8f7161a456a65ba030dcd1a85db\"",
+        "sha256": "bc7f4f83c0c3e7080e0b6902b3d40c1373e0689e2b06ac6138d2834030a1ee38"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleActionRunInput.yaml": {
+        "etag": "W/\"7d1f5b27bb2fd19af727fd0731d5b5075583c14f92141678f261cd4639ac02ae\"",
+        "sha256": "639ba5f6f779e2ac76d7b583d6c9fdeb87754b8bdcc3e80606dbd06293b62fa6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleBase.yaml": {
+        "etag": "W/\"bb2e33259572131f0788af9756ac4454b681b8ec628c606e3aa60560e55065b6\"",
+        "sha256": "c772ff0750e40e14088389abfda7571bc71e7ede19b4abeefc73fe019d384ac7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleCreateAction.yaml": {
+        "etag": "W/\"6ca02e8fd7cbb00616bffa6887830b97a64be08c50883cd8dcc597980385bb70\"",
+        "sha256": "1a40900fac4dcf312e821f53baceafffc8aafdc47beb2d9742d83099ec0f6851"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleCreateActionRunActor.yaml": {
+        "etag": "W/\"a78599368154f6fcf48b6fa3ea1e7f5e473f3fc58570cffb29d3d8dc07066c2f\"",
+        "sha256": "b77a5ced2a66ee0fdba3314210e2657de1773064fa524c224cbf2d849c716a87"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleCreateActionRunActorTask.yaml": {
+        "etag": "W/\"8e9cceb7b9f4e4aec157abba4f751b829eb5159b5f59a89a6dde734d1355c828\"",
+        "sha256": "4750f62c18faa39557e64602dc44fdc6cb7516fb0a90d5dd80de91bfb0bedbec"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleListItemAction.yaml": {
+        "etag": "W/\"b3100691561d226350375bff27a263bba6763dbba40b0c2fe48bfd475a36d94e\"",
+        "sha256": "7604034de401a74c55d3b79e84db8edcb7b92f303df6005ed098bc5304d7c66f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleListItemActionRunActor.yaml": {
+        "etag": "W/\"2f51b8db7db2e696a70d178cd459ce611b87331bad2e99325849b108041d9530\"",
+        "sha256": "8a4fa9d79a28b799620d5a3bd632c9e259c2791be748ca509007ea2eb0deb96b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleListItemActionRunActorTask.yaml": {
+        "etag": "W/\"6e8ad1a45dae12d43dc9e29e645fd3fddfc951b77d4527d4d6da0d4153688251\"",
+        "sha256": "00957f9ee8fcec49e8b4d6777985b74224560171638c9571cea1d98f5d672033"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleLogEntry.yaml": {
+        "etag": "W/\"bbcfd73b8f57030d4b42d9581d79be0854b94a38216f669d808671f6d8547577\"",
+        "sha256": "27042b7b72940fe3c06a4aa4e622757a0ee8b2ac2a7f0b30f60a2f4d20e8fe48"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleLogResponse.yaml": {
+        "etag": "W/\"937b7158a0feba6b7d65e0c84d4807afdbf04a7beb1c39cf81c8c3660d5e15b4\"",
+        "sha256": "490b212c7417199285164d4574f0d209d98ed863c67b1ae1fa76d04c1e1a6fb2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleNotifications.yaml": {
+        "etag": "W/\"9df6f4295db3736635b904de4bcc8793da09ee4b3d56fc22a08fbcb0b4ba9cb3\"",
+        "sha256": "866c40290bbe5696d69eadbc66db882ad14f1b7433e54bd20cf66ca182d916e5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleResponse.yaml": {
+        "etag": "W/\"de197a6688a731dafa14261bdcd8b5b992d12eb740a429e17c8fe9e7fb4fa2aa\"",
+        "sha256": "b51d3ad7fc95b57704a1609d2863aaad2cd3d60e40f8fe656c773937f791ce46"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/schedules/ScheduleUiState.yaml": {
+        "etag": "W/\"db055f05e344323d05a98f7082e8b31cab1caeec34c4ce330c3d67018e68201a\"",
+        "sha256": "33f2559ed78428c8379b2ec694f00b0cb30f822ea765d78d28c7baf1ba5e2044"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/CurrentPricingInfo.yaml": {
+        "etag": "W/\"c360161bbeae84464f44d14c00ccbe2df82d67abcf46a1f7c88cb222db569996\"",
+        "sha256": "02005358e2353b87f3820de670c4f8e533b40608386362802ab7311c31aaf7ee"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/ListOfStoreActors.yaml": {
+        "etag": "W/\"e1a14f6d055010838ed21b51dba8947be5112edbabb33eb446af2b9586766be7\"",
+        "sha256": "b142bab93023d421996043e5e8dd5f446ee84bb604c7cd16ef987390425610bd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/ListOfStoreActorsResponse.yaml": {
+        "etag": "W/\"ce91b41d3ef0ee7245a35b6684fe18d087ece04e9a0070c6d340e6d86aa9fd5a\"",
+        "sha256": "136c189b6054d3d9d4190eeb629166ec3247194bd70dafa5527ee6feb5d65a46"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/StoreActor.yaml": {
+        "etag": "W/\"2c2cc1353987282934fbf748d15bd2f5594c3fc568498b9914e8059058c6a82c\"",
+        "sha256": "d04e518b2da23de3eb2d77d550aa593d297a966ca93f3ebfa004d199f33ecc22"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/UpdateKeyValueStoreRequest.yaml": {
+        "etag": "W/\"037c31414876576c1367d0651ccdef37aaa1de12d1e69b6e2a0f61006c7e97b4\"",
+        "sha256": "1cbf32f70daf817fc62d319df2667332cc79e439a59890f976f8f5a6f3c5dd73"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/BrowserInfoResponse.yaml": {
+        "etag": "W/\"c2369c71f63e98e3f9c4fd60dca6824aea481d6731656b8a34ee5c9c3441d81e\"",
+        "sha256": "9e2b5e9dba7bfcea96619ede1979aabe88a78da594902eb5f9efc551d63c5646"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/DecodeAndVerifyRequest.yaml": {
+        "etag": "W/\"8b96e5a6124b43f15052ab9fc53c9f1cf8c0e945ac9a45a195894ce547935c69\"",
+        "sha256": "777d8af4aa65e6d4e0b3cdecf3e28a2691bcb46d51ef1540e247058f64bc0fa6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/DecodeAndVerifyResponse.yaml": {
+        "etag": "W/\"5b994f0f36f79b1e1c58f02b40849c9f034ac3baa9afeb7b30d7ed3ccf19e10d\"",
+        "sha256": "6dc5ba2d559bfc7d35a47835ff8f39961069209c64dc0d215fcffa463fd668d5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/DecodeAndVerifyResult.yaml": {
+        "etag": "W/\"8e6236a6b06c3bda543602574169b84f5d4ee9008498aae9061a9c0373bffd3c\"",
+        "sha256": "99f34963ce66b5097ba461df645b543a8c4fe5af181e0e051857adff5195e8da"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/EncodeAndSignResponse.yaml": {
+        "etag": "W/\"cc3605e7bcec03c47be432677630f35c07e4150bc4bcfd7e23745102e9b24fda\"",
+        "sha256": "de96f4d294a51a4c863208060c44c69c65040b5913441dff0d08fb34c3e7a5dc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/tools/EncodeAndSignResult.yaml": {
+        "etag": "W/\"2f48ecca945a01a51fd992a20df749dece26b514cd41b732366710085283592c\"",
+        "sha256": "1c152e7975961a9ae3088c0d508b146f4d1f5f4a79dc68454abdd0f956d92046"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/AccountLimits.yaml": {
+        "etag": "W/\"3a9b53d3f790d9c7d02832ae3a60b5aaba1d459281e15910b6bfbad73101bd24\"",
+        "sha256": "6890c89187cfeefd9f738aaffa2e6ce44b3a50bb5403fb4f392f3240c2fbe5df"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/AccountLimitsResponse.yaml": {
+        "etag": "W/\"04dd9a44b123cb8dc1f3a379f56f65718be183fca634e21b866bb3021352754d\"",
+        "sha256": "0a9b7f71f38d3aa4e2a245d3d9395a0cb8dd04e208ba95b92f0513bdff341f5a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/AvailableProxyGroups.yaml": {
+        "etag": "W/\"ce8f8275a696d8b7435d0411bf6a95c0e81bbb15525d66737e9e93aff6a88d59\"",
+        "sha256": "03145a215a1cec515c8fe9b4ad067b137975bd6e8eb140434b79ba1ed3baf3f7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/CurrentUsage.yaml": {
+        "etag": "W/\"a3bd8ebd42c00c55e6e11a18960d45c235c064b82e9877a415f3af5cdaf2e455\"",
+        "sha256": "9710163e34eb9cd0372f54f288546a4fe1a344b3041fa2d1727e95c502650e88"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/DailyServiceUsage.yaml": {
+        "etag": "W/\"8a774c2f57303021fac3ffd2f3b25e58cd0cd607eaab63abebda1289c3688ca7\"",
+        "sha256": "6416d190c1c66c2ff4bb63cda11b74765579dff490aecb24cd2d9a6ebdfe6b92"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/EffectivePlatformFeature.yaml": {
+        "etag": "W/\"bbb4cbd3463225485bd7361732d7e8c8c916f5c540ca964269cc25329e5501d4\"",
+        "sha256": "99a50e96e12e01b12590f62b238889a6ca41efad843436b442866ea5d6901e5a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/EffectivePlatformFeatures.yaml": {
+        "etag": "W/\"6afe84d67a7f366c952a7483380dc40e85e78bf057f6b094355d24940f784a41\"",
+        "sha256": "d99e704e9c0240cd363c54b20b45bebe31525dc2ebb8108b926108dcbf6c1bff"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/Limits.yaml": {
+        "etag": "W/\"f6c5566ac820fbcd3a3e3b9d2c90f54fc34a7acecbd997fcc8e18cf85b67282e\"",
+        "sha256": "1dce5ce992be6506605a494876ce439dcbdaacecb5dfc066a4be4e852db70d68"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/MonthlyServiceUsage.yaml": {
+        "etag": "W/\"5f541b541173a2f7e859ab78fda8f2a1d9e340a4c41d48d838039598c7864752\"",
+        "sha256": "6322658da62cee047bd1c710cb4695fa0907713d92231d73f2b1bc0736b4a057"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/MonthlyUsage.yaml": {
+        "etag": "W/\"91cd14c447159ad51b2152665c1f0f600f8c7e71da3aba31262875808ba022f0\"",
+        "sha256": "fdcc24b34a7ab362c319dd6dfbe8d12edc598ca8ab4590ea7395a48703979eea"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/MonthlyUsageResponse.yaml": {
+        "etag": "W/\"a95458fa86309923e3d50240efcb97b56a43e7265919036b2a3f0bdeeca6b1fb\"",
+        "sha256": "2ef8f9bfe2b42e14b4146d2eeedda61ef05c22125f84d03af628854313ac7362"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/PriceTier.yaml": {
+        "etag": "W/\"108877c74dc5a08829f0568c0f5a8953d2aea023fba1a1a09a95c785b9777b81\"",
+        "sha256": "0da3b0eb1026ce0cce70532e844e2523635da5b5f49524b4792cb414e4fec8f8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/ProxyGroup.yaml": {
+        "etag": "W/\"903af4de711ad615eda530145649af6e7af8aae4ea2de4f41ed7da6e90b06151\"",
+        "sha256": "bfcfe35b5b115a3261535a4436292be78f49b0715dd03bdbb18db6baeeed8589"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/ProxyResource.yaml": {
+        "etag": "W/\"14196e4f11376e923853930c45342ea5bfa1909c91d85cad9339771bef2ca08c\"",
+        "sha256": "3228d1428f1eb793010d1d2b6df5fc30325278ee89229e3277eecdb79fafee03"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/ServiceUsage.yaml": {
+        "etag": "W/\"ef025eb5c85343b901118547e33792a2d562991f3a5470fcc1802f09de32eb23\"",
+        "sha256": "65dfb39954b43c89456c314ce53d16518627a5c09d4934204a224d9dccea4468"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UpdateLimitsRequest.yaml": {
+        "etag": "W/\"18720887d903b1c9e32c32ec051eabccebcaa7e28711a9333dbdde4c25627488\"",
+        "sha256": "fd09bb0f33ff69da8543f2e26cb33dcd4e74ce63aab1396e78fd34bd88df11b4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UsageCycle.yaml": {
+        "etag": "W/\"8225a01c75b2ef60cbcf4994470b8cbf8802dd2a310c3ed408af75c03c831e79\"",
+        "sha256": "c1f0db8fec703d695793c635d723e72f208a574ec622321f70b3bb2990af134d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UsageItem.yaml": {
+        "etag": "W/\"c1e3833760ceefe1dc4a38ae42e21a2ee2b91b56774b62ca933a3dd3295f97dd\"",
+        "sha256": "8463f76d5a659ba6c113088e9b1297ec03a02a552bf15cddfd4be8961deffbb6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserPlan.yaml": {
+        "etag": "W/\"2cc392b11f84ae2d473337f8080997be49e72a1deda8f42da4156374a594d1ef\"",
+        "sha256": "e52f201f755d6b1f4e2b711d93a5bde30dbb325aeffd96ff30a5fbe76b84f677"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserPrivateInfo.yaml": {
+        "etag": "W/\"767b206f29b8f325ed66bd59850323f0e3ed10c3247df883d6c2fd45406709f1\"",
+        "sha256": "90586431cbf4aeb144497d57fd05753722916872311d31f29e5865c15772b9ec"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserPrivateInfoResponse.yaml": {
+        "etag": "W/\"b9df9203f605b5a601e8e794b36cd32cceb808cf861807a66900fc477cf75c55\"",
+        "sha256": "ede594a6ebbde23c78d38f3a0350919d58cc38f8a32644a2fb73e5a0442d9c53"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserProfile.yaml": {
+        "etag": "W/\"b805ffae8deb128c0458769a29b33b8d4da401073f169545fbb9ef6ab86f87f7\"",
+        "sha256": "e2942a42ebdb2db390cae555c530856ac64b546fde8ec07555dabe9d0c8eeeac"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserProxyInfo.yaml": {
+        "etag": "W/\"a5dde31d28b4c063c4b03de8ec3e8ff84c57992d90bb7edbba6994d99e811b51\"",
+        "sha256": "243af07cb2120806402edf1b857175900f7ece6bad8a355cab2f15fb76822371"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserProxyInfoResponse.yaml": {
+        "etag": "W/\"21b5c1a386d803a6ba03dbf0f2766b191f59cd15a943ac3b72754f21773a989e\"",
+        "sha256": "529cd6c5f0eac8e707dd5041f375baac74a9511012f9fa5b10b25612405068fe"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserPublicInfo.yaml": {
+        "etag": "W/\"d9bf1c90a0cd97cfd40d6530f17d1165df1f07098b71b64e3458f07a06b3fc6d\"",
+        "sha256": "e9199e546190da87940cf63deeb461b744df5a2cc7fbdebf0681330c6b7335f4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/users/UserPublicInfoResponse.yaml": {
+        "etag": "W/\"5ee29d017992394d39c92f99600db8c0000e9d8021babe1ee5403ef39d5f22b3\"",
+        "sha256": "098d48c2cd48e91abf783507a1eb89d6d701aab40f4567288f284f743b813a1e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/ListOfWebhookDispatches.yaml": {
+        "etag": "W/\"cb95cf861d6bd7028f54d819ce06b8ba8560cafd81c28afabbb5a33d3e411fb6\"",
+        "sha256": "f1f4849cbda895cc3caae09a122797db3d7d7af6a22ba2c48e0701e99dc7d4e8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/ListOfWebhookDispatchesResponse.yaml": {
+        "etag": "W/\"75a927365db899ac7d945d2be545f1ede5af49f88bde497898252f12e9c244c3\"",
+        "sha256": "70afbddd3a759b0fce198b6bd59aca09a7411a5a0b8fa1cce1980753451df170"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/WebhookDispatch.yaml": {
+        "etag": "W/\"a3575f4b1f868563a1835703bfeb5018087da78d9b70f05e6aec0f79bd6c5097\"",
+        "sha256": "83f2579eff7a93747907e3cddb7ec50859d7eaf1198648da74802c87f74721a7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/WebhookDispatchResponse.yaml": {
+        "etag": "W/\"100f376306c6c739a3a4b139286a75eb597306f8ac725570d6ee52c1821f4b5d\"",
+        "sha256": "d717eef2e543655cf44ac1b9a1dda38191fcac36940f62dcd10a442c2a2209f7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/WebhookDispatchStatus.yaml": {
+        "etag": "W/\"43d4ec7fb8a326f99f0b8be7ae02751cfc21497c6cc90d15048dce392b2d0bb3\"",
+        "sha256": "7f757eb231a36ac2cee32f5bff5f34a29aa69fedfd347c42f2e5cd24112ca6ee"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhook-dispatches/WebhookDispatchWebhookSummary.yaml": {
+        "etag": "W/\"f1c37cbbafd8116c9f9dce1a0e39bb155247871fa24368a0d4d90579dd1533e8\"",
+        "sha256": "74909d7bd38bf85eee07ec1ef376967030afd4b9e3f9c5954cdc4328836c00f4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/CreateWebhookRequest.yaml": {
+        "etag": "W/\"d54d8eafcec04e9e9ffb75a0eac3538072e81b220cbfc1fa38398779c2b7e234\"",
+        "sha256": "4cd1a3691c57955beda7a262db12fdf113259308c31c1609e0d0ab6837be9571"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/ListOfWebhookResources.yaml": {
+        "etag": "W/\"ac66a9758a14ee47a63b8d93d227a4d4879d0544e84c2759696158307d18ebab\"",
+        "sha256": "b9231b0bff91252ba7488b6e102ad6ae7fffbf6bd127db548a4996be3259fc0d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/ListOfWebhookResourcesResponse.yaml": {
+        "etag": "W/\"343743cca3e8d8063e2a6d29adecec6b737d5e5997ad149798fcf546aacb5cc0\"",
+        "sha256": "62324f608bebbbce9a2d516abbf9ac49318878247e67b43b7f67d1628454ffe9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/ListOfWebhooks.yaml": {
+        "etag": "W/\"da22931dc55465ec61513ce9d3d5b7130f082e4d219a8ff9e51bb815b88c3394\"",
+        "sha256": "a10cc45a6a3b2172e072b0a5ef4b0a3b41fb5738b07ebf5865a0dd2bafef048c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/ListOfWebhooksResponse.yaml": {
+        "etag": "W/\"556d18c2c0557f386f493655453a67e3ebaada333610f817994bca102b8310d4\"",
+        "sha256": "7c7609acb9d9f52dac400313a9e8dda5481442cb4ff991d030f76d04cb7c764a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/UpdateWebhookRequest.yaml": {
+        "etag": "W/\"4b7586317149cb2184c9d989ce91d9358899cd3adfbaf3f3972fa0f5da894205\"",
+        "sha256": "08f19a0af85b7a7f002953076876f2062579a7e6ddbf706de13d43b952d5567e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookCondition.yaml": {
+        "etag": "W/\"1604ede14e8f6b989d7b46edef3d914eaf93ff38b5e1a7e2a9375f12cbfae4f7\"",
+        "sha256": "bf0c1b009c3895d7c2f11f4d4346013983ea98dfd0b75544bc783e254a8ca363"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookDatasetTransformation.yaml": {
+        "etag": "W/\"80bc8eb9e201387113d63df1fc4b32a5bc23e4d507a93754b472f117c78974da\"",
+        "sha256": "eb0a97cde70255f52df6cc4ed8b7abfd3e870c8d5560765fb53f942b3e1c9a3b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookEventType.yaml": {
+        "etag": "W/\"a2484570f7fa6b954ff5532953b95fc671dd0c21545eec3676c8347015034193\"",
+        "sha256": "444f28474c56b93c96ec249f5a69d3db536f9ea623277187e3adec1b31682b43"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookGithubIssue.yaml": {
+        "etag": "W/\"b6cb9ab7c5e1ad78fef01a6ebd09c1ccef7b9c864a5e9e1ae761815de3d75195\"",
+        "sha256": "96e8903d761dfd3f3999dded5a2527a4fbc46ff4222c7cb5be3831a1fdfd4a27"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookGoogleDrive.yaml": {
+        "etag": "W/\"dd942ba698ef4957b4c435644abdaf7691b8eaf231041a71296af3a9e239218b\"",
+        "sha256": "bf3f93ef79dd3ead473f2e4f69c6f8006e19d1b6a301504affd84c12182b846b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookGoogleMail.yaml": {
+        "etag": "W/\"d17c1dcaa4804531b22a81ab585aa66bfcc1f7a0223aabd144b284877cc36ca4\"",
+        "sha256": "3f5ca03a7e908246b2c724b05d72d2a99e69e39e04db0bb3dc03d0e4c582d9d0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookLastDispatch.yaml": {
+        "etag": "W/\"e3e4a838568e21e5710325585d0223d3353ff7881293fccfeb5ebd3324c86612\"",
+        "sha256": "fd3e1dae6841bc5a0b8a0f0f7852ce0d87b0fc419aa32e0d68f4955f83f440c4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookListItem.yaml": {
+        "etag": "W/\"21b0865d967657ee3ba70bcff9282c96b56827a2f15ed6362770bdcd778810f6\"",
+        "sha256": "5b544256d12525895a7aa3fdeb8cd70fe0adba558927300560538c091bcf86be"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookRepresentation.yaml": {
+        "etag": "W/\"f83a576cc0ba45b94410b7f31de8a2d1bab25074a292ebeb465fc977a571ec1f\"",
+        "sha256": "8969e7dd3a703fe17a438f2f95c65412cdd1f2864d891fcd625267155e7472fd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookResource.yaml": {
+        "etag": "W/\"24e1fa2f7c867d2dc39232b91533161b8318be317014fd9d5d640e3af9ca913a\"",
+        "sha256": "07c3e598a3609de20f96f0e387c4eab3a1f72065337c4c0d886f55c124e0d308"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookResponse.yaml": {
+        "etag": "W/\"175b8096b97a8dc1d410cabc34b330a6d49c7c1c4d51a2773aacde5ca85ddfc1\"",
+        "sha256": "2f012bb2714473795ae1e24cd97286b7991a049a13a91bfd1ba312e71379bdc7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookSlackMessage.yaml": {
+        "etag": "W/\"4e3ab2bdcf7bebea3d6b0bdcc84b35115a5e63866b9ac28537e9dda8d8a41b3a\"",
+        "sha256": "a6e537364cbc2ea4467e60dee2724623f892371d2d296cf66c21133d73e5e611"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/webhooks/WebhookStats.yaml": {
+        "etag": "W/\"c49f8c7299016f84bd06aea14386f1d148992d6994822e328c7454bc52b2ba59\"",
+        "sha256": "51d3dea1f29a300a559d31a492d35eb2353e0e5d4f9552c6a1f454c964398799"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/securitySchemes/apiKey.yaml": {
+        "etag": "W/\"4a0e39afe32c769b5d0f0cce280f8a0213069b0adaee66b72b73d287ecac860a\"",
+        "sha256": "f72eaf0a83815cc24c3eaa6a2b643c1faebab1e8fc32b54247653106e53bac45"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/securitySchemes/httpBearer.yaml": {
+        "etag": "W/\"92944d6005709edbee082827dbcc570dee724442394b5938c6781aab49be6a77\"",
+        "sha256": "17dbc1b64c53348c25fae3a33d7bd94ce24660e8dda8eb0c89e9fe536785e8e7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/tags.yaml": {
+        "etag": "W/\"da6b2b5eb5a05d95f3fd84754434559b8b1bc8212e764da5403ab24c8c7c1e69\"",
+        "sha256": "ab9fdbc2e4957d8e9dd243851a3e9fb32dce3d178c6f69f4193d06e92960f205"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/version.yaml": {
+        "etag": "W/\"d9bb377707c95c5ae5dbb701ca2995e07a9e39d8255dbf97137c09d4e8dcceae\"",
+        "sha256": "bd22af5fe7dc6c3d2739b7b76c905c4e71f6d22079d7a7166acbcffb85d20060"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/x-tag-groups.yaml": {
+        "etag": "W/\"6a8ea8954dd13c72457bec419acb17a34592b194dc2ebbf456da1066f996f847\"",
+        "sha256": "33e53b393f9d2bd3d141c622ee9f5a558871ddf2eac893424d74d43a2888858b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/openapi.yaml": {
+        "etag": "W/\"0d216640f132703d8665a98b074a7d997af4be1c50f2935108eef3037224ea2a\"",
+        "sha256": "14a299253728a153a935a11a7ae7484a83dd1bd726cea248f969db61180675c9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-builds/actor-builds.yaml": {
+        "etag": "W/\"5d5f17861892f35423d96fc1afa65cbef25cc376b05fde780ec232c3eab704eb\"",
+        "sha256": "4c6963ac54ace72453be6f421e8a295ee8a2e5b29c9e001f0dbd96680f516790"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-builds/actor-builds@%7BbuildId%7D.yaml": {
+        "etag": "W/\"96af1119b590f73aab8e2d48246c44f09c3dabf9cdb8fd42ed8e2e39fe6e479a\"",
+        "sha256": "ca496d6fa010200c9ca48b27a33d84568edcb7197c709d713dc7ffc15cd15fb0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-builds/actor-builds@%7BbuildId%7D@abort.yaml": {
+        "etag": "W/\"42f0e37d087cfa6ff85e86287ebebc92a1f31a9912eaf798330d4a9097b0779f\"",
+        "sha256": "9ebded1fbd6c7ba95c3f842d6794957d177776f609fbf34ea876deca39c49d31"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-builds/actor-builds@%7BbuildId%7D@log.yaml": {
+        "etag": "W/\"fee94b8fce64201c86e184a1aa7cdc1b62f28eb6441aa196bb93f0655503be6e\"",
+        "sha256": "87414715fa2f9d297505ac8d28d32cb20f2e0efc58e6cbeae25fe551c5d47acf"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-builds/actor-builds@%7BbuildId%7D@openapi.json.yaml": {
+        "etag": "W/\"0beb7a714d953a7de11ebf44d05507ffeabfcc617b7bc163734fffda467f46b3\"",
+        "sha256": "2be135033d253a96c89f7ed284ea931822afebf5371bc9821cd689db98e9bcc4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-oauth-accounts/actor-oauth-accounts@%7BaccountId%7D.yaml": {
+        "etag": "W/\"df5cb47452dab570f5c03d9746759632726c858cbf3b883a102e94b7d0e89f10\"",
+        "sha256": "89b3230c7cc0bd6132bedd381fa5f6094b1736a90bb31fc965fa4f4b60fd0300"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-oauth-accounts/actor-oauth-accounts@%7BconnectionId%7D@accounts.yaml": {
+        "etag": "W/\"35aca57cd8e05e1b7b339dad0bbaf2103c7119807836c766958726199ee4bf22\"",
+        "sha256": "e8c0af9919917bc9bf4ec70b8f3510a0b8ae528f31ccc8723aac4d29796f0a24"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs.yaml": {
+        "etag": "W/\"bfd4bca1a4966da737dff56b0a796253af77be01ae5ad74ee8d95eb6b9ba4c44\"",
+        "sha256": "212728bdc28798264dfb064a64bad7b127781c826a8ea1a5eb316041205cf95d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D.yaml": {
+        "etag": "W/\"5d13f12b69d218430dfdd1cc2fc05c4673c75c7e10f54f674a6fa20789a46637\"",
+        "sha256": "d50745205a74dd6fc713abbf1e14eec3251b4858fa84ea57df46c631c86d84f3"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@abort.yaml": {
+        "etag": "W/\"f819259b8dcfd084fde2dace3661b839d4eac6050380824fbac6d708d48d7ce8\"",
+        "sha256": "797d2b609e8a80241bdc22c2d482254d639198ea4c04612b0516bacbef0f33a5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@charge.yaml": {
+        "etag": "W/\"538b85ab61cb6bba3a7e1faff9fd10f409846a876a5fe7473f4a344624181387\"",
+        "sha256": "5704725913a6e8195933902352f9afa1eecf39d477754c35c535d45dce4b57a6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@dataset.yaml": {
+        "etag": "W/\"5d94d536ff4172d1b8f993ead39ae1f080d6c62abf571a51a9aaa4193f30c5bc\"",
+        "sha256": "49ec28e12a2bf83ef75ba362087b594b83fc54b321e46892561d1ca9ab16a1b2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@dataset@items.yaml": {
+        "etag": "W/\"99eeff48695277d67d7847d3d46ecc794750e4936987af7bc3a980b54598ecfb\"",
+        "sha256": "9526071095cf780640f7118db535a2770ab13aad3df726819f119e7dfda3b327"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@dataset@statistics.yaml": {
+        "etag": "W/\"17d18d11cc426eba898bdcc9bfd50daaaed3554acedd0a3f2127889d521026dd\"",
+        "sha256": "26150f972522b9d69cc9556cf59bab315b4e508c969f800588e1da1f494e0b1a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@key-value-store.yaml": {
+        "etag": "W/\"d3852fedf2593f3b47ba73ace8fe59f784c27ee9963d444f7c0b5ef687563240\"",
+        "sha256": "9e6fa59f11212413af9138c26b4a8121c7daf7fcc6b576ba600aef1d61cf88e2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@key-value-store@keys.yaml": {
+        "etag": "W/\"9355a003847137eaf5fe6c8a8fb1b47337f335c9279d7477dd3f669c32b078a5\"",
+        "sha256": "42a68c89867238e56725f55584f2a88836c2d9bc3d20d123d32df023ec2f426b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@key-value-store@records.yaml": {
+        "etag": "W/\"fd40aaa4471bfce23404eeb0e96ce3eeb2b3f4f869806d063a12f1db5131d8ad\"",
+        "sha256": "f84162e84ee58d15079528ae9ef6e3b379f01e06fa033758bba62e6216f6f7fc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@key-value-store@records@%7BrecordKey%7D.yaml": {
+        "etag": "W/\"07f903d1a150a8ccb8fb93f807e05e8cae8856ba69472e400ec6878b2745c8da\"",
+        "sha256": "899fbf9560f11b3bc98d82568e9aad071985e07486b34e987cd3576ce8c3b07f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@log.yaml": {
+        "etag": "W/\"cb8393e6fe1a983f7a7c972e0968b201649189651452a28b1b1f2e71d5a4222b\"",
+        "sha256": "02a6d162379113516cb86a2f01459be33897683399aaf4fab96fbcec6293a2d6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@metamorph.yaml": {
+        "etag": "W/\"6246e60ed9a1a2e8d8d068348b5e86b04d2cc9f5f2c4f543234a0fdc013373bd\"",
+        "sha256": "eeb418b2a6474bc610dc329912d6ed5c85165af440278edb1bcc7bab1f8e0d3f"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@reboot.yaml": {
+        "etag": "W/\"18e1c8d11db5c73e677d6c2969f03692154ed5a538887cd9885f1335bb2bf921\"",
+        "sha256": "a4e8b056b790ddc572165a3892a516492d76756c3f0c4bcdda85f8484707a005"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue.yaml": {
+        "etag": "W/\"9e2cee7be2f3085f7b6fed5d043d3b2590a21e8826d456b3f19b619e92345d4b\"",
+        "sha256": "7f696aacd01fb2c6e8556edf03eb1b1d65b66b66786ead10653f40c7477b9334"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@head.yaml": {
+        "etag": "W/\"0f58781959abc963dc445203dfccecf5826fa595153201fe9c5d8ff999938f38\"",
+        "sha256": "4a4420ab7c647d46a8f46949a23857e5b9f7544468f40b42d19d33674c2b6f8d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@head@lock.yaml": {
+        "etag": "W/\"523635e689dee86fe7e684e2ff8276f8ed5373be5d65111d16c6d65932f3ebcf\"",
+        "sha256": "0fd94c211c1b82ac0b6f169d45a8082812996114b03d19604c54c35c7c76a1e1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@requests.yaml": {
+        "etag": "W/\"20536efc2cbce7f7d24d0dead5158725a091c1499714a3f09e9a933e9f8c4ff4\"",
+        "sha256": "56a489e19dffc6af1bb32f0b1224dfea8edf66241b53bb540a39b7be3a8dbcf7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@requests@%7BrequestId%7D.yaml": {
+        "etag": "W/\"20148e338bec9cc95299d4eac55291a159252222da8c4e920c0a2161a47d40ca\"",
+        "sha256": "d90f0e8c9a151c587404ccc27b18426a4cc4604f12ea80ec4709630408460312"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@requests@%7BrequestId%7D@lock.yaml": {
+        "etag": "W/\"3a2de792a3cd81afe610992ab9ba628c42e23ff051a0fa1551f61ab193ca3f47\"",
+        "sha256": "71614fd2581c911256484f206a216b5e6d38ca3ef39debf4abfce5d3991217fa"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@requests@batch.yaml": {
+        "etag": "W/\"e2380047a4ba91ee7d1af709a7e84c823a3560c2245caefd5b1d93d7e863bfc2\"",
+        "sha256": "0a272a7b258e963f386f474e6ad3924bc70c96c73366203c672cafe8f03c34c8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@request-queue@requests@unlock.yaml": {
+        "etag": "W/\"335948ef84c93a4bed08742c2fa67fb30a974211a7f7d31a613bface75286392\"",
+        "sha256": "4188d75a13485b4533f8564c04223364e361f80171890cf43dd7a9a74629d189"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-runs/actor-runs@%7BrunId%7D@resurrect.yaml": {
+        "etag": "W/\"b0892fb0212f229ebda6a540aaf5789e7de8e73df9c3c36daecae572ba35cbee\"",
+        "sha256": "9ea99879375c89c1c81932fb4fd43e72e46a85956b1d08a55318aafc9f4c5c14"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks.yaml": {
+        "etag": "W/\"c6ffa69f6efa01f4071605c27191e71a2c0cd968072c379f00be4e70985b970d\"",
+        "sha256": "f0a18042c12ecfc6464b7f15d990deabbe55b575880c91b9cbe4f1489353fbb9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D.yaml": {
+        "etag": "W/\"a53ce945849253bdcc4a1bc69acae4611b3f5fb3a6eef647390799b709749eb1\"",
+        "sha256": "9ccba0203655d8328a634384fd979ea9b58b857864ed77d422151b0d4cb5ca3a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@input.yaml": {
+        "etag": "W/\"dfb72ec8609652702ce7eb0bc6baa42894f5604eab364523485173bca21c290d\"",
+        "sha256": "104bfe3382089a1a338c5bf4e92b93bbf1f5d74adfab06e29be06904d71f5de4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@run-sync-get-dataset-items.yaml": {
+        "etag": "W/\"95f745e5724e0f5b8818bd14ce5843dc803929e13eee27f0f7a13ec7032b0f42\"",
+        "sha256": "05b56ad84c9c28febae595907718402940b52388e23bc8d5a38496b362d694eb"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@run-sync.yaml": {
+        "etag": "W/\"73bc30cc93008988fde798c88b4e7e9366902d8944a292df1ed14026d32e12f5\"",
+        "sha256": "90f0e13916d1386c8f74dbcc9dde6400a88a81b4eb5bb83f6c7f91b9d8289899"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs.yaml": {
+        "etag": "W/\"9674776b10cd1e7129a7d0be6a278aeedcd1ccc8d02551e84ed6c135abcf4950\"",
+        "sha256": "1d081b1556337a2d1dcb38e64c729d6d21160f5704a037e870a2466fa44020c2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last.yaml": {
+        "etag": "W/\"b2c3b2de86f0bed13347d7b74cea9a667b38938391743d89b6d36aea9b936777\"",
+        "sha256": "8a9d04845da2a281f1382873f84b7bbc7bc28d13dee49f359743d3e86f32e44d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@abort.yaml": {
+        "etag": "W/\"b2edaee508ee8a1b2e3305ff0436118ba25da60ee25432d1931f6551df1358c1\"",
+        "sha256": "95ff0f7c98ce881bf36ab48f549841835abc4e84329c105a46414df16e95c53c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@dataset.yaml": {
+        "etag": "W/\"e8ed8e104cb2b081a982a3716b52b06b128aa449e4385ff45479f226f9933100\"",
+        "sha256": "94d1e61c88ed80ecdd87e479ef2cb119d53e0986a7be0ef48e32683819788686"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@dataset@items.yaml": {
+        "etag": "W/\"7e6181c2e347efb365869f8fbda6b3d09dac0a29659c85716b499f5ef9f46b5e\"",
+        "sha256": "8ed44f3bbbc4ad0fe41746912c154fc861c444edd405f7aee11c46d7fc989c91"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@dataset@statistics.yaml": {
+        "etag": "W/\"51c79d1fd8efbe6d39b7e3d1afafd22fbc4653b929eeb530b2e3ddf09521f0a5\"",
+        "sha256": "12ca53e3336b5656a3c8d60d040150dc117477e80553b628b7a0cdeba02c7f8b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@key-value-store.yaml": {
+        "etag": "W/\"bd02035d3043897c5abff474e1013c1514e03fe225caf4d962c6e6f310ee8c31\"",
+        "sha256": "97a0258e75927ec387fbfd9cdd8863b6630e5e8ec1d299e97843f9c07257ff52"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@key-value-store@keys.yaml": {
+        "etag": "W/\"75f8f3457228ff52232edbe9d19fb3d34f228438dc5d5820fb94b1d928e5ace3\"",
+        "sha256": "e593f6b90f0aba503e51dbf8f65ddb2a515554884237fc6d32b9f7ce044c0233"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@key-value-store@records.yaml": {
+        "etag": "W/\"f4388db7370ff4e001f5a985b9a368501a0114f225ac132f03e0f7354bef6c8e\"",
+        "sha256": "3840ebff00e53cc42a2d954a0a9e8bc53947c400b95362139e85853b0b3bd5b7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@key-value-store@records@%7BrecordKey%7D.yaml": {
+        "etag": "W/\"2a5bd7f5fa8d4e27833cbd8558e5fca89698e7d9a51b640887760a2972f1f76a\"",
+        "sha256": "8862bbe96159a9c59cde4ba5a832bd16e2131a5088b4fa22ba8784612997d18d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@log.yaml": {
+        "etag": "W/\"690dfa3798642769053d3bfde96f4872d31f817632e66785cacce1e285f36a2b\"",
+        "sha256": "ab4015ba8eb892462377ed5c1f6d4735aedc0c1b5ac7df926051ce08a38c530d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@metamorph.yaml": {
+        "etag": "W/\"2364e9627fc3bc55df44f3d4879eb1c9594fa4d240ec8b2eb65d4905420c50d1\"",
+        "sha256": "83a3eaeffeec6da1832f21a3913ed34a3f2ca30c3a907949434472bd335be2d5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@reboot.yaml": {
+        "etag": "W/\"75d67972c2ba0d01284e322665e4c4c159ab4f774cf3cbbd2383bf50abb12843\"",
+        "sha256": "0e0998b1ff48d5620b82736395e546341a1669c1db91c0ede809717da84c22c2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue.yaml": {
+        "etag": "W/\"fe9b3f5a6fe03dadcde787267a7b545ac27c61f2431c9c5372a42c6daf35f5b7\"",
+        "sha256": "1987f754aa395786adf259cdc522165d779730b1499441ee0719c5d590feb53b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@head.yaml": {
+        "etag": "W/\"43a237128039477337d711f41e5db22cd960f3673fd99d485c7dbb5033801dac\"",
+        "sha256": "31530af69ac444a9e00d399807d142fb75d91c0972312fe725caede76fb910d7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@head@lock.yaml": {
+        "etag": "W/\"7520886b8aeab57cfc9ca17472598c05a716ac3b380b0dd4dc980a21c00afadd\"",
+        "sha256": "c86f944d08d450b7ddeea00c67df8158850c787daa17e3582b4738590db99f54"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@requests.yaml": {
+        "etag": "W/\"f819b72ef8ab477853971d6035907d1e1e9af92fa03ce03ca81d83a0b2c71e45\"",
+        "sha256": "8d853883834abdeb16013d5ab18761df5c6da219a29dae8a362a43be6b7083c8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@requests@%7BrequestId%7D.yaml": {
+        "etag": "W/\"811ccb5887989b79d0c8ba62bf5b35d03eac8c6e6f6159c56b0fb87abce5beb7\"",
+        "sha256": "8be4bc60ae0b914d98495dea5b439cc30422e07ead59e917911a17ec0e4d262c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@requests@%7BrequestId%7D@lock.yaml": {
+        "etag": "W/\"30664dab9035fd0fe35330a45e138cafdc7fffe57e7343b5212f61ce5dc36b97\"",
+        "sha256": "bf03a9ecc28412cdb306c9a01069e540aa64ab07f387a27e5f05e8a4e2a31ebd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@requests@batch.yaml": {
+        "etag": "W/\"180c0c17b65524dcdc7a63fb65459afe89208acdf98bb924b23f299208f013a3\"",
+        "sha256": "4402257c99cc4aa5b8faeecc572435da8bcf7e6bfdf65de8d55f131371304b70"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@runs@last@request-queue@requests@unlock.yaml": {
+        "etag": "W/\"530c3cb9b0d49ec72a494ed1744d331017f2311f84d7d9d029205cad086c16f7\"",
+        "sha256": "d7bc598db1342cb2cee69761092463ff2440ad029db1a12b33b822b8d64246b4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actor-tasks/actor-tasks@%7BactorTaskId%7D@webhooks.yaml": {
+        "etag": "W/\"8cc5c775a92e0041bb79d359f8fa81865ed096be4b896e9b1a5723fa9276abf6\"",
+        "sha256": "6f1e2b3840456b4b73dacf20232cc13634daae6fe8bb5c5452badc651dac874e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts.yaml": {
+        "etag": "W/\"49e1de9acfb0b245cc0ad068c03c8e731be07b0c2bac0a051dcc5e05e71fca84\"",
+        "sha256": "7316e210e0b09b9ddf598607d2e0fb7e72e90f066577ff11237fa783785f3fa8"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D.yaml": {
+        "etag": "W/\"a1810df75ed69b2aaa6cdcb9d8dcdbfcb68aa554a7981ca9ad39c397cff4358a\"",
+        "sha256": "93ab17d8d8f0fe1b3022013d8e9d9067b49e04685893787aef311b5c14a007fb"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@builds.yaml": {
+        "etag": "W/\"fba023de5153187516519f89b94a3456216718161a9cfc8f9e9ae27d6a5bfdfa\"",
+        "sha256": "b40c7d46692c636cad9f9c28a0426b5189ce8286af770f8d41ce7455f9f89448"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@builds@%7BbuildId%7D.yaml": {
+        "etag": "W/\"7a816a4de507ec5aff2813fedd1796fd00dbd2c67c0e283ec2d399f14ad939c9\"",
+        "sha256": "668816576aea4df86dd963d61f194983faa9a23bdbd31314def863c35b93cdd5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@builds@%7BbuildId%7D@abort.yaml": {
+        "etag": "W/\"256eaacd436421c66570eeeac6ca02c441f03d1ab17bc5b71fff1674c25061bc\"",
+        "sha256": "54d33b8e5ff4e20819a36de7c982569af7ecd069834df3b3d5d7ddb9e18e9e83"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@builds@%7BbuildId%7D@openapi.json.yaml": {
+        "etag": "W/\"979cfaa5f9264ac4c0609b6964d4345933183f029f5e0838f9c9d057e02d5d08\"",
+        "sha256": "31479b2e8aa52cb05e27d89327aac53b33d96fd9f7bbc4dc4a4f76db7757de8d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@builds@default.yaml": {
+        "etag": "W/\"5ab18d6722c7ec26df0a3b3dcad8a772a831d08240510021d4b4fe03299284c2\"",
+        "sha256": "083b381e2246ffac7eb7b9bb4468cf86deb33d4a5a13332ca22278c0f815d7b0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@oauth-connections.yaml": {
+        "etag": "W/\"ff95c78d52ef9c398eb568d821f4bed8cb7d036c5b9a19bb2cad839821577802\"",
+        "sha256": "f0c0fe6cc70f19aa642ab073fc96fe125c5fea8318b849d948a464ef3efdf833"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@run-sync-get-dataset-items.yaml": {
+        "etag": "W/\"1ef9c574d7344463e6f7c1779786c70cea85f6fab25e4dea711da45dcebe9e6f\"",
+        "sha256": "f9e9a88f98c131fdef2dde1aac65226d11489b01271f037975b5b0811ff863ac"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@run-sync.yaml": {
+        "etag": "W/\"d3f97c9a9ee665654173715a874bef302d02a716b3181d2652a292b38b790900\"",
+        "sha256": "2144fa6243ebad28504578bfdf43915391d7e4068af246f6731ce78425b7c1d6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs.yaml": {
+        "etag": "W/\"591e06ddb1402bc6fc0bfa527b628d072cbf7c36417c57f0bce4e78fbc6af6d7\"",
+        "sha256": "6f9c188839a55d52be3aec538835e9af62f2d008e0bdcd1ea38a9462ba2365fa"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@%7BrunId%7D.yaml": {
+        "etag": "W/\"a3faba102cad029c02b2c0116b699a741e1585f3a5e4ccec8a45495ad894ced0\"",
+        "sha256": "1df0ca47a97f927ff5369b0c89cb24144e07dc83ead30e15c4783589e7587ffc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@%7BrunId%7D@abort.yaml": {
+        "etag": "W/\"30cdc2e73b8deefc1a392b065a45c57ad6ece870cbd603904c22f5e6d56b4798\"",
+        "sha256": "e7daed4caed8052a41cb596367174a4eaaa95a85df1d65822e4bac2309675d87"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@%7BrunId%7D@metamorph.yaml": {
+        "etag": "W/\"13927c1ef907be39a0fc06d7c1de0c6dedeefd7ec8718b54126549911c35d8c8\"",
+        "sha256": "25b217d6d95db8e097f12a88e91e9aff8538b7356d3872ff1fe2fa572a9133a7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@%7BrunId%7D@resurrect.yaml": {
+        "etag": "W/\"45c2fee86410032c1022e3e6736d7589845f8dda2e42a77d79bc495538779d1c\"",
+        "sha256": "8dfc3eca285065f3db18f5d7f621f8a39aa8bca8966328834eb1ae51a1a1c580"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last.yaml": {
+        "etag": "W/\"be6159ad473e70622501136441dda4459656187c3c2b7e282aaf05d33a049e78\"",
+        "sha256": "6e9980955cec7ea419428d92fa92a344bd5faf8b6ec121b8eebfb437febee8f2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@abort.yaml": {
+        "etag": "W/\"234fa187a46b98a77646fd167ab5d48f43a56bc3001fe48278c7d43eb0ccaf49\"",
+        "sha256": "292d2de415f9111598e9f487f95fd8b28e8089320b2cc5b3418c148022ef9b4e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@dataset.yaml": {
+        "etag": "W/\"d8ec05467d7b635f7ea561d9811343eacdd32c24345fb6e3efb9efcf6bebe2e1\"",
+        "sha256": "4c2382ea179aa8eca3bb08dc67010b98fdcafa6a6edeff2a63f3c5f5cfa5a0a3"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@dataset@items.yaml": {
+        "etag": "W/\"e0f58d07e0ba85729954e51c21894df250d1e06d95ede8263558bcba36b30c05\"",
+        "sha256": "b1f1ce0684837b5a06cbaa471a9a6650eb5bf33e783845d097e3874ae96e7bf0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@dataset@statistics.yaml": {
+        "etag": "W/\"e17ab64b2c242096f856da8a0dae0db9af19b75142cbcdb20c18ee33fab4d582\"",
+        "sha256": "3cfd811534f2d68d866e7f601fce1efd941a12d9537490c918fbd913d28affc2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@key-value-store.yaml": {
+        "etag": "W/\"5180e2a5e31c69188f8d03386001114c3ef0b1a6ea3930a1ad1973a7fa25f2f4\"",
+        "sha256": "40db85db6f0b071ecb0de5cea615aab75724cf1aff95d32ce951cf95e054f149"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@key-value-store@keys.yaml": {
+        "etag": "W/\"0183fc1da74caba890fc9110d51b95f17886d5f1cf8ead8766015f1bd68b3db3\"",
+        "sha256": "2862fe7a9dfd4491d0e81c7da42f17b710de3710401d367221d3739dc7f0caf9"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@key-value-store@records.yaml": {
+        "etag": "W/\"3afe049ae6cafa8770911aa50db7456f24fe67f09673f62738bd4bb2d8e456a2\"",
+        "sha256": "e6c9899560331be35f8c8a414c1ee933c235f3f8e294fbd3eeb88a494edda75b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@key-value-store@records@%7BrecordKey%7D.yaml": {
+        "etag": "W/\"a0a437c6e29250150b4c8dbe78a54f9dee4a3a58566ea51ef21f10687c74674a\"",
+        "sha256": "2ea6cfb72616af6ed6b8ba5aa79c998c529f74ea8e23667913e98e6f25055f1a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@log.yaml": {
+        "etag": "W/\"d8178075ba6371bbddfec4156253209989eed03536995e886f056d7961b946a4\"",
+        "sha256": "d09b00cc74a5774c21e387610178f6310f27839f99cdd0eaa631560155725208"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@metamorph.yaml": {
+        "etag": "W/\"1b956bb63708e5162e03007a5f227e1be7c534c6cdd54e7d04121c586d1ad861\"",
+        "sha256": "8a41504379f19c524e91b22c2ee36c03b39125cac6b50973e22085e757ddfcfd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@reboot.yaml": {
+        "etag": "W/\"0d8294bec6bad9b67a8bc2baf9837f7c7755da3b4d35f2ec73141d773bb044a7\"",
+        "sha256": "2b393bd8c6654350c89117768d774da5b852ec8acad90b542e0751bad51e706b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue.yaml": {
+        "etag": "W/\"80b6d198caa15692d493263aa60a5b756bb767b7dfd30219b0f08355964c061f\"",
+        "sha256": "44126f277628b387905ac4c9456d68f6c060f7b748e3ab85dd39e086849a2c91"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@head.yaml": {
+        "etag": "W/\"2a43e8d0f7052a6354e432aad143e38d69ad3c7e4f9d1eb4cc5f236e2cc4f198\"",
+        "sha256": "89b119aef8a0f928bbd30df6b59bdf11bf4ea1bb61352213557734c6ceb7e773"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@head@lock.yaml": {
+        "etag": "W/\"8733880d14975f7fd6b9c0b2fc5a70cfbe6e2e3bbdf4d0372dfdddb77f51d79c\"",
+        "sha256": "fcdb586e9cab6d7afb34c84033c2d92b47ccc8da48ad4a085831b582e047fc4b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@requests.yaml": {
+        "etag": "W/\"219ddc5e7cc9d672a85798e80b7f24f9e75a545adbc1d622c8b0ead087401e7f\"",
+        "sha256": "8ea53ef43d180c5dbc048bd547dc65bab5c53459aa59da7845784d9ab6aaad4e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@requests@%7BrequestId%7D.yaml": {
+        "etag": "W/\"82d1403d7029a147c57c93bc32d2e95009fe89747ea5368b3bc8c8d97280798d\"",
+        "sha256": "032e9a41b1ce1cfe9231519ca65751974100fee16eba59c41e9b54b20cd2d6b7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@requests@%7BrequestId%7D@lock.yaml": {
+        "etag": "W/\"c03b50db343c87214ea7cb05239043be3b1d554400a690656f117da1fc660f19\"",
+        "sha256": "5625f6d778be262e850dabcaa7738df726a20c2415fb509828c243f59544372e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@requests@batch.yaml": {
+        "etag": "W/\"57bb41fa42adee77b24258aa685bc0caa228c7f6e183dad0a991f309d026358e\"",
+        "sha256": "ef0a081454d98cd31bc206712575c18025272b28583e81243d296167dd77ecdd"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@runs@last@request-queue@requests@unlock.yaml": {
+        "etag": "W/\"f3a729cadf5bfaf2ae1894628d78de8711bb7a556582559cfb70549579277bdb\"",
+        "sha256": "b2b7d361018e9106cc6e6c6d745c34df72e0dfba0f4dd840ff875fbe75edbcd7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@validate-input.yaml": {
+        "etag": "W/\"d0da0bc2befd7fbbaa740af551df56841b4877253c9234da3b4a848f12672aad\"",
+        "sha256": "874592d528d019d8cb4e143caf3d95c7a12054ca2fde9271506fde35e8895412"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@versions.yaml": {
+        "etag": "W/\"f7a911dfeb1ce74b634102c8b4fe9a2d45f3253dc069a8051179eb5c1af68c66\"",
+        "sha256": "9253d738e1ec64fee2702a2f034141788ffb1974a59b911008d9699770258eca"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7D.yaml": {
+        "etag": "W/\"fd60e9d014163bf6173864e0baac251ab6424b26be4ec1a6d9836bbccf6864de\"",
+        "sha256": "4e22e0cc5aaf331d2c63dfd1cec1f5c387187f7226de33125b6779daea5399fc"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7D@build-on-push.yaml": {
+        "etag": "W/\"e64fd1308a6dbc1369f7b11c5af056c72e9ab38f09fc8214a70076c28ab3cf99\"",
+        "sha256": "de9a8fdc282c6123f0a782e8748ac2851ea4678d3e14214a84305bce81933559"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7D@env-vars.yaml": {
+        "etag": "W/\"8cf9338a5c535152bbd6aee78ee789db4c7d38d51de1f544a4d35e237d2f5f0d\"",
+        "sha256": "eaa1bb47bd6eac2d54cd9be28135e57b3070f8f4313f47de6d0f24f5e8c454e7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@versions@%7BversionNumber%7D@env-vars@%7BenvVarName%7D.yaml": {
+        "etag": "W/\"5615a19fd68cef01408d9789307058d27c4dd3c5ef559aa70251843948f4e901\"",
+        "sha256": "1e68bf30ac372ad35e624f3acb18c042c7cea421c71d754ea0851e6cb1a03a0e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/actors/acts@%7BactorId%7D@webhooks.yaml": {
+        "etag": "W/\"6316392c728493f1f5d85c383fb22c1996668cd952a35e2cde9df3f448e03e27\"",
+        "sha256": "2f7f2f1d37af7c180a8b35af9468fa775b84517412996eb654693e1afd19d4be"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/datasets/datasets.yaml": {
+        "etag": "W/\"5b9479405f7645ff627a897395e8c38c2b0994e71579c5426d1735a6c64566b8\"",
+        "sha256": "146d6b2fb2cf7afc370ddf0165b7a1ac43691a8987ed7c314fef1ad42dadc425"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/datasets/datasets@%7BdatasetId%7D.yaml": {
+        "etag": "W/\"b60ee8b9f6e673df14338bcda9a539867194400a26dcbb0aa25d6219c6d47c20\"",
+        "sha256": "e1d5146016a94e08518e30734e3025d97a56db80d6e7663f18cb55dc0b54d852"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/datasets/datasets@%7BdatasetId%7D@items.yaml": {
+        "etag": "W/\"57099e3142d72ea9efaa36c49f42c63a61075007b990292f41a2bcb854c50ea0\"",
+        "sha256": "b21fdb246d841896417e4d1bad5fe261e7c9ca3932661d5e037241f548ee5bfa"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/datasets/datasets@%7BdatasetId%7D@statistics.yaml": {
+        "etag": "W/\"f397762f3b785373297a4bf894542b3331e78d810ffb5243a08c24ff902115f5\"",
+        "sha256": "36ceba3a10403cb11b78c72610e983b6a2153da4b86a528137bc720baa8771b5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/integrations/integrations@git.yaml": {
+        "etag": "W/\"d0025cacfcb04cc34c3d165e2fc05cdeeb41b31049b98cc438711765a179ed13\"",
+        "sha256": "c7e51a031e81980d4286b9d7d0856cf6abe480dbd23cf88b403f658d4ed9ba95"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/integrations/integrations@git@%7BproviderId%7D@create-repo.yaml": {
+        "etag": "W/\"9e2ac84b57f5286e649f117716bd5a1afc6bf35a849aecf06cc0217ed4e8ec1b\"",
+        "sha256": "6bcaa29f264e48088c4c48d77537697f07a96fc7857c3124fdaa4a0964402e31"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/integrations/integrations@git@%7BproviderId%7D@register-deployment-key.yaml": {
+        "etag": "W/\"d45172d9891df13b3245e5ef525104af65aa923528f1407098b58fc6e39a1f9a\"",
+        "sha256": "cde1bebff9404260ce96cdc613c38fede41a32cd1d48e7fac048cc24b054f914"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/key-value-stores/key-value-stores.yaml": {
+        "etag": "W/\"0b0088780972dcd25bbb1712ed05b461dc2018c849db77db34ffab5c59b33053\"",
+        "sha256": "98ace19c7fb4c9ee9615ba73137ba8bb529f9c9c94b09d2dd19938ba4648b8ac"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/key-value-stores/key-value-stores@%7BstoreId%7D.yaml": {
+        "etag": "W/\"6a2a9556d184c5e6ee9fd638b3b1b166614dbd8eab1c1fbf46f9ac7329e01bb6\"",
+        "sha256": "fd4ec85250118add8844e524bf94c954127473fdef3d0963a55311277b1f4162"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/key-value-stores/key-value-stores@%7BstoreId%7D@keys.yaml": {
+        "etag": "W/\"da4f802cf8510e4c2d0e5f5cb0c9199dcefb605116a0687149116945e637b37c\"",
+        "sha256": "f8c83f7378768c7756edbc3226c155ed54058d55a1b6b22393cf2a6cde2734a2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/key-value-stores/key-value-stores@%7BstoreId%7D@records.yaml": {
+        "etag": "W/\"f90877ea7cae8405913c546aef7f35a50111dce413f32f8b8b1e70c3248bcde6\"",
+        "sha256": "274056750468149c2fad738328ba659c6d1f9f0dab71b1f5946812e0d84825b4"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/key-value-stores/key-value-stores@%7BstoreId%7D@records@%7BrecordKey%7D.yaml": {
+        "etag": "W/\"b3b27d52488b7b1046e48e55d630dcec2fe91556641bb57317ed7c126bf0422d\"",
+        "sha256": "8e27dfb2b74850de3ad545b8338f33e930c28fdd732cbe8b0a99a7c88cde5a45"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/logs/logs@%7BbuildOrRunId%7D.yaml": {
+        "etag": "W/\"dc1e79d8e4cbaa06b135a59db078a163e74c65bb4f1d5108320781db2a709ce6\"",
+        "sha256": "110f1b5549ed1bb532ca4002d0d269ac79db2c6d3c9ce07a64e4ea7e4e299946"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues.yaml": {
+        "etag": "W/\"84ad6fc28b08a7136baca6dc1c0250609d264ed6233e99d3ce77e2e5ac178569\"",
+        "sha256": "224788e22a053428ac2d28affa8d78da072deaeec8e5d92ee737fe9798b0f704"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D.yaml": {
+        "etag": "W/\"e0a499ce162d7429ad39cb376b0dad149ff4ade0903f842025d77b7827e05ef4\"",
+        "sha256": "080818548dc0695935191ef59c4d46a8745477db00f3aa826641274de9d2573b"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@head.yaml": {
+        "etag": "W/\"f3bcc219d81d0ae6641af27d6fa1a80b9a0a4e9bb34d98fe72580a3b9b1a2ca0\"",
+        "sha256": "83dc5c0794bbf85332e7b43d9a46e6db5a044ca4dad5d32d5ae33fbe6b30131a"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@head@lock.yaml": {
+        "etag": "W/\"1811b5b147e0367f2c601295bf519cb5e21152f3ac122c60ae05abb497bf8833\"",
+        "sha256": "fc4a84d31c823a644b351bc839c3b7bc95e4d287778e91e600d9340f7780f2af"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@requests.yaml": {
+        "etag": "W/\"5adff9c7307a90c144ee11e51b5b3ed735cfd3fcd3d45bf41cc59e6db22f868e\"",
+        "sha256": "f03dc3eaf84f4607c3d6a66b2c714bd36adf405e479534d0648b3542d405a9b6"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@requests@%7BrequestId%7D.yaml": {
+        "etag": "W/\"d675c5ad8547bc4cabdc590e12f1c79cfad00c30d1f51696932412c45e15c1c1\"",
+        "sha256": "8233c6e8332bd9312db85ab7027802360bfa2c3805463cee2d193cd771baf6b2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@requests@%7BrequestId%7D@lock.yaml": {
+        "etag": "W/\"04dd044ba8397615595daa806ab3737a3662d69892d931761061a4f42ffd4780\"",
+        "sha256": "fa2ebc385f454d8716ce07761243644bedeadd5bacc23c67fad79b50b8cfedaa"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@requests@batch.yaml": {
+        "etag": "W/\"00de1269535a41798c66d150333bcf926e50a6ed4689578e9dd3e7212136dbbc\"",
+        "sha256": "1b9a3c52e7d073ac2b008a064a2c5f2e42a2c1fa14698dc7fbd87ce1c1fa3f72"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/request-queues/request-queues@%7BqueueId%7D@requests@unlock.yaml": {
+        "etag": "W/\"b3cb729e97998e779d80845d35d88a3f5bedfb3879f28a9a41249bd71e6216dc\"",
+        "sha256": "d70de9ce35d47878d45e8e6b3a8bb52ac2a4cd0a8dbed73de90b655bfc29080c"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/schedules/schedules.yaml": {
+        "etag": "W/\"f2c042a0001fbabd5094ef99ba1ae72e51c049861207c333fa023447fce3321b\"",
+        "sha256": "3c0c125f79f5afcf21e08ee3df3051e8ea73658529e9334dad07dfd8d8935f33"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/schedules/schedules@%7BscheduleId%7D.yaml": {
+        "etag": "W/\"8677d1514d17797ec3e8e606b45fe80c6b75cb4aa3f99093edf530bda192e0ad\"",
+        "sha256": "c6e2245e2cc6ccd51cd5bfe23ecf20584b090d95933672924be3c4a67c8a583d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/schedules/schedules@%7BscheduleId%7D@invoke.yaml": {
+        "etag": "W/\"cc90ced86f0b4e166d7cac147ed4f2bae86886813baa8ad28c65c191a075ec36\"",
+        "sha256": "8b86e13923f892c66970f7b1c612818300f60be53b923d492c0c975e9d433aee"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/schedules/schedules@%7BscheduleId%7D@log.yaml": {
+        "etag": "W/\"343b20e15b56e69090da69c6eaab6b3f740e4f6af601e391c31ac3f98d9d88d6\"",
+        "sha256": "7c99f50f30d2d95a1f5e8954afd35019bf8a1d2623ef6d23fc514ec6cd08d4d0"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/store/store.yaml": {
+        "etag": "W/\"17751416e815bfa111ff90126b5b0fc39f27fde3f998a299f3c2cf6c5646ecea\"",
+        "sha256": "71056b88094cff2a9d5afddb20cb055a67534f1caf91c0e7061dfada5c5536b7"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/tools/tools@browser-info.yaml": {
+        "etag": "W/\"96447971a91d01682ceadb5ddcbd6fe7a4146f6cc08852a15f70e14bb392eeeb\"",
+        "sha256": "cab6be6a157ae21a879d9ea74c10de06d8cd9a1a54529a183641f0e6040d2266"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/tools/tools@decode-and-verify.yaml": {
+        "etag": "W/\"abb22112c6fe34fe15613300dc2ea91a761aeb6a199b876b64edbfec79b5e914\"",
+        "sha256": "943fc7da58bbbd3980c0dc42dfc33ff9234a5bbb97df088f565f3a8cd55f0389"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/tools/tools@encode-and-sign.yaml": {
+        "etag": "W/\"0218ec6d59f657a1fd30cb97272b5d0f04a6dd59f9a3b07aac082ab9c495a540\"",
+        "sha256": "a8f6aa4125e689944a203061081fda566fcbedf6b8db9133f41993e241d968db"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@%7BuserId%7D.yaml": {
+        "etag": "W/\"6862ef5de6cfb2ee1e5033a80b3973441505101f7054159889baed8bbed93b21\"",
+        "sha256": "2411e59b8090d514fa6091aaeec6639b4ad78e94275446ce5efcd4653acd45de"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@%7BuserId%7D@limits.yaml": {
+        "etag": "W/\"5b92b663f20d90591a74086db8377a3a6ca67e8be9754fddfb33fed03d134530\"",
+        "sha256": "7a232bdb36007e4812eb4a0d41acdf4637bb0093af9ffb10e0c0bc8861013d82"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@%7BuserId%7D@usage@monthly.yaml": {
+        "etag": "W/\"b37f26132e613fc9981055acc4c2061f1e64ffcfcc3fa4ebda59f5edccb8e5ab\"",
+        "sha256": "9f500cb8159fe1dc971ba61e813294ae94e9c68dd74b42f5ca55b5136f3a1eaf"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@me.yaml": {
+        "etag": "W/\"685c7ad696ad03e83c75221950e93d5329035190b98d3b8707f01454fd764882\"",
+        "sha256": "0dc76fdff1245f6e5b3aface0ca98db586a4683a47e7c260ba70c4599583dd3e"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@me@limits.yaml": {
+        "etag": "W/\"85dfc02a3a8050f914143e7d5c705dd5cf2b71a4735af1e4b3429e26a5673f2e\"",
+        "sha256": "46a9ce921761775a5e2231b274424bac874ab4646f2598a03e69ed564cb7bf05"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/users/users@me@usage@monthly.yaml": {
+        "etag": "W/\"e1c024af32df6c72ef2956b011cd316500f2ea7ebe23959d36f5c64a8becb533\"",
+        "sha256": "9bfe3a6f4b3df77b23c143542b51f9e003f2f23715b9599ff2c8d1d2a22b3ed2"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhook-dispatches/webhook-dispatches.yaml": {
+        "etag": "W/\"18b0a71b8446d5de739b4a13cb246af19827b0516b7f2afcd4c8c2625d73f9fc\"",
+        "sha256": "951da520c778aca66c82953422945f06ca2cfbc5c536cf167d12159881a6146d"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhook-dispatches/webhook-dispatches@%7BdispatchId%7D.yaml": {
+        "etag": "W/\"7fda833fedc060ac68af6d735c6edf922ebe481e57fe0a73a5f67b65412c0086\"",
+        "sha256": "8372a3016561927b794d1080c70a21ae07d44764a0469a37d1c007b65e42dbd1"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhooks/webhooks.yaml": {
+        "etag": "W/\"82bf81cdcdff7b73b66af6c444eccc1afc83ea7b8e8510ad2656c9480e3a808b\"",
+        "sha256": "f7c86a52e93dd7f1ad9c57263d8960bc7c1f76752ccfab7b99c82543c509cd17"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhooks/webhooks@%7BwebhookId%7D.yaml": {
+        "etag": "W/\"cc65c91b402f4080313caac7193e57cef40ac6b97bd5a60a0fd27994a6c23391\"",
+        "sha256": "cc876d7851aa99c636af5d4173a2aa773647796e51f8b4afe510215bb5b6b1d5"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhooks/webhooks@%7BwebhookId%7D@dispatches.yaml": {
+        "etag": "W/\"61686a5a4639f12d2dcf8b84cdd32c60f5dc57bacb25e6df70a66de4202d85a7\"",
+        "sha256": "2d76c92f5f6b8cdf0eaed1a6b0baa61c2a06a329967a9c7ee13311b45165b910"
+      },
+      "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/webhooks/webhooks@%7BwebhookId%7D@test.yaml": {
+        "etag": "W/\"7ae61f92a978dee364900637228478b60c5e4bf55c95b8bfe4263ce4ce595c8d\"",
+        "sha256": "f6accf29e5dcc099dc84a66cad6b1ddac66073ce10f176fe8a9fabb0795f4174"
+      }
+    },
+    "typecheck": {
+      "errors": 292,
+      "where": "`index.ts`",
+      "codes": "TS2724 ×160, TS2305 ×132",
+      "issue": "[#544](https://github.com/nakita628/hono-takibi/issues/544) (146 of 242 operations lose their `responses` to YAML merge keys), [#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  }
+}

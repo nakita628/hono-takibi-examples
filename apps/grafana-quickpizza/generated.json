@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "19065e4399c2f677d244c4049e382612b5f83e374ecfd3e6ee5988c384476ff3",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/quickpizza/main/quickpizza-openapi.yaml": {
+        "etag": "W/\"9d92f8b4ae16edea0ed5c5c1388854dd80c68b78bbdbe91fbe8b24958ed6ecce\"",
+        "sha256": "b330d4961f51d85a5ea701c314b70e5c70808a77bc308d2742c9ad563da0a76a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

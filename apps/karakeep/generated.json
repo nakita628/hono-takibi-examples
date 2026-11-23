@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "271dd1066f413c5b0ca07777934274b1a6a8b5faad63c0d03a145aa7e7461e23",
+    "sources": {
+      "https://raw.githubusercontent.com/karakeep-app/karakeep/main/packages/open-api/karakeep-openapi-spec.json": {
+        "etag": "W/\"55d8ea33443f4062314cc508749c697e617440e9c5863818e7f630b82da81779\"",
+        "sha256": "bdf84f61832bb697c8fc9833d44e850e51ccd63a20da763f4b171e872c623915"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

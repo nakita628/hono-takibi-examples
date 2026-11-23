@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "428b85f586d723b79ed6c91471ff13296d320a8fa31aa0ff878e2356e2ee441b",
+    "sources": {
+      "https://raw.githubusercontent.com/supertokens/core-driver-interface/master/api_spec.yaml": {
+        "etag": "W/\"28c65690afad7005cd21a1ca1188a35fc8b5aebc9ffb0faaef5e2f9786665264\"",
+        "sha256": "e4515de732c57b094a1d19f0c189efe76b86553628c99cfe1f51c9160351de42"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

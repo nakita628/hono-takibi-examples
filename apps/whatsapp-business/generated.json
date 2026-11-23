@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "efad80988f829479438e43e7a20e705631b2e8fdaf5b677d917218443e6896f8",
+    "sources": {
+      "https://raw.githubusercontent.com/facebook/openapi/main/business-messaging-api_v23.0.yaml": {
+        "etag": "W/\"bede15d275a60b544e1cb5431b32fe1bc6dbe974512c1ce7315bc2342b61a08f\"",
+        "sha256": "5c1973265369944b7cdfa3fa690985713575249042e2b7edd46be3ef9bd9b09d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

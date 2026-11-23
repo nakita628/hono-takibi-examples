@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c3b634f107948334af369e011a1f526ca9ced732f94c002570a7444c71b946c",
+    "sources": {
+      "https://raw.githubusercontent.com/vimeo/openapi/master/api.yaml": {
+        "etag": "W/\"d32ca0ccd43721c4ba85425bc0bf7c0458a704c5b51af1d1dd0c53b55b1ff8ef\"",
+        "sha256": "ea882e0224a4032c9055f73dccfec2fe0795be5b98e251378ac1cec5325fbd32"
+      }
+    },
+    "typecheck": {
+      "errors": 42,
+      "where": "`hooks/*`",
+      "codes": "TS2339 ×42",
+      "issue": "spec: `GET /tutorial` has an empty `responses` (`{}`), so @hono/zod-openapi leaves it out of the client that the hooks call"
+    }
+  }
+}

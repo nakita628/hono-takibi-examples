@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9f1f660177d6d1cc87475f10199d35cf6898cb5d00f04f9a224e01130f8aef47",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/server/master/core/openapi-full.json": {
+        "etag": "W/\"ec77fbf6918bda7c068dfa07bf316d088775a633a2dd50a28504c68e6929afef\"",
+        "sha256": "13e505bc8b52d09274a3a8e0ade7a002990eac7f3e8b5e30e0a6f022adca0e82"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a06468454480b05d7ec2ff2810f5e26630197ba7433d1800172cb5a8d23a5c50",
+    "sources": {
+      "https://raw.githubusercontent.com/neondatabase/neon-api-python/main/v2.json": {
+        "etag": "W/\"34717542df995e8663f8e6a79a4a8c5abd2fa1ae82c8ad60e2808cdb8eaf9e04\"",
+        "sha256": "f67e263a15ff1b1ad531a3070e77002826157eefcd589d272288af3f4b2238ca"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

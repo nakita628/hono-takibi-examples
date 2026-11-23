@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5cfbb243a37d53797bad0ec487b15bed44c63a8e02c07c6ea5cb506883f037cf",
+    "sources": {
+      "https://raw.githubusercontent.com/getbible/v2/master/openapi.json": {
+        "etag": "W/\"7467dcfc3ed4ffedb0328f7009be9f49c1cc8430ee3b5838112393380cf67223\"",
+        "sha256": "0726e3d7a37a1a3fb19e463d109cb673464ddcbb7846ccf3e014be5e6b4a9881"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

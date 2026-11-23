@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "52aa1b037f1272686c70dd03d82f8f33ba0ddb857eb54b358719225d30a590bd",
+    "sources": {
+      "https://raw.githubusercontent.com/ory/keto/master/spec/api.json": {
+        "etag": "W/\"0aa7eb6c858770ba44446340df47e7226fde843a3e007deffdf30334b8437e15\"",
+        "sha256": "4e980fe4b29b5a9b852f51538da05bc68a821c8345ae86774da26d889e844d35"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

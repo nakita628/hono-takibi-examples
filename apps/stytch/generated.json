@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f86d997d1ac1983c3d6185a8677f2d026342d39d88f6038fb454b3b0211bc41c",
+    "sources": {
+      "https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml": {
+        "etag": "W/\"c9e46d06ab96faa00cba0e41e09d91b9547e7caf73ef7db66cb111e5161f91c2\"",
+        "sha256": "6d1ff74748039d675d2fef95442e3c8525305b863dda0618e061f44050c015d3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "67a90a41c12157cf889a2e5e6451bfefc170cfe2c7d4dbb10603025823fccd3b",
+    "sources": {
+      "https://raw.githubusercontent.com/error311/FileRise/master/openapi.json.dist": {
+        "etag": "W/\"e8c36e7022a0d66ce1c9d6abc927ab9cf2d68e835c9ffce48470e9aa9dac3a51\"",
+        "sha256": "93b26a9a9afae99e8263cd4200283fdc30955280b68a6310c71f7e94acbfd7f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

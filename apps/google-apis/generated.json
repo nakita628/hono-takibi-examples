@@ -1,0 +1,4322 @@
+{
+  "configs/abusiveexperiencereport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c80761f74d1b4458d21b5c04e64b22e7d1e9811886ab762ee91172279e9aaf36",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/abusiveexperiencereport/v1/openapi.yaml": {
+        "etag": "\"87dfc68305681e57807134c2bb8fe6f5\"",
+        "sha256": "5394216b210716aeba6256d6c24f23e32f2b79b9acc734ad7d291fbca4cb5fec"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/acceleratedmobilepageurl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cc81c9521d4386981e6297f43a8f852f29fd8cde79a68b695ff97e2ddfa4b3ee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/acceleratedmobilepageurl/v1/openapi.yaml": {
+        "etag": "\"b6e4a4a4b7d399a03d064f50f46139b7\"",
+        "sha256": "b3b5b3146ad63f93d2901e977c84e58f742dd60e037632bfedaf35f21bffcda0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/accessapproval.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "076db5a7ddc4d4cd94f2af1fac19ef29a71d5de580116162d89b18b0500f3c5f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/accessapproval/v1/openapi.yaml": {
+        "etag": "\"854f7d5355e4e6464b75b9ca8402e7d9\"",
+        "sha256": "897ecf02dc6d5cc20c0e95599d76e0f7c1f78938c11af412a080a2bef9b93456"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/accesscontextmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0cf83e47bf880a8a020223c88f78bfcd41d70dd3635a510eee4fbede4e986866",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/accesscontextmanager/v1beta/openapi.yaml": {
+        "etag": "\"d9de4088701b7a45eb5a94820b4d7c37\"",
+        "sha256": "e2fb969d3e24a64e8c1c1ac09afceea13282dfc8ba05a75517bebd49a617e15c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/acmedns.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ed714360737b8c9cddeed4aff7318eb86362895c2164ac4a6f4338e50cc53ec9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/acmedns/v1/openapi.yaml": {
+        "etag": "\"59a9b98bc2ccb9b4f2d293e53cacdf2c\"",
+        "sha256": "977767fbba1a48b2f70d9ad2cfcab84057e5c265828757e5105d57ff36e31543"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/adexchangebuyer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3e0f43c8876d0b95c002d6a167793e8464a953edbffd3529dad0a2ebf0c0406",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/adexchangebuyer/v1.4/openapi.yaml": {
+        "etag": "\"c80e8056b1bde8ec6b2a1a23cb2dcedb\"",
+        "sha256": "2ae31df6097851dbff7a8939a6a658e770eb0fd07816e83cc156e9e3e42bcecd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/adexchangebuyer2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4a2118e011ce342c8075ae823e45dc7610d97c7d88f45cdcebdcfb2fd67b5e1b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/adexchangebuyer2/v2beta1/openapi.yaml": {
+        "etag": "\"a82a29a4dd62602d48ec337fc2f80e1a\"",
+        "sha256": "5dd19d8b5b889b115ed874a8805dac08cc3b329c2ab37b9bd05bc6a0a208a6a6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/adexperiencereport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0e206b9db9a0ba7ce8d6ba88dc74fd7cd6dd756976ab269bdf55885fa254a95f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/adexperiencereport/v1/openapi.yaml": {
+        "etag": "\"e63af57813fd3d8a0c951f89afdc9434\"",
+        "sha256": "d6dc9355db37afbfa0ce08b1a7b996ca799fc49165e312a0deb7a69980aa10a0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/admin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4aedb7735ceae66a3e9cb0276283fd82ddecf0b8aa8c076938a2d51bb0645f3f",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/admin/directory_v1/openapi.yaml": {
+        "etag": "W/\"9036cac8a0943b3b8e2cf2bce6b79f9f6b8caac6ccd0abaf6ef0a5bd7d13f1bb\"",
+        "sha256": "c552cdc7b0b578fec1ea8997bc83ce61d72eb6ef4ea1c6a721301be045170f69"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/admob.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "37b3f0f3e942e83f3cbed6b4f4a83559b2a517d645482c4c3f40e274cd463ab7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/admob/v1beta/openapi.yaml": {
+        "etag": "\"2228d5bc1e627622e5bd12b07315cf49\"",
+        "sha256": "6c77579cecd54c0f7f5bf3c9aa703a277f517864d39dbfbb9a19c98e6a7a3b44"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/adsense.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1bf126639450ad9961ed38f425a0ac964f941c922457e480f69f6926cc95d505",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/adsense/v1.4/openapi.yaml": {
+        "etag": "\"d42c44e409863b1ff64931d42c7178a3\"",
+        "sha256": "ea9e0a1018e71c3a2bcba6baeee7a26a1e27ac0a6ac4b52481587c87e754573e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/adsensehost.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a19965662946277b120bd8fd4a7290b76c13c91554ca0a4b3581d3b48e0fca16",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/adsensehost/v4.1/openapi.yaml": {
+        "etag": "\"804d69b5679e4bba0717e1ab3a6de49c\"",
+        "sha256": "0ffc48d00a5b5766fcb971267f4c9a5bef545de2c5a8b6d73f3c1a24c0b596a6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/advisorynotifications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8b74624a93d35e564f8e91e342e90018739b1fb3e30fe0cca58f9d6902eee387",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/advisorynotifications/v1/openapi.yaml": {
+        "etag": "\"7b095f9cb791e35ac40367802f93ffae\"",
+        "sha256": "5be6a1fa0eeb16fa37e0b04d72deedd5230229de167aa5c55120f58cff19f4fe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/alertcenter.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "29a0f6860a4fa12eb6a840369e906658f74149039f7de0dc391f92589b3d255b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/alertcenter/v1beta1/openapi.yaml": {
+        "etag": "\"c570c8634b4de746b3f3b75f45e8d262\"",
+        "sha256": "1add2611ce2345ba41bbdf9a773f6d1b4df9a06631f9e6730916626f8aa286e3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/analytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9680a13e39f0854f02a21ca7975c12766bf5f76bdd33b682eb07b9e171c32851",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/analytics/v3/openapi.yaml": {
+        "etag": "\"00cbf6b04c8413541c2710671a6b5827\"",
+        "sha256": "1af84e3fc25fdb4730c6e70d4f7a99d7cf43bfd5a2281b7e3f178faa1db519ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/analyticsadmin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1de4ff6197885bacfb8c7fe53916f3304479e7e8e7874dde85436602d701f9cd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/analyticsadmin/v1beta/openapi.yaml": {
+        "etag": "\"89029df511fe0dfa0a02517573d4530c\"",
+        "sha256": "9fb2370938202da90ccfe142dae104f94dbd14bc797aa2056729261d2d3ddd20"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/analyticsdata.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6aebdc0188b7d01ba3a130450287ad01163a36f098d0d0092e057df029650a4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/analyticsdata/v1beta/openapi.yaml": {
+        "etag": "W/\"a4aa99ac0065bccade9407f021fd6ab500d52370d9cf7822e960288eeaa1a754\"",
+        "sha256": "ee9a540b4b7319ca00a2a490c4cbc8bb7447af87fdc35c17f58ebb8c95a5da4e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/analyticshub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "daed7d5b38ef2f6ad79a95e6753145210558bf491cd817182b33ed8fea9ec5fa",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/analyticshub/v1/openapi.yaml": {
+        "etag": "\"c7fe6654a7f2ee50d0cf18e6ae8459b8\"",
+        "sha256": "a49d41b6a5294000a2c032cff12d05af3acb2ada42f880d78f77a7776a143516"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/analyticsreporting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "795606db0d176e258b49902b5e489eb501a1d44f6a2a5b1f0c31f57548b1d99c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/analyticsreporting/v4/openapi.yaml": {
+        "etag": "\"c08fc91e4357c168e3575439968f3e92\"",
+        "sha256": "35556ed7a9988de62bab0e603a8b6d2366f1221dbd957857d6344200969b557d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/androiddeviceprovisioning.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb0974f055a3c33e6e2a2f9369947c5ecbb13e6dea4e2c5b94e0eb022ab9ec56",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/androiddeviceprovisioning/v1/openapi.yaml": {
+        "etag": "\"d30a5c5dc1e3f51ddbb5c96a412b24de\"",
+        "sha256": "beb64948df25dad8349cc4c884b916c8237b59de6717fd7a95cd0d8404ef6d4b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/androidenterprise.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1bd5b60fe5249c591a4424c271eb0e3b9709f4bd8c9350f9d870d8b55d31a70c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/androidenterprise/v1/openapi.yaml": {
+        "etag": "\"292e055724b6c1a08f84f46436cdf46a\"",
+        "sha256": "f3343069aa40d3c1f3bea62f26c733b24ea983120fd007a01cbfe124e40d7df0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/androidmanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "78b4829198827903939489622e369c9b1cea5cfd65d3c05f93d47c628ba61ac7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/androidmanagement/v1/openapi.yaml": {
+        "etag": "\"086b725847e2b36d588f5d9bf965fa03\"",
+        "sha256": "e8233edf2f47ced9b499b3f2d6ba8af110935d09a36d58af9cdf97bfabc7dbb1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/androidpublisher.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "08f4e24453dc7f9909e78ab386b5e7afc60695f790b4afc6dd956d608f2020cf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/androidpublisher/v3/openapi.yaml": {
+        "etag": "\"725b93605bef01931623c00434c86761\"",
+        "sha256": "d0a529816899a574b1781880764b5a583a54bb865df96782019a87118da11c36"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigateway.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "03f8f240921e74c74a47101382fed1ae0fed016d04a027ddce85d13dbcca218f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/apigateway/v1alpha2/openapi.yaml": {
+        "etag": "\"c81caa9fcff7442dae0fd1bc67637984\"",
+        "sha256": "8ab560b49cdb42933dbf657a5f7d7b5505ad9159bc01971c9b4bbf0c52c27a34"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigee.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "af56f17d290d816f67cdccc6ab5084d3f9d4878ac1a2449db8dda46cc2c53dfe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/apigee/v1/openapi.yaml": {
+        "etag": "\"c3c26cd3f6bc4ead252664e6e58958d7\"",
+        "sha256": "17c5ea1d534e1622491a7930c39d1790fd26239da7d4ecd6b0d0260db9f64906"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigeeregistry.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "236792921d568fa932d97b7faaa71a9848b3c3342f559cbd3ab6a593d2de0ac3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/apigeeregistry/v1/openapi.yaml": {
+        "etag": "\"9c0283c7624a4046ec64e26f485030bf\"",
+        "sha256": "0dbee58d609053df25c3b8cf7ff2f6ad3f5410a5d4342b13d291d2a77852a18d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apikeys.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "576502c08fb511cb91f3b700b0aef99d9530d58a43536d6d147cc09558a99b34",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/apikeys/v2/openapi.yaml": {
+        "etag": "\"9b6b872a79f5726ee11d03af7a0e9aa1\"",
+        "sha256": "8a5a8474dc851a07c3e48aa87558e5c4b5816e4219fcdbb0c093ca47a403e925"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appengine.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "07870803e8d0369ff1b6f72b3291e04ab3d2c4c6caf3012069148c3040433f0a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/appengine/v1beta/openapi.yaml": {
+        "etag": "\"3f121a141a4a61118ff2a763d5f8fca2\"",
+        "sha256": "905ad07e82648303b4e439c7e4d86b5dda6c1a50c482fcea6a273c7326b9fa8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appsactivity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a9fa9d2a731333367a9e6e2a6b338061d521d72be912dc8d7013c3efbdc1f4dd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/appsactivity/v1/openapi.yaml": {
+        "etag": "\"b903c2e0afd959bc92d640a5ec65a4e8\"",
+        "sha256": "d1de07b60ac8e0470207d36ba22d227cc27463ec7cba763ae8a8127d1af48098"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/area120tables.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3fa0b5ead4af1e2496b06c8d1c4b789a6dd9f48da6b8644cb604c5fc51ff4cc1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/area120tables/v1alpha1/openapi.yaml": {
+        "etag": "\"26dbd7e3b75cdc5d9834fbe09197eb09\"",
+        "sha256": "b9befd6f3cbb42134445fe353ec2a8589419b155f8a406733f331c751cb00061"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/artifactregistry.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "375179f072fecbfea488683d4f03f92d5dcd891b7c91078c22a4720c35fb42f2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/artifactregistry/v1beta2/openapi.yaml": {
+        "etag": "\"52a1190466866c7f2730c770e4848aea\"",
+        "sha256": "1af772805c6783d04309e751c9613560dda6dd84d2b028d34207689396042401"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/assuredworkloads.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95cc7e39edbe787f0fddf006c8a94b35ab0e15356edece862aecd2e2d18b42b1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/assuredworkloads/v1beta1/openapi.yaml": {
+        "etag": "\"63c868a9a0d2570d3e469acbe07c60fa\"",
+        "sha256": "932260d8595e61c3340ea901377646225461a92813945468cd39192f4c822671"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/authorizedbuyersmarketplace.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f2369a2159cb088ef9d8852d2723faadca6dad260cb3fe155a5d136b5e276327",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/authorizedbuyersmarketplace/v1/openapi.yaml": {
+        "etag": "\"44a0479d3e177af1840f3d21337fd5fa\"",
+        "sha256": "4a61760d51e4b732ddd2b19b49c28386c1f12fd4e434914e50874dbfdb0590a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/automl.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95f9f724032eb9a19a9c73339ec2f6ef97e8bfbb350dc43da3887047df9d11cc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/automl/v1beta1/openapi.yaml": {
+        "etag": "\"b6b469d376e92276360a32389b187010\"",
+        "sha256": "d3e33a35ad191f6f9a5cfe39adbd7e16b2d18bd9dbe1ce6dda6616fd976d429c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/baremetalsolution.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bd3aa8ebaffbd3233e3ecc63c3a7bac2edb04fad8c9e3c0aba5bc16d0fe1e064",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/baremetalsolution/v2/openapi.yaml": {
+        "etag": "\"3676c22b0e557ea076a6e7e898d47d4d\"",
+        "sha256": "04fc2eea9336a2f526ff7da80fa2ededcc96ce7766c6d24f774ec6df4693d6f9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/batch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3610314590ae245942fda42e3070501dc5640d217a40d3123f934fed5f623550",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/batch/v1/openapi.yaml": {
+        "etag": "\"aac99f861d6d9b4f0a695a8bc2767ba6\"",
+        "sha256": "da9b5fd89e0946c5531089391b784b5f087ad971dd96c1c15ca965e3661c0cc2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/beyondcorp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "86ae95d945533fb8a9cb627ff53d720d22bd24294e9729a52e03276d8bdbdb4c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/beyondcorp/v1/openapi.yaml": {
+        "etag": "\"6eba520bab70ff342c783c7ff3b94bb3\"",
+        "sha256": "965a8cbfc2d844f0a64e0117cde55b82d4e91c94c6c3049baa0a49472d755d08"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bigquery.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "770904314bf5ba453e999c726719818067c37d10c345499155975937a0365298",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/bigquery/v2/openapi.yaml": {
+        "etag": "W/\"a5eee4a617839bdbbbeeebf8cbdef98bd3d837c4150d016ae33877d2ccd956dd\"",
+        "sha256": "c50dc2f7db929c2e64e812804fdd97f203a0a29b88fca340403a391c15926ac9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bigqueryconnection.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "39eb8c99a6e11d2a8c87064ad56089bb08775277e1e27b2cc0182b78fe09be86",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/bigqueryconnection/v1beta1/openapi.yaml": {
+        "etag": "\"3dfc8a288fdcb066a0c1c3a768de223a\"",
+        "sha256": "8d55c3206500f3e911e8af7a446b573f1880edc63d8c256c24bcef1a501c1fde"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bigquerydatatransfer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "16c7c2ab4dc56a8beaf80baee584348c5722a98c47ddb135e3a84a88e078a631",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/bigquerydatatransfer/v1/openapi.yaml": {
+        "etag": "\"d25ca4740dd56e3da8ad68ff9cc9524f\"",
+        "sha256": "ee694dbbb725fdb11eb492605042ed62f8c3ad47b78fc18e19b4de97c4384203"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bigqueryreservation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "74444e04fad7c8943995e5fcaf1924efcf34ba998e78140f006180b23826835c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/bigqueryreservation/v1beta1/openapi.yaml": {
+        "etag": "\"de3a925965222eff77a442b7d698a3c8\"",
+        "sha256": "a2fb68708b6648946aa8ebc59235247ccdb90a013c1a96c90b16f7a5d748d861"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bigtableadmin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0f863bb4f0e0677e2098f831e8b34f746d5190aa005f6601e376a29b765ca6c0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/bigtableadmin/v2/openapi.yaml": {
+        "etag": "\"58b366540a9889444538c92f2a1cb950\"",
+        "sha256": "769e7519fd94fff55d2bd12c37e016f8d2b8dff7f5d2e2eb71ffbdc15018e6d6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/billingbudgets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1528ef24e5eb1b619792b45d1ebfde300f255e5583023bb581d6909ec608b018",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/billingbudgets/v1beta1/openapi.yaml": {
+        "etag": "\"f7b8d39d73afa8afc952e32d9552dc11\"",
+        "sha256": "e376a899abad0c92770a92bbd8820da0f17e2bd52a5383795eff395e91584ed7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/binaryauthorization.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f5b4686faf97680df69c534ed3e78de38a1ef053b80c08bbc1562fbb52214c85",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/binaryauthorization/v1beta1/openapi.yaml": {
+        "etag": "\"47bd60506195b5cf05a166727e0f6eb1\"",
+        "sha256": "724a1d00a65d05bdf6e0753a5b8ec3e22ae5d82557b6b47f64f518346c599b9a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/blogger.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e132064b9028985cd629fb6486995524f37859629a599cd1e2cf7ac453a86d19",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/blogger/v3/openapi.yaml": {
+        "etag": "W/\"ee49d4a023fd6f21813f27cde8079bd49fc5142ce446b134f6861f21d0326400\"",
+        "sha256": "013d78919a7e418bebecb5ca2b7aadd3dbf5aa49e6db33ee4e330e42d8dea52a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/books.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0bd07ce51ed2898387a4ac18e4628b3f9546c146f6cc583d1bc1d8a040b45965",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/books/v1/openapi.yaml": {
+        "etag": "W/\"25da5fa4db9ec5469a8320eda019840af1453d12f737079213f5a275a9a29fad\"",
+        "sha256": "d25ccfecdf84cbe19a026234b1e294afa37ff40667409acb16bd0e0875aeb555"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/businessprofileperformance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95f2f6ebe63b7567a3fc17ce2b1563156fe1e9fe69ef9eae606bffbe34f9c995",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/businessprofileperformance/v1/openapi.yaml": {
+        "etag": "\"aa946a5d84ab9c77c5803bc1f79c1411\"",
+        "sha256": "00ac0ebef895559ff0b1c6c7665d70a8305eeb915b7eb2629792b26234edd3d6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/calendar-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7baab402166b13b173937443a7230c59e7033a7ac342adf355c5daf7771848a2",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/calendar/v3/openapi.yaml": {
+        "etag": "W/\"12ebeb71ce7483d0937af059ea28f4464309e036d8440e0ff77390e51565ec09\"",
+        "sha256": "beb4c5414ff527249fe660e8d7e49e1a026ff62d0accd6f9b42fcf89ea61f3b7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/calendar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2fa772508b45e3dcf4b7d9808ae8326b76f29a69e2bb6fbbf71c6cd9cc37857d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/calendar/v3/openapi.yaml": {
+        "etag": "\"115ec5313bf7c8810502bc05c659bf58\"",
+        "sha256": "267879916a133f514795a3fe64fce51afd488ef652a595f4a6fdc5ee1e31bb2d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/certificatemanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c14134fe8f44e9533bae721c29e307bf80df4a830ae829fc25c3a8d908534901",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/certificatemanager/v1/openapi.yaml": {
+        "etag": "\"56c1b2c85113f4675beddc9d920752d6\"",
+        "sha256": "8a7a3897e62c824e745c08ee4d11cc1bb3c0f8f4a34e0ba82d2e7f1aba08868d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chat.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d7c80a990387c192226c7b768a154997e92402a9787e1617bce20d99c057792f",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/chat/v1/openapi.yaml": {
+        "etag": "W/\"9064edde4323db988866e1d14dfa597c5ae878b1d0327a376614c402094c90c1\"",
+        "sha256": "b63fe36446b451e4e81dea21ca05a4a65e65def6fa3844a8346faac9a2b84cb5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chromemanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b291f0233f8dcb39b64f49d67530bc3523b7064249c18839427f55335eb322eb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/chromemanagement/v1/openapi.yaml": {
+        "etag": "\"17a92379a1b8c6e75202933c926feb99\"",
+        "sha256": "fe94687ab3d92b6d804dbc5b2b3de289b96e4813aad60e03eac199277e55756c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chromepolicy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "77fb9375ad22996a7ce940c56b242086b1029ea727cd0f7b4f6757fbee84b3da",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/chromepolicy/v1/openapi.yaml": {
+        "etag": "\"5ccab388369dfa61e70fc51133369582\"",
+        "sha256": "11b750ec021ae2d4dd463089a74cd93cf981c8338880964960f3bfc96cc75421"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chromeuxreport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "547f3e7fe48ae9e1f69c5f9bad342d5205af6ad349f13e7e7954125c1c68cd71",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/chromeuxreport/v1/openapi.yaml": {
+        "etag": "\"3ada08a9b3040b35da9a508b530156f5\"",
+        "sha256": "022a3f169c296f3fb7143f3a9955a3eb20c6c2901de908ffef909a86a7d4768b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/civicinfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "593727170587a41d5f91fa3618d42db2a60de75c5cd60a9a5845b69d2a8408c7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/civicinfo/v2/openapi.yaml": {
+        "etag": "\"e7f83e64b35ac7b5c2efe7452652ded7\"",
+        "sha256": "e9e7848ecc77f3a6600e4bd8b8982992c7ecd7b27c68e62a8e5f40caf1418be9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/classroom.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ed298fa9330c76ffb073e90b81a908d5211d2f9cfc58008fa4fed2fc8dfa6830",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/classroom/v1/openapi.yaml": {
+        "etag": "W/\"b72cf1d2bd67c5bec2121d68e1284e0381b334e40b57c7d61cfd543e9966ff6b\"",
+        "sha256": "62d8ea0f648f98331ba6a6b09a7c5edbfa5a726754ff17ed02f98e011870be19"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudasset.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "699620e0b3cab548d60780ddaf8ff1bbc542606fec70ab1ae6ce7a9d3098021e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudasset/v1p7beta1/openapi.yaml": {
+        "etag": "\"ed13818d900d18b52b434c12d7ab36c3\"",
+        "sha256": "5078689ae09fbd5ad0ccf4710fd0303fd8f863afa0ea1ee12d7a3d78f73d51a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudbilling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "56bd7ed336392dda67741db6b31eef696043da21e2e2b27a4ddbd2ee6d8aa26c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudbilling/v1beta/openapi.yaml": {
+        "etag": "\"2c922379a0c5afb9d279ccfb6d19da33\"",
+        "sha256": "3511daa81d41e3bb03a3082464303f98df066c09e438e9d936091cb93d819664"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudbuild.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3e0c0df7345dca0063c099220c3d20f089b6daea1875cc542a62c95a88bf12d5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudbuild/v1alpha2/openapi.yaml": {
+        "etag": "W/\"ffcb77876d8d4820774900e5999644279724dcc9b0d7309c38735e94ec240118\"",
+        "sha256": "055bddf1fe406e56217c88a99f23991c731e05f38c0f0c71f514f08294753f98"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudchannel.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3e9d92d5d65554ae60750527ec09f5539923aee2ccb27f3ce624e07043c1b56",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudchannel/v1/openapi.yaml": {
+        "etag": "\"48294376d2604e55ba09ac2592703d0f\"",
+        "sha256": "e050e891a934ef0563eaf51dde770232907bd5c79ff6d4f47c5bebe53a2f5612"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/clouddebugger.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9b24429e656e1cbd30a207e5938c7456a680c674d38f8bb24bf07e186743b762",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/clouddebugger/v2/openapi.yaml": {
+        "etag": "\"ee7da8e5436fa79782296d31eb9a624b\"",
+        "sha256": "fb6a9c4a4b2ad1db67083a6653813185bbf9c296263ae1e642a2f18323f7153b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/clouddeploy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e9e46c5ac763daf915eade637486670664e1a4df27a7b809a111789fd13bb7ce",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/clouddeploy/v1/openapi.yaml": {
+        "etag": "\"b53cf0d072fec4a20983d2a7b24d720e\"",
+        "sha256": "0916e85abd2079b6297600448b9e96ac1c45cd99921ba8812064e59d3544f207"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/clouderrorreporting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "369954a764dfe73d78fa867cd0b4f0b7f3546ad3d0ea69a143617396929a4fa8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/clouderrorreporting/v1beta1/openapi.yaml": {
+        "etag": "\"43e0c9eb98acf9e294137e8a98eeb163\"",
+        "sha256": "289e5b7504f53536b1a64fc37f0d7e1bb37b702f329b4d5fa0d74638ffe20c82"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudfunctions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5cff401acb8a2f10a0122b93e0464b13d5f6c4a314622cd57aef9eb535ee0dcb",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudfunctions/v2/openapi.yaml": {
+        "etag": "W/\"d39b52cdd0e54017302b78aa258a09eee889f5519c4a1dfa88596d6d2b4d0789\"",
+        "sha256": "38e30a6aae0da8c25c7d6a6ef8124fedcbbc4a355570b57770da77f958e78dc7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudidentity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e69d6d4d46e6ded207bafa640a89fc0e1a7e69af92b1f8b25d8437f4afc9e916",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudidentity/v1beta1/openapi.yaml": {
+        "etag": "\"bdfc80e8cdfac4df9abeb5dcdda46e56\"",
+        "sha256": "ad78435512defeb2e4f83557d098bb07d9f93de712b01e603371c415adf9c796"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudiot.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0ee9a9e99cd57ebed1ad285ca7a722423031ab46240594655f29ecb781639b4c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudiot/v1/openapi.yaml": {
+        "etag": "\"ab77b75e1c01c9e57457e2bf6300bd00\"",
+        "sha256": "acdaef3e9b6830d5aeb3a4e7008ae618c07971a6d54fed8cda13f6b17cbe3ee6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudkms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "303bc8e2bc25dc083a0865d17ed2b2509bb97bf68b816cfea65cd1e0fdc3b78d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudkms/v1/openapi.yaml": {
+        "etag": "\"67d9bf940549b243a2a220071c13b7b4\"",
+        "sha256": "de54d81daffc066e23bc0bde41964cb4b430ee2a25ab60465a9016d33c42e343"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudprivatecatalog.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49b6c2f2891e4cb4cdc40c29b2a8be9d6e2f28ccd345ae186df584c8b64df92b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudprivatecatalog/v1beta1/openapi.yaml": {
+        "etag": "\"e6c86497d657ccae5b76c12abb5d741c\"",
+        "sha256": "55cd400ac1c497816f3296c85dea4d0f548879667836b47a89093356a0db0e55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudprivatecatalogproducer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6322eb60d0b9e49a8919683ce5a5c75dec2d50e4948ac21b4755b8d7aecce913",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudprivatecatalogproducer/v1beta1/openapi.yaml": {
+        "etag": "\"3eb70c783aa1e0212525e79a03a95199\"",
+        "sha256": "6fb52d3fe1cbcfd458f317442fc42c1b6d0e2fc43c46b6df62913de2cc99ea46"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudprofiler.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "96f0b421fa041b2cebd05297df30831b2add9288a034bae2d0904d818ade358d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudprofiler/v2/openapi.yaml": {
+        "etag": "\"4f90bcae551bde4b2a687987d44d1d02\"",
+        "sha256": "92eb673730c603335d7d3bfdd0b0addc1a74bb54841c45b8d34d92b126f2c86a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudresourcemanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2392ddf0a50fdc16b685f2531dddb83192ba0dff6e3df84ad1d0f7f8ec4686e5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudresourcemanager/v3/openapi.yaml": {
+        "etag": "W/\"3cec1b326b6562e9cfe6a42dbcb2e7676041d2159bb21779c5b8e7520c8f70bd\"",
+        "sha256": "50e1bafdeca91435969584be3941311d495573357651678f9257db7d3820bd84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudscheduler.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4c199ff341b592c3cc9915e0512cf008218aabfed1b11d3e6df971ff129540e7",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudscheduler/v1beta1/openapi.yaml": {
+        "etag": "W/\"825a1e4c89445059418f4067b1c2015e1fadec649c0657a36aea529dde51bc3f\"",
+        "sha256": "4eb49567a636d663f1c847f5b57250692b17dbb99dfe917fe79ef99196bbfbe7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudsearch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c15fc00b22fe8f7429f25dfc164a6b1558bfa07cc5a7d54d17584e50dd68b95c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudsearch/v1/openapi.yaml": {
+        "etag": "\"af54fda97302fb3c85f8ba9ae5d1a721\"",
+        "sha256": "4369498a8a2ee9bbeb653b253bfb058c6d61db4ab7ac83cef34e55c0210fb674"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudshell.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7947adbd8e75ce2b5dc2a2cc21552d5ca1cea015dd5ca0d4bf8b07036addf579",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudshell/v1/openapi.yaml": {
+        "etag": "\"004e5dd38c36ce20cf742d3fb86f5ae0\"",
+        "sha256": "cb386d9964185024ccc309eb88ae4960215ad7fc571c32495d10eefbe277504a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudsupport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "26b9049c5ffc16efd14082b4e812bb29f607c22ad71408465b864a0af686297f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudsupport/v2beta/openapi.yaml": {
+        "etag": "\"33e80a6152695d45fcea532fd5ded356\"",
+        "sha256": "c53820d90f353a250a7bf3dab4f4a27d98d4045409fd2e7150cce74a48d57a68"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudtasks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b0aeb2979506a28cffbb2359e248e5827e3f0fa19a4e3bfb49c13746a75ce363",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudtasks/v2beta3/openapi.yaml": {
+        "etag": "W/\"a01ae2cf4c2e188bbe7565d4f12249fc213054530d2314c74ad84fa8d6e65624\"",
+        "sha256": "5b2377bd67ea8d95ee789e3aff9776c3a626043a605f20342cb1a7f4e2f845af"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudtrace.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f39978b05bce4b394620f34317401e3e46084d85388f88d1a14276bffcb74fe0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/cloudtrace/v2beta1/openapi.yaml": {
+        "etag": "\"96ba7a5df4c10bb5745ff7f06fa7b7e0\"",
+        "sha256": "89a635edd49807d74f2b0f011b2e16b937f75b1b9837d44ccca123dbd318ab81"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commentanalyzer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7a5cd2be61afcf3870daee9565428a704d995b0ddc5ce842cdf37c40a0fd0519",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/commentanalyzer/v1alpha1/openapi.yaml": {
+        "etag": "\"35a85ee3e7617b7a965bbe26b6acd868\"",
+        "sha256": "fa055dfbb7fa5e7ceb9c82e646d626afabf5e9df9fc29c8f999d158b22ade3a3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/composer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4e7aaafead3e6d1fc3a5cdec3e1916ecdbc6cf15cfa40ee7f40f87e9c84c4cd9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/composer/v1beta1/openapi.yaml": {
+        "etag": "\"cebb5abbf9972e50f048ef1dd6d81a68\"",
+        "sha256": "d1416beadbe213574fa7206951e4cedd71a4f88f17357039c97a0fbd9e7a7859"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/compute.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "38d0e6ca57563611676b3c4cdf1997b08e21e5f68220f16a96f0b3f2bd10b2d8",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/compute/v1/openapi.yaml": {
+        "etag": "W/\"447908bd0484c9e335655c647d0491304db86d5b032ea061c3c1438e63eab799\"",
+        "sha256": "87af1f7f4b71051e953663c0e8db2a4bf5d9b40c4673eab7835b3e40ea57584b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/connectors.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1bbbaed4736d1c5256d386a535cb84bab6560bfcdcfb500999130dba5ee8fd41",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/connectors/v2/openapi.yaml": {
+        "etag": "\"b5842990de043d2966a4c39cdd496207\"",
+        "sha256": "3f40eff166740e7f56b107da41e56e44e0d8cac3eac9ed70a47b025b621c0a42"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/contactcenteraiplatform.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fa98c5a4b1ffe58d3205d9db0430cf8e86add11789a26d815830560c8a1fc34b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/contactcenteraiplatform/v1alpha1/openapi.yaml": {
+        "etag": "\"283a273f7c2ee82865faf82a29ba8cac\"",
+        "sha256": "ac031d5153f625e03f7a0f2ba244e329296a9fe92d743143bf3cb91b308494d2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/contactcenterinsights.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "331f8fd575da89be9c41805009edddf3b3ad75df39690a55d5e4e8f4569eacdd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/contactcenterinsights/v1/openapi.yaml": {
+        "etag": "\"c5c6e342ef5065a33565ef4d8dd9d738\"",
+        "sha256": "d14141b558118cbb6ca69886959617341aada04e79d6974fb8d78abb3a4b86cc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/container.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c93320f83e6672224873395cb2912c80c2db5c76165f20c4387e6eea669da86e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/container/v1beta1/openapi.yaml": {
+        "etag": "W/\"c61b35ae4c90c98f17aa402c1ee5150d35e4a44f3d9644a3b0020438687c2eb4\"",
+        "sha256": "9530c8e36d63deda9fa9c13345437a289c3105fc5ff0996ebd6209075b3f211f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/containeranalysis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d4789b30363d9333026fa8d9b15a9b5f6cc7b2e2bfd9a4fcf00f3b84143c9abf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/containeranalysis/v1beta1/openapi.yaml": {
+        "etag": "\"0757cc64ebb29602439d6f2eff79140c\"",
+        "sha256": "55e9eb9b072b1c236afe08b18b5f36f5134246cf39ce6a5fe2025eca79bf02a3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/content.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c8b294c748889e1cfe142fe7aab71b583766e29bc5ac04a15b96c8969086c48",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/content/v2.1/openapi.yaml": {
+        "etag": "\"3fbe1289d3ead3e11aadb66b84c767d5\"",
+        "sha256": "1bc429a57789194cc61118d0f3d8a8115c2119373058d3cf8b188c1cf7a96eb7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/contentwarehouse.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "802eab86cac4285fbe59db4376bfe9f0fdd29e29800b4c48078c26fa56aa6b7f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/contentwarehouse/v1/openapi.yaml": {
+        "etag": "\"f7ac543a4f55a92ae3a9e80175746472\"",
+        "sha256": "06628774a6043a548c73b6bf68ff6da57ac31480cb4cbc4c82bd6e5fe68ca721"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customsearch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f42fa0749fa32c799fd209f031e2207064ccb5918b6d760902e8017ae3d79ce8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/customsearch/v1/openapi.yaml": {
+        "etag": "\"cd0fbfef761ce954dcc53dbf56b79ba7\"",
+        "sha256": "cc1cde765c9d53bad3079b3e34b5bef763358c89494fd85f6088aeab61706eb3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datacatalog.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e523168c56494691c3e5f8062147961dc4915abd3b671396987bafb6226c74c1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datacatalog/v1beta1/openapi.yaml": {
+        "etag": "\"b2d868623be184c1a1c54f63409f4797\"",
+        "sha256": "a3e6793892d45094067ca457622f473135f8941a5626fe5b72f98c7f9a2daaa7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dataflow.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "41a0c2556236efe9ab261f7a23761481095529ec1c452d2f351422f5729594e4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dataflow/v1b3/openapi.yaml": {
+        "etag": "\"fa9c807bebb1c312b683eb41c991978a\"",
+        "sha256": "cd9ff111d5ab53e5985b45a790e4d0d1a0e2c68ada7617fe29215ec58ead3508"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dataform.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "36c63ba304d92835a71222259c70acbb1ffec8f98e17cdc8168d45e491236e2a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dataform/v1beta1/openapi.yaml": {
+        "etag": "\"73d0b88d3c7b13b13013d45c1a7c844f\"",
+        "sha256": "dd03536c7c157b4842b7f102380c42acc996b4fed47be9fb922e50654071fc06"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datafusion.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "595ae1ae21704e2a4a0d4a733544e934c529b0f6e617b5f65b1105dc9596ddf0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datafusion/v1beta1/openapi.yaml": {
+        "etag": "\"847d473e860a8d76c8d6a9f033a3a955\"",
+        "sha256": "d0ec5695cf605f3a5375afb11133e647756de218ca449bcd381ca9d4a527bf5c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datalabeling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b966350ea513b7eecc6f0f786e733661175f1e76d17bb93dbc566d93f10a6692",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datalabeling/v1beta1/openapi.yaml": {
+        "etag": "\"892c2f0ece7a742ac1561efd11b6b314\"",
+        "sha256": "09d06bbbb6b787c6c1a21499cacd088fc87536faac861f478551b66723f521c9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datalineage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "54a8a777c3068d85257707b267a5b40df4e16fa86c17ed4d88cef25a7308f521",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datalineage/v1/openapi.yaml": {
+        "etag": "\"abc48427e12231daa46704461a93deac\"",
+        "sha256": "c20d83ee47bff4506343be43566078b79cb4445165b95397e2e988d2c68aea33"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datamigration.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b23908f40b9f1e9f45def6043f64a50390627b1f7e5952b439f187beeeddab6d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datamigration/v1beta1/openapi.yaml": {
+        "etag": "\"5407ee72fec68864426f195064081113\"",
+        "sha256": "a409d3644fd9afd8b49791c1aa7380a1afd67f1ca8ba25589eba1916e83b1b05"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datapipelines.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "92fbf4deb19fcf7fc0be2f892ad8248f7fac11d9dabaa12507cb4d68f506c77a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datapipelines/v1/openapi.yaml": {
+        "etag": "\"2439c55ff782bfcb6937e799760fe6de\"",
+        "sha256": "afe6979ba47b8ba975cdbe19c42811154902899ff67e828c46ee4974d688f883"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dataplex.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d6c099ad074a5bfa30f78da915ba2dd2dad392f31947f1b732a8aa79885f0343",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dataplex/v1/openapi.yaml": {
+        "etag": "\"66216e1d52bfa29c95922e3b3c7fdd19\"",
+        "sha256": "e09ff3cb2e01952aacf8217fba14ae53af1466acb0823a6f72a89383fbc9d39c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dataproc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1127e87f2bd2722ebb655258522129c7ea4cf6cb439fbcbd8eab2d502d8f1fe4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dataproc/v1/openapi.yaml": {
+        "etag": "\"5f90639b35be217c8f356d8a32120177\"",
+        "sha256": "480fbf9e71f4859e33bcf194433b3cccd51401615d9159de1826d2bf72cb0182"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datastore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f68f00d9800059e65a22820e0fd5ce4b9dbff07da94a8fa634450bd42a7ff82f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datastore/v1beta1/openapi.yaml": {
+        "etag": "\"f25f77943e6b9ddb3df5695ef97df31e\"",
+        "sha256": "6969383a0befddcfba50ec134264bab18041f78aa2204e2145b25dde803f7a38"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datastream.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ff937ded5a4bd753c37891c4061e180431ce6db2552881c8e90ecf48696200ed",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/datastream/v1/openapi.yaml": {
+        "etag": "\"678ed04852c60c61dbd7dca1fb8320b6\"",
+        "sha256": "8f7b7a9755e2ca3128bf02e5b5b5674946903afa564df1e9d9bf9e888b85c2a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/deploymentmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8067146589b4fffaae52b08600e0dcd5fff8e116487f265450a8efc00c31f85d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/deploymentmanager/v2beta/openapi.yaml": {
+        "etag": "\"68ad73c155399c8e6a13fe73476921f9\"",
+        "sha256": "31b99edd817b03c7befd00732aaed3eddb46d9c3964e943d0aea0399e7cf74e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dfareporting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6acd876ecd2379a0e6bc695ef754f0ab573514e366982dfca14faabca5b0bfbc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dfareporting/v3.4/openapi.yaml": {
+        "etag": "\"c05d95449b6056df8e199606982fbe35\"",
+        "sha256": "7537c79a720c76998334530e56f68dee3c02152b786e426544ba719611866ad8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dialogflow.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81b4fb5a749ae8c1376ec02b5dc7719faf5106114085929a3578eaddb684d354",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dialogflow/v3beta1/openapi.yaml": {
+        "etag": "\"febbf5f2be02217a84cf9b6f195b089c\"",
+        "sha256": "02a2b2624a4c779119ed8e69b9c0e6a4c09fc57cf266bd6dc47c33abafc758ba"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/digitalassetlinks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7214eba91001987521b95ffdc65e7d05472bff6119aa40bbb9855bf2582c8932",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/digitalassetlinks/v1/openapi.yaml": {
+        "etag": "\"6d3001cbd1e301da5e4a0f5c31d2daf9\"",
+        "sha256": "2ed2cc1c41112bd4d0164413cd5b14b080b74bd8921a0920225672afd5e3e04e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/discovery.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dc78dae8edb7c37571247407b78e357321d25dc3bdacd9390203051b275b5ffe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/discovery/v1/openapi.yaml": {
+        "etag": "\"f4cf827e11b15a383552e40d3efc2d13\"",
+        "sha256": "35f5d2a0d30daffffbcd42631342ef0c4bb872164f2e9f43252c79277e6ffa8e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/discoveryengine.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6e9b79e1bf2bd0103b82dd0cf08adab66fa3e3dfecd2bafae9f283596126214",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/discoveryengine/v1beta/openapi.yaml": {
+        "etag": "\"b73fe476653bbe8241f18157794cf8c7\"",
+        "sha256": "ac45b4577a6a4cf4a7a1210d41c2329f07e5af1584ed796875386bb30d5e1d00"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/displayvideo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9fd33e14d1f62b91b975b1a2ef3088a3ee6ebcbc411c3f6e65ac52037cd95556",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/displayvideo/v2/openapi.yaml": {
+        "etag": "\"00a353f3f9e45b4caa02ee686d33d857\"",
+        "sha256": "537272f3d1c8b5cfabe8c45ab44c08ec30a753e170e14b0e6e4f62c43b74a816"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dlp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a8a5fb0eabb2e1df6dc69eb54b2686d28ccbdf8fa530eb795f22381f7601cfd1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/dlp/v2/openapi.yaml": {
+        "etag": "\"39d12e963707ace5bee3094cfb40f971\"",
+        "sha256": "ee9a6054ddb91eebe6aaff64a53a5f36687f8d66684921c2289631425c3bb394"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dns.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4be91624dcde7d0c7c0db13e10720e10e59a5db037fd121e16e13eb0a5975f04",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/dns/v2/openapi.yaml": {
+        "etag": "W/\"22287f2c06ee08e3e0a203360df47916240a063b962d2d3e6800a68b216afa83\"",
+        "sha256": "f130d12b88d5fa7fe19946a4feae09704a8bbfbca32c6bd783844b8338c840a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/docs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d4f8afdeabfa655b1b0d472b49c41d4a160f8f06dd7e65ea99d3a6795cafac8b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/docs/v1/openapi.yaml": {
+        "etag": "W/\"5141d0fcc220f8c75e67fcf2e17c94bea34af0d8301be58c63f1fadf8b89371f\"",
+        "sha256": "09b2e5ef254c731647bf3cdbb372d10a0f42922de309ae59a07c5ac2fc86de36"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/documentai.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f4a568379eca082c70a4401edf1b1e600acf2cc51646dd558c79188cabcc4066",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/documentai/v1beta3/openapi.yaml": {
+        "etag": "\"551543153c2d35f117173b57def52c33\"",
+        "sha256": "fcc4fe425253e39877e6718ff13a5d0883f8bc54916c8e08b54094f890f1ecca"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/domains.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8453fb009ce9855ce8a92aa6ba8c2c7dbe5ca568ae1c04f48b44b57587998334",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/domains/v1beta1/openapi.yaml": {
+        "etag": "\"15a8581d2fdebf2327d10ae5d3826862\"",
+        "sha256": "fb01161b374f5007c1b3e46baecb8ddd47b7d10660f965da9ca7380e0cf4552e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/domainsrdap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "74046e70e069ce71fb3dcf647f089dc52522b341bfd6c5f3fd12d72fa5ce736a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/domainsrdap/v1/openapi.yaml": {
+        "etag": "\"ad3d5151ae744cd379ca6d4f2fc485a1\"",
+        "sha256": "e0783a14e3103280ae39c3fabd26932997c9aa69cb45ad98a2d356bfea0ec915"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/doubleclickbidmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "04bcf177d290267e15ff7778cca66e2c15f3704eebf26c5a6f414d0f9f0ab93c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/doubleclickbidmanager/v1.1/openapi.yaml": {
+        "etag": "\"6fa87bb41d6b3e90634b354fc4dc77ae\"",
+        "sha256": "ec68e3c53f3b341719dc54b15a611ec66dae8ba7fd4733bb7e6a2094764fa506"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/doubleclicksearch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3302dee2becf66f68a2f0c1705678eee91386d4fd98a87b08888a4db93022397",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/doubleclicksearch/v2/openapi.yaml": {
+        "etag": "\"18655e0f3ce6d5c68942c81254080bc4\"",
+        "sha256": "2c37c029eb8e8d388ee45cc740608b5780faebfeae7c2fbe1819324b4c35a319"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/drive-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c6c422cd7c09dc1be8dd2fd0d99a3cd6e7eee8090a31211ea9bc9b23c0fe0c4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/drive/v3/openapi.yaml": {
+        "etag": "W/\"9a767861a47ec3d2909c7a65ff0b529a029de47009ced20b6ef2eda325a4578f\"",
+        "sha256": "5c8ef89b07b57e2a0d941c9512c2fe53ea90f3fcf85a122f679d5649f46f314c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/drive.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "844467c9963528201d775bdff058adc2ad998db38f33893d6be02a46a1e5e7ee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/drive/v3/openapi.yaml": {
+        "etag": "\"9d183e19cbf7f68563171026c57a7c2d\"",
+        "sha256": "8c2252bcb15a2ec50ffe4fd3d568134244416cc9e0cd494261d96244fcc9f1d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/driveactivity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e798287c95b04f9248dec3713878f6cfd9c0b25faf935f9115811c195a9c3652",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/driveactivity/v2/openapi.yaml": {
+        "etag": "\"405ad0235f290fd8d2b5bda7ee840ded\"",
+        "sha256": "51e1fe8394e9a1f0b9f31b5c877f4d0806d0100430496cfc77f0f23fb84843d4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/drivelabels.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6a335d7c6003460c7fdb5e351a54c3c9a90ba0a937dda2d8197c4aa6cab7abb7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/drivelabels/v2beta/openapi.yaml": {
+        "etag": "\"20499d3c61e8943f03cb79d2afd7f018\"",
+        "sha256": "835bb8f25bd26e7aa2c60d2f9d2c7c61602acbb7d3974484c9ec62c1d92d29c4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/essentialcontacts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7bf69a47a0fcf0b05cacb90ced842ea42224f2b1385de8d74d5a5bbc8ebcefe5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/essentialcontacts/v1/openapi.yaml": {
+        "etag": "\"aea02b6fb939edda10826f6074c4425a\"",
+        "sha256": "530b44a3cc88df8f991f72e0ef372e8984059d3ce8eb71f4c38bdab66e6deba5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/eventarc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cf5cd964f4c989ecfd88410012b4e7292fdaed25247ae78a11295c7960c6070c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/eventarc/v1beta1/openapi.yaml": {
+        "etag": "\"37d200ed4c0588f7e31e1bd86ef23c3a\"",
+        "sha256": "e5ae7c5f270aab2a7778cb2f5c52c69d62a8d0b73ef1fe1d07a181a0921cb791"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/factchecktools.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "77bba523f7ccbc1f23a2526a85da38fb2354580b056c47f5a2ce37df76187f23",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/factchecktools/v1alpha1/openapi.yaml": {
+        "etag": "\"75b7dc9d37de543237c7f0d250b38be6\"",
+        "sha256": "8ab0d721d9d69c0b2bac184520e84dbb2a48e3593efb4fee4e9080e7dd293a97"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fcm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d560221a8778cdf5edceed9f9a42d201d9bb860a73c0ba9908679f8b70974d11",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/fcm/v1/openapi.yaml": {
+        "etag": "\"cfaa6d9e7673c1468d6df4a8c203d10e\"",
+        "sha256": "2743da527beea707ae1c8c33f7ba0608d5b7317cbbb829ede29ef5999d177d4c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fcmdata.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7b1d33e0fbba1868a0fdbaeefbda727af35de15483c2c53bd8cd873b24c30f23",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/fcmdata/v1beta1/openapi.yaml": {
+        "etag": "\"583c9b86f116ff6ae4680f232536ee24\"",
+        "sha256": "180fe325d6c1b0b09241d1e04a283a06d0053d62534178ed552c3b2588713827"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/file.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d1340bc3362d8ff2f3df739f12ee4d4e98e1c94ce7b4f995dff125b1db462ba5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/file/v1/openapi.yaml": {
+        "etag": "\"9c6f16c7170040830502401f7dcdbe3c\"",
+        "sha256": "89bd9036733417768f2ba0ba70ef8a6fb6eeb36f48b4c8343cf9adf29b5ae486"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebase.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6c77b12f42295e01544b5d8662e041fc5c1afc199d12ef8ea2517631fe916c45",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/firebase/v1beta1/openapi.yaml": {
+        "etag": "W/\"654f899730bad81e811bcfea1e2d5730df2cb4d4d8110bd2c51d5a7bf9b3d4c1\"",
+        "sha256": "786d323fde81c0a78cddea7fa0499ca9d82f54d55562731b0c48cedad43669ba"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebaseappcheck.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7bcb27bebc445df5f90b02d9eec07528bee5861a9961d0d6a3ee0e52f0cdc9f1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebaseappcheck/v1/openapi.yaml": {
+        "etag": "\"6a9488ce7c579c85dc4d76a36f9bd2a8\"",
+        "sha256": "c67ce9f557cd26e5961e58488e22acf0870791581e9d8202a42fd78970f27540"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebaseappdistribution.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "890d82e8b7c7b70eea0039a3ede5512e2f89e717ad01853afe3b909750439512",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebaseappdistribution/v1/openapi.yaml": {
+        "etag": "\"eac6623e302ab1500cdbea879f0e2753\"",
+        "sha256": "03e70bda7dbdbc7e79be04e4cca89f15e81efcb9d36206d3c26cfeb54564d84c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebasedatabase.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b91da1fa6a7466b4361701bf2ee7217aa89bc67bd76ed4569ea09f2cb4346b63",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebasedatabase/v1beta/openapi.yaml": {
+        "etag": "\"eef18cf3c32a45fd8350cec48f8aaf27\"",
+        "sha256": "a32db2737e10160299c808cfc1529fe7c7a10690b7a735ba54fad9253834ce73"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebasedynamiclinks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "061b6efe5c73f3e11f589737ca862ff4c64d30f0f349fb8be4c4540282812f8d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebasedynamiclinks/v1/openapi.yaml": {
+        "etag": "\"d3030d10657ca4892feeb54b68851d48\"",
+        "sha256": "fbd159ff9fe9cc29e660d02b1951e06d793e0b216c42dbadac8b85eb70c1ca29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebasehosting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2486e791acf9d9e34a8d41fa5bd32f9827666bc6e997d81595d9a4c66b15e702",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebasehosting/v1beta1/openapi.yaml": {
+        "etag": "\"1ae469f790fa4b455254ff9376e7d91c\"",
+        "sha256": "e204dcb31f2fec225472dcf6b6ff146e3625e0f6ac7f160e0718d4285dae7f6a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebaseml.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "225b9b9078a275cb581513bf43ac4b936070f48e89191e91a93e3424afa837c0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebaseml/v1beta2/openapi.yaml": {
+        "etag": "\"f574f7bf967bb61bbf0979949eb7af1c\"",
+        "sha256": "6a94b6b3f970db51db4d5193348a6473ba75a9506f9465dbf92aa239734c1d76"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebaserules.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a90cb053a7c095f5f25bb489df971fef36ba40ed367bcd75ef6c5eb75df8e316",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebaserules/v1/openapi.yaml": {
+        "etag": "\"a2eed5c42b21e4e67397b6a91711f4f3\"",
+        "sha256": "1df59daf594ba51884e65d8b5c9d50f20c38c357096f2a4cb1f4534711d82a67"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firebasestorage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a98d6c76702756c68e3f53f34e8a64a81fad5ad5b2933828ce1e8869bc6b516",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/firebasestorage/v1beta/openapi.yaml": {
+        "etag": "\"760e1fb283a883296bd1498bbb7f045a\"",
+        "sha256": "324e1cd818a6355a4f2620f559ff5fdb9b0cdd1edbe01dfda9d94879d4c6a805"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firestore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f7d3f5ac14c3de7b4dd830047abc2a696b4e09e426e3ff5d4964580a0ad8c12c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/firestore/v1beta2/openapi.yaml": {
+        "etag": "W/\"dc7e9b87edc72e80834a537e07747f4202c7199bdff69de18e043a97b71d894a\"",
+        "sha256": "6a0f07dd83ea4baf5e9bb995a553a6fe6fa77f265c49e43357616de0f51e16d8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fitness.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "08940a551ccfd01aea8dcef700852ee68fb5cdac89e6ba19133c5f33f5e36fad",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/fitness/v1/openapi.yaml": {
+        "etag": "\"4660fb627c00e20e1a557952ba084020\"",
+        "sha256": "b81d3f9677a8cd26eaa410b1f52f110f4cd92121f200916d8cb991397cd7a234"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/forms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "483bd888895847518eb576d7f0a60fa333a7f27ce9049c46e22655530b4ac13d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/forms/v1/openapi.yaml": {
+        "etag": "W/\"b28778b202a854a0a931c0c626351315068e0a6c47b9279d4d7a8b4d3c0169f9\"",
+        "sha256": "fe57c6be50c901f1483254eb808863e1257d35aec2d831e404bc48f0bc1cf8e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/games.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7eda4e0c12117e56ea2dea9564dde0031284a8865d571733f83edc876c7b5333",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/games/v1/openapi.yaml": {
+        "etag": "\"d8158605c7e0dd68cd63d96ae2bdac8e\"",
+        "sha256": "bec40f02b2085d5790dbbca5fe382f278af891d9184a66e96b555a7dd796cd80"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gamesconfiguration.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1ec7aa266d71cc57c6d0333c211f17c73c878be701c5c79468b7d5a2640d188b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gamesConfiguration/v1configuration/openapi.yaml": {
+        "etag": "\"5a0025a28abe0f590826b2fc0e1af692\"",
+        "sha256": "657b9a0347941fd3dd0a394e04ac0e64573365c88c4b293a610a94672a87792b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gameservices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c9b8f216785a7cb31a457ac83a891ef99739e66ac58d4501a9bc90391eec8b51",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gameservices/v1/openapi.yaml": {
+        "etag": "\"a8c3193d80fa7d4c3fcb0cc3356944db\"",
+        "sha256": "e49e5b0de378d2d365e239fa70a894f2758deb0c47c7b9ba7067d72396df13f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gamesmanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aafecbbfdf7f3898ca09730350ce839636e103c42f284be920da5402cda3d815",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gamesManagement/v1management/openapi.yaml": {
+        "etag": "\"bdc88e8a77d7a3b1fa6c7773f63366bb\"",
+        "sha256": "b63c508284f5a7537b2242dfc94b44d51a5bd3b048b13584db9234414dca59ee"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/genomics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "582f8b5a36ba6bb3eb9cc6bac53951def9c565ab4952c7a7461358bbfec1bc7a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/genomics/v2alpha1/openapi.yaml": {
+        "etag": "\"4a3d2de70245f7735d7b288c5265f97b\"",
+        "sha256": "1534ba983d036bad0fe4d527001c475de877205eb6c73ba158908e1552fe2c2f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gkebackup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "af0a9fe573773babf30ee3c6ec84eb44711906f36bf2bb274a84e8e5dc04e752",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gkebackup/v1/openapi.yaml": {
+        "etag": "\"211cf51717cf41043190358279dadbb7\"",
+        "sha256": "70394ea35b6d6f7d3d8feef21b59c9f2ac8297defffefb518065c02c287035dd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gkehub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b79d2a320973ab319b94cf761fde5a079940dbe6668ba26c1af50bf08e6d62e8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gkehub/v1beta1/openapi.yaml": {
+        "etag": "\"7640428b657fa316016f912127e7e37a\"",
+        "sha256": "decd89e930b2c6993ccf047991f04268803180a7b661219f79c8612dfcd53c11"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gmail-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dd435124cb280ce56f50f70b680c4849b36e99a24133a2255d51811c4ce2fe7b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/gmail/v1/openapi.yaml": {
+        "etag": "W/\"de1650015a1f9db0cd5dc7c063a06ce2985eebfe1ae19869c4331d82b56e201c\"",
+        "sha256": "041154c430d2d9654032888d0d9b2a7357b5b6272b1c8194419719fe5f9348ce"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gmail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a1bfbd1c9a1228fdb74bdc21e3fc38ddc957a92e26556eed0dbf86371d942c24",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gmail/v1/openapi.yaml": {
+        "etag": "\"4dfe20cfc48a330445a78f4f6520f1d5\"",
+        "sha256": "100745b3465418af23b11d65efe60d75a28ab4e18fa1b70d100ba716dd5af017"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gmailpostmastertools.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4cd8e4e810e38c1d778ed3d22f095449d79bcf589030e14958f48375aa8956b2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/gmailpostmastertools/v1beta1/openapi.yaml": {
+        "etag": "\"6a957f2f985d8afa0e83ac1afd7095ad\"",
+        "sha256": "7611900925e9169925ef0da947ec7be266b93aa952030f45443604f334e9277b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/groupsmigration.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "882062c4a01031d5028a206157e6d185f48ae43033e5818a2270683fa9325606",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/groupsmigration/v1/openapi.yaml": {
+        "etag": "\"3494b259dc3538413eb179f807237c5e\"",
+        "sha256": "280de7f627f0a20f29468caec00b86569c1236c4d2f3e7311dbb011f0e8035f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/groupssettings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "46ab0541d136b74631352db1bcd5270bca6c6267f0c93fddfc1bf02c25965e26",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/groupssettings/v1/openapi.yaml": {
+        "etag": "\"8cf0681ca312756c83ffacc3142e688c\"",
+        "sha256": "2a4f8177856468dcbe4ca05584d9961f125b8326e757b282e383d56947255aaa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/healthcare.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c4b412b0a34fe1731dece0f18d6080451192c7cfb86eea79e1a7f34820208870",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/healthcare/v1beta1/openapi.yaml": {
+        "etag": "\"81cf4c0e545ae1dbbd315ada77b8dc66\"",
+        "sha256": "4dbdd7dae2eea01cdc235230221e4e96790a450b7b4c25309d8991494b5fa6c5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/homegraph.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "43296e99cd287ff18999d90bf1a866b6f743e05dd1e307ec36b5b6cc72e3d040",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/homegraph/v1/openapi.yaml": {
+        "etag": "\"162bdc0aa6b771f8807db985e3af107e\"",
+        "sha256": "08d7f23cfb06c33b5dba75d691c55e9fe68e17c00a5367fbb6c8166eb4f57a42"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iam.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5b0f72e9dda3c6fd7f1317a63a8b94679cd490e40cdd70711321f69cf3b6a713",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/iam/v2/openapi.yaml": {
+        "etag": "W/\"1ada48d2351cc514e7cf04cb162504ad52584400b870e0543d51f6f103e40212\"",
+        "sha256": "fdfcd6df5b076dd4168fd2954a652c419bd206fbcda89127bc889a15f64709cf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iamcredentials.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6f6631b542240b8747356ebbe373db4bfe0b36c47fbef4a0b24a328acd35844",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/iamcredentials/v1/openapi.yaml": {
+        "etag": "\"5fa454f57dd9b1c06039ce520e76e5d8\"",
+        "sha256": "efcac5570f78a21df9490a4fbf6a4adae8386467b7a54ab18cedc34dc9d06fb3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "89d86976be8825cb0f6a9749b00553cb0cb3b5c17c06c007a42748ffa66e21cd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/iap/v1beta1/openapi.yaml": {
+        "etag": "\"21b940740b77f34cf20c8f06ba447a78\"",
+        "sha256": "f1aeaab4828508b0ca73b342d27ae0222debe6c93450deff0f1feea5bbc73089"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ideahub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "160967b7a550366ad13753861d4d1a94e0161dda8262c2c98e73a446f9ec5530",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/ideahub/v1alpha/openapi.yaml": {
+        "etag": "\"87c8bf7f271f58c393d52083e8079c39\"",
+        "sha256": "d1bc624f8b94ffb2e481719ad06edf55967ffc9407eee4e806c7798ab8df074d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/identitytoolkit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba9117484afd57bc1998c7ecce511e630691c874b0d29784409edeb991cf7abf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/identitytoolkit/v2/openapi.yaml": {
+        "etag": "\"b42b99fee7b3e710087581e336065252\"",
+        "sha256": "49205bfc2aa148f65b93a42df9583cd97392c5f8abbe29604a7411ee44051ba0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ids.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2fcda85c65a0fa377b7964fc7491a440bc42b4f1ee922f28a67d46381f49d73d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/ids/v1/openapi.yaml": {
+        "etag": "\"789a58d745added583e4968485a94454\"",
+        "sha256": "32349da6d19c2ae36fe65cfb2693f518b41406ca908ebc880ff06ac4402fbce3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/indexing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0f4dfb5587795afae8ba9809f6c93632b05d6770356e561208ce4124b28ac844",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/indexing/v3/openapi.yaml": {
+        "etag": "\"e16a49de6b62b78499a17d9a2ade6df7\"",
+        "sha256": "768f74f5109dc9fc17a0dcf59532256f2c8cbd3e36bd0b01bd7ed0475387f889"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/integrations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5b8538aae3381ee870f5a25dc48ef2ec6a670be180fddd200f5c65776e39897b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/integrations/v1/openapi.yaml": {
+        "etag": "\"7f275dc6727ebd577d6474e435e13006\"",
+        "sha256": "9a8043c19ad96c90dd7185a179f5c8f3a297cd2b6babb8fdea29d21b64c68227"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jobs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6f34df3f7350c5f858429ad51225c0cb5c8d1a03561ad0873546c212466156ed",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/jobs/v3p1beta1/openapi.yaml": {
+        "etag": "\"ba8e285831a993f261a4ff4d4a772442\"",
+        "sha256": "d76e7328abbb746a91dc6668cddef460f429befc21b2479d5208f694a348f845"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/keep.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25e5d3ce6edc5b92db39623c816a067bf9726fde8bc78a21e8f004ecf7831ac9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/keep/v1/openapi.yaml": {
+        "etag": "\"730e69b272b9d88a4a4b5bc07b4426a4\"",
+        "sha256": "221e1e75b321e8ac35636273977dc88a30d11b2317847e431e8267495629a31c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kgsearch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0549e53a68e3f1b10fbbc46070c71b8473153475fff99ce35a9105e20b9e0cd5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/kgsearch/v1/openapi.yaml": {
+        "etag": "\"ed01db18e50882735f499e6dd7fc6012\"",
+        "sha256": "2bba5e41277445eb12177c599ffaae38bd00777e91478be72e7546b9337a5896"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kmsinventory.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "88a843091bf8d1a93e26fd3ef1d55da59bd311d2def14c09b944cc6bf98eb227",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/kmsinventory/v1/openapi.yaml": {
+        "etag": "\"3fd4989bcfe5898e8aa8c47f972541f0\"",
+        "sha256": "59cf35df89f9f448e008b31f9f2e8f19ac42036b141678a8bed7fabf41fccd46"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/language.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b8d9d55206c5ace0057c6621c012b7112457d43e50f2158df64087907a370ca3",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/language/v1beta1/openapi.yaml": {
+        "etag": "W/\"7a2deaa2dc5fa0cf7d89093be6a82e47d891d19f94b5223e7ab69b0d807b6e2f\"",
+        "sha256": "911f1cfbb9ae71f16519684f2a1badae387635942e1561ab6a0f35883a9f82be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/libraryagent.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "57be4b698033100aa32b3fbddcdefbc14b6388c0c329ca5a1b77605ce94b4e9f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/libraryagent/v1/openapi.yaml": {
+        "etag": "\"adadc8530e24fd1c6d42069527b4ea31\"",
+        "sha256": "1416075d8d0bee845ef292441775e86b31b66d36e83f9d8c187f12136e64882d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/licensing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "db4c519dd4ae2b40dacbaf4cc274f4cecb788aba6575a37d5f928374089957d1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/licensing/v1/openapi.yaml": {
+        "etag": "\"012894e24cdebdeb78233cc18dfc4f06\"",
+        "sha256": "e9832dcdc0ad444fd778f9a8367cda1c391fcbe397c6d4cccea9207558511062"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lifesciences.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb9b252a1b83447ab83148349c940655e28b5b445cf1dbfb4a16519709dffa59",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/lifesciences/v2beta/openapi.yaml": {
+        "etag": "\"efa6eaa8b575f9f7d6f8068f9e1e1aca\"",
+        "sha256": "b523d3835f716eb2ec9846087307c09ad98c970309223fdac5584f8cc77e4b16"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/localservices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a4837c7f6527360359e10b5537f2db2a7b566a67debb5ea810a9b8bbb09fdbe0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/localservices/v1/openapi.yaml": {
+        "etag": "\"1baeaf6ab90f3d88812bc2d837cbee5b\"",
+        "sha256": "8755d7f11d18cb4ca1ade7ed3819549ece3280714ababdaaebefa72749d80af2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/logging.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "decaea804ba683308785d0573fba69cd5bcd9acbe2956599c27db3b4dff42540",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/logging/v2/openapi.yaml": {
+        "etag": "W/\"bf30a70dde0b2a1f6242c3a185b7618af4a0ce7ab0e45a388fec5b5f1381b6cd\"",
+        "sha256": "c98043f9813fcfd4f96574545e045a095000de2b42dc9f1cd4cb699ee25d2361"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/managedidentities.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6be08b72b24b12a3c29e1c73a2017423edf7d45077a5c872c6a0a040f3e1443f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/managedidentities/v1alpha1/openapi.yaml": {
+        "etag": "\"ea166ca8ac8253dd98553aefbd46d864\"",
+        "sha256": "072da4a222b89eaaa18bcf06d8a5bb678560ad389ed658a0e16d81c494b4ea3d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/manufacturers.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "64ab2de1ed718c3f7d764328ca7c3d9dc7e1a3fce7081f94fa4b9cf6b4ae1084",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/manufacturers/v1/openapi.yaml": {
+        "etag": "\"22ba3b1d7dea2e47f2a711195fd4222d\"",
+        "sha256": "1e7f7b1f0e2f00af76d92410e7c0ba0351418eca120b6fb1eb42a7ef892cdde1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/memcache.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9faa44cf92d8341128849e9b5adf01a72023523b752378a45ba63a06e79e332c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/memcache/v1beta2/openapi.yaml": {
+        "etag": "\"88a411dd57a77631109c5d418dbb4648\"",
+        "sha256": "9c65b84c06a68bba37dc53d3d48165eea41c445cfab594dc68088a2adc6d2962"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49ef64306113fbe251d15bd4a54cedb73e555f54d53065d9f3265c9426f09c6f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/metastore/v1beta/openapi.yaml": {
+        "etag": "\"d7efdaba74a967e5be396c1532ceb1e5\"",
+        "sha256": "737dbb478dc10896f046849fbda90fa5766654e45651bdfac8800f0d110a699a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/migrationcenter.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9dfc0c843f7faad47ca842bf2ef559926f94a86803e492ee3299b16fcb86c5d0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/migrationcenter/v1alpha1/openapi.yaml": {
+        "etag": "\"b10f96a36424d96ec3ca060b0181d9f2\"",
+        "sha256": "1a339aab07c8cdf0fa7ddcebfd22c4b872a1c1dd5cb4b66d4a29f3eb606947c7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mirror.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7fd7706dbef130e3990464a3821a056c70c0fb5d9794d292712daf14606f5f5c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mirror/v1/openapi.yaml": {
+        "etag": "\"a0da2a86833148ae52539b6bc014582a\"",
+        "sha256": "061e1ad6cc93d488da5278ed5bf3af079dbdf80ae3c0834c284d4027fc7517b2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ml.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "438292377c7e8588a567d17f12cd5ee6400d8051618493c447481ffc72ef1eab",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/ml/v1/openapi.yaml": {
+        "etag": "\"3fcdbc4b158681bd8654234d09af176b\"",
+        "sha256": "228021ae0ec36686b65e6b9c3465dd5e6a7d6a5180315c0a653b14e4eb156dd1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/monitoring.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e87298da3868c87f7a5e6ba21be550c1159ffa1aa2b3eaa02cce4fe3c492448c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/monitoring/v1/openapi.yaml": {
+        "etag": "W/\"3d9d2b086f0b078d332f5b34ee8f4df17b0592c6c594cf3537360bf82ad054f0\"",
+        "sha256": "49efc6919daa45fed6f8422e0a7d84f328ef2ec38eeea3b267d0cdef505e69f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/my-business.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "75ec827649d2dc26b724f1cf37da4d6821c47e32b43d36040a1f06175df6def6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/my-business/v4/openapi.yaml": {
+        "etag": "\"086e0d775b119a933939521fd89557fa\"",
+        "sha256": "1107b9b251ed10fae8d0e5ae33c460eb0c12d8ab5f72525249e69e6d69a26824"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessaccountmanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3817cade418db57f2c4e2604b2fc0cb0921d0df425dc9cfb74c51dd14d511811",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessaccountmanagement/v1/openapi.yaml": {
+        "etag": "\"46b086be25a2d82edb03d12e638aee3f\"",
+        "sha256": "2276548d47491be1897ec4510093716fb55e85cd6f29dbb021867e0796e374ca"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessbusinesscalls.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "784a2017180d5d5e6560b41b6dad2f0d20ec547fa5ab4c3ab6843f40c88856f3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessbusinesscalls/v1/openapi.yaml": {
+        "etag": "\"2bc06b5466457d1e8c4501851959db26\"",
+        "sha256": "1518a927effbe24b9d5e3898f430387d3a51dc39e93c269c75930f8a1151fa67"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessbusinessinformation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3535cf4cdab5da215ae533dc27fe4655f33a2210b3f400167af740be1a3a6dbb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessbusinessinformation/v1/openapi.yaml": {
+        "etag": "\"6c94dabaf6eccba72466d1bf8d3862bc\"",
+        "sha256": "454cca0c46d23851c28bb68ef43128c0c74dd24f1b8c811453018e862d5ac24e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinesslodging.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eab99321d5f042b8bd16f7fcaafb63d8f2596a4ca3035772b3ac7216e3612c86",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinesslodging/v1/openapi.yaml": {
+        "etag": "\"4d2555954bd5910b8a4daee14f4636d6\"",
+        "sha256": "3a530383e6e495a159f7f316d14dc87d247869991e9b8dfa1a0178b4cd06a231"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessnotifications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c569e7b91ba6e3421343bef00b6b659f56c9d13e02f8acb12c464bd2063a4da3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessnotifications/v1/openapi.yaml": {
+        "etag": "\"2f8643c317fe9fe4452217cbb7865d93\"",
+        "sha256": "d569387863f2052d4f9193d648aecabd0b006c6896d31f37ace543b9554f5f71"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessplaceactions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6e3aa65b7de7de24e8bf7a16f9aaf733a1efc23c68af67d6f9c58062b9ccebc3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessplaceactions/v1/openapi.yaml": {
+        "etag": "\"f4cbace6dbeddf0c9cd165ce6047601e\"",
+        "sha256": "26df46b8a0aa61ded980b133264a321059fb7ee270909e5c91bfa6f328be21d3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessqanda.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c9eab5a5c64609e2b667603ae44a97817d5a5c908a146c7fcadd7c17952bf962",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessqanda/v1/openapi.yaml": {
+        "etag": "\"c0eb821dd86788f244c5166f9840aaed\"",
+        "sha256": "b7c2feba2ad525951729cb4c6c5f26bbea97a1d511afa397d9e6cfc87bb5cded"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mybusinessverifications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b6dc255988e0139cd6eef93b28fe04e2e4ff1d51b2d184527e72994c12ce9976",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/mybusinessverifications/v1/openapi.yaml": {
+        "etag": "\"4c95dc70a9bcee93bd4ab5e9f3da042f\"",
+        "sha256": "858d4523c9991d2caada9ed20c8be41b1ce61dfb49016a992255fa1b633bcf95"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/networkconnectivity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e292dc700e944b343fe354cdde0d25ec41dd260307d60133c57bc8a111f591b1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/networkconnectivity/v1/openapi.yaml": {
+        "etag": "\"03d989e3e85da114761007d014afbda6\"",
+        "sha256": "c670182aa4e98dcd10162a4829674945487b8a3fadae3f143392b6b6375063e8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/networkmanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2890a035d8541c8da8688aac6e654136a6b40deaba47f14839af0f8da9095eea",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/networkmanagement/v1beta1/openapi.yaml": {
+        "etag": "\"99efb0d8d1a3a3cdec5d4c3d0591269d\"",
+        "sha256": "5f374c29abbd4f22137e13d4698e4c556f8fa6881f0f935b0d80b99d740c341f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/networksecurity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "89575ce16bd49579620345872f7f9a6df36dbdea11b3a6f89ab223636850a4ef",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/networksecurity/v1beta1/openapi.yaml": {
+        "etag": "\"dfc6c367f65b1b57357cc1f553f1b4d3\"",
+        "sha256": "7a54726258de4fd7542e3c3bcbe15bbed39ec4bb4e5ad2f6875312b765eccc67"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/networkservices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fa467f85bfcd385b6f64ef90cc098532dce983b171d0bb036736c358cc3c88e5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/networkservices/v1beta1/openapi.yaml": {
+        "etag": "\"2dddd4caf47471f2eed41400ac170152\"",
+        "sha256": "0f4bb265cc1d3a7e338a643a7acb33e52c7efc29d4eb1d4a2306b951896dc649"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/notebooks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "70f160072cbe3bcbf295e5ccdb417d9ffda5a06d8530d8d928f1e13e178689ca",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/notebooks/v2/openapi.yaml": {
+        "etag": "\"5afddebea947d79537ab2097370dc59d\"",
+        "sha256": "edeafb12158abda140ab0984f4e9e55c1edf430763913a37c02f4cc00a2248c1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/oauth2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "34a12c67719b1b27f14a1b1951716d987ee60bb12cf8fba3098aa186751930b6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/oauth2/v2/openapi.yaml": {
+        "etag": "\"250eac46aff065f95da0798b45ab2f8e\"",
+        "sha256": "c9dd6775c9fd56c0a626a095451f78f761d9b4e74035903e1b9dc2b2e6d71773"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ondemandscanning.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fa2d2f1f3ce9bcbae825f28dfe5aa06cf1de685b6dcd547a183c312db414181a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/ondemandscanning/v1beta1/openapi.yaml": {
+        "etag": "\"666eccd0b980f9867e34f5eb262efe46\"",
+        "sha256": "fe467d92718134135032cfbc896c729a06eb1c6a5438864464e4c8dbd146fb96"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/orgpolicy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "60f4d10ee823a0164a32b5de10d3c83d476e82e4521b96f36aa465d40968182b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/orgpolicy/v2/openapi.yaml": {
+        "etag": "\"6718007ee43a42cd619871b646d4d3f8\"",
+        "sha256": "a5947fda7efc070addcb43fff5ab88176b675804671496c8d1fa660f3007bab6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/osconfig.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c99b39d29636e5cd21f1c79cad6b7573cb986d39235156dc8bac3d231c1c024c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/osconfig/v1beta/openapi.yaml": {
+        "etag": "\"39c8527d6ce7468957723132f2d6e3f6\"",
+        "sha256": "7f8af762af8121fb7baa91eece62c9d70655380b3a6ea6748658ea1ed9c20e24"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/oslogin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "adf3e011db1d1d2e0aa5c40ab1c4e1d9269fd68d5cdb6cb1d0e31b0e2ff7266a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/oslogin/v1beta/openapi.yaml": {
+        "etag": "\"a5eff6221636297d29c30615b2f4d6a5\"",
+        "sha256": "42e90fc53b6c16eaf7401fe437b18d9a966eb93bc7d2f6e4dafd52524c4b9823"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pagespeedonline.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1a7ad23cb1ab5a96e8e1e8df655ed4fc51411dafadb528f03d6131eca321a4bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/pagespeedonline/v5/openapi.yaml": {
+        "etag": "\"52161c23da058831074241c83de7ff3a\"",
+        "sha256": "a40d35f7f20bf08b96a281a06a8482e3d22678f1d8d922d2bd9122f45ab7664a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/paymentsresellersubscription.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6eb61cc48b9c589c16cf0f1c66b32cc26b24f1ba0cb6fbbd9374cb67f043e6d4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/paymentsresellersubscription/v1/openapi.yaml": {
+        "etag": "\"a47741c78ba013cb354d5f4667805e0a\"",
+        "sha256": "b334e433b004d12e5dec1dd57f306be13b3fad0ee8e7ee5e576355282584702e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/people.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e83a7f043f90dd323f43b9a80a4262da3458a331b030893d181dc5bc6c988e6a",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/people/v1/openapi.yaml": {
+        "etag": "W/\"d46e9d9728523156b6256bb8aea6430526d89779bd569e254cc975ebd6b89372\"",
+        "sha256": "71c928ebd2ded32a38d06f6d700b5938fa3c501a43c35d218178bff82d003a55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/playablelocations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "65bd5cc0292a4365e23f11adc1510cb94f7d19798e69be29f914c417655436dc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/playablelocations/v3/openapi.yaml": {
+        "etag": "\"63da7e9dd9eee53ceccff2976ed62e5b\"",
+        "sha256": "b02a5319bc8d5a36f150ca908e3403e0e9d59cf02f34fc98b4dd09a4cd88c24a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/playcustomapp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "940b3f3f82980177e5f720dff40188dacd0c148ec36ce63e4ddf6f468f2e8177",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/playcustomapp/v1/openapi.yaml": {
+        "etag": "\"5f00662e94728fcb0b2af1afe118a7c4\"",
+        "sha256": "4942e21eb503f8a7c3f4270aa7adf6ddb95295a6cf7d157e1c1340be015f4780"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/playdeveloperreporting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "df25726c466fa47f3d53339ddb5477980cf8b5bc8f9ced7536355154616742c3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/playdeveloperreporting/v1beta1/openapi.yaml": {
+        "etag": "\"4a80ff246cd7a8d8a064cd2bfff92d1f\"",
+        "sha256": "15cd8b7ed191a81bb359bbc27e63593a2cf395d177c37f94bd5ea2dad3cc65c8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/playintegrity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a94a8668d54f4f68ccf9dc1dce2aaf516e236d8f98685d4f34c56844bb3f4687",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/playintegrity/v1/openapi.yaml": {
+        "etag": "\"62168d2ae1e69a2ade67cbc7f6645b89\"",
+        "sha256": "5b015f2ff96d535300be0bb1987454dca94aa0d42efccfb882a0274537114fb7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/plus.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d981bb0e132e1633130490a8cc0f60363f7880ad900986a2f9e5caa332e9e046",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/plus/v1/openapi.yaml": {
+        "etag": "\"7c9e2e891eccb0eec8cb0605a4b55565\"",
+        "sha256": "4829a69e9384fa7758dad31c2ad9cde1264b51dfbcd92fbea6dc5b6bc84a8ad5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/policyanalyzer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "87f7729f9bc0a826f047e6330314a8ebc9c95ef569bc567d4ed0b818a443927b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/policyanalyzer/v1beta1/openapi.yaml": {
+        "etag": "\"643ca8adae118837798eeeae1f2659a1\"",
+        "sha256": "15e06542533fde001f17364d6004c47fa237b2cb5ecb31a94211fdd244734b1a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/policysimulator.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "01067ba5352ebf52d17ce5de509f472ee96dd5af182b0610b50367d698131b2b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/policysimulator/v1beta/openapi.yaml": {
+        "etag": "\"c19f77abfc3a8c139b0a6cf8e1b9717d\"",
+        "sha256": "27818e7cd4d68f6839290f1aed46c33ebe35fea7e9b286da4a4393eda849f447"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/policytroubleshooter.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "935a94c6e5f819b2b4eadb1a88611d280d56959aeab2616b743eb8ca445461f4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/policytroubleshooter/v1/openapi.yaml": {
+        "etag": "\"09203f800cd12a6b1db679d50e9cc8ff\"",
+        "sha256": "a6f209114feff6b07c87d47d8d44b4756eaeac457aa7bdedd413014b46ef8261"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/poly.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dc7ce09f5e7d92477ec63616c26884a36924515794c21bb4373705c88051f533",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/poly/v1/openapi.yaml": {
+        "etag": "\"37d845048a9c5204526b1b887045da4e\"",
+        "sha256": "45e25cc7f850fa41b22ef83068a5f1a7806233d136fc654a8d94ee23e8e992dc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/privateca.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cdb8327e90ab0ee87f742d0ca69a9ea44b055447122977b68c0504430004e450",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/privateca/v1beta1/openapi.yaml": {
+        "etag": "\"4aac2a6428b3e62aa65d71561faed2d0\"",
+        "sha256": "c09bdc871f75a56bfb192a830f97f846cc295717a8df63114d5f564815fa3aea"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/prod-tt-sasportal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "60d1c4ed47f2e107e57115b9d60ab350b57503b1add6daa517e92fcf30a2430a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/prod_tt_sasportal/v1alpha1/openapi.yaml": {
+        "etag": "\"019644cdf18d2c546f323e6e3afc894f\"",
+        "sha256": "3fdf8c826dd57ab843beae0cf38402bd46aa6c19c07732c88ffbd28948fb2fea"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/proximitybeacon.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0dc380fcf6bd094016697539b0f080532858e768fa60d19931df46394158a1d4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/proximitybeacon/v1beta1/openapi.yaml": {
+        "etag": "\"818d5919ad11128fda7b642f30fdc1ff\"",
+        "sha256": "248e962f4c3e4b1722f214ed6e7baf11661d51ae881af96368bd6f3a514b14a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/publicca.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "85b49758dae6022535bade10764799292b77268fa79c94558cc51275134c2801",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/publicca/v1beta1/openapi.yaml": {
+        "etag": "\"2e6319523514b1c15c34db106b4c7cb0\"",
+        "sha256": "2bb6ba32cc7754719ab852e8198efcb2d30632846ef91fd77833ce42e562ad03"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pubsub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "761086f834287ad54a0152eb49dcda27f062a676379a755f27f9f403cd7c57df",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/pubsub/v1beta2/openapi.yaml": {
+        "etag": "W/\"b3a85b5cb2598b3ed27f0a938199c1f4af89d592d808b3628d48f558628af2c5\"",
+        "sha256": "53043644e39693d67b6ae37ff4d13295fe5f1aa1593cdcfb76c8c172d63746e1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pubsublite.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "05968cbaf7dd8b8ad090d476ba0fbea31125e9dd07385c0a0f7ec8dc27d0fe18",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/pubsublite/v1/openapi.yaml": {
+        "etag": "\"8f11a85e04018c89afb08d84971f8a00\"",
+        "sha256": "ff81967f1741dd4feca745136164b82f67ecefeab254f9952b5831534e78261e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/readerrevenuesubscriptionlinking.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9265faf7547ddd1969650571e516c97b31b225a80d9eee3aa344e3ab14b0bb43",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/readerrevenuesubscriptionlinking/v1/openapi.yaml": {
+        "etag": "\"26d6b51dc3d5ff78c2abb8997d4f02c3\"",
+        "sha256": "5a18f6dae69333cfdecbf5967ace0e07bd98d510b71391193f17c3e95e79e761"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/realtimebidding.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "61873623d8a19fda547c25a565902b0890c160905910fdbc960dd0246a7db8bc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/realtimebidding/v1alpha/openapi.yaml": {
+        "etag": "\"6eba06f907f95ecaaab23fb497d12b49\"",
+        "sha256": "3f481a4b8609b9ea924250cb69bc99fa7caede654f4614d7a8a3cd5679dd4b61"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/recaptchaenterprise.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c9dcc2e4802772150037bc9aa706a37f0ff97cde5d32617ef07d220789338bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/recaptchaenterprise/v1/openapi.yaml": {
+        "etag": "\"88237e763ea3ac3dfe5d5e7b0607480f\"",
+        "sha256": "e20c858a1abd1c60a245bfd8f5acd7bdfff7f975d2d00ec5e0131ea8944b8925"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/recommendationengine.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c18492f6e5c654efc408b27a12f69e99352b1f59ccccfebdc4f58432f944d87",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/recommendationengine/v1beta1/openapi.yaml": {
+        "etag": "\"b89b673b8314a73578bf808ee573decc\"",
+        "sha256": "b4f2f2593e08f30852ae2cf7ddbe70902931708aa315f7a8fcc7046412b50e72"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/recommender.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3efd619840bbcf88d1f5ec244c19f2cab6e8a7e488c747fab9b627c14e777c3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/recommender/v1beta1/openapi.yaml": {
+        "etag": "\"0664b30192d68b076b3a084a3728e621\"",
+        "sha256": "ae4d4744d2e8145fa6e9c3e91ec245757dd9cb2342eab9f901833dec14b6a5a3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/redis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bc57854517380cdf057f0081dddc1f24c7e4d1dacdc47ad4d7563d5fcefa8c78",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/redis/v1/openapi.yaml": {
+        "etag": "\"e914e51153d9303de78bd87c449400c7\"",
+        "sha256": "66b70ac9c55aceacb91a24177238ed8ea2f11459a0c758d6ec105f317ce58bae"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/remotebuildexecution.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b70ace7ddccd7182499370e453f4fd02383d4b6de30c39f5530c17306ac74b59",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/remotebuildexecution/v1alpha/openapi.yaml": {
+        "etag": "\"127534f08c5be68caf2325fe6759b8d9\"",
+        "sha256": "407391b54ddaf2535e875b848b44e4b1472cb7e78921022b76bda3d07cf8a99e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/replicapool.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4b576c45ef5d3dcefd342732acb103f1749975621c457eeb1e4f1ce05a584a4c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/replicapool/v1beta1/openapi.yaml": {
+        "etag": "\"d35ecc7b6e1f8dd4c7a4c0880ae255b4\"",
+        "sha256": "af5fe597fae2e6b5e39a12c68b6496b63e3d093948f16f0acea9646240c801dc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/reseller.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f9efbc63fda5be90a46fe657ffe5653bb3603df01f2b68a20ee15f33cb1df7aa",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/reseller/v1/openapi.yaml": {
+        "etag": "\"99fc4c6d7ba5c56d2ebfd59ca59ae125\"",
+        "sha256": "e8510599fc5c696e706a8a1f6f6d0536e2a8155a4abc1b0cab6dcd30718679d9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/resourcesettings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eefcb5ddc42676766eff3db502fe4ccdb87f06dd8c3951ec60533ead35b45373",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/resourcesettings/v1/openapi.yaml": {
+        "etag": "\"8f03cff0d147990f146525fcc549a76c\"",
+        "sha256": "7bc68fe4d919f9c78b511dd1b4080cb88b19b5e437a8099de129d86f820ba594"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/retail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f7e642f588f55f843256f945de8765df2ccc7c941224018ee04a2c1c8a9f0028",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/retail/v2alpha/openapi.yaml": {
+        "etag": "\"18dc1feeabe73c5ec056d7e277247bb0\"",
+        "sha256": "10be02929efdf2ec2917b1c277060835239f6125c590cfecc7bf0df7a37d06c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/run.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a5c1c84d660f372a34e55d5f53f3748f4ebbb38f969c883a8e0969955213e8df",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/run/v2/openapi.yaml": {
+        "etag": "W/\"70979855ccfe2a1349a5a25ac3a72568862cc65731b652cede3d090672fea7f7\"",
+        "sha256": "4cfa712c80f90d782a3152fecc3c8579691f0f7773eb5d8a0a01b3a9793973d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/runtimeconfig.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c954a3c02ede75b93f4ba26178ca2ae40ec082244afa494f1d4c67dc1d29183a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/runtimeconfig/v1beta1/openapi.yaml": {
+        "etag": "\"11c6dcc47b01b068870c679591ea15d5\"",
+        "sha256": "382e6a30c7ac7dc6e6c9e6fbc9d9abc63232a1e4ed587a9da7216b852eca8ede"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/safebrowsing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1449b5a29322c73d2979fd5541934e534d2d55468d6193bfa6f67fb65acb5413",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/safebrowsing/v4/openapi.yaml": {
+        "etag": "\"a046d4ed65eda3dd364afb1def318f6b\"",
+        "sha256": "bad994e1004cd6da15e10b06c5fb1730b6c27a70221a0d58ee8967784db11f66"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sasportal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9633a639d7b858c313379386144f423fade164ca4d3d45921a08841fe7abebf4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/sasportal/v1alpha1/openapi.yaml": {
+        "etag": "\"88c548dd54d6df4622c50281e890e283\"",
+        "sha256": "0040e4fbf503e5623a678eadaa2b5f055e13a88966e74062b5fb10d74a85d0f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/script.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab6a676093ea567792581e559bafad1e2d0e1510bcd0cc5dc3a59cc8818440aa",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/script/v1/openapi.yaml": {
+        "etag": "\"23e9fd482960af921f55cc00c333f02c\"",
+        "sha256": "bab8b8ec5c1ffa5d3b4724b3d8ef27094b1fa48dec5164daa710874906c7664f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/searchads360.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9e6c7685f8a95fd52768b4dfc5dc35f7d2a156f03441d8f2b4937dbfe429e390",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/searchads360/v0/openapi.yaml": {
+        "etag": "\"432f0bc382cc6ddcc6fabdc2dc0791a1\"",
+        "sha256": "fb8023449936113bf9dd8dafc4ce0724c9f8589f95a26760c306b936caa63a29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/searchconsole.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2707b41b36480d3fd4f480ecd4b80fa053d099e22c04ed47c7c489a833fb74b4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/searchconsole/v1/openapi.yaml": {
+        "etag": "W/\"4ffd8fa1cb411e77746cc6c692f751ba03b931fc7a001d81c6764f821124d1d9\"",
+        "sha256": "359234ef9cfb85cdd052da12cc01f0daad4d1e813a69baa8f93bfa435e5c68f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/secretmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "35a2ad0f9cd7bc64dd3802787fb9f8adfd1aa544c468aac54119fef81645b987",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/secretmanager/v1beta1/openapi.yaml": {
+        "etag": "W/\"5b6a3680335e12e691c4e1f574e830998f8c52e821ddfd6ad0306c68c064978c\"",
+        "sha256": "cd9db65c412ea2340749625b3ab26fde1d47a6bfeeb54eac2833a3f93e4428b6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/securitycenter.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b9639a7cb594b8b190dabcfb15b09cc58a620c8a818bd780d12d48c2982d6ce5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/securitycenter/v1beta2/openapi.yaml": {
+        "etag": "\"fd57797b102108fea724f379c05e5a4e\"",
+        "sha256": "f2be4d94beeb4f6239bc21532af321eb04e48bc8fb7847bd9c2972047fb1c8b1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicebroker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c98fd5095c18c6b902ef3e3718b80607c59a00d0f1f63237264d34d5b20322f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/servicebroker/v1beta1/openapi.yaml": {
+        "etag": "\"53d9310a659e74a0948523deb574d9fb\"",
+        "sha256": "708cabac0934c382128210a868a6a0d688ffc8b10279fc19d6b091ddd15327ac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/serviceconsumermanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fd1ffd076110dc42631d4a0024dc119dbc64290b12537a55ed54e2c4ee93bd8f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/serviceconsumermanagement/v1beta1/openapi.yaml": {
+        "etag": "\"e8363cdf20d6bf49456d7af925416b09\"",
+        "sha256": "b7f3a34f9c94ef19d3d34304aa44fa7ae4dd7d6a0b1c76a43f325f5cf186ba52"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicecontrol.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "00f1b8c5d3d2d7ceaaf6da9a6d5a23b9c8a287fe88f0c63f248545ebd1b63f5c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/servicecontrol/v2/openapi.yaml": {
+        "etag": "\"80cbd011efb16bb685bbfc13d8db3869\"",
+        "sha256": "8a7769b0b0658f59c7272c42f0a623a7335791901431e9d48a07a7cd517e7a4b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicedirectory.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aed850d8f3382d6cc1dd1f1b4e397559c8d7db8377e0d8af0cff2eddb8cae9b3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/servicedirectory/v1beta1/openapi.yaml": {
+        "etag": "\"30842e7310238047c9f8682902c2b7a3\"",
+        "sha256": "d595241e0a1bcc82c3f0bc56c9bc4feab2f87440f5f0c686a5134adaa13d730f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicemanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e14a27bb8799b8f8efd36a67e6561b4023cdeebc11302a2007c9ba1a2f5c2695",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/servicemanagement/v1/openapi.yaml": {
+        "etag": "\"09375ee4165a1a44ecbbf18f9ed5937e\"",
+        "sha256": "c8d0b60304cee38d78ee5325e1847f0a2b063e3b6980c76d342ad82cb8f7c4f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicenetworking.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4527fd588b8828dfad0c07a4e7d15d1b9004206e74eec88fb8509e12ccaef483",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/servicenetworking/v1beta/openapi.yaml": {
+        "etag": "\"5e4aa86734dffbfb51538ecfcccf79a1\"",
+        "sha256": "8a400009ae9e157ce61dd49968f73e0c8df54eaff58d42b77dfd110ae09bf2f9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/serviceusage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "302955f2e2491baeea810fdddca89da1d1cb2bbfdaf1b84c74b4dcf6359e2569",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/serviceusage/v1beta1/openapi.yaml": {
+        "etag": "\"6c5ad5642952814beaf0ae28ae91c752\"",
+        "sha256": "572bb34ade928d29f2de9caeb0716a1ac7e6cdf8e36c7e784af004fc585e4747"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sheets-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "46dbc0e57ead99957ad7d6e75bce9d3548d5e9502890db16e1416ce71f3f7cea",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/sheets/v4/openapi.yaml": {
+        "etag": "W/\"21f7de1ad64dff92cd0490bb88a9602a35385f0f1bae6b2e4bae0b652ba4d2d5\"",
+        "sha256": "5598e24f4f4512bae57e7a06675a47d140012e9399c7d8b673f9c3b390aa68c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sheets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a113a1f2eb65235e6ca4067a5482bcb463640acfd06740c9de72d3a4c4458427",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/sheets/v4/openapi.yaml": {
+        "etag": "\"d0d9bbec3019814c653d3407bebd281b\"",
+        "sha256": "9c63c9d6e2f19d92fe61523827c7c9722c863ff4d4eb913e2c4cfe1893b4fe84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/shoppingcontent.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "86d4339d1746a4461676dbf70c2c6ee7592863ba3ae18b0bbedbf732004b2b63",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/shoppingcontent/v2/openapi.yaml": {
+        "etag": "\"b98fa065cf9e0afdafa929ba2beda756\"",
+        "sha256": "2a8ec4f5e6077e10992014e93280be3d2227897a31a460597d7b8fa9bdb4255b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/siteverification.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cd6ea1c0281c7d92e5cbebc24d0db36ef177677991631d881da6fe1fd4af99ba",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/siteVerification/v1/openapi.yaml": {
+        "etag": "\"9911a23c84482b12c33ad0bda3a50918\"",
+        "sha256": "84b582d589ad72a0166cf57e2cb2fd1df4119f898856027076a783cf4a3a1b37"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/slides.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "867dfc717b3970849ac7e51a27b2ce1a47c733f4bd0a577579240659da5bca90",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/slides/v1/openapi.yaml": {
+        "etag": "W/\"218ea8a616cb80ec1093668d0fde23f8a537ea3e2a44ec168a95a32202a43150\"",
+        "sha256": "1172788dc094bd9567b6ab41c33c832da8aac23331ef461a8c842d6ba0af0dfd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/smartdevicemanagement.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "05d3e6ca1734d0ab0d6350214e1087d75fb163da5e49d7fe2413b423220d3e6e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/smartdevicemanagement/v1/openapi.yaml": {
+        "etag": "\"45598304e21ca41b8cd0c5b2620c6974\"",
+        "sha256": "7d2278054dc2d0dd24e44e45989387e89aa19e0a03da3a428a5d4a96e260a520"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sourcerepo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bd2611940258aa05045d2b3115febace407ce3289b7592bf713f7c07fd170321",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/sourcerepo/v1/openapi.yaml": {
+        "etag": "\"4264295e68001a0213da1fda6fff6e00\"",
+        "sha256": "82fd5b507971b9b821a5fb216162b92527ca963ccb274efa00c1e06c8f0795f2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/spanner.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "738926e21c12b9ee4f1c022ae5f18f8875599df2b03d32bcdf043ad7320a0e86",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/spanner/v1/openapi.yaml": {
+        "etag": "\"d88ef7f242bf92b728c4ef70792ac482\"",
+        "sha256": "8677ea4b4d58b7a90016190567784257376a3ae4ec97520c42540effa8498088"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/speech.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "62dc415b25ce18b0578bd5bb4cafc5f0c122bb246841de3a49c5f36ee3c8d90c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/speech/v2beta1/openapi.yaml": {
+        "etag": "W/\"2247636e18a86a7510f5c6ca7f51463413deb5e9c1b313c7deed4b5bd9c195f4\"",
+        "sha256": "ab6abdff8892db497bfbf1e663427c383ad2ec3e92b557c82d6639bf15843ac1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sql.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "09a3762f5f18fe22033ab8838567558d4b7bd33b5cdd7ae4e799deada7d1edbf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/sql/v1beta4/openapi.yaml": {
+        "etag": "\"821e3910c73af5e1a3fae5099da43362\"",
+        "sha256": "bbef750c4e8a95a3a0111f3306682023b7da80ea5039bc843ad85d6762d74c66"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sqladmin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "393772c2e44f7e67c7386701df9519ff47dd46be237c9d2b3dd8f7e6dd3e0a43",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/sqladmin/v1/openapi.yaml": {
+        "etag": "W/\"534b27dc90fc5936025d67b45c8bbc1e7a4aaedfa1806f27ddad598c757cfe3d\"",
+        "sha256": "443a56cec22b1d81c171869fa0cd271df09abea6a5aa7a4e8f4a8e899580f6fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/storage-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dba50267979ccae346ee89917a76d4f20cc1ed4f0aa48347c74c9549a7317bed",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/storage/v1/openapi.yaml": {
+        "etag": "W/\"573c4b5f037675cccb3cab5d2a2478d01c5adba51a0c62680badc2e9844f86c2\"",
+        "sha256": "ef24ef427489aef09bfd7f7abb2c6d9aa3a7267ad82fef1dea37afe8cda7e985"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/storage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "608ada5735bcda020d9417b6477471bf1a4931bebbc8dbbedca26f7f34da2653",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/storage/v1/openapi.yaml": {
+        "etag": "\"e14a2e397d84569fb5f0e7963816616d\"",
+        "sha256": "f07767552a41c9dbf11c1d9f57a547b71bec47eac2a2db48e8a14927150996fe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/storagetransfer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "251b26e5f33af3610c2e6118d7fbb15ed6e560fd9fda02ab9e66d49cfe2ec44c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/storagetransfer/v1/openapi.yaml": {
+        "etag": "\"8112a559e7d156d9cc24478e0f96bbcb\"",
+        "sha256": "59e49f89453296a014137ec353e5f55ab74254f404c87c506edad7a8ba75d44f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/streetviewpublish.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8ea1139214f97d5de38f2ea036da7280b1260ddca69472c066c62417f1f9547e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/streetviewpublish/v1/openapi.yaml": {
+        "etag": "\"4c4b2b13c62a9ed6f4cddfd84727dcee\"",
+        "sha256": "874dffe379e9dcaed25a8a44e0c96b115eb50f8c77e54ca794d75633b5e4db29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "468ad28c3244fc90df68dc4351cf4aba0fa40ce30af10a1a1a55902032cf2fe4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/sts/v1beta/openapi.yaml": {
+        "etag": "\"3508c528e3184ceb6b599d03d7c2c591\"",
+        "sha256": "9d9345f6f1b0f7c761f0f02b7ae74fc8ccb0c963f4135ee2cafa6d70e8634b6d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tagmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "47f75aa4a11cfc22185c53d1205bad34d13aed6954b5fd7546fadb412b509a05",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/tagmanager/v2/openapi.yaml": {
+        "etag": "\"6c260a76f51392c3f34f8706f8037550\"",
+        "sha256": "7a12aff9c488eae46680c87ea62c91686b4499a9fa4d972cdd0e8bf9522bd909"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tasks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "691e9aba2735dd46b4687af4b37d0efd5316ce54eeebf680b7d7e649f9e56036",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/tasks/v1/openapi.yaml": {
+        "etag": "W/\"dd6b7b0761ef6bfbf705c4cc7cc656b0f7b936627be6e529d65a361d57b05c2c\"",
+        "sha256": "3fb4e2cfb89de8e7550b9e7e3a3c38b0159df37b124e8ca3e165f8fbce808258"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/testing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "90e9749158b92949a86557aade62584d49176d87c3b0994f07453cc415660986",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/testing/v1/openapi.yaml": {
+        "etag": "\"831fd4426edac9a5322fcd994f75aee3\"",
+        "sha256": "60e0c9a978c10ce87a35f5d97305105766901b043b897c33882ed9bae562194f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/texttospeech.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5dfa1355946cc83e21b90af49fc953641549e83e743b9b172b6e0cbf0c818694",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/texttospeech/v1beta1/openapi.yaml": {
+        "etag": "W/\"95b85702859154c6d35bdfe8f29af866d159e0ba2761c735fbb15d07a7fda0f0\"",
+        "sha256": "16516a9c5fe637c84265abefa7da0897ea2625c30b5a56a1d55620ea81f73b55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/toolresults.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f865026d2db4a6e851150baacff49357b12d20909a31abcb2a6a8eebd9a524d0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/toolresults/v1beta3/openapi.yaml": {
+        "etag": "\"6c974c15f3bd3da8be30c1561c55b858\"",
+        "sha256": "81b5e77f962b9cbb7f2b7336fbdcea2f44779ab47b47f805901451ea55cc06aa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/tpu.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25ea7d2d1546ed53f60ebf41e3c411daca4090da5986fd684b0afd254e96357e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/tpu/v2/openapi.yaml": {
+        "etag": "\"8c5717f3304c3047784ae6228eb50e16\"",
+        "sha256": "13c007abf6faa5b6106eaa45bec39f1d2855dbc0e7485863455dc357228f2dd6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/trafficdirector.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a0242551102131c73cfdccc46085699a3dbbbb89e3148edd7b804b8e7cf41512",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/trafficdirector/v2/openapi.yaml": {
+        "etag": "\"1176edba05ad4251c0c567007df23a99\"",
+        "sha256": "d1bd1bd392cc46756b9deae55105baa2eec9864e0bb6ced2a3d5b8c4923719e8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transcoder.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f9531aa8dee436bced5e55170644710e7bb9218f3ad99b1666feb895743fb969",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/transcoder/v1/openapi.yaml": {
+        "etag": "\"062db5c844698066130b9ec3d4db2c0d\"",
+        "sha256": "6ab129c561eb8c0c1bb7904a2430221f51950c4bde8ed2a879e73cf5f6ebd92f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/translate-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7e9233ca8fa9b3ef1f35c0b8d4c2930b663684c7e7ace8c150526cd73d651fd5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/translate/v3/openapi.yaml": {
+        "etag": "W/\"77aa58bec4e2195be874161befbf85c924e80dafcff91448bb79b1422803cbd0\"",
+        "sha256": "f2b115d67c0e3cf67bfbf9b921c2039f5e35cdb7e51da7d2bc134980f61f4d00"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/translate.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8c22c57e54bb399e1794b85a71e766354f3d9c402b1f86064b53e3dbb31f96ad",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/translate/v3beta1/openapi.yaml": {
+        "etag": "\"dac74de9f36f60744bc7d7e782321b6c\"",
+        "sha256": "f45d1fb13258471e0663dd4ebbbb8ab241efbad33a98a61ecb59db560b9ef629"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/travelimpactmodel.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b7b447540d3fdb93fbffa7d4f5172a7d1dc721f8344a4e1e6d1ca889a66b66d7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/travelimpactmodel/v1/openapi.yaml": {
+        "etag": "\"24c56b709f738d745de7a44b5760a3fe\"",
+        "sha256": "5f063f0afb732b4eb2b5b38f289cb74886356f22b6a05210775570392d111dd2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vault.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8dbfdd391bf2b3425e77e6ff27a7a28c5530de775f83bae3723e3b5a9c95fb67",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/vault/v1/openapi.yaml": {
+        "etag": "\"8338eed68342375a58960057d1a8c6c9\"",
+        "sha256": "7ff89b844d82b90e5e96ea511588a3a073c096dadb13404b9dee256d8911f13e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vectortile.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "feaca49f52b6a28214637b840728e8eb95a9fe4177fa646b0385daacd07eedc8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/vectortile/v1/openapi.yaml": {
+        "etag": "\"ff2a4b917bbbc0e584bb82a9825442e6\"",
+        "sha256": "86286d238025dd850eaaeee2dc46e6cf313a52242462ebf46ac4acfbae291178"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/verifiedaccess.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "27a558893d385a42a5b938675ec4a437e42f0bae978127142cdc3786e711c130",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/verifiedaccess/v2/openapi.yaml": {
+        "etag": "\"84e857785cf2df91fef0766864d798d4\"",
+        "sha256": "71364b6d8a71b2d437c81578e00695e6da196a8feb1904597693f4d80063a2e4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/versionhistory.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1ddd3f681df197fbb0946c3f6a9ae2d021096a6f64d5582dba6ec4fdcdc19920",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/versionhistory/v1/openapi.yaml": {
+        "etag": "\"ad42471ca931067150f753e22b9151c0\"",
+        "sha256": "785bf83ca9fd3450cefd56948b991afecc6fdeb79a497b177143edbbd76e2ed6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/videointelligence.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "67a2bf298af0940918b773c14e0e3f4f19a7d5162eddb88c9db2059515437f3a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/videointelligence/v1p3beta1/openapi.yaml": {
+        "etag": "\"1fe061f04dcb1349787290f35581726c\"",
+        "sha256": "bd32ddfac5eda6096fbe62673c139cea210302cad2c341467006dc2c95c13735"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vision.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c11d53acd7e94df823b4d0a37e0d980263ac2d93127f9b864a96f50d18774e2b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/vision/v1p1beta1/openapi.yaml": {
+        "etag": "W/\"980f2637a673b3a77f900231c005a256b9673b63c03698669a19120718a3fd72\"",
+        "sha256": "21897e8fca62089c065d77bb080c7e0e0334469ac871c1478e4cb5c7494ec64b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vmmigration.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3a7cfa87cf231ddc6b708c73d084c1be4a2eec551428ad1ced3b1073652fa247",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/vmmigration/v1alpha1/openapi.yaml": {
+        "etag": "\"3599f861944492281c7939242b7dc6ba\"",
+        "sha256": "8a622a08be701f9259fbd52cf6465987dfe94b883ceb081fe67c67b762d34a84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vpcaccess.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "93b2c9f100f5afb18529709c4a957b0838ca91feaeafa681043adcd1fe9ed9bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/vpcaccess/v1/openapi.yaml": {
+        "etag": "\"dba5e720e2e81adb53d2e1d7e9ad8bd6\"",
+        "sha256": "22f95c7665be4f17254ebdaf8c3dfbcd6539cf82f67ac48f4c19456275c7c402"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webfonts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "69c1006b9d3a354a4997ca184df40402f2bb8685eed9a99d99191aa71440ffcc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/webfonts/v1/openapi.yaml": {
+        "etag": "\"d0ee07d85c506d0d7f1e4ad3cf49f80b\"",
+        "sha256": "d93701cdb22b9d11a40a0467c86b06fed5b87ae08e2434f9c464207e552025e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webmasters.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c5adea2c081e5e5cb61af2b494521b69be1beed582131707036acc27de703aec",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/webmasters/v3/openapi.yaml": {
+        "etag": "\"9dc687d791d0cf306c2d09f7ff2c93b7\"",
+        "sha256": "1a1fcb83e8d0dee0ed402fe25d370a864943ef46be4a9765eee1acde53dc73ff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webrisk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c2b3e203eeb438e1600bc1ae9254683e0bf12690e16d44aaa71b39dbe733a7c4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/webrisk/v1/openapi.yaml": {
+        "etag": "\"ea6ba019d5089f8ec7ea8478e164461c\"",
+        "sha256": "47f4f5a18df0d77ba0cab4a95ef8f11baecd6ef394e0a011fb9292cc64af08be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/websecurityscanner.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e03c042d5a801cdcf9be1140044c9817f23430a42afdb0b41f555c77fe98a5d8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/websecurityscanner/v1beta/openapi.yaml": {
+        "etag": "\"a89bf4e8c6b83f5ab22339c4de458da5\"",
+        "sha256": "9ca24bafd5e21010d0d3b46bde0b9d07536d565265b8d733ae004c807ebf7239"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workflowexecutions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cc1d4a161de5235a8e3e8bd8a31e79433dccd408098788e3c9c54cd8dac3b86d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/workflowexecutions/v1beta/openapi.yaml": {
+        "etag": "\"35789301b8d86d41df2a200741c92beb\"",
+        "sha256": "415dc0e047bdd0817d63b6fd27a03ce8cb559db24d1defbab0a70141a5a9c800"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workflows.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c5d81ea8c6beb1f395045c2d4a71772239c2e75f9a5c4e32408740d597e74d1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/workflows/v1beta/openapi.yaml": {
+        "etag": "\"c9cc7425c1267f203335790f03a99992\"",
+        "sha256": "12710ce6cc6afa8af7f10a8fa5796731f973c234b20132b543c5a34ba96c9ac7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workloadmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "16158f139fcdf74b9c9099e2574d556abd3408ba35e8cf6266002fe20501b413",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/workloadmanager/v1/openapi.yaml": {
+        "etag": "\"a0582ec2fb81d3a61d793a980f4e9098\"",
+        "sha256": "ec3798238327422c3e04f348aa91b9f4fa471995a07b849e8f7b18a82d08fa3a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workstations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a09c79df10521208d7d97ecd89abd9312d629ad9be1efce736723b2d155fafe6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/workstations/v1beta/openapi.yaml": {
+        "etag": "\"59631c865b68a67d4f3403db1c8798ec\"",
+        "sha256": "1ad90fec6b37299a393653f4633801f1ceb449644d5951fd7889c03f41305b7c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/youtube-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8df1198b3c8bb87bb16af0ea172ee876e298b2e516a643358dd4d3b29c30d91d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/youtube/v3/openapi.yaml": {
+        "etag": "W/\"210398520077936bc2f1eb85185a5af99fdec7222f75d1e7ec98bd4144b67045\"",
+        "sha256": "64368a8846394137924f0492053bb05b54049826df83920a8e2eeae2ec30fb12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/youtube.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d8d88dac2dd224a55e9c6e0b8f579a80da9dc780b830593876d41ea71345cd17",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml": {
+        "etag": "\"4d98a3ba998cfedf951925a8afbaceb3\"",
+        "sha256": "a7bd1bddc8aaca53c2297df8cee290eab80a0069b624701b1a4fa33820e48eb6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/youtubeanalytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f635e9c4a853684b371763ed7e2a0b0ef1ec8fc0fbaa1648c22bb5af604ceea",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/youtubeAnalytics/v1/openapi.yaml": {
+        "etag": "W/\"343a35b4a95ad5c38c83af19906f361ab0b2033167343617219c38d4fcd477b5\"",
+        "sha256": "0f0c45252f3eaf1914b3b86c0f678322663ac05a2620853850db6cca6a08e710"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/youtubereporting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aaadde6e08cb5304d31baed0b74a3186ee19851047e495796da28f61f856a100",
+    "sources": {
+      "https://api.apis.guru/v2/specs/googleapis.com/youtubereporting/v1/openapi.yaml": {
+        "etag": "\"1da1cc2a49bbaed441bfa00c290ed377\"",
+        "sha256": "1e28e6b15310922d3a7d3f7f952797070c2d401c7b5c2ec5e1593aadcd699b7a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

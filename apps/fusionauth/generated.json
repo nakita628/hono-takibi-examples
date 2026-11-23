@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c858d31198cca6937224b9b2e38dd62298bb413590631fe57a20a9f78622b01",
+    "sources": {
+      "https://raw.githubusercontent.com/FusionAuth/fusionauth-openapi/main/openapi.yaml": {
+        "etag": "W/\"b84a298696c6bf34e90562c9239ca5a21516e7df25d5c6afbb7d0a4bc499a9da\"",
+        "sha256": "56d28fd4a5ab02ea7a2ccebe66e733ec84b1f11d517c4f6cdc3165292f48d265"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -4473,7 +4473,7 @@ type ProjectCreateResponse = {
     account_name?: string | undefined
     address_lines?: string[] | undefined
     available_credits?: string | undefined
-    billing_address: string
+    billing_address?: string | undefined
     billing_currency?:
       | 'AUD'
       | 'CAD'
@@ -4488,10 +4488,10 @@ type ProjectCreateResponse = {
       | 'SGD'
       | 'USD'
       | undefined
-    billing_emails: { email: string }[]
+    billing_emails?: { email: string }[] | undefined
     billing_extra_text?: string | undefined
     billing_group_id: string
-    billing_group_name: string
+    billing_group_name?: string | undefined
     card_info?:
       | {
           brand: string
@@ -4507,24 +4507,24 @@ type ProjectCreateResponse = {
       | undefined
     city?: string | undefined
     company?: string | undefined
-    country: string
-    country_code: string
+    country?: string | undefined
+    country_code?: string | undefined
     default_cloud: string
     end_of_life_extension?:
       | { elasticsearch?: { eol_date: string; version: string } | undefined }
       | undefined
-    estimated_balance: string
+    estimated_balance?: string | undefined
     estimated_balance_local?: string | undefined
     features?: { [x: string]: unknown } | undefined
     organization_id: string
-    payment_method: string
+    payment_method?: string | undefined
     project_name: string
     state?: string | undefined
     tags?: { [x: string]: unknown } | undefined
     tech_emails?: { email: string }[] | undefined
     tenant_id?: string | undefined
     trial_expiration_time?: string | undefined
-    vat_id: string
+    vat_id?: string | undefined
     zip_code?: string | undefined
   }
 }
@@ -4746,7 +4746,7 @@ type ProjectUpdateResponse = {
     account_name?: string | undefined
     address_lines?: string[] | undefined
     available_credits?: string | undefined
-    billing_address: string
+    billing_address?: string | undefined
     billing_currency?:
       | 'AUD'
       | 'CAD'
@@ -4761,10 +4761,10 @@ type ProjectUpdateResponse = {
       | 'SGD'
       | 'USD'
       | undefined
-    billing_emails: { email: string }[]
+    billing_emails?: { email: string }[] | undefined
     billing_extra_text?: string | undefined
     billing_group_id: string
-    billing_group_name: string
+    billing_group_name?: string | undefined
     card_info?:
       | {
           brand: string
@@ -4780,24 +4780,24 @@ type ProjectUpdateResponse = {
       | undefined
     city?: string | undefined
     company?: string | undefined
-    country: string
-    country_code: string
+    country?: string | undefined
+    country_code?: string | undefined
     default_cloud: string
     end_of_life_extension?:
       | { elasticsearch?: { eol_date: string; version: string } | undefined }
       | undefined
-    estimated_balance: string
+    estimated_balance?: string | undefined
     estimated_balance_local?: string | undefined
     features?: { [x: string]: unknown } | undefined
     organization_id: string
-    payment_method: string
+    payment_method?: string | undefined
     project_name: string
     state?: string | undefined
     tags?: { [x: string]: unknown } | undefined
     tech_emails?: { email: string }[] | undefined
     tenant_id?: string | undefined
     trial_expiration_time?: string | undefined
-    vat_id: string
+    vat_id?: string | undefined
     zip_code?: string | undefined
   }
 }
@@ -9797,7 +9797,9 @@ type PGServiceAvailableExtensionsResponse = {
   errors?: { message: string; more_info?: string | undefined; status: number }[] | undefined
   extensions: {
     default_version?: string | undefined
+    extwlist?: boolean | undefined
     name: string
+    trusted?: boolean | undefined
     versions?: string[] | undefined
   }[]
   message?: string | undefined
@@ -10808,7 +10810,9 @@ type PgAvailableExtensionsResponse = {
     | {
         extensions: {
           default_version?: string | undefined
+          extwlist?: boolean | undefined
           name: string
+          trusted?: boolean | undefined
           versions?: string[] | undefined
         }[]
         version: string

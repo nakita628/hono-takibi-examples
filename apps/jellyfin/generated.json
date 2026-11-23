@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4a72f8ba88bfef574ea1e0d947213b04b2f343b4d86372fe507c21211482ff17",
+    "sources": {
+      "https://api.jellyfin.org/openapi/jellyfin-openapi-stable.json": {
+        "etag": "\"6adfc10c-1cef16\"",
+        "sha256": "02a6064916b7e08f1f1d8d7ffc1fb1c7623df0e378729fcd7fd353766868036e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

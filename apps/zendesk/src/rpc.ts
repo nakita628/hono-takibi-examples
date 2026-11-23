@@ -3831,8 +3831,11 @@ export async function getApiV2TicketFieldsCount(options?: ClientRequestOptions) 
   return await parseResponse(client.api.v2.ticket_fields.count.$get(undefined, options))
 }
 
-export async function putApiV2TicketFieldsReorder(options?: ClientRequestOptions) {
-  return await parseResponse(client.api.v2.ticket_fields.reorder.$put(undefined, options))
+export async function putApiV2TicketFieldsReorder(
+  args: InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.api.v2.ticket_fields.reorder.$put(args, options))
 }
 
 export async function getApiV2TicketFieldsShowMany(

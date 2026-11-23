@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7e74bd5efecdbbf0d02061fca6f9f83d13845e9ca4fea12475064a64773c8393",
+    "sources": {
+      "https://open-api.netlify.com/openapi.json": {
+        "etag": "W/\"582f75ed1b04a806d940bb88ecf1dcbf-ssl\"",
+        "sha256": "f0f0b97bbe6ad13da47922df87beb5efa0fc9529ee86f7a07e9235cf338dcb30"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "86e53d1e9293fd33a8e53899a9416ae41ce4ce70e8ece82577a015715e2072a9",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml": {
+        "etag": "W/\"03836e9061129302b0a2c4c81ee84c6b569e75400d55c5298c5b49e26bac11a2\"",
+        "sha256": "bd6385c5eb3df05a69da5f39359d9df61a44d0032d9b2234a97f4c29c0826d4d"
+      }
+    },
+    "typecheck": {
+      "errors": null,
+      "reason": "killed for lack of memory (15 GB)"
+    }
+  }
+}

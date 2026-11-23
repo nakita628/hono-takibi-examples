@@ -32790,7 +32790,7 @@ export function usePutApiV2TicketFieldsReorder<TError = unknown>(options?: {
     >,
     TError,
     Key,
-    undefined
+    InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -32801,7 +32801,10 @@ export function usePutApiV2TicketFieldsReorder<TError = unknown>(options?: {
     swrKey,
     ...useSWRMutation(
       swrKey,
-      async () => parseResponse(client.api.v2.ticket_fields.reorder.$put(undefined, clientOptions)),
+      async (
+        _: Key,
+        { arg }: { arg: InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put> },
+      ) => parseResponse(client.api.v2.ticket_fields.reorder.$put(arg, clientOptions)),
       restMutationOptions,
     ),
   }

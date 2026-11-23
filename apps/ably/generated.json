@@ -1,0 +1,29 @@
+{
+  "configs/control.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "5b7cc2b1899dba9cf06dbd987eb43aaf9aac5b297dc28fd7274b7d89a89dfb31",
+    "sources": {
+      "https://raw.githubusercontent.com/ably/open-specs/main/definitions/control-v1.yaml": {
+        "etag": "W/\"b5f96aa2b029cae277ddd1b5ace8cfc842101256c02985b255112812511f4d23\"",
+        "sha256": "0a8331883ff843a1c9c86e1eb1afa0a00c95bc7c3560e873e3f4b4b72e2332c0"
+      }
+    }
+  },
+  "configs/platform.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3985fd5294dcf11e64ce7916ef9de7c148dc3bc6bdeffc327b4dc750f6a7304c",
+    "sources": {
+      "https://raw.githubusercontent.com/ably/open-specs/main/definitions/platform-v1.yaml": {
+        "etag": "W/\"7480c5b5caa94e7c25072a6ba7c8ecbd153e6771e4bd232411ab82c25636984c\"",
+        "sha256": "d9cf7e90bb58306f3abff6affba595cf3e8c13608740a0d09342d3445ad39288"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c9580bc33aca749c15c81dcdd3a53bde0dd3019bd31c8536bda5847d95fca5a",
+    "sources": {
+      "https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/main/v1/openapi.yaml": {
+        "etag": "W/\"4ac12c3eb5439fd029fbb88e2f5f1f218e4cdfab607dee38bd453865e21be700\"",
+        "sha256": "bbc0c72039c8235659bf536271952cde67be512f32a31e95873fccd49b9793ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

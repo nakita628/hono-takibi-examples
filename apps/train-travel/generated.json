@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d4489ec2176cbd5d5d0491b03f46855b1265397ecb754e862239f6473a3f3f21",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/json/train-travel.json": {
+        "etag": "W/\"7240ad91b84dc31001356e0e110de6c7edc5fa8c3a62b396e2a986599cfb6a4d\"",
+        "sha256": "213e8f751c0d41cb3770374c8199ba6c897ac146389e94d688001285d43b92d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

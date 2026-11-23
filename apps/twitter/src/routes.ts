@@ -21387,7 +21387,7 @@ export const get2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = createR
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read', 'dm.write'] },
+    { OAuth2UserToken: ['dm.write', 'users.read', 'dm.read', 'tweet.read'] },
     { UserToken: [] },
   ],
 })
@@ -21431,7 +21431,7 @@ export const post2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = create
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read', 'dm.read'] },
+    { OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read', 'dm.read'] },
     { UserToken: [] },
   ],
 })
@@ -22253,7 +22253,7 @@ export const post2BroadcastsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsCategoriesRoute = createRoute({
@@ -22309,7 +22309,7 @@ export const get2BroadcastsChatModeratorsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'broadcast.read', 'tweet.read'] },
+    { OAuth2UserToken: ['broadcast.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
   ],
 })
@@ -22476,7 +22476,7 @@ export const post2BroadcastsChatMutesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const delete2BroadcastsChatMutesUserIdRoute = createRoute({
@@ -22533,7 +22533,7 @@ export const delete2BroadcastsChatMutesUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsScheduledRoute = createRoute({
@@ -22824,7 +22824,7 @@ export const post2BroadcastsScheduledIdLiveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsIdRoute = createRoute({
@@ -22948,7 +22948,7 @@ export const delete2BroadcastsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsIdChatRoute = createRoute({
@@ -23219,7 +23219,7 @@ export const delete2BroadcastsIdChatMessageIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const put2BroadcastsIdStateRoute = createRoute({
@@ -23262,7 +23262,7 @@ export const put2BroadcastsIdStateRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const post2CallsRoute = createRoute({
@@ -23981,7 +23981,7 @@ export const post2ChatConversationsGroupRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsGroupInitializeRoute = createRoute({
@@ -24055,7 +24055,7 @@ export const get2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdRoute = createRoute({
@@ -24101,7 +24101,7 @@ export const put2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdRoute = createRoute({
@@ -24151,7 +24151,7 @@ export const delete2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdAdminRequestsRoute = createRoute({
@@ -24211,7 +24211,7 @@ export const get2ChatConversationsIdAdminRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
@@ -24257,7 +24257,7 @@ export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsUserIdApproveRoute = createRoute({
@@ -24316,7 +24316,7 @@ export const post2ChatConversationsIdAdminRequestsUserIdApproveRoute = createRou
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRoute({
@@ -24375,7 +24375,7 @@ export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRout
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
@@ -24421,7 +24421,7 @@ export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRoute = createRoute({
@@ -24467,7 +24467,7 @@ export const post2ChatConversationsIdAdminsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
@@ -24513,7 +24513,7 @@ export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdArchiveRoute = createRoute({
@@ -24613,7 +24613,7 @@ export const delete2ChatConversationsIdArchiveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdEventsRoute = createRoute({
@@ -24695,7 +24695,7 @@ export const get2ChatConversationsIdEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdInviteRoute = createRoute({
@@ -24741,7 +24741,7 @@ export const post2ChatConversationsIdInviteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdInviteRoute = createRoute({
@@ -24787,7 +24787,7 @@ export const delete2ChatConversationsIdInviteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdInvitesTokenRoute = createRoute({
@@ -24843,7 +24843,7 @@ export const get2ChatConversationsIdInvitesTokenRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdJoinRequestsRoute = createRoute({
@@ -24935,7 +24935,7 @@ export const post2ChatConversationsIdJoinRequestsRejectRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdKeysRoute = createRoute({
@@ -24983,7 +24983,7 @@ export const post2ChatConversationsIdKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMembersRoute = createRoute({
@@ -25031,7 +25031,7 @@ export const post2ChatConversationsIdMembersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
@@ -25079,7 +25079,7 @@ export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdMessageTtlRoute = createRoute({
@@ -25129,7 +25129,7 @@ export const put2ChatConversationsIdMessageTtlRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdMessageTtlRoute = createRoute({
@@ -25179,7 +25179,7 @@ export const delete2ChatConversationsIdMessageTtlRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMessagesRoute = createRoute({
@@ -25229,7 +25229,7 @@ export const post2ChatConversationsIdMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMessagesDeleteRoute = createRoute({
@@ -25327,7 +25327,7 @@ export const post2ChatConversationsIdMuteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdMuteRoute = createRoute({
@@ -25377,7 +25377,7 @@ export const delete2ChatConversationsIdMuteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdPinnedMessagesRoute = createRoute({
@@ -25488,7 +25488,7 @@ export const post2ChatConversationsIdReadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdScreenCaptureRoute = createRoute({
@@ -25628,7 +25628,7 @@ export const post2ChatConversationsIdUnreadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatMediaUploadInitializeRoute = createRoute({
@@ -25920,7 +25920,7 @@ export const get2ChatMessageRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatMessageRequestsIdRoute = createRoute({
@@ -25965,7 +25965,7 @@ export const get2ChatMessageRequestsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
@@ -26007,7 +26007,7 @@ export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatSettingsRoute = createRoute({
@@ -26033,7 +26033,7 @@ export const get2ChatSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatSettingsRoute = createRoute({
@@ -26190,7 +26190,7 @@ export const get2CommunitiesIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -26794,7 +26794,7 @@ export const post2DmConversationsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2DmConversationsMediaDmIdMediaIdResourceIdRoute = createRoute({
@@ -26984,7 +26984,7 @@ export const get2DmConversationsWithParticipantIdDmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2DmConversationsWithParticipantIdMessagesRoute = createRoute({
@@ -27199,7 +27199,7 @@ export const get2DmConversationsIdDmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsRoute = createRoute({
@@ -27307,7 +27307,7 @@ export const get2DmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsEventIdRoute = createRoute({
@@ -27353,7 +27353,7 @@ export const get2DmEventsEventIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2DmEventsEventIdRoute = createRoute({
@@ -28436,7 +28436,7 @@ export const post2ListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read', 'list.write'] },
+    { OAuth2UserToken: ['list.write', 'list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
   ],
 })
@@ -28480,7 +28480,7 @@ export const get2ListsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -28562,7 +28562,7 @@ export const delete2ListsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'list.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const get2ListsIdFollowersRoute = createRoute({
@@ -28638,7 +28638,7 @@ export const get2ListsIdFollowersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'list.read', 'users.read'] },
+    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -28717,7 +28717,7 @@ export const get2ListsIdMembersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -28760,7 +28760,7 @@ export const post2ListsIdMembersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const delete2ListsIdMembersUserIdRoute = createRoute({
@@ -28808,7 +28808,7 @@ export const delete2ListsIdMembersUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const get2ListsIdTweetsRoute = createRoute({
@@ -28888,7 +28888,7 @@ export const get2ListsIdTweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -30195,7 +30195,7 @@ export const post2PostsDraftsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2PostsDraftsIdRoute = createRoute({
@@ -30236,7 +30236,7 @@ export const delete2PostsDraftsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'tweet.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2RegionRoute = createRoute({
@@ -30314,7 +30314,7 @@ export const post2SourcesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2SourcesIdRoute = createRoute({
@@ -30397,7 +30397,7 @@ export const put2SourcesIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const delete2SourcesIdRoute = createRoute({
@@ -30535,7 +30535,7 @@ export const get2SpacesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'space.read', 'users.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesByCreatorIdsRoute = createRoute({
@@ -30594,7 +30594,7 @@ export const get2SpacesByCreatorIdsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['space.read', 'tweet.read', 'users.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'space.read', 'tweet.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesSearchRoute = createRoute({
@@ -30720,7 +30720,7 @@ export const get2SpacesIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['space.read', 'users.read', 'tweet.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesIdBuyersRoute = createRoute({
@@ -30802,7 +30802,7 @@ export const get2SpacesIdBuyersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'space.read', 'users.read'] }],
+  security: [{ OAuth2UserToken: ['users.read', 'space.read', 'tweet.read'] }],
 })
 
 export const get2SpacesIdTweetsRoute = createRoute({
@@ -31073,7 +31073,7 @@ export const post2TweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'tweet.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsAnalyticsRoute = createRoute({
@@ -31165,7 +31165,7 @@ export const get2TweetsAnalyticsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsComplianceStreamRoute = createRoute({
@@ -35560,7 +35560,7 @@ export const get2TweetsSearchAllRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36586,7 +36586,7 @@ export const get2TweetsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36625,7 +36625,7 @@ export const delete2TweetsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'tweet.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdLikingUsersRoute = createRoute({
@@ -36701,7 +36701,7 @@ export const get2TweetsIdLikingUsersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['like.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'like.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdQuoteTweetsRoute = createRoute({
@@ -36817,7 +36817,7 @@ export const get2TweetsIdQuoteTweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36897,7 +36897,7 @@ export const get2TweetsIdRetweetedByRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37158,7 +37158,7 @@ export const get2UsersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37268,7 +37268,7 @@ export const get2UsersByUsernameUsernameRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37397,7 +37397,7 @@ export const get2UsersMeRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersMeFollowersRoute = createRoute({
@@ -37464,7 +37464,7 @@ export const get2UsersMeFollowersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'follows.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'follows.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersMeFollowingRoute = createRoute({
@@ -37531,7 +37531,7 @@ export const get2UsersMeFollowingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['follows.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['follows.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersPersonalizedTrendsRoute = createRoute({
@@ -37613,7 +37613,7 @@ export const get2UsersPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersRepostsOfMeRoute = createRoute({
@@ -37681,7 +37681,7 @@ export const get2UsersRepostsOfMeRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'timeline.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['timeline.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersSearchRoute = createRoute({
@@ -37765,7 +37765,7 @@ export const get2UsersSearchRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37889,7 +37889,7 @@ export const get2UsersIdAffiliatesRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37966,7 +37966,7 @@ export const get2UsersIdBlockingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['block.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'block.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBlockingRoute = createRoute({
@@ -38007,7 +38007,7 @@ export const post2UsersIdBlockingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'block.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'block.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdBookmarksRoute = createRoute({
@@ -38087,7 +38087,7 @@ export const get2UsersIdBookmarksRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'bookmark.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBookmarksRoute = createRoute({
@@ -38382,7 +38382,7 @@ export const delete2UsersIdBookmarksTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.write'] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.write', 'users.read'] }],
 })
 
 export const get2UsersIdBroadcastsRoute = createRoute({
@@ -38573,7 +38573,7 @@ export const delete2UsersIdBroadcastsBroadcastIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const put2UsersIdBroadcastsBroadcastIdStateRoute = createRoute({
@@ -38626,7 +38626,7 @@ export const put2UsersIdBroadcastsBroadcastIdStateRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdDmBlockRoute = createRoute({
@@ -38663,7 +38663,7 @@ export const post2UsersIdDmBlockRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdDmUnblockRoute = createRoute({
@@ -38700,7 +38700,7 @@ export const post2UsersIdDmUnblockRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdFollowedListsRoute = createRoute({
@@ -38776,7 +38776,7 @@ export const get2UsersIdFollowedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -38816,7 +38816,7 @@ export const post2UsersIdFollowedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'list.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdFollowedListsListIdRoute = createRoute({
@@ -39023,7 +39023,7 @@ export const get2UsersIdFollowingRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'follows.read', 'users.read'] },
+    { OAuth2UserToken: ['follows.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -39063,7 +39063,7 @@ export const post2UsersIdFollowingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'follows.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'follows.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdLikedTweetsRoute = createRoute({
@@ -39178,7 +39178,7 @@ export const post2UsersIdLikesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['like.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'like.write'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdLikesTweetIdRoute = createRoute({
@@ -39223,7 +39223,7 @@ export const delete2UsersIdLikesTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'like.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'like.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdListMembershipsRoute = createRoute({
@@ -39298,7 +39298,7 @@ export const get2UsersIdListMembershipsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -39433,7 +39433,7 @@ export const get2UsersIdMentionsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -39510,7 +39510,7 @@ export const get2UsersIdMutingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'mute.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'mute.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdMutingRoute = createRoute({
@@ -39547,7 +39547,7 @@ export const post2UsersIdMutingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'mute.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'mute.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdOwnedListsRoute = createRoute({
@@ -39623,7 +39623,7 @@ export const get2UsersIdOwnedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -39667,7 +39667,7 @@ export const get2UsersIdPinnedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdPinnedListsRoute = createRoute({
@@ -39707,7 +39707,7 @@ export const post2UsersIdPinnedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'list.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdPinnedListsListIdRoute = createRoute({
@@ -39755,7 +39755,7 @@ export const delete2UsersIdPinnedListsListIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'list.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdPublicKeysRoute = createRoute({
@@ -39796,7 +39796,7 @@ export const get2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdPublicKeysRoute = createRoute({
@@ -39837,7 +39837,7 @@ export const post2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdRetweetsRoute = createRoute({
@@ -39877,7 +39877,7 @@ export const post2UsersIdRetweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'tweet.write'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdRetweetsSourceTweetIdRoute = createRoute({
@@ -40006,7 +40006,7 @@ export const post2UsersIdSourcesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdSourcesSourceIdRoute = createRoute({
@@ -40157,7 +40157,7 @@ export const delete2UsersIdSourcesSourceIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdTimelinesReverseChronologicalRoute = createRoute({
@@ -40320,7 +40320,7 @@ export const get2UsersIdTimelinesReverseChronologicalRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdTweetsRoute = createRoute({
@@ -40540,7 +40540,7 @@ export const delete2UsersSourceUserIdBlockingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['block.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'block.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
@@ -40588,7 +40588,7 @@ export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'follows.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'follows.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
@@ -40636,7 +40636,7 @@ export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'mute.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'mute.write'] }, { UserToken: [] }],
 })
 
 export const get2WebhooksRoute = createRoute({

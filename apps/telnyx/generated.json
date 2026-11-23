@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a1fc96ef3800533e41911de9d978df855f4cf06c46aadd19deaddab607a0a041",
+    "sources": {
+      "https://raw.githubusercontent.com/team-telnyx/openapi/master/openapi/spec3.json": {
+        "etag": "W/\"c350bc86725f673e543fc1615c91b5929363b491d8ccd445519f664550493844\"",
+        "sha256": "fc59cb60a25c5091e73889842c808f1db7b4c0bb36bbb0228ee9ed2f629eca18"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

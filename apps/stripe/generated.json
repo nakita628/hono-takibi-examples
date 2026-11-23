@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4b5fb31fc76332572434d86d746db4aabd6658ccbe8c078030522d3269c1a8a7",
+    "sources": {
+      "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json": {
+        "etag": "W/\"66ba08254f450bce0bd8d29a246d321c5884608896a23c223994bc75bc4a0a92\"",
+        "sha256": "7cff4cc46d0654101a36a3302f7544640f5f73e4f3cad6f264f0e23c19fa1776"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

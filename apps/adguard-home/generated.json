@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "5f5a9dfcaa1251a2ccb093e4bf4ba58d80d2bc185d9c19ca6900b11223eaf48f",
+    "sources": {
+      "https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/openapi/openapi.yaml": {
+        "etag": "W/\"767107232b55349f84626aa5347c3cdaba09c119e727c2e5bc25854f68489d2f\"",
+        "sha256": "9fa359722ddc238af521b517d7139288596feac19abb38992db369ba64154cfb"
+      }
+    }
+  }
+}

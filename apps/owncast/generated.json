@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a17ddfbeee4eba827fffaa14eab7531d766cbb3742164a45eff325a1a279d332",
+    "sources": {
+      "https://raw.githubusercontent.com/owncast/owncast/develop/openapi.yaml": {
+        "etag": "W/\"6f0c76341781caf2fed82b1b6a14beda1f1f89842b31d75cfc0a6d976d087892\"",
+        "sha256": "d9d9caef39babf38749e0b897be30d4b1ab645340799d459182e30103e2b777e"
+      }
+    },
+    "typecheck": {
+      "errors": 10,
+      "where": "`index.ts`",
+      "codes": "TS2724 ×6, TS2305 ×4",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  }
+}

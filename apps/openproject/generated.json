@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "81ed1180ceae7a0ccc5b8fc74b6afba4e884a2ae08d50d0f06cd12b42c5e46ee",
+    "sources": {
+      "https://raw.githubusercontent.com/opf/openproject/dev/docs/api/apiv3/openapi-spec.yml": {
+        "etag": "W/\"ef716e68c01dcac95dc5bf0fb91947a7f534b14238bb3ef2afd7e57d6ff4432b\"",
+        "sha256": "bad5c5b51fcfa09ffc6b76875673a3afb4892c38ae1ef7999e98650a179fbe70"
+      }
+    }
+  }
+}

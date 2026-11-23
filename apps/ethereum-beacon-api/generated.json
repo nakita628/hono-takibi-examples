@@ -1,0 +1,685 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "03552a9855f56959c115351d66924b57ca8125cbf897b6507efd8a33935fc0ee",
+    "sources": {
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blobs/blobs.yaml": {
+        "etag": "W/\"21ccfb5d33f3b12b2f1a62328948447bf9a09998354a569effbac000a1a5179b\"",
+        "sha256": "8bdec46d505ddb58a893435b9d35c1be5820d25f181186e298bb16f059b7eeb9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/attestations.v2.yaml": {
+        "etag": "W/\"41741f3da8b43b20cdc29750d7a1b838d7e572ef3164ecc5ae1a52f483ef88aa\"",
+        "sha256": "ee9159288e393cd4f08967baec248ff650ec5b82a41a9c07407f8e68956fde21"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/blinded_block.yaml": {
+        "etag": "W/\"4d291fa9a6878ce051deeda49cac537774b1db211e6930843055655fd06b7f72\"",
+        "sha256": "d0176789b63d426a7341a48a46da86f4a9c76124862c91fbb6a621a39c39d6f9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/blinded_blocks.v2.yaml": {
+        "etag": "W/\"71ffea05441e6b7cd3580fe8f5fe1958ce7af44853d36c3e49a704baa04dd469\"",
+        "sha256": "45d8e12f238274ccbc0ec763df443cad6c0c5de48cf9f39331828c497e46a100"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/block.v2.yaml": {
+        "etag": "W/\"4d784c823ef5a2206ae047393e0611d92042007b512a087831da3119f73cff44\"",
+        "sha256": "28233474a9a7cedb7eeaeffe261de73337775055831e7175f903b587b626ea51"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/blocks.v2.yaml": {
+        "etag": "W/\"5c18cb0b481f047f2f9e55d02659af35cbb2ed85375fc7878feeebac484e2e4f\"",
+        "sha256": "f5249bf22f10a7e1d2c8fee15244f4b2f3f52b238a2a0a4ed30b7e0f7926c41f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/header.yaml": {
+        "etag": "W/\"6f4caa2643d4d6150748b30d0fad2258e2427a89938ca1d123b718c4f4fa7262\"",
+        "sha256": "b7d9877c390be70272ce4b7477faf735cbbc323edfa9ddac10a85f41137de50d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/headers.yaml": {
+        "etag": "W/\"e3818a86d637dcfdbb7ed7d21527e93294cc4e672e4ee1728c5d6da6a223d18f\"",
+        "sha256": "600fec7a461aec2847bec2981c3d759204ede1a98548b29a601b434fb7277621"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blocks/root.yaml": {
+        "etag": "W/\"528f3b74a21f35c44bb17f9ae7902874823136d3733bd127b871417caaa4cdbb\"",
+        "sha256": "dc1ffb7fb0ebcc1aa384947fb3c622f852eaa9fa40b3a10f9c8554c3aecbbaed"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/execution_payload/bid.yaml": {
+        "etag": "W/\"cda1b163e481b755d0584ef637ffd66082cc970abc352a4f7f4605a1a3e857de\"",
+        "sha256": "ca977d018093a1e8dbc79607a11bf89e7da3ca31e5323faed5322c044f799c1a"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/execution_payload/envelope_get.yaml": {
+        "etag": "W/\"ed080713fd5071cc782c88f68a31eb15c85d919dead10fd3597988074317a343\"",
+        "sha256": "2ea66bf8cf6d7996ae935ddcd5bc157ad9647572c4321ceb17243d237ec11216"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/execution_payload/envelope_post.yaml": {
+        "etag": "W/\"8053764a07d66e85ee642e992f11a62fe7dddeb0a945d864dc1c86357852b91e\"",
+        "sha256": "a0fd91fac186c9a4e4bcba6a4c404286fb3ad99e5ffa726f5c0f869e1341a092"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/genesis.yaml": {
+        "etag": "W/\"db3e87cb9e280b26380a13b66be5d3563b1a9fae2edd436d5d47571ba2fbbc71\"",
+        "sha256": "7b76cd2c524267efe3112984fe03afd4874d041b38756c941e1ed263a6cbdb8d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/light_client/bootstrap.yaml": {
+        "etag": "W/\"2aad93a36e03c8308fa03de108e59517853bcfad1e00f2128e6085a59a4b71f2\"",
+        "sha256": "50d92025a46b89f39a00db54d1bd970bfd1943871d2711532cee334840f2250d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/light_client/finality_update.yaml": {
+        "etag": "W/\"e3da2413c03a0084f8801cbcf4f28460a76f86d4bf497d3b94b357bdc05d4eb0\"",
+        "sha256": "a5b86a316decb3b2122e362b0969d89fafdeba90b7307e5db1afe3281968304e"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/light_client/optimistic_update.yaml": {
+        "etag": "W/\"f3f27bb18f750ff2350a91e84930bac79d2b3446bd94807abf1b562c3d1ae0a4\"",
+        "sha256": "4b2a11c3076ec449775e32bad9628f10b438e2d8df1596907cb29370fb888cc0"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/light_client/updates.yaml": {
+        "etag": "W/\"f8919ec2dc10ff45b34dd49eb18cd0888f7a4a73562fc15df1143ec294470f41\"",
+        "sha256": "4df6bcc13fcc2613d31be0ac3c471e37ae7046eb12f72c7950187e00d186b6eb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/attestations.v2.yaml": {
+        "etag": "W/\"a0bfc59cc0b741d407d9a1e6b7236747a91d2243f23c0442d8efdb90f3f1e025\"",
+        "sha256": "a1c54c7355a8a777e5dbdf4afe419f99311ec0baa6caa49d5689add09dac20d7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/attester_slashings.v2.yaml": {
+        "etag": "W/\"a3e9f62a13a91de166d5190ea3ccc59e697c9e6016f09e5ff23d3af037195429\"",
+        "sha256": "90c61d2341ed08bf50301c7212f5e690528a22be9fffdbf5f46c67135cb7603f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/bls_to_execution_changes.yaml": {
+        "etag": "W/\"66d37eb508ef266d078d5f23bcedae2c50539e30c0e8b4f2d2595cfa4e64d7d2\"",
+        "sha256": "004af0738ec3d943d4c30f21461f774d7e0fb2148f1e9672fd1e150dad96c60a"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/payload_attestations.yaml": {
+        "etag": "W/\"7b4fb59372000500768f048711586037d15a1d16d66def1e60682a03349eb3ee\"",
+        "sha256": "1611fa00992b009698ce0e60abb3fb147fab2ce4f87b0d52c0c1bece585ab7e9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/proposer_slashings.yaml": {
+        "etag": "W/\"687e9e6ede7812b3590fb175e557716e66042b84e44029e70c295007126c4fe4\"",
+        "sha256": "e5455b3a76ec5f532a8dc9806260cb6affe884950f504f37564c4d1eba14889b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/sync_committees.yaml": {
+        "etag": "W/\"ff4e809f9a16a1a153cf1f7a2d165351da27cd1506934ca6f2c507c3fb9f26a4\"",
+        "sha256": "212f453c0b03538d6d4a3fc2fe95807cfc4871057f4b152c57911034363f6719"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/pool/voluntary_exits.yaml": {
+        "etag": "W/\"af2adf8019397ea8574c6e468453e4970c09dc24d6b9d3b112e22a3ff1bc5515\"",
+        "sha256": "0966c3666d18d9386b86eeedf6a1885d06394da016140081c5ea2ff6cc62d9e8"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/proposer_preferences.yaml": {
+        "etag": "W/\"969ef67b746faa42a4c4ca9196925904640d78cb66441e56a20553fa4bfb27e7\"",
+        "sha256": "0f3f024a686a5fca2ffb9f0249d4db15eda9a417430e25cf08180b830ee851ee"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/rewards/attestations.yaml": {
+        "etag": "W/\"f8bd414485f98cd79b04925f734724a6f85d2bcd8eb86a93da00fbd968b639a8\"",
+        "sha256": "03f64630d17ebe9d84e4d853c627afd7e1ea8e5497f8197b791336423d62fc1f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/rewards/blocks.yaml": {
+        "etag": "W/\"24c31865f3f728ba0bd4542a2f2829e0b632103b7db3ca9c62a7ffa605099554\"",
+        "sha256": "22ec066acde22870dff335e0fedc9ce5f4d6a8dc8ed4f952da3d262a6f9096e9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/rewards/sync_committee.yaml": {
+        "etag": "W/\"20b19285f43f35911cac1aaa3d24b83ebacc9db74f2c052a372c90d4f62b7585\"",
+        "sha256": "cc09c7a83cd001b4ff8462f274ec1a948358f63dfbeb742c4971e90931315308"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/builder_pending_payments.yaml": {
+        "etag": "W/\"b0d4fe19060c96872c59f527d813cfa5bf973e2694f2fd5238a4f8a39e8e4969\"",
+        "sha256": "b2369ebde9eaac259134c4236f5f21b6e1759e91b0e3b1ceda47c5e181ebcd40"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/builder_pending_withdrawals.yaml": {
+        "etag": "W/\"64c704598c09f9879e43cf4b11ad1be8ab73f5c21ee110fc59f8c2820f605f1f\"",
+        "sha256": "6ae09841d067323d2cb8b1df63455296607039f9c4e388f3525f2402e51ef950"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/builders.yaml": {
+        "etag": "W/\"79601b00cbfb02bdaf6ec3220f60d62c7c2a8d76d1f5ffb46cdb1466f516d15e\"",
+        "sha256": "7284a6dea83987bbead33065c5d80d236de5438337d334b04a735ae1f42c5a11"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/committee.yaml": {
+        "etag": "W/\"7a9cfee803bef86692c55e1f9e9f9582b35f3389cfa97d9e64e93f59a15dda9b\"",
+        "sha256": "922d912ceaef54e4b76b7bbd8728ff3a3d43dd7684a0b8dd4b129b335adfffe2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/finality_checkpoints.yaml": {
+        "etag": "W/\"fc45b9681bf489df61280324b5f6ee5a52931f49666bcbaebe719c60cc61251d\"",
+        "sha256": "0c0126b1f91cad385bf26a381f2abc27b6333feeef332afe7ec81c6d7304680c"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/fork.yaml": {
+        "etag": "W/\"4549d5bce6e3b13001cdd44118c8dcb87d16f013ceb12b664d4bf66cfb62a373\"",
+        "sha256": "3299000273a6bc650aed4b30aaf24cddf82607fe87649e6d5aaed559e9e1e482"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/pending_consolidations.yaml": {
+        "etag": "W/\"f2570e920ec34fda297325276646423dff34ccdb08c7b2bbb5f406c58e1381c6\"",
+        "sha256": "eecc8928d7c57ae25c224d5a831ae028ab786e2c6a8ea987b828fdaf189968eb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/pending_deposits.yaml": {
+        "etag": "W/\"2e563b05be599e0e71da742b0e45d934763f436abdf6a139aef2f8726e0d89ed\"",
+        "sha256": "f0aba502d89a5eb49fcb9a40bed289270882c645fdfe64453bbd92ddefdabdab"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/pending_partial_withdrawals.yaml": {
+        "etag": "W/\"96ee37b8a95ec4a20efc7ff68b1cc31b3c530ac358bb83bdee97d8771645e5ab\"",
+        "sha256": "8ceb79d24c2f9bd7911395005f49c333fd0b218c69c35ee04355cd117bd0bea9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/proposer_lookahead.yaml": {
+        "etag": "W/\"392ed9a38d537b8fa23713ca228240440bdf016d5155e57d15e4b19f1ff9cd87\"",
+        "sha256": "bfc62741c261616cf03e054a28590421533fe8071c5c4c3ba012ba974e3b501e"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/ptc.yaml": {
+        "etag": "W/\"fbcc3c8659c57f716660818ba75e1bbc0e0a042251f9984d02865f7fd917976f\"",
+        "sha256": "f412f045aa2d5b3eb0079c7b14e97b652f038eb3a1e3e0de27d972727cd03c8a"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/randao.yaml": {
+        "etag": "W/\"f0aa0d085c89367a2d7f291f88ddf483bcaf329f8e8e490e70115e15162271b4\"",
+        "sha256": "c19ad351562318c675a268b69207c70166a0b00fc4ddeaa392d4e86fb1329043"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/root.yaml": {
+        "etag": "W/\"0d5b4b6cb87ab8aa64354dfdcc34e53a835c251a1aea5c68bf2119abe7e3a7d1\"",
+        "sha256": "7b23aef22baf1a1e9ccd0a51a1c7ca0067477256fd0a030138b4ad3ff5fd8591"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/sync_committees.yaml": {
+        "etag": "W/\"35d46e09ea99624f1b8206f780517db48732b4b342da9becc7aa563580966b22\"",
+        "sha256": "1097fced79dd2d153e95ce1e6a788f9d117bba801d9e3e44eca3b1d3c8042b36"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/validator_balances.yaml": {
+        "etag": "W/\"45c7fa40e2c909cdc50d3260dc6c0acd78653cf5a7be75e28eb026ebb5365755\"",
+        "sha256": "4b48f78c2ce3f23387641f99c46f888725b0943c442bf92dc4024fea75fb3ce0"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/validator_identities.yaml": {
+        "etag": "W/\"fd0b344eda791694586a6a88bed93df9c8cf3b637e3ada85290e39933ce1f46c\"",
+        "sha256": "2dc722827b1e4a06112312f76751734538ab2d7225e1b14abc85c405bde92739"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/validator.yaml": {
+        "etag": "W/\"c593d55aae0e27ea4cf2f4924d1e9bc8c1942c481873ac731c480db81f50998c\"",
+        "sha256": "616712afc44909fd1000f8b1cfe2aed19b1dfe87bd9e809a760aed35e7faeafd"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/states/validators.yaml": {
+        "etag": "W/\"6b7da4470e7574f60df71ded9071ac022bceeaf6f5fc257244657c17d89f9d84\"",
+        "sha256": "8ed96b77cc3f533e8a2e8bde6238a753545b62afb2a7bca9f388fbd5a90f9bf0"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/config/deposit_contract.yaml": {
+        "etag": "W/\"a856303bde9a25d5bfe6f6639ca73105840524b1d3ce1d90214db6ba1316c2dd\"",
+        "sha256": "dba3d9c31622b1c56d6b70c36c0910d0615aa62710d63ced3c87e0ae45e74bd2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/config/fork_schedule.yaml": {
+        "etag": "W/\"58c440dba565a12aae8ce7a30b5eb205b0e884ba6de03126d359d4cbe026bdf1\"",
+        "sha256": "11dc3ec28fad604b506ea3bff514b15fa6b79644dc5a802f4fc3daea1fa6e6a2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/config/spec.yaml": {
+        "etag": "W/\"e14d4208eeb1e6733cde0192df0badf07382fdabb4a25eb79d85585979644de4\"",
+        "sha256": "1bc50385f1c19f11cbf1f4108a00a039804e43e7dab9d842ac864f0fc1dd6a42"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/debug/data_column_sidecars.yaml": {
+        "etag": "W/\"964382666f42a4fbad4afd8cb13ec95c0378c7f645a4aa4714b926aa08f44ed7\"",
+        "sha256": "f1bf8125c5909930c1a8e16819a0c9dfc4007f4cbd1a5bc8016dec05ea166c0f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/debug/fork_choice.v2.yaml": {
+        "etag": "W/\"bff9d84d27595ea69f489b055259a4eb7d812b5140dd6e1325c5079d03e2ab13\"",
+        "sha256": "1cce50fe241da5dcf4ee5c360e185770116cd7d08daed07ea00440ee221c9755"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/debug/fork_choice.yaml": {
+        "etag": "W/\"744ad7fca82849f1c7137ca49dabc4f6ab79695cbbe5fe2aad488ff01b6e7008\"",
+        "sha256": "c8c3000193925d5cd6bc4f7dd9dd17010dee542ef80a14e32067371b8a3410a5"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/debug/heads.v2.yaml": {
+        "etag": "W/\"b5e781d7c259a134bf30e19a10d090795ad183d6a0ea0015852af6c9fa9a19b9\"",
+        "sha256": "05b71d33f0d65d2b8dc997fdb116f56bea89a932a1aa6d2f3cd14e5582eae3da"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/debug/state.v2.yaml": {
+        "etag": "W/\"621f88360b53c238227d057c3849fdeac9a47725832142fe32d36abb5b2d636d\"",
+        "sha256": "51ca99d94c57072cfaffca66351129e61c733eb648d32f7f5f537ad331b5e216"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/eventstream/index.yaml": {
+        "etag": "W/\"c5f5c702ad2b8e699dbd2eb5f41e990ab7fee306b5c5ac33599cff6caba9fb68\"",
+        "sha256": "68f7dd07a96ea0eccf99369f06021d6755a2ad503c691cbb6f78d16c9a7dd2e7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/health.yaml": {
+        "etag": "W/\"9b6fcbd28c946c6e3df644544e2eb53e41887348ae6e4a5ec7a58ba1e7bc28d8\"",
+        "sha256": "eb948d1f5ccec1899f107de8dd93279b36efeeee885a804914e3788f7c70aba1"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/identity.yaml": {
+        "etag": "W/\"7863cd472bb8f7fa02a514ff88ca23f4e82d8b185a4ecae5092e935dce593eaa\"",
+        "sha256": "d066cc4793f6b66d8546df1d7fbd4df3ef249dada0621c23566aa43fe36c1d10"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/peer_count.yaml": {
+        "etag": "W/\"e0c415711f8d7445564c99a3c02885df666b51146cfe1044eec6294112e137d8\"",
+        "sha256": "7f2f576f7e428840818e151f0a908289c39a17c0455d1e7725297b9ef1b475c1"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/peer.yaml": {
+        "etag": "W/\"05e29916ceec72c569f04788d0c2f9b7ba7940f8dac46a65e9ec04b58363363c\"",
+        "sha256": "519d707a92856c772530ddc44ade4c93934d91d65ca7f9c78dab5cf02cad1b6d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/peers.yaml": {
+        "etag": "W/\"6a1cad54544f0e0bbf95689ddef110ba48080f4fffb50494f0a8d729a5c02c1f\"",
+        "sha256": "d96505a14db11988f08dc7a49370d7fb1aac87627630b440b3735f126645e65f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/syncing.yaml": {
+        "etag": "W/\"c9fec676b32e8205c7ef7f63cf9ee50f0d1fb1cf151f4bb1c3e6ccbe4d4e0368\"",
+        "sha256": "88e872c22b9101c93cade3d3d220491ded7b3bdb405bc5bca2879faa80e07feb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/version.v2.yaml": {
+        "etag": "W/\"9b1ec4d47595cf2e244a19ffe3e4fb6cb2dc4c7486851e02ee8d04d9ccacdeaa\"",
+        "sha256": "fad8a6fe1befda0f0de25da2b55988a8ca8c370f04d7138780a39e4ccd3c88df"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/node/version.yaml": {
+        "etag": "W/\"ad322618cf0ea7f6ba485e8b6fcb9c4e85b02aa6c697a36926362444cc8694d8\"",
+        "sha256": "65e1d98151b8cb1d7bdb63843195e00bb4c68aec98443257841e1425df0133bb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/aggregate_and_proofs.v2.yaml": {
+        "etag": "W/\"f3d21c5dd0cb9ecfd6bc9d42622b4c289fd186ea41689adce0f75e3f105a7a16\"",
+        "sha256": "0f0102e259ee6d3a16b0172b894e62ad7751a633becb2d1d27eadee5a8cddd20"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/aggregate_attestation.v2.yaml": {
+        "etag": "W/\"ffebed87094e1ea51660b5b4d13f992e2f1a9267ea3f2aa71af895c957df5f13\"",
+        "sha256": "0d7c28629fdcc07b8e6913f9b7289fd0f5affda172c87e33203d63aef1897346"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/attestation_data.yaml": {
+        "etag": "W/\"1708a8ee9c4596473d43d9db51779886f071769661787bd5b19d288e3ecb188f\"",
+        "sha256": "13b46659980ce6f5d74d8a616e8f77507165a81b874803c697f589cae1f74043"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/beacon_committee_selections.yaml": {
+        "etag": "W/\"437921a15bf2e0747d665dee60bcd519df2a6154a0f47b0832cd461b35122657\"",
+        "sha256": "7414b0dc5ff072c637f8117bbc4deac0d0a3dadc17ec6927515b3212b980f820"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/beacon_committee_subscriptions.yaml": {
+        "etag": "W/\"ea19e7cc2cc3a892da108915269b034d643449f034240c5f71a32abe384ba33d\"",
+        "sha256": "9a04df625d6c651f40ff70cde2b0c729469dd905d2a40c578fdfad043ec7a85f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/block.v3.yaml": {
+        "etag": "W/\"fd9c147a15155a4046da198766454d476d44fcccc4c7347a4caeb1968ca7ff5b\"",
+        "sha256": "b65f072ba38e73c5bd8ab05417b93cfd1384b0128a7be8fb68bad66325dee4a9"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/block.v4.yaml": {
+        "etag": "W/\"d7fa6a8ee3561500a5e3f1766607f264ce97b5783f25a74ae7b86abdf25db9b1\"",
+        "sha256": "9e5e93e4a3c0ec30287a7d164a0baf07013f381ea024f66dfab138bf02a5e9ce"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/builder_preferences.yaml": {
+        "etag": "W/\"36e33a94fc412ae35e8189c10652dcec8a9956fd98bc9e567f2da23f3d51ef56\"",
+        "sha256": "146417b13400298fe856ba2560a14b441263e580e1200f088919c485c4c22c17"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/attester.yaml": {
+        "etag": "W/\"5058645c23c591d8d40df85dcc258cb0aa3f9d4c4ebef2f9db1f235c347d6e26\"",
+        "sha256": "617e84a5f668bcddf3f40bcbd39680a82a57c59a2ed62dea50e4d1f91cfc8944"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/proposer.v2.yaml": {
+        "etag": "W/\"728a37078e8f6e170f3801033bf4d3c803520b0553c894bb97549635e837bf3c\"",
+        "sha256": "7a70aacb7013cf4a4e472d4e40705fe163e468d85f7d2b8a044deab652f5ece4"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/proposer.yaml": {
+        "etag": "W/\"85217987f0c52bb68f42995940a93811b5faad4d1e6124c25267797f1d638807\"",
+        "sha256": "08b48c7f38f4fde866248405e21127ed28f142456eca9d507b6082bcf7eaf2b6"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/ptc.yaml": {
+        "etag": "W/\"73ad6b4541aab4ef29d847a08711ca12980d5f25fe0f564f0a3af5cc95de9119\"",
+        "sha256": "0c84cf0f1d443b56b5443ebab3a12db793389335ce32b663370d1d484f36accf"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/sync.yaml": {
+        "etag": "W/\"b4a1f18bbbb4a2e1da52a248a448cb2f4210e95a572d35bc34ecdbd407d5dc1c\"",
+        "sha256": "9a9f9a4bb07f83fb5352f68e4e0fa6c36849eb2775aa4bcca88c46a0c41bb627"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/execution_payload_envelope.yaml": {
+        "etag": "W/\"9f02052d2c7e989d6ba5d4148547182f830d732a8e4070723c142418602e884f\"",
+        "sha256": "bcb7a4ef167d13fdfbe9f79d5b02d8fff21f8e66133f38bfcf3a8d9b29b7656f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/liveness.yaml": {
+        "etag": "W/\"7ff139cc2bffb775467ab8d12318e745bd36b7ef0b159d3063261875f61a71a9\"",
+        "sha256": "bf0fe31ff001f852dfa799c5a98bf144822f2a66d298ea751909115a3942cc81"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/payload_attestation_data.yaml": {
+        "etag": "W/\"4c36b3b34b491824ff4f711f71980f5fac5a2ecd17ef5d52972f45d7ca55bf69\"",
+        "sha256": "d676b08b7b1eef82d3986adbaa77d98c081c0c5ec3e930b95195883fae658cfd"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/prepare_beacon_proposer.yaml": {
+        "etag": "W/\"12db89f2cf5f863dd1ef6a3da13ec380ed4452e6a3d491377a3e76d5c0fdbb25\"",
+        "sha256": "b833d536290b68d9c18a35d4a1380ce6a9d84fcb81146a633228c969583c3503"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/proposer_preferences.yaml": {
+        "etag": "W/\"5b5a8d4135af179b42b553e43228b817d24e3d2f2b683afc5da35e7573b884f8\"",
+        "sha256": "3cf151b4e002495bdfe2d6af57dd7a8c007fba777db48f6ee99fefc2af23e2ab"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/register_validator.yaml": {
+        "etag": "W/\"90b62016606656b2bf73bd1ff50245953ffcc87c61705b23a80e48405c6dff2e\"",
+        "sha256": "ada69d23007d92069f2ca4189b3dc0df7132edea3fda55f8265af6a1ae8f9e47"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/sync_committee_contribution_and_proof.yaml": {
+        "etag": "W/\"f0d9009f3a515b1de58d6eb8cf782c243431594a7e9b3b8a11abb1d204bb8e0e\"",
+        "sha256": "58edbdb24d8c3dd53adc3d043dee2c79ea75c0d4d09fa8e3fb8d7f7f2d6d8ea5"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/sync_committee_contribution.yaml": {
+        "etag": "W/\"7777d4c5e322a86af7361f264cd9979567151adcbf4cc9a56b86564399ffb829\"",
+        "sha256": "57a4d84b2a4f1639c6f362648402c8c81bd7c0313b9168fb24febe3ac9b102b2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/sync_committee_selections.yaml": {
+        "etag": "W/\"838d2b3b1da205d53328f0f3e1cd4469aba940266c606c503c409664a0fa6864\"",
+        "sha256": "bcb6a6b8cea7c32c72b10f9d9e06746636bfd4730169ac37a779ea46cdd49076"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/sync_committee_subscriptions.yaml": {
+        "etag": "W/\"c1748a6c1ac80e24bf34a410ef1424cf4e5178969febc5869d85a57182fd93eb\"",
+        "sha256": "828a43351eeebc627623a4fcac9383ebf8ab332e90c386215b91246125210113"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/beacon-node-oapi.yaml": {
+        "etag": "W/\"0bb68a2823f476fdd1e66c6e31a4fdc23b3da9f2c9e4539182700723abdb2cfa\"",
+        "sha256": "617035fd2a88cd7d59375b903a891012e1f1ccb3c0827ace4612a8a3c41c6abb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/params/index.yaml": {
+        "etag": "W/\"46dd038b2f639fbc02bc3a6f90f1332c12d62a1ecd28bf4ee44ab7491957a402\"",
+        "sha256": "378383b34edd06a4200ac09abf87ac4737e420f7a8f4c8f42320627b87576d4b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/block.yaml": {
+        "etag": "W/\"e8a467f418c8f7262bf32c07d967d9d6963556765133e296559ddf119a4551fc\"",
+        "sha256": "f71b9a5ed11f9e2403bbf2ad177840167ac6870c1ab71b7c43cceab4f2c14558"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/epoch_participation.yaml": {
+        "etag": "W/\"22bad0243f8f12dc84e02d6cbc3220e7e760ed8b58e7f8ac4bab151eb872ed7a\"",
+        "sha256": "03e545e8d4399258744b61524b3dd01cfd11821e2624cf9115889c632bd38890"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/light_client.yaml": {
+        "etag": "W/\"80b4064648e7d99a3be2952f2b550502109a27b0d8dd20a71b5f889e4f74faae\"",
+        "sha256": "d142c51d35c34fcb829aeaf41a866201591de9ae2e8660f893322e49d6ea6c45"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/state.yaml": {
+        "etag": "W/\"5da408f4a8c7bd7e9fe10146f3954600e6f755e882a9e0ccc5f5bf916a1f352c\"",
+        "sha256": "85e38fbb79b1b355ad5df763cf34be2667f15124569f51b31a7ed9ab6d65ee2b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/sync_aggregate.yaml": {
+        "etag": "W/\"7484a10086df70b287b55aa9a8e55e043c941857b014b95d2d48032141bb8e3b\"",
+        "sha256": "4fe96599c1171f6dee4b5e9d0371d9ef334004b02b8b2ab696220411374742ae"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/altair/sync_committee.yaml": {
+        "etag": "W/\"541076aa312d12cd6f54264e416edaec1d7f62a2e48d280d2389b6ffaffecf19\"",
+        "sha256": "14f910bcc09795556a91e41b632bd4c315727bd37f8858fddb9c838c5f47669b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/api.yaml": {
+        "etag": "W/\"2292c226f4b0c9a655211825ba55939b930629886f6d7811183ad15fa03f4739\"",
+        "sha256": "454cad8801a85f6b270fd61d82bed439bbd32d2161be0c4eb4850785f669a068"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/bellatrix/block.yaml": {
+        "etag": "W/\"804d20a09a8233a16fba59878ad7afcfdf456f9676b624c4bb2212aae04fceff\"",
+        "sha256": "264feb23cbc28b751753b64c69835a2980d9e216897534695b99ae0959aa9692"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/bellatrix/execution_payload.yaml": {
+        "etag": "W/\"abf79cf83cdcfd0d93da3591099e0e6a6fb75d0a72c6ec8f4d36c2d31ee55790\"",
+        "sha256": "0b465d17fc30ee2e7dcff1f472dfe173a8e41ad073d4dfff781c0c008f1a78c8"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/bellatrix/state.yaml": {
+        "etag": "W/\"24accb1af288861a2ac239aa458d597c24ada4198a7fc1663891f307493b9310\"",
+        "sha256": "6e8e2454a5b051c5017e652b540b1f339081fa174d1e2aeb3f3d7287c89cf0e4"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/bellatrix/transactions.yaml": {
+        "etag": "W/\"a133f33df487be76a26c80fa9028c4bcef5f247ef1029724233275328840393d\"",
+        "sha256": "01e940eb26bb0ae3f2187870599a01d09c3ba4cd87779619f450318201c8df5d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/block.yaml": {
+        "etag": "W/\"18be33c5ef94faac099172a6ab51dc0604a4cdda095a370a167a8f45a516aac9\"",
+        "sha256": "c5e345d835d43e801787648e1e80aa30ac806ce97dbba445655b60b1848c00fb"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/bls_to_execution_change.yaml": {
+        "etag": "W/\"fbd46d4862bb126e25f960c261d2fd452c29b969386c90f2069a3fc0df280149\"",
+        "sha256": "7b9dd7fce1e84cd1b89fd6a72f99c6dc75496cbec0862a1c2ef8e028b141e27f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/execution_payload.yaml": {
+        "etag": "W/\"fc56e0b8dcf0b4ac7b4f7edbc88848097d5e8dad9199679fd7933ae94ee4edf0\"",
+        "sha256": "7ab4d3308487b7e50bb6bb7acc16f770818b8c9ce3e9278e1e22302bcc541fde"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/historical_summary.yaml": {
+        "etag": "W/\"be4c66f82c717e3c59eed9dc1bf1c629d0996c6a78560252d38b3bdb89d9bacd\"",
+        "sha256": "ce352f5c3301461a69ec09ef181b1289314bd364cfcb8f6e3c30cdfae1b31f74"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/light_client.yaml": {
+        "etag": "W/\"afd75473ef7f0fea16ba50719b9144929721bd1af101ac95df9102d16531f4fd\"",
+        "sha256": "83afc40a5db0caf3095d57076d02a5f59002148c43e06690063a0a055e2a4608"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/state.yaml": {
+        "etag": "W/\"bc1eb1b206cc946dcff2442d8338aa06f1c99b4a2ecc58defaf7a2cf66ed5e53\"",
+        "sha256": "3902508ec958cdefc2db6b5f0172518bd2e8e5430ef8ccb47890279737905a3c"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/withdrawal.yaml": {
+        "etag": "W/\"bfa77828396debc3c9672fd5f9e2d709737be041de8cc32327d35bc4730b8330\"",
+        "sha256": "85a6d3a339c4ec81728496a0469f6b0eb607dca3f5095e6f196124980296ccc2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/capella/withdrawals.yaml": {
+        "etag": "W/\"060be48f5bcc7b18c185c4362fea9a509a217a6050e3e935a802cc9beec5a124\"",
+        "sha256": "4a029c1491757987fe6d0886ae7878815b426c98bc7edb7dcd7368e97ecae006"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/deneb/block_contents.yaml": {
+        "etag": "W/\"101087f81c28c3d9b1db984438f4ec49f697e2f01fd846b45a6d35d89d2786c9\"",
+        "sha256": "1498fe357aef19df53a1dc21d79511e9c8eafd5ca624ab1ca5316bbee63e459b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/deneb/block.yaml": {
+        "etag": "W/\"7bf884ed8cc44308a04d86facb7014ee2d20175f853f007d3140e67574d2f165\"",
+        "sha256": "fecafcd0a5c8b186714c6b4eb3a9ae63ffc777942c76b3e71ed3597a40332589"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/deneb/execution_payload.yaml": {
+        "etag": "W/\"cf4ea3318cb87903545e53ec79c78b9de8b639ff07e7c4c27f6457987de35ade\"",
+        "sha256": "fe25c6b0522a679daeb49f865d303a6bfe37280e01f7f94a228b801f9dd639de"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/deneb/light_client.yaml": {
+        "etag": "W/\"741ad8f78211073d561fc4839ca85ed773c7153aa8831329512b50e6cff02f3f\"",
+        "sha256": "4ea0facaf19ac74614af560a67f4edcf0627e141bc8dd1b9cce202ded4756648"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/deneb/state.yaml": {
+        "etag": "W/\"51d22ec985430516b32be33f2214524b17e49a02ffd8bd433b87642df165904f\"",
+        "sha256": "228016f14a0a7187b15c38f33008a93442b3dd0299879234e4d0ec8756efcabf"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/duty.yaml": {
+        "etag": "W/\"82f9ba580ee52cdd8f1379cffb4b5b9c88b46c1b6b93469726647242cd70fd2a\"",
+        "sha256": "6995c01e8549c36ba10609eb64a04b37d147583be526fd4dc0188fcb8a84cc51"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/attestation.yaml": {
+        "etag": "W/\"77bd079d8bca405966db2fd0a80241d7913b9a874dd1b67156a903cb73227f4d\"",
+        "sha256": "4175679119ef3d354398c131ea28bf856158fa43904b12c952981a62ae94e4e6"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/attester_slashing.yaml": {
+        "etag": "W/\"7e141c9221ea47ea1b35400b5ca2ff4336225c02c33d3b3482c1d46cb2b4c715\"",
+        "sha256": "692da5d5d34fd98074d9c90b896d770c7d107c79c57e496335bd1fd47f2d5e5b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/block_contents.yaml": {
+        "etag": "W/\"0eb483b5a62bb35051785ca6b5fe3d673d11707aae7c94dfbcb5132fc16293f9\"",
+        "sha256": "15671790557f2a79cdd312eb6e60a2d117de0df46ad06a74ff984a27bce45488"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/block.yaml": {
+        "etag": "W/\"42c8fae4b4d00cf42efd007edfe7d13b9ef3c195c54090854004d67a5d8af095\"",
+        "sha256": "1c358ef64cfed082e120edcc7831dad96fe328c3852e53eb264c4fd0cfa2a8fc"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/consolidation.yaml": {
+        "etag": "W/\"298e4ec3770debb93d26ca4bbf91d19511ef60ba05fd6321aeb6b9d45c9b7c62\"",
+        "sha256": "218aa9738721bbd36acf37c3b8fe7db1da5a2b2b9a55cd6281cece29f0b1a7f7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/deposit.yaml": {
+        "etag": "W/\"712bd86c8220deab2fe1e1a3418a9a0574e6876d1264b86d9ce1bbc03e4c9ee3\"",
+        "sha256": "1af899941a99307390ecd7ad2488a64c702dfa13ca0b4bc942f0f01c964e9b48"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/execution_requests.yaml": {
+        "etag": "W/\"bcc8e71ffedb9e61f549cb45cb3f72f932c9b6651071366b125a8d3920001cf1\"",
+        "sha256": "81f9517d7d11873d86d320be3ab2645410b3b4fef14f8be36e717ad08eb8a7a1"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/light_client.yaml": {
+        "etag": "W/\"9a05e1d08bd6827be959d955bb3981275335a7e6ed48fd9b4d9cc9f88439f234\"",
+        "sha256": "86258aacbf67de08c545c7b1c23c9a05d1da83301699b3cea6ca88d250e25b59"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/state.yaml": {
+        "etag": "W/\"c70d21708303cc90a464fbf4974e84afdb889bd336bd20c35f66109e76d0a815\"",
+        "sha256": "1f24d363995dcbb17e48021fa138fcfe79ad3cd1ee40f3587f17509c24957460"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/validator.yaml": {
+        "etag": "W/\"c63dfca966394b1f6210dc7a786c05dbaa18a35ed18a47d7e8fb7623abf71732\"",
+        "sha256": "a18467e5e492a2b0612b58651fb9d2f4413ce597375835e1bf0009f52bd08439"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/electra/withdrawal.yaml": {
+        "etag": "W/\"28bd0f9f95b4cad188ac836e2dc8cfe1d27b004c482b1eb65fb0ecd17891bb0c\"",
+        "sha256": "cf230fac4cdb0c902df0e2241456947a67bcb9ccec146b5ebddc230f74409baa"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/fork_choice.yaml": {
+        "etag": "W/\"d3a410ee73b7bc9dc73580a50239ed1b4f4fd18f22be157127b55b74363c81d3\"",
+        "sha256": "d813f0002d2334344ee3e9a2e6650d8ca173d6bc4dd7ac507dce849788434fa2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/fulu/block_contents.yaml": {
+        "etag": "W/\"8e5f08dfe4bcfdaecb88c8ab636d0162b8a767e368957a8d49344cb9ca02566e\"",
+        "sha256": "094aa5fade551a920744c65883266f64c056dbba6d6096b6e077c72295f3d383"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/fulu/data_column_sidecar.yaml": {
+        "etag": "W/\"132e60bcbb4f9ec082721341dd1a40e8df0f7ab3f7ea2957964fd04152b67c86\"",
+        "sha256": "934c4c93cfe28b699ceccfb23f38a1da99c473c5ee2c04a992e9eb4d7c6b8418"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/fulu/state.yaml": {
+        "etag": "W/\"7276612c4c9946da9f230099c7fa5ee9222b12e2a663f43bf3876a5e29cb400b\"",
+        "sha256": "07eec20366c8e39cbdae1a5e63809e0b4683a9a6706b3e28e311fe2d9667536c"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/attestation.yaml": {
+        "etag": "W/\"3b9599bd1311321d5aaeccbb531eede8f4260ce3a894d267e449a52582acc7c9\"",
+        "sha256": "abb8c0b9ae887f38aa0df131f51543ad0b471163f09deda4076545d01b72ed27"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/attester_slashing.yaml": {
+        "etag": "W/\"dcace73e003510f3ad936bbd5d0db459a5c1489809e76061491c965a857adbb3\"",
+        "sha256": "2ffac9c5b5c4f71869383e827084bfdb0f94d3e4692c27f99587e3c9d407254d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/block_contents.yaml": {
+        "etag": "W/\"b26c9ce6d573568d73ed4c85330cd0a6978e8f37592f85c08230bf866e8a6755\"",
+        "sha256": "f21c170d34d28474dceb8294d57d58ad5fd6c0ba2ee2e79977003dd5722679ab"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/block.yaml": {
+        "etag": "W/\"2ebf435f56ceff0364447a3a4d4f59f15de8d8e112e71080dcb54cadf5ddeed0\"",
+        "sha256": "b6fe1bd969334cc88de4f1900e7e050b016b5cdab61860bc1ae62894b2db3373"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/builder_entry.yaml": {
+        "etag": "W/\"45057a8a2dbc91fe3ea95f690fdd932167b88aee9ff53473791b6f40fbfb863c\"",
+        "sha256": "077a3afa67f1a7fa6751b498d5573ff02fb7fe86f8fc2167aa5360095f92ac02"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/builder_preferences_entry.yaml": {
+        "etag": "W/\"f90695c6a39b61d082b451462af079a256bc209fb787e397359efbbccd1072e6\"",
+        "sha256": "895f0fcd090a19c26f0b77b7694198f3634d3ed991d3e0f3e8fdfee08023346c"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/builder.yaml": {
+        "etag": "W/\"6781941aeffebe1d133e566de04f8c6d0f75b53c138e461b7832d42f99262e78\"",
+        "sha256": "0847a2da1f2442eca07b1aab312f8b3d3be261b4b605f25d615a64c364206909"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/consolidation.yaml": {
+        "etag": "W/\"28c254057145b8ac0fc23f1d5c102ef5622924755cef3563ef4d34ecc3414152\"",
+        "sha256": "94c3d34a73ae3197506310e86a2bdab58bbdee7149a78d10f3260f46477053a3"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/data_column_sidecar.yaml": {
+        "etag": "W/\"e8f27e2b16c973626c6d1791f9931fe197395140a92fd6ec0e297750efba0a39\"",
+        "sha256": "9ddb5e23884d7372933f5935a20a74d8e3daffbecd7111ca31f338cc6768506b"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/deposit.yaml": {
+        "etag": "W/\"7afccc5098837760f5e5b323e58d1e69f2614721c0e04553652677d28e73dbb1\"",
+        "sha256": "bacb12b4eb39376f1d5a30aa074dcf175a8c24d19addb6a081ef63f50f8e41e4"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/execution_payload_bid.yaml": {
+        "etag": "W/\"27e29939686d699ff3ca4b1b7e09f30585b1579865910b3fc186d06620af00ad\"",
+        "sha256": "3f2b797440bc45d8da1aac697940612a13ce4c7ac2cd32a128052828ebead560"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/execution_payload_envelope.yaml": {
+        "etag": "W/\"20de4fcee9edf9837a4e74686524dfa2dd271426907eb88867026a04c73c0b24\"",
+        "sha256": "b5fc6923e9d3bdbfbf3684b8b31a695964c59ac9e3214c53e588c61f9d8df5ac"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/execution_payload.yaml": {
+        "etag": "W/\"83ba162bd8fcd59901d9f745347693d5f94c198c4fed2e578381177f40a4aad6\"",
+        "sha256": "bf9578acfdfbd869fef2cf81663503fdeecf3abd8e8b42c608168652952647bd"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/execution_requests.yaml": {
+        "etag": "W/\"f80cb353812673f049751be4542305054ec50c9277fcb7e5f9852423f4ab7d14\"",
+        "sha256": "529ea8fb9b5d06087bf5748970483deea74efcf311324d277606e4ee01e6c1f7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/light_client.yaml": {
+        "etag": "W/\"d6703b7fd3e9b42f5c7440060f78fa5ba11710ae01ad8b5954988e3e11b1ea54\"",
+        "sha256": "75b6aab9247b8b2e82bd83411a99dc438e9669b7986f9b7baa8e8a4d3e675ab2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/payload_attestation.yaml": {
+        "etag": "W/\"a7e85698491d84c5cd9db19596b9ccac5288461fe0911394976e9f33b1c28619\"",
+        "sha256": "2e80d237a89295a8fb436a236f17ec0177ea9eef8bce5b0e4acbd31697e23646"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/payload_timeliness_committee.yaml": {
+        "etag": "W/\"1aee2d771712053c6160cc7b6c82cf4469e450754d8b4e3415be89d980c14132\"",
+        "sha256": "0c0d3d145e96ffb5bc4c00937895ed27cb615b09d1f621e7d31085b49cfc244f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/proposer_preferences.yaml": {
+        "etag": "W/\"18e59ddbd745035cda034daa585a8a346686e684e6172123fb054c02e3bf7add\"",
+        "sha256": "7fad8c87c17e7405a92abc0c66b759046e315ec13b7d21177b0602ad4fb756ac"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/request_auth.yaml": {
+        "etag": "W/\"3f260d165c9d4fe4cebba6b60f61a747e9141ecf9911cfb35e2a86c5c5855e8d\"",
+        "sha256": "f3653ace6d954e552dbdebff3a3d692a80c7278e84723ecf7006d69c07c5f78c"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/state.yaml": {
+        "etag": "W/\"90bf780201759c998bbafe32754a63bab14e58ad604adec6a8b383d4089e8fb7\"",
+        "sha256": "b3000a744b883dc26d2f643f39d8d7be6da798640040255a4da36d919d11cd66"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/validator.yaml": {
+        "etag": "W/\"46142e9a214305ccb91afc835ffbf76f4f0701006d00bfc18586278db5acf5dd\"",
+        "sha256": "e0370cb84241669917c8352601934490dcbaa0394030c29186e398dd3d826835"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/gloas/withdrawal.yaml": {
+        "etag": "W/\"8d38001763232301ce4ba6eeb8140898497eac7b05e315e270d021f95772976e\"",
+        "sha256": "2be84bd1986f000c62ebfe4437ff3ca3004bccc3dc06498d598e2f51832c3645"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/http.yaml": {
+        "etag": "W/\"9d6f9a9b41780cfa0ca9d97f2f98a06b35c4728a9fe4f3fc0685a1cde16d107f\"",
+        "sha256": "e9fc66b1b5d9a46e0f33f727d7534160e4c6bd88711f86224cfd943266de12e7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/misc.yaml": {
+        "etag": "W/\"e78134003ea9dc3298f1e3762b122ef0da1c915bcfbd978b3286451ee78e859f\"",
+        "sha256": "1a3460ff991d393f5fd65b8e417f3c594516803c0f9c92b65b6232739e1b4fec"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/node.yaml": {
+        "etag": "W/\"04f631ea8d1a6729c07562ae58b99d9023d3701be15479a6dcd00c7ad69105ea\"",
+        "sha256": "129e9e0a6bed78216ec03b13d9ebc12aeed0cec4a02324b7781f9c05993baa5f"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/p2p.yaml": {
+        "etag": "W/\"1f05fe973413ccba032c35d6e314bce664148f9cb113e9b356dbd72b52d58ae0\"",
+        "sha256": "b76e7b3e86dc2a79e85755db74e8231e6562c9bad5ca46ef808e5d3d93e8ec8d"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/attestation_data.yaml": {
+        "etag": "W/\"e540438370f0182957b0c7bded01ff84bbc1c8f3e098f7b5270fe5d7df1df098\"",
+        "sha256": "c32162b7bf8c913fd46a9835c7620fc8cd64b6ae45a083a87a8f2940025d14f7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/attestation.yaml": {
+        "etag": "W/\"538ac46777d620845342f8e935f0041ddb28db9b0e8b7e46391e4fb9614772b1\"",
+        "sha256": "86bbd5abefee939a81b7c392a26062e5caca620cdb77cf6dbbac5f9d7c67b0d2"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/attester_slashing.yaml": {
+        "etag": "W/\"ad977c9fcf943904eb7692561e62bced9126a0697492faa7f2093f381d8d08a1\"",
+        "sha256": "fb47fe1939ce504c4fded138a6926294f5f9c37a4ece344742f0d9b9b27f0336"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/block.yaml": {
+        "etag": "W/\"f8f6e141c6a23607d24d8f339395ef052072fe44c6266de944a07d22245a2a08\"",
+        "sha256": "8a0cea6df4c852adfc2e3409d6f13ebaadabca4352d978dfe27be7f88e56d6d1"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/deposit.yaml": {
+        "etag": "W/\"688d0cafdb0a3f6a2c38567298031a8f0cc64eff73ce8eae1f45b25a585d8c4e\"",
+        "sha256": "a567c84b411838e606e62d901c71dec25b80d051bf15a2e5143a8ee5e5e51473"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/eth1.yaml": {
+        "etag": "W/\"bbe35638cc0b11ed86eeac8b0af65caa502936ae5be979034cefe6f61e41cce8\"",
+        "sha256": "304c2334776d5b4c946038eb793e3eed08ae41a234a2fcebe1abd0ae89b35693"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/proposer_slashing.yaml": {
+        "etag": "W/\"9f74200bee28f9e453e7c62505c8fd1d43d08e487bc0491702b8dfc45e72f726\"",
+        "sha256": "31f03782d116302d3abe8d5546999ca22ee8ad343a6a700caa514019fb9790f7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/state.yaml": {
+        "etag": "W/\"141a27c0b071399edb132ce99fa43e8f5b67d24cd313e50bf190c10c36d239c7\"",
+        "sha256": "065c98f3ae3473faf61b1d35545fad73b07a54599fb8f189ae4fe674b9d6c27a"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/validator.yaml": {
+        "etag": "W/\"e1f29720e9a387ad589c2d2f0e439dc9b350450c70991826f652831de10f8a0b\"",
+        "sha256": "1afe777cf48c544167d7100c2e9369f5bf4288d1a9346a19a1d09b1324e42b76"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/phase0/voluntary_exit.yaml": {
+        "etag": "W/\"35ae07bcc8a0b88f5a298b621dfa6fcedd6d8a585d3503a94cd6e2736621c6c2\"",
+        "sha256": "aae654c3edb7edbc74c8b6adcc42066a919b2e1edb1854059ed01a996d5493c7"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/primitive.yaml": {
+        "etag": "W/\"048e7a85869a2812ecc4dbb651c467b6c2e55c64541699d98a99286503a7e6b3\"",
+        "sha256": "a0e98a1c0ce0bc2d073f355bc7ededb390c1568ed3afded6858ca0bcbdcc7dcf"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/registration.yaml": {
+        "etag": "W/\"0db7fe521347e8d9c0713c33819e281b7679b48f960f3be5a3d6b4630074d6d5\"",
+        "sha256": "28c2c422351c3a87da540802c8ae8e85c1a67f9564e59a4be66df7033789d7bf"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/rewards.yaml": {
+        "etag": "W/\"fee0ea8158f816d4e878cdfc15ef3e9f4e7284f374e828bbea5e6c28b6350ada\"",
+        "sha256": "2d320411a7786ff77046f6925d8272f6738502137e7a4b0e8aa2b4360dcbf4b1"
+      },
+      "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/selection.yaml": {
+        "etag": "W/\"408cf9afaa75c6e525edaa544ca1e0fd6ea20cefd8cffa561e57d8ca87576aac\"",
+        "sha256": "93ecbf1eedba85eaeba0a07d61fa42007f179991e5eaafcc71e1ca7c651e8523"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

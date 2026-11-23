@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8646108853f16b35893bbfd075205dc12eaf0578aaf21e63539524940dc563b3",
+    "sources": {
+      "https://raw.githubusercontent.com/firezone/firezone/main/elixir/priv/static/openapi.json": {
+        "etag": "W/\"7b5d931f5a2b5b182ea371789a9885bcff7fa62343c0e723820b3fcf22fbe854\"",
+        "sha256": "5d8da5c095c377c7c574f1404fe067b1528f7b2a08f368f63f9b755f711eede2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d385aec9f3d92137f5545798c5f893ce466bec460d190de2b8d765c7f5dd527b",
+    "sources": {
+      "https://raw.githubusercontent.com/netdata/netdata/master/src/web/api/netdata-swagger.yaml": {
+        "etag": "W/\"f1b495807270884f1a992c15f4405b252dc3fd9f38a04c4d4c590cd4c30aeb08\"",
+        "sha256": "8adaa71470e490749c21f3479ed8acdd8ae7b9bb567e876d16e812291ff76b5b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -10,6 +10,8 @@ The template's handler stubs are filled with `throw new Error('Not implemented')
 When one output stops the whole run, the config leaves that output out and says why in a comment.
 Typecheck results are in [docs/typecheck.md](./docs/typecheck.md); the Output column below links the routes and the docs.
 New documents are added every day by the routine in [docs/daily-routine.md](./docs/daily-routine.md).
+Each app's `generated.json` records, per document, the hono-takibi version and the source files (ETag and sha256) it was generated from,
+so the routine regenerates only the documents whose source changed or whose hono-takibi issue was fixed.
 
 | App | Input | Output |
 | --- | --- | --- |

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce8e4089ccd88143e9a00e6195d7eed800a14d6944ba7a02134b1c0e1f6685cd",
+    "sources": {
+      "https://docs.alpaca.markets/openapi/trading-api.json": {
+        "etag": "W/\"3db38-cWLFUJV9AzHyFeWr14y7HCYHSRM\"",
+        "sha256": "325dd61ba93ef26f5ea8a1989ef39ace1863fbe6bafccc3c789196b6d5c7f31e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

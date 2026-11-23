@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7d479d1b46a40676173d636c66a8368485e2d17802fda950f1e23898dd58437b",
+    "sources": {
+      "https://raw.githubusercontent.com/DataDog/datadog-api-client-typescript/master/.generator/schemas/v2/openapi.yaml": {
+        "etag": "W/\"ce9a5756e022d1d40bd409235462e421f27823f569598ad84a6fd6b4e254ac1e\"",
+        "sha256": "4ba32926196d92b69a0939f2785a7ae4a60274cae3da5c71195d10543e7abceb"
+      }
+    },
+    "typecheck": {
+      "errors": null,
+      "reason": "killed for lack of memory (15 GB)"
+    }
+  }
+}

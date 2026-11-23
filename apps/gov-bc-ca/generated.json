@@ -1,0 +1,137 @@
+{
+  "configs/bcdc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "17804eb7005607a24e2454546b96f2d041e6167fe4a4b41af6bc7e92c59734c1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/bcdc/3.0.1/openapi.yaml": {
+        "etag": "\"e16681f54b5dbc9880603e69f4fe63e7\"",
+        "sha256": "851cf13b23103c614dd95ed8178689db72cc9c01bf97baa99d8c22bd795ad7a7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/bcgnws.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f7e0690c26c0d678e6851a8f4c58314a0c92a15463b86a9d7b54f3c02433cfd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/bcgnws/3.x.x/openapi.yaml": {
+        "etag": "\"55266e660cecbebcf94eac0c842e5754\"",
+        "sha256": "8e6fbc14f0a65e150426bd40c55388feac31ff333213ce825274efe0c035fa7f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/geocoder.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f2e173e79d9af3b6282f3df13420964bf2bed97d4c69da9dccf63900295be4d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/geocoder/2.0.0/openapi.yaml": {
+        "etag": "\"b4cb7bdde95e1e99c49a8b10b6c26ced\"",
+        "sha256": "185632b29c821200b011e7e6a7e914691f0f8ded7437324dd460e4a464f72da4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/geomark.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f5235796cc6341a0bba106b6a4e288578fd416b5ba2383d5a445bf607be4ea01",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/geomark/4.1.2/openapi.yaml": {
+        "etag": "\"a40957f0acc92fb193487128a4f0aec0\"",
+        "sha256": "c2a12cb1f008aec4c1c1777733ed7863895f43305f8ddbc3a73a833712113db1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gwells.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c46fe6bf9b1605d115e71bf2ed49a4e01fb6d6845ffcd7e66edf1dca2b34ee5c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/gwells/v1/openapi.yaml": {
+        "etag": "\"e681179a6244339272c11ad96552eb5a\"",
+        "sha256": "3e7c4cabf0b31a24dfc424185a1fe485a607502f0250bc4e534e038c92b73126"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/jobposting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "80dbddbf1a49598c99eaa0f79f11058bb2784becf81147b7be78daf349faf51b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/jobposting/1.0.0/openapi.yaml": {
+        "etag": "\"ce84d626111287a9e7952ba26eafcd21\"",
+        "sha256": "6cf34b034832537689fa125b0107c42f38cc8cf15c4f859f95ba85a657e5602c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/news.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "55bbf49b6ba5e0e1ef50ccbc0b108563e533e96d9fbc4cfd0c4ed6b2a38f509e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/news/1.0/openapi.yaml": {
+        "etag": "\"240e5de994499f4dfdb32be554f63840\"",
+        "sha256": "2b2e9a670ce3a6feb4c89f027f86487ef497a6f6fa75f4ad989144cf7006dda8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/open511.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "02c288009ee7b7f315a6fc307eb2f79407ea2df8612a442f8cbce6955c804318",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/open511/1.0.0/openapi.yaml": {
+        "etag": "\"c70ab5ee177c6170d3feb59da8271ec7\"",
+        "sha256": "c2b25cb8fd718fc3ea3165082f08588cfe35c200ceaf9b601f073d6b02fe5fd7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/router.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "88229178bb0bfaff4973667bb98b35be5591aebe52a532f74163b5e94afb2ab9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/gov.bc.ca/router/2.0.0/openapi.yaml": {
+        "etag": "\"fadfd7b7d8c168803418a65e45549f53\"",
+        "sha256": "82fa24bf76195903164773dc09c8ebb36c480f0143c8818e3db82d9c128688c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb3d67a9eb9366893d2d5529cfb4e11d83c3fe802d300166d7e1c3ea310a54a4",
+    "sources": {
+      "https://raw.githubusercontent.com/Comfy-Org/ComfyUI/master/openapi.yaml": {
+        "etag": "W/\"78c1ed7c556800cf40f729eebf2d7956e5857b0355f316bbcc3c178cb8c3f1b4\"",
+        "sha256": "c340fa18ff72455c668a774f6e69e8b76168096f93e0bbb7db80e2d4346ff168"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

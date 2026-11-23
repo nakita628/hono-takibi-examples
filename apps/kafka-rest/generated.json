@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9ab38a69317052832c15eea5627260c4c4b47548008f18b4650cfc9b24280be4",
+    "sources": {
+      "https://raw.githubusercontent.com/confluentinc/kafka-rest/master/api/v3/openapi.yaml": {
+        "etag": "W/\"23eeb7d70f10f4bfbc7c7e7bd50db61b39922ef000cb5de77b3524f55d91de7c\"",
+        "sha256": "e783c1a5e2bdd6e94a28c7bbc43f14447b63c230ec28c5491552576f07867131"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

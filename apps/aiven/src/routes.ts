@@ -16834,6 +16834,7 @@ const ProjectCreateResponseSchema = z
         billing_address: z
           .string()
           .max(1000)
+          .exactOptional()
           .openapi({
             description:
               'DEPRECATED: use split address fields like company, address_lines, zip_code, city and state instead',
@@ -16862,6 +16863,7 @@ const ProjectCreateResponseSchema = z
               .openapi({ required: ['email'] }),
           )
           .max(10)
+          .exactOptional()
           .openapi({ description: 'List of project billing email addresses' }),
         billing_extra_text: z
           .string()
@@ -16872,7 +16874,11 @@ const ProjectCreateResponseSchema = z
               'Extra text to be included in all project invoices, e.g. purchase order or cost center number',
           }),
         billing_group_id: z.string().length(36).openapi({ description: 'Billing group ID' }),
-        billing_group_name: z.string().max(128).openapi({ description: 'Billing group name' }),
+        billing_group_name: z
+          .string()
+          .max(128)
+          .exactOptional()
+          .openapi({ description: 'Billing group name' }),
         card_info: z
           .object({
             brand: z.string().openapi({ description: 'Brand' }),
@@ -16902,8 +16908,12 @@ const ProjectCreateResponseSchema = z
           }),
         city: z.string().max(50).exactOptional().openapi({ description: 'Address city' }),
         company: z.string().max(83).exactOptional().openapi({ description: 'Name of a company' }),
-        country: z.string().max(128).openapi({ description: 'Billing country' }),
-        country_code: z.string().max(2).openapi({ description: 'Two letter ISO country code' }),
+        country: z.string().max(128).exactOptional().openapi({ description: 'Billing country' }),
+        country_code: z
+          .string()
+          .max(2)
+          .exactOptional()
+          .openapi({ description: 'Two letter ISO country code' }),
         default_cloud: z
           .string()
           .max(256)
@@ -16920,14 +16930,17 @@ const ProjectCreateResponseSchema = z
           })
           .exactOptional()
           .openapi({ description: 'End of life extension information', required: [] }),
-        estimated_balance: z.string().openapi({ description: 'Estimated balance, in USD' }),
+        estimated_balance: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Estimated balance, in USD' }),
         estimated_balance_local: z
           .string()
           .exactOptional()
           .openapi({ description: 'Estimated balance, in billing currency' }),
         features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
-        payment_method: z.string().openapi({ description: 'Payment method' }),
+        payment_method: z.string().exactOptional().openapi({ description: 'Payment method' }),
         project_name: z.string().max(63).openapi({ description: 'Project name' }),
         state: z
           .string()
@@ -16950,25 +16963,21 @@ const ProjectCreateResponseSchema = z
           .max(36)
           .exactOptional()
           .openapi({ description: 'Trial expiration time (ISO 8601)' }),
-        vat_id: z.string().max(64).openapi({ description: 'EU VAT Identification Number' }),
+        vat_id: z
+          .string()
+          .max(64)
+          .exactOptional()
+          .openapi({ description: 'EU VAT Identification Number' }),
         zip_code: z.string().max(36).exactOptional().openapi({ description: 'Address zip code' }),
       })
       .openapi({
         description: 'Project information',
         required: [
           'account_id',
-          'billing_address',
-          'billing_emails',
           'billing_group_id',
-          'billing_group_name',
-          'country',
-          'country_code',
           'default_cloud',
-          'estimated_balance',
           'organization_id',
-          'payment_method',
           'project_name',
-          'vat_id',
         ],
       }),
   })
@@ -18516,6 +18525,7 @@ const ProjectUpdateResponseSchema = z
         billing_address: z
           .string()
           .max(1000)
+          .exactOptional()
           .openapi({
             description:
               'DEPRECATED: use split address fields like company, address_lines, zip_code, city and state instead',
@@ -18544,6 +18554,7 @@ const ProjectUpdateResponseSchema = z
               .openapi({ required: ['email'] }),
           )
           .max(10)
+          .exactOptional()
           .openapi({ description: 'List of project billing email addresses' }),
         billing_extra_text: z
           .string()
@@ -18554,7 +18565,11 @@ const ProjectUpdateResponseSchema = z
               'Extra text to be included in all project invoices, e.g. purchase order or cost center number',
           }),
         billing_group_id: z.string().length(36).openapi({ description: 'Billing group ID' }),
-        billing_group_name: z.string().max(128).openapi({ description: 'Billing group name' }),
+        billing_group_name: z
+          .string()
+          .max(128)
+          .exactOptional()
+          .openapi({ description: 'Billing group name' }),
         card_info: z
           .object({
             brand: z.string().openapi({ description: 'Brand' }),
@@ -18584,8 +18599,12 @@ const ProjectUpdateResponseSchema = z
           }),
         city: z.string().max(50).exactOptional().openapi({ description: 'Address city' }),
         company: z.string().max(83).exactOptional().openapi({ description: 'Name of a company' }),
-        country: z.string().max(128).openapi({ description: 'Billing country' }),
-        country_code: z.string().max(2).openapi({ description: 'Two letter ISO country code' }),
+        country: z.string().max(128).exactOptional().openapi({ description: 'Billing country' }),
+        country_code: z
+          .string()
+          .max(2)
+          .exactOptional()
+          .openapi({ description: 'Two letter ISO country code' }),
         default_cloud: z
           .string()
           .max(256)
@@ -18602,14 +18621,17 @@ const ProjectUpdateResponseSchema = z
           })
           .exactOptional()
           .openapi({ description: 'End of life extension information', required: [] }),
-        estimated_balance: z.string().openapi({ description: 'Estimated balance, in USD' }),
+        estimated_balance: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Estimated balance, in USD' }),
         estimated_balance_local: z
           .string()
           .exactOptional()
           .openapi({ description: 'Estimated balance, in billing currency' }),
         features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
-        payment_method: z.string().openapi({ description: 'Payment method' }),
+        payment_method: z.string().exactOptional().openapi({ description: 'Payment method' }),
         project_name: z.string().max(63).openapi({ description: 'Project name' }),
         state: z
           .string()
@@ -18632,25 +18654,21 @@ const ProjectUpdateResponseSchema = z
           .max(36)
           .exactOptional()
           .openapi({ description: 'Trial expiration time (ISO 8601)' }),
-        vat_id: z.string().max(64).openapi({ description: 'EU VAT Identification Number' }),
+        vat_id: z
+          .string()
+          .max(64)
+          .exactOptional()
+          .openapi({ description: 'EU VAT Identification Number' }),
         zip_code: z.string().max(36).exactOptional().openapi({ description: 'Address zip code' }),
       })
       .openapi({
         description: 'Project information',
         required: [
           'account_id',
-          'billing_address',
-          'billing_emails',
           'billing_group_id',
-          'billing_group_name',
-          'country',
-          'country_code',
           'default_cloud',
-          'estimated_balance',
           'organization_id',
-          'payment_method',
           'project_name',
-          'vat_id',
         ],
       }),
   })
@@ -34869,7 +34887,21 @@ const PGServiceAvailableExtensionsResponseSchema = z
         z
           .object({
             default_version: z.string().exactOptional().openapi({ description: 'Default version' }),
+            extwlist: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Whether the extension is made installable for regular users through pgextwlist',
+              }),
             name: z.string().openapi({ description: 'Extension name' }),
+            trusted: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Whether the extension is marked trusted and can be installed by non-superusers',
+              }),
             versions: z
               .array(z.string())
               .exactOptional()
@@ -39654,7 +39686,21 @@ const PgAvailableExtensionsResponseSchema = z
                       .string()
                       .exactOptional()
                       .openapi({ description: 'Default version' }),
+                    extwlist: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Whether the extension is made installable for regular users through pgextwlist',
+                      }),
                     name: z.string().openapi({ description: 'Extension name' }),
+                    trusted: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Whether the extension is marked trusted and can be installed by non-superusers',
+                      }),
                     versions: z
                       .array(z.string())
                       .exactOptional()
@@ -68516,7 +68562,7 @@ export const postProjectRoute = createRoute({
   tags: ['Project'],
   summary: 'Create a project',
   description:
-    '<p>The API endpoint /v1/project is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/projects instead. It will be removed on 2027-01-31.</p>',
+    '<p>Setting billing details (billing emails, address, company, VAT ID, currency, extra text, payment card) requires the organization billing permission (organization:billing:write or role:organization:admin). The response omits billing data for callers without it.</p><p>The API endpoint /v1/project is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/projects instead. It will be removed on 2027-01-31.</p>',
   operationId: 'ProjectCreate',
   request: {
     body: {
@@ -68624,7 +68670,7 @@ export const putProjectProjectRoute = createRoute({
   tags: ['Project'],
   summary: 'Update project',
   description:
-    '<p>The API endpoint /v1/project/{project} is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/project/{project_id} instead. It will be removed on 2027-01-31.</p>',
+    '<p>Changing billing details (billing emails, address, company, VAT ID, currency, extra text, payment card) requires the organization billing permission (organization:billing:write or role:organization:admin). The response omits billing data for callers without it.</p><p>The API endpoint /v1/project/{project} is deprecated. Use https://api.aiven.io/v1/organization/{organization_id}/project/{project_id} instead. It will be removed on 2027-01-31.</p>',
   operationId: 'ProjectUpdate',
   request: {
     params: z.object({ project: ProjectParamsSchema }),

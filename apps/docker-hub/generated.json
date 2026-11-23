@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "34cddc2047eb62acdeb576b04ebf24caae2243de41b9e42a0fe9ab368602d9fc",
+    "sources": {
+      "https://docs.docker.com/reference/api/hub/latest.yaml": {
+        "etag": "\"0ef823082b5cfad2b354021d76843d8b\"",
+        "sha256": "7c280db399f81e7eaaf40c86b7cdfd9317c819b7589353e3a26e78d6a5a8d373"
+      }
+    }
+  }
+}

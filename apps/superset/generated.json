@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3cf0db59a2107cfe615fb81a7873889c36982e2f315158e8becf07351289d2de",
+    "sources": {
+      "https://raw.githubusercontent.com/apache/superset/master/docs/static/resources/openapi.json": {
+        "etag": "W/\"019ab16f92d0e089736971da96018b55cacf3582a885b7fbd5649235d7d3d12c\"",
+        "sha256": "7bcbebada1c18e1541a1ad6d860a72326c7991d7d16e4938ed16d03eb9356fd4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

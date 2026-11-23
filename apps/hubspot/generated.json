@@ -1,0 +1,1664 @@
+{
+  "configs/account-account-info.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c222f8915702dbf918a87e533ea34bdc9b5171d8fa5c7609ef60278ba705dcc9",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Account/Account%20Info/Rollouts/318954/2026-09/accountInfo.json": {
+        "etag": "W/\"9a624a47f62ea6445520b02812890e420ddbca777e73c31ddd1297285cfd8f1e\"",
+        "sha256": "daf3614b0ae7cec4b88a3b8a74c3e709a541c02c09e7f5cffa94472b69d266d2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/account-audit-logs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bff805a76001f9db30e3bdb5698e15b3d7e7ce938df4b8c9f912085a4fa1a8af",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Account/Audit%20Logs/Rollouts/144923/2026-09/auditLogs.json": {
+        "etag": "W/\"1df9cd92561b921ca69e7e3438e9acd35acf1bdca2ced5fce3550390e8dd4039\"",
+        "sha256": "a72e651dd43b3a933a9393dc0b4e758b569993f527cb55af2469f9241e99648e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/auth-oauth.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eb4562fcc596a0d49897666d027d719ad3cd24833833244ee6d23f73f6919523",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Auth/Oauth/Rollouts/279897/2026-09/oauth.json": {
+        "etag": "W/\"da7c853afe567dd085e6ba4ecdf0590d6a07f1233893d0f7443c19925296701c\"",
+        "sha256": "2df882893a59271105e494f8cc2211d36a8939ea696663e860bf77818f893925"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/automation-actions-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "480a00a4b397a57c9cd55fa9aa1f8a8864035fd03986a0c8812077da49d58c98",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Automation/Actions%20V4/Rollouts/148901/2026-09/actionsV4.json": {
+        "etag": "W/\"30a08e91797509c59097fd5246d6288a96ed3b4ce119eac48ca3443aab924f52\"",
+        "sha256": "0d17b5d8b20a65e0b83a059860a2490649c656474567149c1640eb690f89344b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/automation-email-templates.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bff6c660b442fdf85678692255bce4ea56dc0408dd16c7c06ed4a511ebc5c344",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Automation/Email%20Templates/Rollouts/321889/2026-09/emailTemplates.json": {
+        "etag": "W/\"2116bc7bc0eea6a9d2da75dc2a8b2d5bec60666b237e1d5933c0ea72926e1128\"",
+        "sha256": "baa3aa33a32e71b9dcaad3cfe85cd58e7a680445656963d2b6f72f84296a0593"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/automation-sequences.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8242d5ed2ef10554af574d452acc231eb30b79327fa6ca4c55480d9baac66054",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Automation/Sequences/Rollouts/321890/2026-09/sequences.json": {
+        "etag": "W/\"2a75ad81c0d4c5668724d83c8bd1d99e1fee5cedaf561d6fdd6f9b85d8f25d13\"",
+        "sha256": "e3290c12b98e6afa1fa0dbc82fe2a339cc30c9adc3b5db753872755d16b87f94"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/business-units-business-units.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6864025bd97e95db23466a7872629adac92f307ed7b55b521e9e094fbce8b765",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Business%20Units/Business%20Units/Rollouts/140946/2026-09/businessUnits.json": {
+        "etag": "W/\"2096670226e3157ed2e7dcffb586376dcbc5f7b2e6e0b35a927270624044ff4a\"",
+        "sha256": "69272c178c13f28cbb841af8ae617b3858a420e29cbc984ca117c1bd4c81a7fc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-authors.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "99d8ba43bf09febc9d9d33fa3c5f1bf3ca19ac98ace83f93a1e2dbe96a03a048",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Authors/Rollouts/635/2026-09/authors.json": {
+        "etag": "W/\"ba03e1e660d7b3fc47534d8212739a5322e1640b2aeae294322b0a0f1c42ffc6\"",
+        "sha256": "7fef69d461168b23dbca8180a974560e413de3172e58f228999cddf5ec25eef0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-blog-settings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7cdccf9d42b04a5212e0bd9d74ca3b737d02446dd3f78d1adaaa67fb2390729a",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Blog%20Settings/Rollouts/635/2026-09/blogSettings.json": {
+        "etag": "W/\"5f01cd83319930b44ac6c8f1c19e42425ad05b26604dd94fdb2c00dde25f2e2d\"",
+        "sha256": "61e7dfd0325006d2619db4bda31e9de656c99900e3b05c03dd230b6bae97c085"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-cms-content-audit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "304b51be9f3d130c5c57846cf02cb0eda985a398500bf7414bd03d54d116ebf4",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Cms%20Content%20Audit/Rollouts/144888/2026-09/cmsContentAudit.json": {
+        "etag": "W/\"0b169540d3885c10b4b1b0190d2e6093ea4314d054d054f42b94921ffd9fd6c6\"",
+        "sha256": "8f47ddb9b03565b2670381041c36182b42ad77f1a6b1b5a4a86b3d0532ea2283"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-domains.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b2ec53f1d35e311ade6361e3517c2da2d5b8e80f24737936219e43bdf31a92c",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Domains/Rollouts/149894/2026-09/domains.json": {
+        "etag": "W/\"5bb2b126d91104f3babc6b84cbcf305fe8851e7dff2b694f6a879cf2f2de2135\"",
+        "sha256": "c18d80b65a3d93e932a6c223483f8aec24a5960654c28f7949cc3b92b59964d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-hubdb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "49f29f621c7b33a5116183fab63654c82b36c19c8b4731e34a3d539260ea8065",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Hubdb/Rollouts/243927/2026-09/hubdb.json": {
+        "etag": "W/\"e9eca1408730905b9fb06f45646adab8d6e640ae8d8fe7cd202377a6b27ff549\"",
+        "sha256": "564b7dad88335f52b0567d5c1a15d619ed94287e056bcab892250bcf8b15044b"
+      }
+    }
+  },
+  "configs/cms-media-bridge.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2c7f75a6b03a3938d2f52ccd03b1d1daf4ee5deae851dc9f68f9308cf10944d2",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Media%20Bridge/Rollouts/787/2026-09/mediaBridge.json": {
+        "etag": "W/\"4714d70bf05d84da83b2f783107379f0f40936dc1685704ea5d8324c2abf6d01\"",
+        "sha256": "8df5b0ace45dae5c1fd49ba5396010280742924de1d41824c563cfbdc99e3bfc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-pages.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25f79a5fbc100ecc4a418137bdb8f09e130aac39da291db622203f5241207957",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Pages/Rollouts/59888/2026-09/pages.json": {
+        "etag": "W/\"f3932d33037c9a89348fd596d73b11e954cff3e33c6a296385344d3ce6c4f764\"",
+        "sha256": "88022bdb10f444f1ac4a344834e26993084827a574f5e86fe9868b318e129da6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-posts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9f5e4de42ed929b5ddc0aca240ab618e5839fed4bcec3c531292bf983bf2b535",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Posts/Rollouts/635/2026-09/posts.json": {
+        "etag": "W/\"0c0929399e8236ac1f2b1c530e0b560ea1e2d603af9751c278dfd385e64553b9\"",
+        "sha256": "3455735769cedf1cadbbfa67dca9a58edfde4fa69c43f9e57142349cb3b4dd08"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-site-search.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "693dd88621693050684c108b067132b03cf1457c7838c59f4ab0e973d873f999",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Site%20Search/Rollouts/144890/2026-09/siteSearch.json": {
+        "etag": "W/\"f5aa1117ebea114c4029a95ccdebad5f1816e6a3c6a3d6997113b162de698449\"",
+        "sha256": "e0e5673aab44ef8fc8dd56d4e6a68011d94b539f125f641abac0aaa53b24db29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-source-code.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b4df3109270ed9a3bb6c05b0bceda955c90ce637e9f4b17804b01c4ecad68d26",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Source%20Code/Rollouts/140886/2026-09/sourceCode.json": {
+        "etag": "W/\"c521e7ac99cefea1b9a11a12e0cfb4f8727bb68400a4429d008781a1d444df87\"",
+        "sha256": "66faf709910fcb87248b0f24d760761f96e70140c4bcac0c6646826d28a0ae31"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-tags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e940dfda172d9daa8398b324443dd8fc46dc7242ca3fc7d0476feaa469071749",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Tags/Rollouts/635/2026-09/tags.json": {
+        "etag": "W/\"8de36031e58ddc2bf27291cacc10e54baf59c83b95bfb9cb830025fa0d8eb055\"",
+        "sha256": "0629b5bb4078a7f423ed258d6623e8e5f0d5a0744b0ae58c4335aa0bb9aadefb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-url-mappings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9f5512122fd06da03ad1c338bdfc46e4f6f0d906e0f928aca3e7fe0bf0cf6eb4",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Url%20Mappings/Rollouts/149915/2026-09/urlMappings.json": {
+        "etag": "W/\"11c2035159d6a9bf2da331fe5288b208192fc7359066f4190537a648c356001d\"",
+        "sha256": "5ca8cce2666fb4c37aee65c4eeb342fd36c3604bafdc4b427de2eb47b2ad7bc1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cms-url-redirects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ecf8d3daeaf9aa9f07f9f379fef3040b7bba558324d908e942786f682977b109",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Url%20Redirects/Rollouts/149916/2026-09/urlRedirects.json": {
+        "etag": "W/\"3e29b9c85bd2661f998601082fc2b75fe530d3e5ee067ab9c0f29db66b7c17b5\"",
+        "sha256": "e160942800d1ad32a77eca13d2048f14a64f3d47d2c8687cd0b0e909a1da40f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-payment-links.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "34044cea5d303cffd938bd5f51dc4ac8cf36d50f44cb85710c055cc51d72c85f",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Commerce/Payment%20Links/Rollouts/310885/2026-09/paymentLinks.json": {
+        "etag": "W/\"f9b34dc0d04caf4d233b215609898fb47c873275fa615a18544515c7ebca36db\"",
+        "sha256": "a9ddadd5c764137c823733e02ee99d32a2a463d8fef3fc264e8ef4575843d1c2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-paymentsaccounts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1baf2888ece63aa69e0d6e704b7c362df38fea65276ffd17260dfd3675cfe690",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Commerce/Paymentsaccounts/Rollouts/320893/2026-09/paymentsaccounts.json": {
+        "etag": "W/\"f1de5cee6572b84e7d3e14374ce98dd32a3f4cb4c2c243a555794282c51513c6\"",
+        "sha256": "9d58d20dba63fa80e908d361508da70722bc6e3f3ff3a563c05df33d0ee04636"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/commerce-price-books.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6bcee255d617ccd1918fe8bf7fdf3294751427f12ee73bccff0a433a30819d59",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Commerce/Price%20Books/Rollouts/310989/2026-09/priceBooks.json": {
+        "etag": "W/\"4f91da3c3c482c6bc108a2ab1a377eff1f1ad1d193d3d38c3cdf0b43927481c3\"",
+        "sha256": "a9c3398394f67a9c0fea9215a51a0e7e56bf299c747b6194496c0e286d4cd3ff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/communication-preferences-subscriptions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6e9996adb3915637728cdd5765d15fb2011492d6e4c1bfacd1cd6046ca6c5b2b",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Communication%20Preferences/Subscriptions/Rollouts/176901/2026-09/subscriptions.json": {
+        "etag": "W/\"4b79139cde6acd472ed990d627192c74b39ad0fe5c3b9e2e95a1813fb2cc7544\"",
+        "sha256": "71852af3094169746430cc00151c682028c35d78bc967bcd0e2574fafd921ba8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversations-conversations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d8451bdc2b9d1010de6cd799df107a8e4dd477d9ef55ac9611766c53b37303a4",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Conversations/Conversations/Rollouts/338925/2026-09/conversations.json": {
+        "etag": "W/\"99f15c095eb4f7bb70a8b4bfe06295a33aca7b394460333f8fa16831d3ef0811\"",
+        "sha256": "3a12aad212fd9166233c0d0408555987315c5baf73f76b6245f89fe0d1c64857"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversations-custom-channels.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e59d942786c73f25276cc55eb1f2e91296dccc294e0747bebf223b06742b7f93",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Conversations/Custom%20Channels/Rollouts/160898/2026-09/customChannels.json": {
+        "etag": "W/\"4887ae0da0e613e9036cd129e47420a9e21e18c7359d236b6bc368eca58f1cd5\"",
+        "sha256": "105ab42b5c263ebf442587da061741032fc0be404646b82009104fd86bdf368d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/conversations-visitor-identification.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6e6ea42c990a1743a0163496aedce53d3cd5797e24780efb4e5ff916ae20911",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Conversations/Visitor%20Identification/Rollouts/140938/2026-09/visitorIdentification.json": {
+        "etag": "W/\"fb2c713626e389c1fa55378883980e004c816f6d60110f8c9af92731f55aa7f0\"",
+        "sha256": "3a649c5cf67bc3c627a8e9e6c6449b870105bed2895cbaadbb74908f3a845008"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-app-uninstalls.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab6812c5818ec034576fb93dccbd304245685b552bbce6a921cc6a531a118689",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/App%20Uninstalls/Rollouts/209039/2026-09/appUninstalls.json": {
+        "etag": "W/\"7003498cff1ad7181c451d935bad0ddc2d33816885ee8a79d18030ea334cfabd\"",
+        "sha256": "b3375db7b9fb7b47d563e7b30bb60e0895a488bcd0a459a26113b287a30b2b95"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-appointments.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1f8a324a03ef374f7bf09fe94c6cf80e421af79e8eec586eb8cf6ead81f0776b",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Appointments/Rollouts/424/2026-09/appointments.json": {
+        "etag": "W/\"bea3561d2c0d583a5b02d7eb6469031c41cdd45eff5c06034077b9be0c8832fb\"",
+        "sha256": "92a80baf9b901d99c21abdaf6ad035ceb1fe9c68c51474947aef7afcbf4ed941"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-associations-schema.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6e1c3789175ad9db1adb0df19c398de826d3718402dc63bf191a802ad44ad39",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Associations%20Schema/Rollouts/130902/2026-09/associationsSchema.json": {
+        "etag": "W/\"7ab50849b20d8315623e0e788ccc46a8a942a8d7b8b0581d96393cb77b825672\"",
+        "sha256": "274ea4a66dbdf29d6cc788ec0036eda76520bbfad552bdaef2bccd79a0a5b0be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-associations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f3a46493da950db72699cc3984faddb5b7c1b1525daa53cf7658f880a974ee2c",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Associations/Rollouts/321895/2026-09/associations.json": {
+        "etag": "W/\"df83620d5f09cccd95db6531e24150a927c8617949e5b4c01c41009d9f30fd5a\"",
+        "sha256": "a0f80592eb57e7fa337eec7fa6e809ad4e0d9a6f9c57e3e1f11ba7978daaddde"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-calling-extensions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "20a5b8a0371a61199abe4d3c8f48b9f29d0b02de461c7dac8529c3e7e56cac90",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Calling%20Extensions/Rollouts/145891/2026-09/callingExtensions.json": {
+        "etag": "W/\"f85b638a3d44608470647660545afe3cb7e945b4d4b759b6d9abe31e0087c9c7\"",
+        "sha256": "7bec7cf83b067dcda655208fe5b54fc95463be114cbaed9eca5ffe1090c76f37"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-calls.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4960dd97044b236f1c70c2146307ce806b9489e102f95a056234e181dcfed6aa",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Calls/Rollouts/321895/2026-09/calls.json": {
+        "etag": "W/\"b8d23bd3995afc8a8ce394505f467da40635b94cff0e74a3652363a3f7600d65\"",
+        "sha256": "5e718938fe44d64008a9228b347c9236d7d42d4b6a350fd8beafe18a17bad7e7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-carts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7e9a700b61c94e08a78bfe3b506a3af77f91c8aa432758c3215996d369a28f2c",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Carts/Rollouts/321895/2026-09/carts.json": {
+        "etag": "W/\"845827440543cb9e7e39d89bec8a8dd1cc4b70303ae74500c700e02000851e43\"",
+        "sha256": "c21242c471d69785032935ad4d50f82ece974fa684bfa420b6a3aae6e6a9fa01"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-commerce-payments.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b99ebd8d77c00486670f0d3a6517923df82483376093511c99ea050ca1f85946",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Commerce%20Payments/Rollouts/321895/2026-09/commercePayments.json": {
+        "etag": "W/\"dc33eaa68ca02dad12be2d2d2a45d1a3db66e9db76d052e68c015fd99278ad4f\"",
+        "sha256": "41d48ea42ebb3ebb19e20e35cc5554d59adf5e5c6e6b0d2083afd4f984a2258e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-commerce-subscriptions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "51f5399779acf30f0dd0fc9a1d71dada1b587aeba0cde60dfb12685b99f13119",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Commerce%20Subscriptions/Rollouts/321895/2026-09/commerceSubscriptions.json": {
+        "etag": "W/\"733b10d66b4b5f7900324c66161d3561ff49d5ba0d3d4c8de4f83f51c16443a9\"",
+        "sha256": "c1da799956a00aa964e16011a4f0017a8cbb9311a4f94834bfb109f63a7cf00d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-communications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aee8426804b2bc9bf133855b5f4b52db808c1b0596a87ad8394bc89ba6a51c2e",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Communications/Rollouts/321895/2026-09/communications.json": {
+        "etag": "W/\"f409d0941866f0a77efc701239e01b3c6c229f422d77ddd4a0c5dff710894bf1\"",
+        "sha256": "9d15071af79aae5c0619bf63e7de82991ba2d9409f52718610150a0ba41d466c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-companies.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d635201da7918f216c25af1f1fd76de4c11f3260d02f3f0287adf1353e946aaa",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Companies/Rollouts/321895/2026-09/companies.json": {
+        "etag": "W/\"be3160060b9283c19a087dab1ae340f4f388fcda3351264b01adef181df67a91\"",
+        "sha256": "85b5f196a317932b7a1c84a1c85698019976c809f0c9b0c67e445e65cb08609c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-contacts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "09912a48f7cad88a3d64d2aca38e4a1f792d1dda532a2cfc35be8df6b64dfb1d",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Contacts/Rollouts/321895/2026-09/contacts.json": {
+        "etag": "W/\"05a3a87c41b56c8a485c70e778965cf0c0e309a6b0681af747e3bb244c4d11a6\"",
+        "sha256": "0f2fb5042f2fd9c18d70e053ed8503978bb9cd641cc82c40e9d841d7f63911e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-contracts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8a2268b913645ebc83e5873863946551651362d24e251efdc10fddeb6e259e87",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Contracts/Rollouts/321895/2026-09/contracts.json": {
+        "etag": "W/\"429d2207bd7fb9ed28b31cf7518ac389e6152953849ee959c3547b027116812b\"",
+        "sha256": "ee544ad9c416c53b3ddcbd1c65e71a6cec9e810ea055ca645ec4de4b0dbb8fe6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-courses.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f86e80978d69acc7f9a7aa2f6250a0310865e46b912c4279597ab6660ff6b1c1",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Courses/Rollouts/321895/2026-09/courses.json": {
+        "etag": "W/\"64a05a6c8070891649df704e2a41973c24abb1476efdae839c545c97ac2d1a66\"",
+        "sha256": "d0ab60c2ac854f605e71a4993c370d61538934c8c1874ecdb94f16d8388534fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-crm-owners.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "16308dd295bef371130057d81e33580d60427413d629c3b443aa2b68bf8452cc",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Crm%20Owners/Rollouts/146888/2026-09/crmOwners.json": {
+        "etag": "W/\"d560b46e38708503850c11dc172aae29e32ce46033397cdfca7d233c8ebc339c\"",
+        "sha256": "329a9dbd3836272a04924d28484d4e10ed925210caa3391db89b9786de30c9e1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-custom-objects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49e2dcf2107f73020dc7a7326169598bfead2e2eecf0ff3821a154202b9aa994",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Custom%20Objects/Rollouts/424/2026-09/customObjects.json": {
+        "etag": "W/\"b8002ee8deebf920e460633f4cc33cd84fc126c54f8f03a44861a46a8bb873ca\"",
+        "sha256": "607170a566e621e3a5fb80fbb5032dead43cab4af09f147b129d2542a3e2747c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-deal-splits.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3bdbcdcf15e206af66f38ea3d4c8febad5f27e78a1cd8c4a410f1be833517eb1",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Deal%20Splits/Rollouts/157885/2026-09/dealSplits.json": {
+        "etag": "W/\"3e4b9d8e770c8f148a877a084c2b142317936506d221b5b82200575237ec49ac\"",
+        "sha256": "a6e4367d4367658bad8f7de20de375db5653666b5e072e4229fd5dfbcb0ee3b9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-deals.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0b888a0cf42f4de0a4a4decda8865e57c20aef311fedbc3a3c5b28458edd5e95",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Deals/Rollouts/321895/2026-09/deals.json": {
+        "etag": "W/\"18ad51aa3ed7e26bfb434e39d20e37cebaf1ae2bfe2b18cf6abc75a55663c681\"",
+        "sha256": "ef6fa7c6149224af71c811b1e86c1b6b0904fda46019525781a66d7cccb84d23"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-discounts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "247c96f89f7108bd0b30b7330c12e97918878a66285e95932149056bf385fae1",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Discounts/Rollouts/321895/2026-09/discounts.json": {
+        "etag": "W/\"813c507aa340a9227a650d81d415aa0389de3e82c4d210d2f062c197bb2c0b87\"",
+        "sha256": "e73b850a4e2cb9e06dd358659582ad4302443c67eabcea7121dfc7f5af9b7aac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-emails.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9962f9dc6ff4f237e4d756f73d2a8657b45a674e3cc889731da08c3effc9acdd",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Emails/Rollouts/321895/2026-09/emails.json": {
+        "etag": "W/\"bdf2d36a74a3055785253a8f9cb2d51bde47b7ffb9e2829b76af615b971eb5f0\"",
+        "sha256": "4b430c702d7104c056e31cd6db2edb14f1ffaa0d5970a361642b94ae458ebff0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-exports.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a5dfcc60c916b883b6660e306c6dd31afcfb651408e5a1d8c46f5e42f84d4eea",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Exports/Rollouts/95922/2026-09/exports.json": {
+        "etag": "W/\"475d31b4d527550b003452f2b56d4efe668141728afc26f80f3c14f240e78cab\"",
+        "sha256": "785b5f78fa13d5ac5990f85b078fafd98caf9acc489e3e51af4c9c1236231fad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-feedback-submissions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95084b385b731b473b362b59a6fe525b49a82ab86aa37d12daab57c263677f89",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Feedback%20Submissions/Rollouts/321895/2026-09/feedbackSubmissions.json": {
+        "etag": "W/\"65cd7b1d9c1e9c63263b694e70ba8cf6f9a6935a7e3845dbc1b9923be991a6d3\"",
+        "sha256": "dde5b6f037c19fface73cc446521dcf817d3c382f5d085a66d082898549a0f7c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-fees.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4233f51eca1b9be7a17fa11efc91a409a02f6edc6f98fcb8bb1c70b91dd07e58",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Fees/Rollouts/321895/2026-09/fees.json": {
+        "etag": "W/\"31266fb42b98e1d27c6108e210c466db256d1a8acf4f0e124fa605b2faac404a\"",
+        "sha256": "e5badf954925a7f898d083762e1705312b774911f447b54cd05e2b081e91a984"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-forecast-submissions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0d06800398fee72edb2e443d74585e06ee7254e78d7acde04310f00cfbfa822d",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Forecast%20Submissions/Rollouts/260892/2026-09/forecastSubmissions.json": {
+        "etag": "W/\"dc351f368d34a6de6b54e34475515cf51a8cdff0e42c65c72608952aeb3aac91\"",
+        "sha256": "63afd21a304fa1f82ae3a50c74f7302b5ce6a4b5cb73c9e2886da70ec4d6f626"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-forecast-types.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "24fc5478429db214e10fbcc4c92fbb8886e41b5ab469aa9dc1fa87e7503dc56d",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Forecast%20Types/Rollouts/260892/2026-09/forecastTypes.json": {
+        "etag": "W/\"49e04eaf827ac2b5766e57007b46d25a57fef2da6253fa537d2150371aadd880\"",
+        "sha256": "a92ab6f11d420bbd42527671cccde6d67b25b18016cbfcdd0dc6eda0d1048435"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-forecasts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "607e0e68ebde53247827fff20eb81e6f4e69aa9bf22114b61a38f7c4a7278169",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Forecasts/Rollouts/260892/2026-09/forecasts.json": {
+        "etag": "W/\"df6bafb6425a6bf58debf12f3ef80f85f99514c29b91d60c4b45a53b9fce2f08\"",
+        "sha256": "b85f7b42f57ce8da3229b331f500cd0a3cbc6d13d95bca52611aa669fc0755f5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-goal-targets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "275881c651501b535b856ab7d21958349ba55943ee64ddc0ecc76d4810771ce4",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Goal%20Targets/Rollouts/321895/2026-09/goalTargets.json": {
+        "etag": "W/\"d2f29ad27ba53e3d4241f46a1a2a31b682ce01749fd1de2b1fdcbb5491aadbff\"",
+        "sha256": "d4d36255a88ef89446980c764148036490c103b8104dc122421cdc478750001a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-imports.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e40c988f44739df568ab99f7c260fe43c0b9e17672578ee6f9a8276b23435e78",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Imports/Rollouts/144903/2026-09/imports.json": {
+        "etag": "W/\"33ce22e4192a47934cd0ae751c5a441167f7ee936d1ce53b22888e337829ea9e\"",
+        "sha256": "f12ce995ddec6ccd6218456fa6097fa1b1f9bb30723cce573b4ebb7e3f367ccc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-invoices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fbee4d52f6f300ae724d4fa62c56fec6b0e4b07abdd8dcd31dbffb64b34471b7",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Invoices/Rollouts/321895/2026-09/invoices.json": {
+        "etag": "W/\"4946b343528bc8ce2eca5077ddc17f5c99eeff49b1d8c7309ab350acc1bdd334\"",
+        "sha256": "9e4c4007db9604a0c1390f0fe6f69587affda865d356afe9fa57f3ed919d8dbf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-leads.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5a8a5701004ad6c163a169074a015ec3c7f892f5d1d52037166b7f6a4fe57819",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Leads/Rollouts/321895/2026-09/leads.json": {
+        "etag": "W/\"d50aa86b81601c1da462d99f2f17e74fc426e5116cba1015adb089e0fff05cfa\"",
+        "sha256": "9ef22b75eec317f5f2d4ef5433a2374d2d8641d3603d0974e77cd0a859a4e789"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-limits-tracking.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9ac9fe0cbbf1436059e7e943a388acf85633b30cd697587f3848fb726e6548c9",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Limits%20Tracking/Rollouts/199890/2026-09/limitsTracking.json": {
+        "etag": "W/\"4f6a4a8b0e13cead4f9daeee1292f60127674a5c39aa9d18b22bd3879b4cf066\"",
+        "sha256": "7397f51a33a421734676140897bbd12fcbc00d8f22d5bdd0e3552221b63efc9c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-line-items.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0afb17e39bfed4fd4f160bb9ef0764b0bb62f86c0be4fdfe00b32b1d600b1d4b",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Line%20Items/Rollouts/321895/2026-09/lineItems.json": {
+        "etag": "W/\"5ac56a91d323cde08e640d8694645674d001280c2d938bd7dd600d34b3ae1c46\"",
+        "sha256": "95382bbac9c8fc16fc08e300ac0908d36e0e0bd0ce383c7006935699dcb7a747"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-listings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f9c599d8c051e0ed2e72d703973dc0db0ce0e0e90e54c0b3a94e70442ba3e787",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Listings/Rollouts/321895/2026-09/listings.json": {
+        "etag": "W/\"cff431384865b59717da587d95611c735649deb0177667c1791eb0d8bf53ff6d\"",
+        "sha256": "6aff3302ec0fcfd4a0850fed46c41d2048423114cb2368b8344232b44e2af0e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-lists.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3ffda5ea727244823651206361ad35176a882c3aba58e277cacdfcd56e93902e",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Lists/Rollouts/327894/2026-09/lists.json": {
+        "etag": "W/\"f245523c836334fcc2eeb37481b24bb401f89b4d5228947ca21b2d3229d7fac4\"",
+        "sha256": "83ad575a2097f9de2ef107a897f88e710fa1f37483cfdc37d132d9b5cade0aff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-meetings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "21717a1702aeac7b47a27110f6bc426ec644415dc13c1271420fa6f65e9ad768",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Meetings/Rollouts/321895/2026-09/meetings.json": {
+        "etag": "W/\"74b04cc252bb381d0190e30a3151298ce43b0ff3ce2b954d12bae461ca3489b7\"",
+        "sha256": "b28e3ceafbcbb25fc524e6af45c69a7181bf9a375af9eedbc73a346b44cda806"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-notes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6262eda8ec6f5537dc2c04f8bc54dd061a9b8c0df0d03b6be7e92e2806aa5071",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Notes/Rollouts/321895/2026-09/notes.json": {
+        "etag": "W/\"48f809d36af3b7c3445d5bf76532152647abd88c33ce9b81819f1b7c847a1d03\"",
+        "sha256": "68a2c8114cf874bba5eb9bc2fc7a78e794d4d9929aef34daf59bb549cce78305"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-notetaker-conversation-recap.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "538f5d3ca35b08b66a7d7cabfe9d9d43cf9138e77f87675ef114b4dbe6ede1db",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Notetaker%20Conversation%20Recap/Rollouts/321956/2026-09/notetakerConversationRecap.json": {
+        "etag": "W/\"0ebc7ea952d13dc114a75252a1038a00ecb84e4468a7037323435a72900b1f2b\"",
+        "sha256": "fb64371a23b73f29f3d46ef5afebc42902c1569822719d9da531e5da517feb47"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-object-library.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "470d9d6f7123a5e55bdea42f8337523114cbd4cf52f066dd690dd8aa8fa6f985",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Object%20Library/Rollouts/196908/2026-09/objectLibrary.json": {
+        "etag": "W/\"b2a28a7ccf0e5b7c0307d64c82b0d7dc672d65a79276b41be1760e1827fe0918\"",
+        "sha256": "1920b877446c29911d76b6a59132a0a0ba5f9eb15f1449bdc822ed7f9e660864"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-object-tags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b481aa4f6dd1a165a20cb80cf9ac7a2357f67cfbd4d2bd2223d8b821e4dd853d",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Object%20Tags/Rollouts/320931/2026-09/objectTags.json": {
+        "etag": "W/\"6fdc46b80ba43f42b93f56151fb4921f8a3372b2cec224b1ccacef8721759eac\"",
+        "sha256": "aff526bf7d7830b45f2f69cd10ad2fe11bc0f43c00505099a0333a72ce1b8514"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-objects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "995b84e39d193a3580aec2e3342f61b56be4a0cef09e101283749c810dc9e201",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Objects/Rollouts/424/2026-09/objects.json": {
+        "etag": "W/\"8c0f74d911a12c7b03a1fcbb619b0d0629a67e28fc05c7d9a443d28af5ee4fcb\"",
+        "sha256": "1cb7ca32e7a9ff224838f8c1f02a99104e509d651fc2524dfd16f77fdc9be9f9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-orders.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2c154fa78aa55e996fcb1e4c1c97701d7095f5fdf0c607857e883926a2bb502a",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Orders/Rollouts/321895/2026-09/orders.json": {
+        "etag": "W/\"e25f6b47e94eb5c72badabc5b3211b78e50073c643e9c6ce13bd9efbe0e80ca9\"",
+        "sha256": "3a9276a4c16f07a5898898604d8ed09c0c1aaaf24e0d8f02b8491b3c368d699b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-partner-clients.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a43b8d1374466ac81d8501f4e7215427ac8c48252e4ff3e4a2e1c902d08e1c5a",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Partner%20Clients/Rollouts/321895/2026-09/partnerClients.json": {
+        "etag": "W/\"ac59c18e24430e285f0dbdf744713d10a3b005272b74cc13af9d352f11ac4795\"",
+        "sha256": "e85c81e9a4dc8d01d83641781af932e12b5202953b9cfac1434544bdcf1c965b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-partner-services.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a975f9194367df1a628f0e8dcfa5e9829ec0e93b52dc81f53144fc1b916dc814",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Partner%20Services/Rollouts/321895/2026-09/partnerServices.json": {
+        "etag": "W/\"3feefbdeb4a398b7610c002914c337b72bac6fcec354b2c2dc4ee74176ac7a5d\"",
+        "sha256": "1fd9aa841cb90d5566f4745a3584ae7f2a005e7e964cd42f273aeeaa46e86ef4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-pipeline-governance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "897966a154dd58b4a5e1672b483a6254b35ed3bd290dfbf3da8340cbd5989df9",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Pipeline%20Governance/Rollouts/320924/2026-09/pipelineGovernance.json": {
+        "etag": "W/\"d9bb253b65aa604ae56fff21a3e5b79c42e1dcd5403e5db9ecf47d16034e504b\"",
+        "sha256": "3d98bfe205bd7ca82418ff428bfaf9d699b12d4160e82dc4be8f43fb76498772"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-pipelines.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce389b6ba7f4a3e81c5caeb98c9ed8f9b291c19495f9631a4b0b41b10e31e85c",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Pipelines/Rollouts/145896/2026-09/pipelines.json": {
+        "etag": "W/\"e127ad80177849b1375eb358031f3e82491f7ec0412fcac096301d81c4225fe4\"",
+        "sha256": "d1dc17d9838e160f4ca2936ad24ed4d39322a15e0f8600e5c440a8ca9314126e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-postal-mail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c4f0185a7e980ac180a2594eb76e447c479d00d1faebb64d5006fa4fa8f0cc9",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Postal%20Mail/Rollouts/321895/2026-09/postalMail.json": {
+        "etag": "W/\"640eeb3763f0efceb2ae55636e573ac26010d44afd0c86eb33ffc2f5ef645a63\"",
+        "sha256": "5cf8d23bfe835d0dc06aeb4df45cfea09f7de6d8a540cb7895f5985fcadba868"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-price-book-items-crm-reads-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2092aa0b76162f7d901e77c1a178d34c828cc708055b30e00526fe378f724600",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Price%20Book%20Items%20Crm%20Reads%20Api/Rollouts/310989/2026-09/priceBookItemsCrmReadsApi.json": {
+        "etag": "W/\"61ed83f3e1be875dfe660f421103bd6c4d1464211d1e46e6756c19c950882a19\"",
+        "sha256": "8f4f30e1199dbb6955a3d6eef439e2d0075c76d3e89d8600d1304e1d835f2621"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-price-books-crm-reads-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "da0e6858ba1c5969263c2d96e8ba6024e38fc3f3fb1e501054547cc4ae24ebd5",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Price%20Books%20Crm%20Reads%20Api/Rollouts/310989/2026-09/priceBooksCrmReadsApi.json": {
+        "etag": "W/\"d22fcaa5cfe570b129098fb635f7ea36a0ed18d2b51a2716e0fe963cfd9d7e58\"",
+        "sha256": "2db00617a9e6f44507387cb4617b0c9cb7e8b7b381749b5558e657512771ba6d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-products.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4d7efb987ecd7c9a6b1de40bde6482d0a6af3e106f4de423150d33dc6f38e7d3",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Products/Rollouts/321895/2026-09/products.json": {
+        "etag": "W/\"fdb752c1548d2f5f2d71253da5bf04601c6f72ac164a2fc724936831bf1fd394\"",
+        "sha256": "67740c3e93cdd195a94625d26a371e0d757977d4dde2cd18ce708ae41711cc16"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-projects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3ec5c60a26a90ba1aafe97af9683fee6228dbe8ffb79e1cee1e9a55f3fe799e",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Projects/Rollouts/321895/2026-09/projects.json": {
+        "etag": "W/\"1d2fd9511a5804e6bfc3670430bab168695dcfe43b10a3f3c0b01100cd847c13\"",
+        "sha256": "7bf428598960bec29fc63bf9fecc400dd399aebc824b749b254b71a0265b4b3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-properties.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a81ef90cc754b651a97016fd09f08f5e54f64dd22cdd7901d3c147e1bffcd733",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Properties/Rollouts/145899/2026-09/properties.json": {
+        "etag": "W/\"c8681ac6fa7e6908566104738ee3bddd2e23a365f9241cd6377b4901476593f4\"",
+        "sha256": "5b10e7c1bf45b97e709b9729ee1f38674e1a0ea7e879e9c59bd1339f53e8bfc6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-property-validations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8d17c0cdd178ec29a354a2fd8270ba8ecfe9d19b0e4893caed4d01a4125dde97",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Property%20Validations/Rollouts/215885/2026-09/propertyValidations.json": {
+        "etag": "W/\"7adffb0e706f2a3d8177f6e9e40c5c6838f152a047f2099ad0da9e54e3affe35\"",
+        "sha256": "3dd72e35bac92a5a129aa7337d255955ac41f933e0941b16d976e1c0fb799131"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-public-app-crm-cards.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0f6b16d3153ec62ed71f1dc97401b6f2346b492b2f3585c32194f640fccdcc33",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Public%20App%20Crm%20Cards/Rollouts/147892/2026-09/publicAppCrmCards.json": {
+        "etag": "W/\"b8f65f56b3c45f9521c4cc2d54c21e1cae1eae6a2a18dc1274c95a7517f710a0\"",
+        "sha256": "35f82282d61a6e5d7344bf80f1ce220bfeb93835dd1abd4a388d03c63b59b0fe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-public-app-feature-flags-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3507951d451d47bd8d3f2914e07c965413c266de73540506a7983355a8ae3ddf",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Public%20App%20Feature%20Flags%20V3/Rollouts/195919/2026-09/publicAppFeatureFlagsV3.json": {
+        "etag": "W/\"c0d7489c4456fafc0039cfaac500bbec840a3b73d5bf418ebf342addfca91916\"",
+        "sha256": "49b82ee7d55ce32cad43598e22c1c0f15ca9e09d22d160cc88a47f1972e7061e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-quotes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "10d5563c1e93a22b877c5033d5f39265ddf5540952d2b21524a286520b6358e8",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Quotes/Rollouts/321895/2026-09/quotes.json": {
+        "etag": "W/\"d9a36c933ec145b4a681c537450006eb97690ceacdb561e36bc4320515125b52\"",
+        "sha256": "d4a5d2424738bca872124ac8ea3b4ce51610c72a3cd9eb242dcc751de640a88b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-schemas.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5d0f63d615ac3a41e41979e4443f908931fceb60bccfeb5ba40a999ae7440eaa",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Schemas/Rollouts/145900/2026-09/schemas.json": {
+        "etag": "W/\"d09955e135e92ec7d6f52cb7d56c27565d9eacecf823ebad4fcdaeb5535a2a26\"",
+        "sha256": "48ceaf4fa6f448e176c5593b3b6afd4f4c98c9b62487206d91475bf9d012caf2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-services.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "851386ca38e8d4ca56da48761231eb0449715f0ab49ba313cc8eaf9462d9092e",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Services/Rollouts/321895/2026-09/services.json": {
+        "etag": "W/\"769362fa8197172c225c60ca53426d1c9b5bcdfb05a2466c0037732cf6e7d3c8\"",
+        "sha256": "443abfbef1995b4e591a1ef42ec925251e95d20517bcaea16d3e64e8513a74fd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-tasks-series.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "53eac9b3b508cb0d023efdb71093224fdf87d374d0a32c0c3884161ff721e1d0",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Tasks%20Series/Rollouts/320937/2026-09/tasksSeries.json": {
+        "etag": "W/\"62981181833f3e3882cabb212ce83dbe897591abb9c6e72946ea128216d614b2\"",
+        "sha256": "9ae451386ddeee0089cb8f85c9fbfca6db56df53f839c70dd7285739b33974ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-tasks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1cbb715e2178bfabd3d560be6cc68f437e77e805d39abe7bc074a9fc29630ee3",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Tasks/Rollouts/321895/2026-09/tasks.json": {
+        "etag": "W/\"9407eb4c1ba00810ac1b52c56f44e54a725bd4c20de271dc1220c656ff3f8615\"",
+        "sha256": "dd26a4b929d3dff6224ac5f279dd275492d6dadf77ff26ed1d2753f6c6945e7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-taxes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c402010a0f2cbf2b2e9ef17efdd41bd614b7dfe2a00ee8cabb5320cadcc08d3",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Taxes/Rollouts/321895/2026-09/taxes.json": {
+        "etag": "W/\"c7f1d612dfbc7e4f395bd6a3d0c246234cafb22adea14e44ceaa569a6db3c062\"",
+        "sha256": "3c54f7a399af6c66a05155abb825aabea963d54f6f4522c3c0eddd19aba376d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-tickets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6f81e3396572dd4b199d9768fda87fa7b828a2cdc8e909da55888b3213c1bdb",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Tickets/Rollouts/321895/2026-09/tickets.json": {
+        "etag": "W/\"caf03b5157638abd3dedc1d8e27c76a816d1ea4a6c14befb2a4249d6d7731cfd\"",
+        "sha256": "e199e7deabfdb9d41a099e605be62b078ef95e2b9064dd150ca55ff7bc002799"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-timeline.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "485e46b57ddac44acc0e29be2841458d626d25ae6dafe62bff365e3d673c032b",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Timeline/Rollouts/147898/2026-09/timeline.json": {
+        "etag": "W/\"1b4c0bc9df551972347e49817950c3e88552d8882b1147e2ee3d293a44427e59\"",
+        "sha256": "c800aac037b20fc30fe1b6565470fa136314e5ec6f2f6cc5ce87b8f9249d57be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-transcriptions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7b6e45d47953e0e997b7367cdeb0c1b193917da5d7da49bebfb7a698b511f364",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Transcriptions/Rollouts/178922/2026-09/transcriptions.json": {
+        "etag": "W/\"f1741d5cda976f079ade10ebee7eac19ed9209d41f5ab8bb29af7b6c4c38b9d8\"",
+        "sha256": "9b832b2d4f3e1d05d5d60061310013325261978bd9a33bbfad88d34ce340d66b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-users.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "704044e29f8e8aebac0234e3230c2af32d96a747861c08db9934dc12c22e7113",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Users/Rollouts/321895/2026-09/users.json": {
+        "etag": "W/\"773a0866226a87c870d9690801de4051a1dad0ff1f289fbe2b28712884119c91\"",
+        "sha256": "e87e255c8d998eebb20c0325673459d69e4eedcdafe1d261a2f3d51897439ce5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/crm-video-conferencing-extension.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "787d1481f3298d7b1d1cf52a39c33ae4e4acbfdbd0af811ac23a9f8f95c7900f",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Video%20Conferencing%20Extension/Rollouts/148903/2026-09/videoConferencingExtension.json": {
+        "etag": "W/\"0dc083a73f741fff57c7de8cd1dfc6161e55a5b9f678d9cd0e04de66574d409a\"",
+        "sha256": "f296880fc2e95c89893230093783e1b9ce67d13f20906f33783f6eb09e92f855"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/data-studio-datasource-ingestion.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "11968479a4ea5909f6e6dda81c43125b4bdff3fcecba48626c0c1e40121521ab",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Data%20Studio/Datasource%20Ingestion/Rollouts/248886/2026-09/datasourceIngestion.json": {
+        "etag": "W/\"e7f9645f8857fc08c39d941eb047df9e318da4fb06d81526c83c3a2cea7f9d81\"",
+        "sha256": "64b2ab40c1fc86ef66dc3069a12b3ee5c70b19c37c5075403b4d7985597eccb3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/events-events.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "95c40a7157328887b10a70b8b4c968727d91f51f6b14c78cd07cbe335be81985",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Events/Events/Rollouts/147897/2026-09/events.json": {
+        "etag": "W/\"a37caa363aca16c556b6888692c1efe0fab2ec457c374e286fc0404be1731ee9\"",
+        "sha256": "780f189d6dfa12be050d347452c4dd3ace1334b4f9c675ad3c5dbd0f16b35970"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/events-manage-event-definitions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f4e1c4744461b29cc4722687f4947ba4ae2ae46f96e06d611bc8ce206da1612",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Events/Manage%20Event%20Definitions/Rollouts/138888/2026-09/manageEventDefinitions.json": {
+        "etag": "W/\"d3dc4dd0a85aa26e2ef13518d639bd854a170c0e65a0bf5e069df503c5a6042d\"",
+        "sha256": "a776ebdf903d872f0a066b68bbdfc3e34f4becd1f647b28595067541d72408b3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/events-send-event-completions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4c025b328fe531eb1ebc37e9b20099fab5fc81ea74051cff4b1c46f2372aceea",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Events/Send%20Event%20Completions/Rollouts/669/2026-09/sendEventCompletions.json": {
+        "etag": "W/\"7bd38fef6b84c70e2ae0da690206238dcdcf8d4485f81da443e41de7856773f2\"",
+        "sha256": "7bf1c7d68185228120a593f59e0a964b44fd8e2438a91322b512cce98547526e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/files-files.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "293d17e8e0bf33409e7ccb25e0b76dd84a83e3a1173b25e2317f26f1cae60619",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Files/Files/Rollouts/319002/2026-09/files.json": {
+        "etag": "W/\"84c72561f0645ec2d69228bad3618ee4de20c577a5cf30a44b9ac4847d6f5743\"",
+        "sha256": "6eae851f094b6da1f2deed1e0186c943ff6c5c33cd367f2ed10aa6c7ad78fe3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketing-campaigns-public-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "450f1dbd730548948ab8ed12defc33ae4fb195102668a78f912a26e43b43b420",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Campaigns%20Public%20Api/Rollouts/310984/2026-09/campaignsPublicApi.json": {
+        "etag": "W/\"563478c5e2b7c3b1f89e21ba4834fdf5dc66424d3be4ed02122e30fe4998d1fa\"",
+        "sha256": "4df0efda27c81eebc5b29c388c4889c7f708ea99f33c2d46a4f8712cccb18c1d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketing-marketing-emails.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe15eda4ecedca9e934d1616e8e29751a55dbb4ca6e192406a12d073801d5505",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Marketing%20Emails/Rollouts/145892/2026-09/marketingEmails.json": {
+        "etag": "W/\"c9be49e76b33d15dff2d015ca0fd03a565ba9d9e212a66a7a12befb96fa18c62\"",
+        "sha256": "5ae21930c78a64428f6b88e277d3497034c1fe81db8ccfbbd0a322ae74049dad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketing-marketing-events.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d99cf08ff7434393284c21e85c635e6b900f3f2ee50cab3bc87450335d99dccc",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Marketing%20Events/Rollouts/129888/2026-09/marketingEvents.json": {
+        "etag": "W/\"1c2505a29b61ce68b034af95fc50a5ec39067dde13cd47f925aba39e9a51f4bb\"",
+        "sha256": "bf496f721f9c13db6ba526f7917debb56e886e492070aec92f895884e017db69"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketing-single-send.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d4a513b36c33671d94ecfa2409ecf6230d92a6e24da1166ca60c2f5b274a4fb8",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Single-send/Rollouts/106894/2026-09/singlesend.json": {
+        "etag": "W/\"208b826a7d9fba66512350031381863d28b685971cc32ab86fd5b25411990a56\"",
+        "sha256": "cb0ef142ad46033dbc3bfeabf272f99e325e02bf985777c079204d1cbd2067d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketing-transactional-single-send.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2acf5c7b257037ee780f9321844cf9ff15425d227a74ec748018a5496d6d34ef",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Transactional%20Single%20Send/Rollouts/140892/2026-09/transactionalSingleSend.json": {
+        "etag": "W/\"f5199f77633081497795e92020a672f88d3e1b84c09fca05afe68da533d6bbe2\"",
+        "sha256": "0b7deb18ed89d1c55ef0733f8a7d07ece80c2783558ff9e3ee44e183f3e4f16e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/meta-origins.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9ca4adc7a879600d5ea19efd5fc969fcf03e6af4d6600827c96648d59bd6780f",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Meta/Origins/Rollouts/302900/2026-09/origins.json": {
+        "etag": "W/\"217504086c7a7d4b255ce83a567426f683630bae14f7c38c55588ea02e49655f\"",
+        "sha256": "bf7f0f793cba22a857d6aa3ca03285a79b0b150b9ab39718f553a240ab3f84c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/scheduler-meetings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9ef862db9f1395980547e0c0ce62ac835ed07233c1fa359b68bb1f81155494cf",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Scheduler/Meetings/Rollouts/177892/2026-09/meetings.json": {
+        "etag": "W/\"99a1aa643b4f7f09382c20ce353a98dfc21419ea9507a4b8de7deb89afc4951a\"",
+        "sha256": "4c99bb2c78cf8d7b930d0b9f57ede48e395abab9bccfeec3863da239c305a874"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-multicurrency.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a19c89b96c2833ef927ea88016aa2903c8d93a79a3ef83427422ec1779885037",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/Multicurrency/Rollouts/145897/2026-09/multicurrency.json": {
+        "etag": "W/\"74e218840f595a813de694a8427e49b203a26062da56e9993cca39c59c6bd568\"",
+        "sha256": "4634ae78fe0c9a4dacef328dbfce13f6173d2cb3be6b6c1870384db1431929f2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-tax-rates.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6f920b7f9588fee3cb410099b3e60ab26787978212c527bc6c38022a5b4d7cd",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/Tax%20Rates/Rollouts/207908/2026-09/taxRates.json": {
+        "etag": "W/\"ab13de1dccfd3c1ef0b3d363a74ead3c990c3ea9139bb64b76def19c4cbbdbeb\"",
+        "sha256": "f0b6d4e1cbb88b1328f6444fa3c93a93f578186751a9b7f5e51de582d6d45353"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-teams.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "240dbc89634885760fe9409d69bae2a2b5efa0f8ae5e7844027009ef3ed460fe",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/Teams/Rollouts/325899/2026-09/teams.json": {
+        "etag": "W/\"f34dd2ab11961a59cc1f97d88d7fc890322a7feb7e22ab328ab211e951602137\"",
+        "sha256": "245cd4ea04adbe912fbb3e9f21c3f66723df9f71b09eee79d1aaa765491d7466"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-user-provisioning.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e056e4944f5e04bc758146a28dff15d778b88b76f5f9b3ea6240746a30e3d1ae",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/User%20Provisioning/Rollouts/325901/2026-09/userProvisioning.json": {
+        "etag": "W/\"89e0f659d3d23dc3020109f6dfcf69e2409655e16a2d99a5634f4558fe4ae66d\"",
+        "sha256": "fdd22a00761cb1f473445864832fe390c4cdf071de13e0269cdb1d2ce75da679"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/test-roll-forward-test.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c9ee8ededd07d1cdaec5f35c8d843960aa488fb7df7bd550c4c993bf2d01775f",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Test/Roll%20Forward%20Test/Rollouts/260892/2026-09/rollForwardTest.json": {
+        "etag": "W/\"98e6523352990f5c6c919f49d6ffda958737c73449af27e7cbf9226e3bba32c4\"",
+        "sha256": "a43353b0602e757fd9e1440595a6d4ff049934a0f49a02769df84cba80722ae3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webhooks-journal-webhooks-journal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "28a778f38119b15f3dfed90f82b7ce05446c17d48587593e72f3b82e7fb2372d",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Webhooks%20Journal/Webhooks%20Journal/Rollouts/284944/2026-09/webhooksJournal.json": {
+        "etag": "W/\"d8081526e45f0b78855dd2b282f65e77af23b43f3cc31a3643c7bddd209755b9\"",
+        "sha256": "193dd5cde68c6919f384da99b3269649dca8753861901e1b59e5fe80a398ded5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webhooks-webhooks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "11cc32c5e3bcba59acc858d28202df5c6c77b4ebed1b2e30a9156dbd7a90c33e",
+    "sources": {
+      "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Webhooks/Webhooks/Rollouts/147891/2026-09/webhooks.json": {
+        "etag": "W/\"1a7ad0e6b945fe4ab09de236d5991f9126c1f35aec7e0c4f0a3f9bd1e654cbb6\"",
+        "sha256": "75835773f8c4510cb61957b03586d1955e004c86545d61cb3b7b591beda6bacd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

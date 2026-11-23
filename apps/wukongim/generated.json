@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f05ed5adbbb60934704655ac9ae405390198f10d4e32673535839fc9734115a",
+    "sources": {
+      "https://raw.githubusercontent.com/WuKongIM/WuKongIM/main/resources/api/openapi.json": {
+        "etag": "W/\"021d191c87441703d6524214778d797ebc1f01b84d9863b40b679ed8bd18ba9f\"",
+        "sha256": "52568c186a107c9d902db7ff8cf1e304dabe69d02927571b434c1c86964647c3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

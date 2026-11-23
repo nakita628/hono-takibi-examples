@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "02f786b58a4b77fa844b852815af9c53c71daa6ac76d6d09ed6141fc6e58e7e6",
+    "sources": {
+      "https://raw.githubusercontent.com/coddingtonbear/obsidian-local-rest-api/main/docs/openapi.yaml": {
+        "etag": "W/\"558394fb6b8cd5975fe438daa6ff16a72a89188bf559a8293a904ab992859556\"",
+        "sha256": "f92ded5ed9ce5b10d66bdeefe8af906f0c2f6879c7ea0846a4536f1573b01eef"
+      }
+    }
+  }
+}

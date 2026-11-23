@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "72caf9bf9dcb1273197ff2ee1f92f076f4c2a73ec1bdab5a56f7f6c07a7e9f9e",
+    "sources": {
+      "https://api.twelvedata.com/doc/swagger/openapi.json": {
+        "sha256": "ab2e3bd7d6ae3bef24e8a58b169cd4013c3625d0071fea1b4e1d00505bedcbdc",
+        "canonical": "1352e92a27601fa431842943995eade68bd0b66610655cb2ecf1e5ef2f827616"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "97c8709dcd5195d735a3bcea27d5138d74c3d0285d6eb1147c1c8767d355438b",
+    "sources": {
+      "https://raw.githubusercontent.com/authelia/authelia/master/api/openapi.yml": {
+        "etag": "W/\"5685b788e5c93aad439291b993fad7ecf4b50d3ec3dc837ff774ad3f6c0f0728\"",
+        "sha256": "8583be3e49f5a8a5739538a38ad761cdac3597559e7d09146f1a0afa980c48da"
+      }
+    }
+  }
+}

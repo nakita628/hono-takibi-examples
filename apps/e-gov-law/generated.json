@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2dcffc89bcc08191c067ab7fdbc131793da677a3b357526feaf3bb35de39fe5a",
+    "sources": {
+      "https://laws.e-gov.go.jp/api/2/swagger-ui/lawapi-v2.yaml": {
+        "etag": "\"b0faf11b2329936772085ed22b6f0f72\"",
+        "sha256": "342e2760ffcafc6b43f966e4a2b1e31dc148ea85e7f0290306237d48eabc6fdc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

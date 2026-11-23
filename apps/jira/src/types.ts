@@ -14154,31 +14154,56 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/rest/api/3/issue': {
       $post:
         | {
-            input: { query: { updateHistory?: boolean | undefined } } & { json: IssueUpdateDetails }
+            input: {
+              query: {
+                updateHistory?: boolean | undefined
+                preferFieldAssociatedErrors?: boolean | undefined
+              }
+            } & { json: IssueUpdateDetails }
             output: CreatedIssue
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { query: { updateHistory?: boolean | undefined } } & { json: IssueUpdateDetails }
+            input: {
+              query: {
+                updateHistory?: boolean | undefined
+                preferFieldAssociatedErrors?: boolean | undefined
+              }
+            } & { json: IssueUpdateDetails }
             output: ErrorCollection
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { updateHistory?: boolean | undefined } } & { json: IssueUpdateDetails }
+            input: {
+              query: {
+                updateHistory?: boolean | undefined
+                preferFieldAssociatedErrors?: boolean | undefined
+              }
+            } & { json: IssueUpdateDetails }
             output: ErrorCollection
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { updateHistory?: boolean | undefined } } & { json: IssueUpdateDetails }
+            input: {
+              query: {
+                updateHistory?: boolean | undefined
+                preferFieldAssociatedErrors?: boolean | undefined
+              }
+            } & { json: IssueUpdateDetails }
             output: ErrorCollection
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { query: { updateHistory?: boolean | undefined } } & { json: IssueUpdateDetails }
+            input: {
+              query: {
+                updateHistory?: boolean | undefined
+                preferFieldAssociatedErrors?: boolean | undefined
+              }
+            } & { json: IssueUpdateDetails }
             output: ErrorCollection
             outputFormat: 'json'
             status: 422
@@ -15572,43 +15597,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: { [x: string]: unknown }
             outputFormat: 'json'
             status: 204
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 400
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 404
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 409
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 413
           }
         | {
-            input: { param: { issueIdOrKey: string } } & { json: IssueUpdateDetails }
+            input: { param: { issueIdOrKey: string } } & {
+              query: { preferFieldAssociatedErrors?: boolean | undefined }
+            } & { json: IssueUpdateDetails }
             output: {}
             outputFormat: string
             status: 422

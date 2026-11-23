@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d42d12cb4ecb22843772f39840e607fa237150ec04fbe6b31fef88b547988e86",
+    "sources": {
+      "https://api.twitter.com/2/openapi.json": {
+        "sha256": "235cdae2395315276861b291b3742fa85faa7fee357eced86f2b978bb0ff586e",
+        "canonical": "5dc5421f0d5636bbc53282db267ce0af3788299f61edbd1eed2d54da979ee7af"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

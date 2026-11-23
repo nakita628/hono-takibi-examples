@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6f4a039d55ef151061135523a740cef4e5ddbff7277dd13f5a77e88a615d302a",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/grafana/main/public/openapi3.json": {
+        "etag": "W/\"9dece143e9e778a1a50da9ffde5bf41c22151087b4201334a304a6f124fce4dc\"",
+        "sha256": "eee25b3cb8e396124c3f6ec8ac97a36c214deeaa3d49f9e209a1fb270859d2e3"
+      }
+    },
+    "typecheck": {
+      "errors": 14,
+      "where": "`hooks/*`, `rpc.ts`",
+      "codes": "TS2345 ×10, TS2769 ×4",
+      "issue": "spec: the path is written `/reports/images/:image` (a colon, not `{image}`)"
+    }
+  }
+}

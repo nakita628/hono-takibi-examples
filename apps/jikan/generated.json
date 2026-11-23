@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0b004941bc6b12c41720a25cf3e1a8ef2e2c472ce4f8449b550c8c01da8d8c6a",
+    "sources": {
+      "https://raw.githubusercontent.com/jikan-me/jikan-rest/master/storage/api-docs/api-docs.json": {
+        "etag": "W/\"80a809e8b6fd11978f9fd3a967e6d79a99484ccbfadc6b9c63f0876f0f61c173\"",
+        "sha256": "ae6dd9d554d65fedd3446a5f0cae33f7cf41906fd9b1087ae2ad1e03c45cb7f9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

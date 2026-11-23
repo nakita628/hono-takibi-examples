@@ -1,0 +1,224 @@
+{
+  "configs/xero-accountdata.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a66b9eb7472af379d4e7431f4039e808985a9f6f66bb679bf31551425c5a8e7",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-accountdata.yaml": {
+        "etag": "W/\"9aa94a54fa7a50ce063db32e7296dc2c41181c15e14c331c16e708034121e234\"",
+        "sha256": "f7a3936049a9d969d6c3855d4a9acb9c153c72bbee816e44e87dddd6f93b025b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-app-store.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b317258664a50b269ac5f7459ee1cf8422c6c7c2e69d64678b96bf4a79786040",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-app-store.yaml": {
+        "etag": "W/\"9c90ca3f87e8cc3ab2504d7e7cb5c741684910f543ce6ea9bb7fd8c10b594e3d\"",
+        "sha256": "bb369c97a5ff122b8b277284c3647bdc1228b5c7c5f673aa175ee83e13a6b5df"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-finance.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7703c683bc5329787847a59eb22c4318e97e52228d7cff588805e1606165a6ab",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-finance.yaml": {
+        "etag": "W/\"a49861d992c87a3a1e990f67fb8885bef8a80bb32ca5476faf19b6d8b012e791\"",
+        "sha256": "e543ff251931b37d1dee27fff1c618d6b9b7d4106e3b511b4b252d9982361517"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-identity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1359df4a6e66d3020c22dda8f04610538f80a012a5968e5f0d11c6415998df5e",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-identity.yaml": {
+        "etag": "W/\"c60c1af5f4d4e89893dcb072e003c64698d04da3c5ac198fd208378a114e814c\"",
+        "sha256": "6038b643d83904f31eb2bf7d1f843548428c1b084a1e628da79370b4e8949f06"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-payroll-au-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "43216cb13a96c8e3411b36b47fae3e32fa8ea9028c910c6e2421d69db4589ce8",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-payroll-au-v2.yaml": {
+        "etag": "W/\"6d3a06de124f6ada86c4099cfcdfbe717c2e04c316a7eda84cf2b10e2674d7fe\"",
+        "sha256": "a83c26b1d20a8d39229ee37df352b9a081bd2d0f522131a5d7265318f86027f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-payroll-au.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3ed46f377d6287a2abaab017c464c0d26fac96cb8b6a24880c8bd27533b92158",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-payroll-au.yaml": {
+        "etag": "W/\"8ee69142527a932ab129e11a0fe39ec42ab700b56adcd0eca8038590facf7877\"",
+        "sha256": "6c45cdaa72da7824209a620b72abdd53fb2c53fed79bb77b847b9ea706a0823c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-payroll-nz.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4b5a8568185e5efac597c54bb94a173eced8d192f3ad2d390a89b2430ff31581",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-payroll-nz.yaml": {
+        "etag": "W/\"d369b59b9c5e9b9e0f91d0b6b32a11bff003e9d49e68fd31ba0a41ddbe28cee9\"",
+        "sha256": "4a0356389bee2502634e662f000d88dbc743c79a14acdb3081369febf40fc8e2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-payroll-uk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a2231f65860fd5d54b385f5b8eb9322ebf33215aa9d97afe7206ec749133be5",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-payroll-uk.yaml": {
+        "etag": "W/\"b9a63eb51a645903ca0f5107b67be0f2d156d9f627ffd9bc15cb70be0289035a\"",
+        "sha256": "1e8c1951730c792762d872c238c2c550208c5db61807c2b5782862483515a069"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-projects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9cc1e87dbfd5e401a43af6c2168c66868e261ce09ba50d4719febec93d879eb2",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-projects.yaml": {
+        "etag": "W/\"352498fc620ca6721052fa9759d85b22eaa04849125087fbf14be6f1157e2a3a\"",
+        "sha256": "8717655eb0849dedce7483276e6a82b5212ffc32d13b12a2aca7b0e0622764eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero-webhooks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fd43bc71f413cf01d6f5b1e6fa2c1f34c1e6141f47a89d85152da074ecba5a7e",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-webhooks.yaml": {
+        "etag": "W/\"5a1c5d2c22e7b8a6d943df9e9830ed1ecfc30da1f5d585a3d3c2ae4872747256\"",
+        "sha256": "e5031a310f94a14da5f30c0b19867cdb995276b7e707651d134458ff908ad788"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero_accounting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "983bf18a2c89c507e77468e98e3eb4454ce2293a66de06f292fbf651fe5656df",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero_accounting.yaml": {
+        "etag": "W/\"9df0814bfabb23f5019fa769875677a84f2d329ca19aa7d65c5b13a96bdbfbb2\"",
+        "sha256": "fc3273ad7201983caf3a65c8cdc4bcbc5a7cfb8a72e92eeaf31fbf4323797c16"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero_assets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "73e769004fd6819f16329171dcc522c787cd2c1222d82d0c7440e1770fbae9bd",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero_assets.yaml": {
+        "etag": "W/\"b694fb1f9b1f3cc5c90d8586b629af8a2f864e815e78db6e502a38cc7e6c6dbd\"",
+        "sha256": "ebcbcc0009c5841d56e8bb9a925d4e02c6a61a027bc0474d3023753d6f077b1b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero_bankfeeds.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f25bfb3d7b116c8849806e8bc47c73d05007373e8968bdc5c595224eb37b7a8",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero_bankfeeds.yaml": {
+        "etag": "W/\"9a645689822137d521f48716f80916ada0b3c2038b94123044c89ecad42b528a\"",
+        "sha256": "84bbc4db4f701d7cf98995e56af014386652a3f262da497b78a173e8a4e12777"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xero_bankfeeds_v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "7aa334dcce3f9524010fb12ac582cea7dc980bf71eb60ffc28f4f42ffbcaea79",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero_bankfeeds_v2.yaml": {
+        "etag": "W/\"d0adbf0137bc81b554ff45e071b2e1cdb297e7554677da0be83bfec5a146ca54\"",
+        "sha256": "d255dfe21697a0dcdbab166033a885dc131fb4dab3575d95b5d56050dd0c936f"
+      }
+    }
+  },
+  "configs/xero_files.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "271caab956ca05a22a3da6035a9a51d3577cbfd079f1faddb875df50adc54db1",
+    "sources": {
+      "https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero_files.yaml": {
+        "etag": "W/\"ba15bc864bf7c175b97f0b587ed185dc18641b3cf6642f39308faebd478836f8\"",
+        "sha256": "75ab83707c2da589e009319f61634bedb35580a273849c8a50be512eb290f076"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

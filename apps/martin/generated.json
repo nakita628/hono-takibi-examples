@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c58d7104d935abea0fdf86d17e9a885717f740eccfc4e650fa6157735f81161",
+    "sources": {
+      "https://raw.githubusercontent.com/maplibre/martin/main/crates/martin/openapi.json": {
+        "etag": "W/\"64331bed8a51af1322969187efa01b43e478d5382d07b43a7158319c3fd76974\"",
+        "sha256": "1880f3671566ff1767a228f1e55e9d511a0ca5acb9fb9f1c3cfeb0d9a548a793"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

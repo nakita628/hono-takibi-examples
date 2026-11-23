@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5af4f4dc45636b8b555a4b400b8d37509eb590cff20f6d196de93584dde60954",
+    "sources": {
+      "https://raw.githubusercontent.com/nextcloud/spreed/main/openapi-full.json": {
+        "etag": "W/\"4622359f6156bf7f0e99ade78333111a2f5cb43cd4f48b89ca77f952987b5768\"",
+        "sha256": "b7ddc697728444c0e9ef1f9740b90f9895705308f3c25f49db4ef64d7f78dcc2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

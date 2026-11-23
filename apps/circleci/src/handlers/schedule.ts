@@ -5,6 +5,12 @@ import type {
   patchScheduleScheduleIdRoute,
 } from '../routes'
 
+export const deleteScheduleScheduleIdRouteHandler: RouteHandler<
+  typeof deleteScheduleScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
 export const getScheduleScheduleIdRouteHandler: RouteHandler<
   typeof getScheduleScheduleIdRoute
 > = async (c) => {
@@ -13,12 +19,6 @@ export const getScheduleScheduleIdRouteHandler: RouteHandler<
 
 export const patchScheduleScheduleIdRouteHandler: RouteHandler<
   typeof patchScheduleScheduleIdRoute
-> = async (c) => {
-  throw new Error('Not implemented')
-}
-
-export const deleteScheduleScheduleIdRouteHandler: RouteHandler<
-  typeof deleteScheduleScheduleIdRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }

@@ -1,0 +1,182 @@
+{
+  "configs/authentication.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81f044abc633aba361f87ccf9ab902d44eb624968a4cc7682acaa5c7c1cb08cf",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/authentication.yaml": {
+        "etag": "W/\"0a0e5738765e20aef4899fa4df491c79a63d89bda42b9f9ad72df0975a5785ff\"",
+        "sha256": "ea3c599dc7dfdc3160c927447e89b2c23622626302f925bb27aedc2dc6dc09be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/content-management.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f144991a195fcc6312df9880c7c1c7f75a061676f4ede7d9e5e18e5ef5253f8a",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/content-management.yaml": {
+        "etag": "W/\"2bd4ae3721d8a86b689d7e2c067e3e4641797dfc16ec8e03838f86a8a49aabf0\"",
+        "sha256": "2bf55ea5d0ff600eca78c0023849bdddfb1eeba34fff4b9ecb0f3ad72fb172c8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/integrations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8267ea37f408989cb0bc16ef6645b0ac3de1b2e5dbf9df2b50d4e71c77472ada",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/integrations.yaml": {
+        "etag": "W/\"84f2afda6dab713d2de8dc3cd8a51595c27b9544f1dce5101a6e52540665657c\"",
+        "sha256": "fdc04854cafc0cdae8257009bb9845c211b6f5714a93bc22d253bcf839e1b634"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplace-apps.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6eedabb2868a93361805a2a096160fa62df9740d84ee71da4b7cc8ff95edce28",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/marketplace-apps.yaml": {
+        "etag": "W/\"ea67b0db6f168a2ea6f8d23e164402e8e25f38bfd508578a36bb7a35974e849d\"",
+        "sha256": "c83693b1b4d333aa7feb4ac96becef729ca4891bd0371c3364669afc45e39168"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/messaging.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c5179e513a833133f59b7c463f1985edb3550635a9950010eff4f05ab255fd8",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/messaging.yaml": {
+        "etag": "W/\"d7150fe97bb41c5395f6f174ac72645518206d40786a8d600e1774416ef415eb\"",
+        "sha256": "0aca8e78413cdc1c26c962a97c92098a48acf79353dfcacc3a6bd786bc51c0e3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/miscellaneous.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "46b8d526f18d56bc29b50407f8b176b41f97c526d7f807b70c660912c2b2c5c3",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/miscellaneous.yaml": {
+        "etag": "W/\"594bcc45eced1b0dab9c8b36b8e9ac77590ffc831da3b05d0269f67d87cd1592\"",
+        "sha256": "2d33df8a45aed3b531a140dba8a69f26b0e686d546e060c71c90c6a6322b40ec"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/notifications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ebc61f2e869a678966e0a4e882bb9c4fb7a5e746042d000f1827811ef3f98a81",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/notifications.yaml": {
+        "etag": "W/\"f52f7627dd23fee8d112c58ab867f8cec25952a66829900c72116948212c2c41\"",
+        "sha256": "23d3851dcae288fd0fe4487ec39f284e7b17447350103dce2b1b771af506558c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/omnichannel.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f5c9b589d3565d285ec21e92a4f0ae6e70738039cd14dba1f97e58aa79774c57",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/omnichannel.yaml": {
+        "etag": "W/\"bc3f3e104d65b66e54dc9ae940bcfa038aa9f10ab1e1daac8d5c4cc7ebac2625\"",
+        "sha256": "38a428cd408ea315e3e70399202ad7221c2c1b1dcc64682c28f600430a4f62c5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rooms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "de8a7af607300a5383fae22cb42da8314767a94e1d2ecdb4f496309bab207a2e",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/rooms.yaml": {
+        "etag": "W/\"2cac737b8a2e50325a01a0e6daf3dad76f637b3d6e94eaf441d214147861b46a\"",
+        "sha256": "732b638888ac6954fbe167298a85e330f3b0ec4b6b343260732c7d5a1f1fb03a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fbf7a3d82fe0c383d0f482b5214040c5f71a98d9834d8f76267378f951c8046b",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/settings.yaml": {
+        "etag": "W/\"ee9f522bb37002c125ce4d0fdbeddec489498687d4c4301d80912f80538906cc\"",
+        "sha256": "87942fac51cd6357feac8b003fa050d6bcba11f3744e3318773d27cdc50159d6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/statistics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f9b97165d3c4b1689a53b02a7d9685fb361e8f21aeb9c97e94f0f4d9fa2db791",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/statistics.yaml": {
+        "etag": "W/\"35ecdb5585332e0d045af62dd41f6dcbc8f5927fc5dfef7bf61d1d2af441dfbb\"",
+        "sha256": "edb959e0b056597ecf0bc168659a6b38bab27a18fab3555c13dc1f43df937a7f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/user-management.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "13f6905320ae935344178cc6691041290e697f56e75e46752d7bd10568d6692c",
+    "sources": {
+      "https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/user-management.yaml": {
+        "etag": "W/\"6ecfb89a4752bebbb3d4c49e51eeaec0a3e5f01f3fafb0de3528808530f19da5\"",
+        "sha256": "c1d3d49b18972eed5b7a4942dd9fdbf763f9ef4a9c6d674e56f6a733deca62eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

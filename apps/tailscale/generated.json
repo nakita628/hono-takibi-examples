@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "38816c4c375b3d5381c0387aa7cdf2190efd357f68a8538a0932a9e291566b78",
+    "sources": {
+      "https://api.tailscale.com/api/v2?outputOpenapiSchema=true": {
+        "etag": "\"10ef89e0bbf10cf3d136d8c960ebc1027f89a6c2ed9486451d3348bc7344a2e1\"",
+        "sha256": "10ef89e0bbf10cf3d136d8c960ebc1027f89a6c2ed9486451d3348bc7344a2e1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

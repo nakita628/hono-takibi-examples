@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6a0f6fe8d1281cdc442c973d6a4ca48116abac4d2ec837be713ebf34c50f8bfe",
+    "sources": {
+      "https://raw.githubusercontent.com/prometheus/prometheus/main/web/api/v1/testdata/openapi_3.1_golden.yaml": {
+        "etag": "W/\"4bcc24de60fe78d79433ae5adc55093d232af1ccecd6a4d61ea14938cd85ccda\"",
+        "sha256": "d1dd085c365db9b550a0fc9b9fcac8cd6eadaf58df655c1d72b52ac5c60610e4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

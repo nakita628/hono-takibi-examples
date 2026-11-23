@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "920d3cef053ec9244699dd27eabc46447e850ec65c90c02ed60644676537d832",
+    "sources": {
+      "https://api.brevo.com/v3/swagger_definition_v3.yml": {
+        "etag": "W/\"11f23b-1a1ed817230\"",
+        "sha256": "b893e54f6a0402438446092724518706c74deff1ea86ef6db141547d550a16c1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

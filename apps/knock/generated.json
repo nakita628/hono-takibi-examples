@@ -1,0 +1,32 @@
+{
+  "configs/api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "520c0a5f1b32db263fd63be525ce14466894181e960963c42374afc00c7ea8e3",
+    "sources": {
+      "https://raw.githubusercontent.com/knocklabs/docs/main/data/specs/api/openapi.yml": {
+        "etag": "W/\"18bb38de74df70b11ec1c89bae71be179b5455fe7cd7ad37216f5ea0bbb50acb\"",
+        "sha256": "26ef612144c1f535b2892b20c99354a975addf68c4307aebf5788437bb11b082"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mapi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f72c351f9f7dfef7121ceb3d2421136ab13456496dd10008142da9a8f01efdaa",
+    "sources": {
+      "https://raw.githubusercontent.com/knocklabs/docs/main/data/specs/mapi/openapi.yml": {
+        "etag": "W/\"3f59b337185ccebb3dfc2af882de370b182bb0c19b6261f4be9577ed999183cf\"",
+        "sha256": "058b7698ca98896c6eb259828828f175ba3589f5087a2e67a642914da6ca6740"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -36267,12 +36267,12 @@ export function getPutApiV2TicketFieldsReorderMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put>,
     TOnMutateResult
   >({
     mutationKey: getPutApiV2TicketFieldsReorderMutationKey(),
-    async mutationFn() {
-      return parseResponse(client.api.v2.ticket_fields.reorder.$put(undefined, options))
+    async mutationFn(args: InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put>) {
+      return parseResponse(client.api.v2.ticket_fields.reorder.$put(args, options))
     },
   })
 }
@@ -36289,7 +36289,7 @@ export function createPutApiV2TicketFieldsReorder<TError = DefaultError, TOnMuta
           >
         >,
         TError,
-        void,
+        InferRequestType<typeof client.api.v2.ticket_fields.reorder.$put>,
         TOnMutateResult
       >,
       'mutationFn'

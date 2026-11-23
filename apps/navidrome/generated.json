@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f347c707aa586fd60fc767b31ff23a81e8bf96f69ac1b407c0b370b4cd4dc0ae",
+    "sources": {
+      "https://raw.githubusercontent.com/navidrome/navidrome/master/api/bundled/openapi.yaml": {
+        "etag": "W/\"5afadb75df3c6f276b3836d64f389de5b6740bd64cabfc46533f099e1ce9a341\"",
+        "sha256": "a71e13ffed2fc61f136dcd12889bbfc4f6396ca0d72557339ce50929e04cd082"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

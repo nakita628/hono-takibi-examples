@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b11b8ff696bc1edb48a40e9cde106fe72323b9be71a6b407e411d5618563c537",
+    "sources": {
+      "https://raw.githubusercontent.com/Kong/developer.konghq.com/main/api-specs/gateway/admin-oss/3.9/openapi.yaml": {
+        "etag": "W/\"e0a65054b3e7a56836b8700a700103c25f591b04cfa5caeec826d3f4607ead5a\"",
+        "sha256": "ae7f591bd677adc7cee3f6a45d5bab84a3892348933cd1cf492e274017f59eb5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

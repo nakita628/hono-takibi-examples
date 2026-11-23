@@ -35293,16 +35293,16 @@ The mutual funds compositions endpoint provides detailed information about the p
           "fund": 0,
           "category": 1.97
         },
-        "average_duration": {
-          "fund": 0,
-          "category": 1.64
-        },
         "credit_quality": [
           {
             "grade": "U.S. Government",
             "weight": 0
           }
-        ]
+        ],
+        "average_duration": {
+          "fund": 0,
+          "category": 1.64
+        }
       }
     }
   },
@@ -38618,16 +38618,16 @@ upstream wire shape and the documented response block, so the two cannot drift a
       "fund": 0,
       "category": 1.97
     },
-    "average_duration": {
-      "fund": 0,
-      "category": 1.64
-    },
     "credit_quality": [
       {
         "grade": "U.S. Government",
         "weight": 0
       }
-    ]
+    ],
+    "average_duration": {
+      "fund": 0,
+      "category": 1.64
+    }
   }
 }
 ```
@@ -38641,7 +38641,7 @@ Mutual fund composition
 |major_market_sectors|[[GetMutualFundsWorld_200_response_mutual_fund_composition_major_market_sectors_inner](#schemagetmutualfundsworld_200_response_mutual_fund_composition_major_market_sectors_inner)]|false|none|Breakdown of the fund’s portfolio by major industry sectors and their respective weights|
 |top_holdings|[[GetMutualFundsWorld_200_response_mutual_fund_composition_top_holdings_inner](#schemagetmutualfundsworld_200_response_mutual_fund_composition_top_holdings_inner)]|false|none|Top holdings of the fund with their respective weights in the overall portfolio composition|
 |asset_allocation|[GetMutualFundsWorld_200_response_mutual_fund_composition_asset_allocation](#schemagetmutualfundsworld_200_response_mutual_fund_composition_asset_allocation)|false|none|Asset allocation of the fund by different asset classes and their respective weights|
-|bond_breakdown|[GetMutualFundsWorld_200_response_mutual_fund_composition_bond_breakdown](#schemagetmutualfundsworld_200_response_mutual_fund_composition_bond_breakdown)|false|none|Breakdown of the fund’s bond holdings by maturity, duration, and credit quality|
+|bond_breakdown|[ResponseMutualFundWorldComposition_bond_breakdown](#schemaresponsemutualfundworldcomposition_bond_breakdown)|false|none|Breakdown of the fund’s bond holdings by maturity, duration, and credit quality|
 
 <h2 id="tocS_ResponseMutualFundWorldPerformance">ResponseMutualFundWorldPerformance</h2>
 <!-- backwards compatibility -->
@@ -54984,16 +54984,16 @@ Mutual fund information
         "fund": 0,
         "category": 1.97
       },
-      "average_duration": {
-        "fund": 0,
-        "category": 1.64
-      },
       "credit_quality": [
         {
           "grade": "U.S. Government",
           "weight": 0
         }
-      ]
+      ],
+      "average_duration": {
+        "fund": 0,
+        "category": 1.64
+      }
     }
   }
 }
@@ -55046,16 +55046,16 @@ Mutual fund information
           "fund": 0,
           "category": 1.97
         },
-        "average_duration": {
-          "fund": 0,
-          "category": 1.64
-        },
         "credit_quality": [
           {
             "grade": "U.S. Government",
             "weight": 0
           }
-        ]
+        ],
+        "average_duration": {
+          "fund": 0,
+          "category": 1.64
+        }
       }
     }
   },
@@ -64335,6 +64335,42 @@ Fund identity and screener metrics
 |yield_3m|number(double)|false|none|3-month yield|
 |yield_6m|number(double)|false|none|6-month yield|
 |yield_1y|number(double)|false|none|1-year yield|
+
+<h2 id="tocS_ResponseMutualFundWorldComposition_bond_breakdown">ResponseMutualFundWorldComposition_bond_breakdown</h2>
+<!-- backwards compatibility -->
+<a id="schemaresponsemutualfundworldcomposition_bond_breakdown"></a>
+<a id="schema_ResponseMutualFundWorldComposition_bond_breakdown"></a>
+<a id="tocSresponsemutualfundworldcomposition_bond_breakdown"></a>
+<a id="tocsresponsemutualfundworldcomposition_bond_breakdown"></a>
+
+```json
+{
+  "average_maturity": {
+    "fund": 0,
+    "category": 1.97
+  },
+  "credit_quality": [
+    {
+      "grade": "U.S. Government",
+      "weight": 0
+    }
+  ],
+  "average_duration": {
+    "fund": 0,
+    "category": 1.64
+  }
+}
+```
+
+Breakdown of the fund’s bond holdings by maturity, duration, and credit quality
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|average_maturity|[GetMutualFundsWorld_200_response_mutual_fund_composition_bond_breakdown_average_maturity](#schemagetmutualfundsworld_200_response_mutual_fund_composition_bond_breakdown_average_maturity)|false|none|Average maturity of bond holdings for the fund and its category|
+|credit_quality|[[GetMutualFundsWorld_200_response_mutual_fund_composition_bond_breakdown_credit_quality_inner](#schemagetmutualfundsworld_200_response_mutual_fund_composition_bond_breakdown_credit_quality_inner)]|false|none|Breakdown of the fund’s bond holdings by credit rating and their respective portfolio weights|
+|average_duration|[GetMutualFundsWorld_200_response_mutual_fund_composition_bond_breakdown_average_duration](#schemagetmutualfundsworld_200_response_mutual_fund_composition_bond_breakdown_average_duration)|false|none|Average duration of bond holdings for the fund and its category|
 
 <h2 id="tocS_inline_object">inline_object</h2>
 <!-- backwards compatibility -->

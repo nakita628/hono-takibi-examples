@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7e9cc04e05d298bd1e0fdffe913cfc0f85668b8d3d5562a5093bb364e067ac67",
+    "sources": {
+      "https://www.keycloak.org/docs-api/latest/rest-api/openapi.yaml": {
+        "etag": "W/\"6b03ea82-5e43a\"",
+        "sha256": "42c0c3b8da3563e5f2f4dd75d5439ec3968146eae9d6d286205b2983f9621d8b"
+      }
+    },
+    "typecheck": {
+      "errors": 12,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×12",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c052fa016ac3a591203c068ef73b9b8c18052618182c48791b0656a3e82b9e7d",
+    "sources": {
+      "https://raw.githubusercontent.com/immich-app/immich/main/open-api/immich-openapi-specs.json": {
+        "etag": "W/\"461db952a2a02c738e2ec821774bde782b1c231f5d2f0c09b488bd7311c34f4a\"",
+        "sha256": "732e2fc12ae5c5e086124fb1495ced97a21956d0395bcc7dbbf7eb96b68c65c4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "047cc3a1d986f7de6b713a362c06918b94256f0c0ce586cbf791e1d108b77950",
+    "sources": {
+      "https://raw.githubusercontent.com/windmill-labs/windmill/main/backend/windmill-api/openapi.yaml": {
+        "etag": "W/\"000350b1795d6ad49d370e367c2a757998d6d7967c03b4e3d87fea2329466a9f\"",
+        "sha256": "26f05699177011b21f39cdd1bb18b73a95eb9ab6574f0cacd32e95fee80ea33e"
+      },
+      "https://raw.githubusercontent.com/windmill-labs/windmill/main/openflow.openapi.yaml": {
+        "etag": "W/\"42d851c8e8ee8aadb8e7fa233bb44b0d5f580af8235341dae434fb6538b724f7\"",
+        "sha256": "e3d7172ad386156e62d5a3fa49804c025678bf608c9bf7abc133f59677d17f22"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×2",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

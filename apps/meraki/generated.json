@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "14cea2ef3859b13ccf6efe6c0b45474bd00042b797a072dc65a84f0b955ca21e",
+    "sources": {
+      "https://raw.githubusercontent.com/meraki/openapi/master/openapi/spec3.json": {
+        "etag": "W/\"147cf46059eb91422155d13d121902d31a034b7731f73e358defb139511dd2d2\"",
+        "sha256": "2e43add30bbaf6f955095a24b20b2314cb075725af171a712554d4fa381178cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0db8344c5365eed3e9d826515914bb8ae7fee5c2dfc4fa401943d2ee94e35b5c",
+    "sources": {
+      "https://raw.githubusercontent.com/MISP/MISP/2.5/app/webroot/doc/openapi.yaml": {
+        "etag": "W/\"8e690739a428a4f35613de120537442316ca057f147d218cab6d7a3f39d4e064\"",
+        "sha256": "7e5531c05025bfe167dad23e8c5ce58f8049a052595b9225b33ca66107d63d91"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

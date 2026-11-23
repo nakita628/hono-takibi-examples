@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "82d6e445d38527869cca18a4bfb641ad52fd6f2febe956b427e6ddddba77d72e",
+    "sources": {
+      "https://raw.githubusercontent.com/discourse/discourse_api_docs/main/openapi.json": {
+        "etag": "W/\"d39d8f53b99440059bdaa3bd2ab7f6f56b0646745e7365e3fb17d054b21dd05d\"",
+        "sha256": "a5b34004fdbbf228e3d2d75cb36186bdf50b4d7bce2fe78f730d4f7bd1c1ad21"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

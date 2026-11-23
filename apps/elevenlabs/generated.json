@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8cfaa3b1e5b7bea0a9cef7d6d4ed92a618681849012fac830cea5a83d0e0da70",
+    "sources": {
+      "https://api.elevenlabs.io/openapi.json": {
+        "sha256": "771863e58023556c48134844e4ad9c820f2a5226c3fb01bdba7918cfac7f2e5a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

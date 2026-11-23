@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2acb4462de5747709b4a5289f91d0648e8386de18214d4c6661702283c0b600f",
+    "sources": {
+      "https://raw.githubusercontent.com/elastic/fleet-server/main/model/openapi.yml": {
+        "etag": "W/\"17960e1061c4ca2fe02abfd21b743864c38bcb9623f329753043b4fb16ac9e0c\"",
+        "sha256": "17d7b17ea0ef6729ad9a64c3844c8c4d9038cd20ccbafc1d108c725b17bc3e8c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

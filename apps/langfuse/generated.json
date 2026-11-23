@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "92674769ab83e51d37b1de4451cc2bbb1feb3de8f698076f066edec6e02011ea",
+    "sources": {
+      "https://raw.githubusercontent.com/langfuse/langfuse/main/web/public/generated/api/openapi.yml": {
+        "etag": "W/\"3a26aada450cb35d2880eb972e7f8791cba8697eba69e68c9e39f23590df0c73\"",
+        "sha256": "8f6fa7723213a24b1bef00d4be1cdc3ee06ad09f2736897663a7ff92c8c13426"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

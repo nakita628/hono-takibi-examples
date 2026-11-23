@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d5b8eeadd83a92b509cd3f24afc2ab86ead71339304e7e698b5c7b43c3e3657c",
+    "sources": {
+      "https://docs.hetzner.cloud/cloud.spec.json": {
+        "etag": "W/\"35eb6e-1a207c30950\"",
+        "sha256": "940bd801a3df67e48badbec6eb82f1dc8e2ad7871093a46bf25b0e313d11192a",
+        "canonical": "ca58bdaf7066204d2af6161beb6fb351638299c0fe695783606dfbcebabe5c05"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

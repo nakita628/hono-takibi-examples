@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1baebf439feaf346fd424fa4ddc14b7e779db8f51c17457519990412033f3787",
+    "sources": {
+      "https://openapi.vercel.sh/": {
+        "etag": "W/\"d66a7cd477abecf21461441574af362c\"",
+        "sha256": "c1a3b931a9dfd8a3e3877daa6ff31a70a975dcc4408e9943213bc38b86ba27a7"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`index.ts`, `client.ts`",
+      "codes": "TS2589 ×2",
+      "issue": "deep types (TS2589)"
+    }
+  }
+}

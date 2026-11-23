@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7ebaad1a671b17c3298200d47684899425284e3bebb4b2487752d5610786a91b",
+    "sources": {
+      "https://raw.githubusercontent.com/DeepL/openapi/main/openapi.yaml": {
+        "etag": "W/\"5a1ecaa72bb1df67e8d2c577b480c438a9464954a122d5631f9305dc4f388430\"",
+        "sha256": "4d663a0ed6971bdf84429b1e64ddd496ee3dcc8d2a45bd3b18208b0101223cec"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e14306a764b7a3151beca6672cab4b1dc53b32f3d5cdd1fbda3d8b45b9a2c912",
+    "sources": {
+      "https://raw.githubusercontent.com/intercom/Intercom-OpenAPI/main/descriptions/2.17/api.intercom.io.yaml": {
+        "etag": "W/\"fd4d8114b57bbca2e37fe4a3c7ad28d01ea8fa12b57c8c4534db5dbb075197d7\"",
+        "sha256": "5e5a8cf69a9bd9742a828d03afb9ad560f77fe51e3f1434d39f11966fe8d77f2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

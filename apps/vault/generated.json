@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ca3a2b3774c3dc89ef57f3519c7a2e2f86461588fb77c01e773d9a2ae70f8613",
+    "sources": {
+      "https://raw.githubusercontent.com/hashicorp/vault-client-go/main/openapi.json": {
+        "etag": "W/\"fdec6ed92f02da155537539c345386f071627cf13900a8182e43d6880b814a74\"",
+        "sha256": "c05b94625297d6ace4e578507d0e9458b5a4995626a96627b890b5a0e8af4173"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

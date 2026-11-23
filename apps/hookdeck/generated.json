@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "42e8b24a47c27e4568ccfa6fcc1ef06b788136e9405f1edb3542f6de113f585d",
+    "sources": {
+      "https://raw.githubusercontent.com/hookdeck/hookdeck-api-schema/main/openapi.json": {
+        "etag": "W/\"e1c94b85048aebe6307ad43b3facd1d6f73a0198f55a77919453d01db3894a9d\"",
+        "sha256": "0405d1fb2b331a6fef761f1610d256e8ec80c38ba98bdd2e62729697df4ede31"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "278f7eddcfa86419a128ed3f6b2522b1e4ddb1427b0494b49aad575b8b85ad56",
+    "sources": {
+      "https://raw.githubusercontent.com/medusajs/medusa/develop/www/apps/api-reference/specs/store/openapi.full.yaml": {
+        "etag": "W/\"73798c5ae5001e270bb7c601cb5c139c2720bc0df405db9251e2556d5c7c642a\"",
+        "sha256": "0ddf2f02b6268891b6cd95094523005e0adca3158f88eeaf81c66ec4179b9595"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

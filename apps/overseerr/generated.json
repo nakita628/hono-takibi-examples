@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a67d0ec2e327d4193c282de73938aa22a48f64107cd5164bd4ecca558c541a82",
+    "sources": {
+      "https://raw.githubusercontent.com/sct/overseerr/develop/overseerr-api.yml": {
+        "etag": "W/\"a52592998cdc084fa4577427491a2873497330c3846bc2425ccf8d9908f126d4\"",
+        "sha256": "50d0dfc5719b2b404dd6f665ad202d02b448b7ee6dea5dc2845dc6879a0f07f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

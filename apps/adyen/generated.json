@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "518193dd5bd85952cdc7964dc185edb2f762924983394b775126f78976b2056f",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/CheckoutService-v71.json": {
+        "etag": "W/\"a301d88f6686a5b55473fb237118d7c68ce7c2f7308896f44ab949e60b06df2e\"",
+        "sha256": "deeeaa9da1988f3f12f11889cc9a86f11fdef9823526fff1e282369677b71ebe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

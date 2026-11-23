@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ac0231dbf32d7bb91fec177e1c33afba27417639ba3482ea9e1bc744f78efd4a",
+    "sources": {
+      "https://raw.githubusercontent.com/ray-project/ray/master/doc/source/cluster/running-applications/job-submission/openapi.yml": {
+        "etag": "W/\"573a09b78ef2bf6e13e438457e558f608a3091b1380b552a812529819e82db79\"",
+        "sha256": "ee468f0281dcdfc4251f2747f862a9d6cc22bc3600389af51245a4d88dd530e4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

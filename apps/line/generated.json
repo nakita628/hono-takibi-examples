@@ -1,0 +1,140 @@
+{
+  "configs/channel-access-token.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5e4eca29590b0520d94f2351d7eab21613530b83f48d4c457dbc7e572d4f76b3",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/channel-access-token.yml": {
+        "etag": "W/\"efec6e6f4e167a2ac68f8e4ebf0e2022e16f2f32f543cbeee5e4581bc375e73e\"",
+        "sha256": "17749c86ea7504946f229eb80c49a0f4f39113642b0169b082cf3b591baf65fb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/insight.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dc5decb7acca479f99e06511d6e0ac2fe90e98dd9e83520a188dc9ec8bcab41b",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/insight.yml": {
+        "etag": "W/\"3bdfab125c17ac8409669aa38282936a09aeaf1f81c9da4ebb06bb0ed0408dd4\"",
+        "sha256": "e4e3a1bbf6c5bf670f11f07c3c92659b236536355286748f3b27252d335723cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/liff.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "718e92a2b8850af7953d01e69fdba627e9015e499c971c1716580fdad922b5da",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/liff.yml": {
+        "etag": "W/\"e3bbf25a3884d0e5c1b39f9afcfd0c6f656d0cfae47f9c5ff1ae3df3e5450297\"",
+        "sha256": "2ba074ae9da7916510707c4b456428e20c93433e391a3558d2ce160a3effd460"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/manage-audience.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d392fb02e76a10f9b0570bd058cbe59decd5a1826228b61fb313c9b54db6a36e",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/manage-audience.yml": {
+        "etag": "W/\"605449f6eb3270a8395f97f408175d80587dedb44456cc842390ab72da2f985d\"",
+        "sha256": "e3f4c214604305ca9d0db45435bd15161d40fb959a4b6cf38356d38fc0577e29"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/messaging-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f103ad35ca62a1a2b9eae7f9880bfda9de9628ef971cecffc8e6e1790723327",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/messaging-api.yml": {
+        "etag": "W/\"b93c1e2fc12321de78ee2351a52c1da724588e60f915c01533d291e96b30dbda\"",
+        "sha256": "0cb0d8f89372a3e85ed960df6d3b2f343da2f00c149edfd2730cdab6e3415b1b"
+      }
+    },
+    "typecheck": {
+      "errors": 4,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×4",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  },
+  "configs/module-attach.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "de3c8b38b3f15d3a7a3d9ae3907b6645269a19d869024881ad4fb6474270d3c3",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/module-attach.yml": {
+        "etag": "W/\"8ec0197314e5d8c39c92c77cb43a41fa7a7ded957411e54da66d3b0b3168820e\"",
+        "sha256": "1cd753812d51339008fd42c7fccee28d90cfda659f13b2d97dcc1116331298ac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/module.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a8595ef7daca88928517fda0e064d5ebe71536031299dd0c2134dc685a1de1b2",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/module.yml": {
+        "etag": "W/\"fc5829238f25f2afdb934ecd05dd5720a90bcc3e0101bab021b8adca5339ca35\"",
+        "sha256": "31d9580396bb6e781bb42e5ea513e1884c3998b783cf6d7b30d65c87d32fa498"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/shop.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a911b49cbf6902879c99ee34dd1f5b5aefb47025cccda4d867e47881011fd044",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/shop.yml": {
+        "etag": "W/\"c1e50c08dc7217e580bd4f49228062910b406b44f854f130e3279706ef5c0533\"",
+        "sha256": "460b804a4c4d20617380ab982c9c41f5682b988c7c04aef9c57bca51c0025333"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/webhook.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "99c94cc2b20cf7888708e5e45480c83ee75ae8221350993ec9abb04f736cae87",
+    "sources": {
+      "https://raw.githubusercontent.com/line/line-openapi/main/webhook.yml": {
+        "etag": "W/\"845f9efcf3179ebe511ca007659481004a5b208b42795f23080093738c79aa3b\"",
+        "sha256": "0faebd7722139abe9fb2abee610ea9d46a648f20b9305bb17555e038100a6fc1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

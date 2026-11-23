@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "7563521f6c29887c076277c8697881536dfd001d779425307a864d832174c6c6",
+    "sources": {
+      "https://raw.githubusercontent.com/nocodb/nocodb/develop/packages/nocodb/src/schema/swagger.json": {
+        "etag": "W/\"a3289643712f33b1792342428a6404846dedcaa7c58bb6cc1b9d4fb3d838cf5f\"",
+        "sha256": "ffe90a79c090b5b63e2c2b00a509e42a790a68344eec3aa88ba852a84cf8ff1c"
+      }
+    }
+  }
+}

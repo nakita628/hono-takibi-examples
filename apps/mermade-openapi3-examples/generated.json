@@ -1,0 +1,865 @@
+{
+  "configs/3-0-cyclical.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "98ff4827ab5b2881094a65ebacab93f6ac751a487b2113ab0817f9e74d707e0c",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/partial/cycledef.yaml": {
+        "etag": "W/\"dcdaa21cd9e4c3ad614374359adc872b1ccbb8b64859fe644a82b4b3542bfd6b\"",
+        "sha256": "093b31254197d5495ecb7ba96700c506290b75205e9f02d37ea1c35a459d7567"
+      },
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/cyclical.yaml": {
+        "etag": "W/\"09131e358b6d027a0e23f9bc8bbb69d91fd50a7079128bcac660345c284bc29f\"",
+        "sha256": "9c3ae560936a0315dd57f8f35e99d60173986be03f7db9fd3b0cf4ad6226e9a1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-deprecated.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "05d1535711f9956d3d2381905d3b0320f758a47aea08fb696cdf6e8938a78534",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/deprecated.yaml": {
+        "etag": "W/\"4976413377ac211cd9abdaf17d91fd368a97f43a2b22ee3231389ae8cbf202fa\"",
+        "sha256": "e7fde671d96edc866ce3e0b772130f40a015d074bb3893330ce140619ad0772b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-extensionseverywhere.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "df7308aa700c839b33f769ce53357ac4738817e065beabe31c67d49e1d587ea3",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/extensionsEverywhere.yaml": {
+        "etag": "W/\"3adaa5fc39027e99cb072097f91aaf24cc62fa3bfe5edb53bb42253ef759485a\"",
+        "sha256": "a6c611a8178348392b63fc488247c53e0fa6c68a7d20792ec1c99da7fe311439"
+      }
+    }
+  },
+  "configs/3-0-externalpathitemref.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4609ec240f90a95f0c435b5a672e0ba3ab92ea51b540f2b84a8c41cb00ad5164",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/externalPathItemRef.yaml": {
+        "etag": "W/\"a5cf0d0fcb1db4bf7c0e577e699129275fa33c82e5459a8b4bb84f2bcbee2db0\"",
+        "sha256": "10ea321245343d52ab1c6e389ae0b81d6316afe0561f4442d4f09f385fbd28b5"
+      },
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/resources/include.yaml": {
+        "etag": "W/\"3314dc7d5986e0551ecd83efa329110ebd167432cd002de7e3790139c296596e\"",
+        "sha256": "0d91a50d73491756c4cb8274261c1858415377a2692df82d4583ba2c05915dac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-fiendish-ref-encoding3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "d0f27e509c4037e2854e535459dc3a0455dfa9bab0bf49210edaec509a3b9d15",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fiendish/ref-encoding3.yaml": {
+        "etag": "W/\"6ec074c58b5a94ded23726b6f42e7cbc81ffd9c1775821e59fa6ac0f3a3bdd1d\"",
+        "sha256": "cd46344fc1cf070bf0d19a48c91718313ac9c413aa18a55f876a1857c64a7dcb"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-23827c62-76c5-4bf0-b756-7a038ddf718a.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "cd5cc706c7e5fb4b7d0d84e3a7b1f7f67d9338575ab6fb229796e69f0218dc96",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/23827c62-76c5-4bf0-b756-7a038ddf718a.yaml": {
+        "etag": "W/\"06a8cf6354bcdfeb42e72aa62f8b78a10d2cd6cb5789ce62a128bfaa8e21eac7\"",
+        "sha256": "18f4cb612a51b9f8ac381c41601ba60378629882e35c9c0710ae68915e0abd16"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-2e094966-d748-42c6-a0f1-f0fa868f7428.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "4b986782772be3027c978e020f37f37a692c826017e9a3dedc2e82b57da897f4",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/2e094966-d748-42c6-a0f1-f0fa868f7428.yaml": {
+        "etag": "W/\"612fd13e30e00b300d3852ba8c1ecd18d7538307c6b9797fe5813442a5bac71a\"",
+        "sha256": "bb7a6784fe3552f5788c8319bdee5a5956c287f8400126c66ef3ac0f4daf882b"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-32fae80f-7937-43ba-815c-f00ea6aeb48b.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "3214c412572fcec73293eb15ad9fc9a1563ff6eb9d81894122de0f94d090c57a",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/32fae80f-7937-43ba-815c-f00ea6aeb48b.yaml": {
+        "etag": "W/\"e8bb6d5b313e31dd450c653225bec5909cebc1f8e840a8d331ae454c480da23d\"",
+        "sha256": "a17bdafe55d7ab70fbbe3fda819235de95575aa341048c95a22a5e9bc7e3fe47"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-3a3cacd9-34f1-44e7-a9a7-ffe24888a624.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "c21a6779259101e846428e5eba4ce2163c5bcad023282954b77eb98ddd4405a8",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/3a3cacd9-34f1-44e7-a9a7-ffe24888a624.yaml": {
+        "etag": "W/\"ec6892c3df559775f3b516cf27269ccce0aa8065d18928175d128db16c8b1578\"",
+        "sha256": "88cb931cd3d5db6103cbc8118828372009c8b11644cf67a840e69a72ebebe9ad"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-50aea792-0425-474d-938b-fc8a7387739a.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4d2854294c273373a71d04419e0cec44745bcb9752ef941168061b9ce89887cc",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/50aea792-0425-474d-938b-fc8a7387739a.yaml": {
+        "etag": "W/\"bbf6826624a19c7d77c96535f48bcae8c52566e19cd1f1dd3b8ca4ffc5efcb0d\"",
+        "sha256": "bdb27ba66750c70c709f24618f50caf38bd311b85ff9bc44fd25c02126dddb84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-fuzz1-6012094d-8d46-4386-84b5-4829d7e7f9af.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "d01c682499db8c9fc65a59c41f0d2951157f37741a79de569d18f3573652a059",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/6012094d-8d46-4386-84b5-4829d7e7f9af.yaml": {
+        "etag": "W/\"a70ac0b478cc439abf3c48c152241df53af31b93272dcb4ab3ccf756d0b04116\"",
+        "sha256": "836f4eafbfede0a478de056e138af97173b2b4063e57cdb76681a51e88ca7007"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-71d901df-4c4c-40da-bb0a-41aa6f3b5533.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "be340c95fa18fbef8a5709a314d2d4fbe02050aa88c74af332e654cfc9c8307f",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/71d901df-4c4c-40da-bb0a-41aa6f3b5533.yaml": {
+        "etag": "W/\"ec6892c3df559775f3b516cf27269ccce0aa8065d18928175d128db16c8b1578\"",
+        "sha256": "88cb931cd3d5db6103cbc8118828372009c8b11644cf67a840e69a72ebebe9ad"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-8331d5cd-c1fb-4c8c-b3e4-638c10fa4d80.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "ec3c8562fb7f1ecb439e5d67a2920aed5daffd34519b07fcedb6409a963f8429",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/8331d5cd-c1fb-4c8c-b3e4-638c10fa4d80.yaml": {
+        "etag": "W/\"0b1fb78ba4f7bf2db16a542382cdca29a715788a771f1fc4a12575d0c422d3c7\"",
+        "sha256": "9c91c53271ec86a42173fea964452170a25b81663d962e573020f5e56cb7d5d0"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-adca3491-a606-4ede-b895-678710727380.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "758d5293a369a1108440612db6353dc663619e29a09ad7f0f6e38ed389800f40",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/adca3491-a606-4ede-b895-678710727380.yaml": {
+        "etag": "W/\"2c4c47129818fcd43b92d4800b37003761aa418fe22a52867c10d458b9a96958\"",
+        "sha256": "bbb346561ffbd7d1e68196320c2c272c593f22a424bbbad3e507267a51dc3719"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-e0c69574-9408-4c46-baac-5d3b98b46b67.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "9e1b901041064bed6443eefdec3bb1b9193b0fb73d8ab47433d1e2de107af40a",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/e0c69574-9408-4c46-baac-5d3b98b46b67.yaml": {
+        "etag": "W/\"5655ccf93a175ac0a0de3f9229672efce6915e9bd76618aa153e0e88709313cb\"",
+        "sha256": "7a07b47a3ef2b215a23805ca97f1590f28f77959fb5e3e0d13ecd2ca3220a39d"
+      }
+    }
+  },
+  "configs/3-0-fuzz1-f8c97f2c-efa9-4a93-bd39-e7008df12b47.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6f36c818cf3bbe511cabea7c1445b1a3b0f28ee24a45663f1fdbbd02b3e63e01",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/f8c97f2c-efa9-4a93-bd39-e7008df12b47.yaml": {
+        "etag": "W/\"bbf6826624a19c7d77c96535f48bcae8c52566e19cd1f1dd3b8ca4ffc5efcb0d\"",
+        "sha256": "bdb27ba66750c70c709f24618f50caf38bd311b85ff9bc44fd25c02126dddb84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-different-parameters-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "551e496bb45aec4d35b8d14411a4f19dc9f45f984e0678a0999b430f95e2f906",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Different_parameters.md.yaml": {
+        "etag": "W/\"6a1974a646ea6ba85bf8e22fe6a0d27155f6ca8dc9cd2cf63f1559df460d60c8\"",
+        "sha256": "ca6917fe40207ad1e8f6a27b7c88a2435dca26e588f764ca0ba8cfa40c821bab"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-fixed-file-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "010bb2424974c24f4e60a5f94208afa5d9e586cf2cdf8c9dd22ab498720f8d38",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Fixed_file.md.yaml": {
+        "etag": "W/\"ebe140f436239e29561ddc818fd30460a59bd525254aeddad64fb0c6914431a5\"",
+        "sha256": "1b7386e59fe35dc795f1022977b80f732f81801b59d9fb9b7b5b247f4e8f74ac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-fixed-multipart-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce6bd5d8dce6a15a68791671bde6963e9e0bcf89e3deae0a0d8eb8808305e6db",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Fixed_multipart.md.yaml": {
+        "etag": "W/\"e42c15d4e39aeff88314b3160cdc7caa132c9826ac3ef5d9bd120f46c3e387af\"",
+        "sha256": "ef47ce67d11a82c759b9d7224af4af01224b2a3159d9d56cbeb2f67299f107c9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-improved-examples-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d9967d2359f0298bca0e243d608da2014a5dce4dcde668fd75d463886b97a0a5",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Improved_examples.md.yaml": {
+        "etag": "W/\"6283a28d4435c3939210544bdcab0b7c7d5208d7e30bc50daa80931b068eec5f\"",
+        "sha256": "096a60eabb55bc67734ef633e674a29eeaf83ff233a7480dbaa0c720fc248103"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-improved-pathdescriptions-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "588fa7f44390e172467740ee3e4ca93984356700c0cc7a4bed2fa3060394639f",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Improved_pathdescriptions.md.yaml": {
+        "etag": "W/\"d825231b75d7782b895a0ecf1292f11ab7d0c9b65dbf4e181157181e50844496\"",
+        "sha256": "7df059e03727e1767b063b19349dfc5bb65ce944b669b24861f3e54bfdb6ae6f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-improved-securityschemes-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f31d8132aea7a3c749e39e6df3360e00960f104b0db1bea69d366b24e2712841",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Improved_securityschemes.md.yaml": {
+        "etag": "W/\"c9a5ba9d7d106429ea657bd765ae520dbb11030476fdd827cf25b6406ae14e07\"",
+        "sha256": "4a16658e676e2550f9f36b605a0334898982065879252465488df4db23594305"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-improved-serverseverywhere-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "447d4b4cf8fad9da5a633eb69eab61ef5aa354276710bcbb255e830579e9eeda",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Improved_serverseverywhere.md.yaml": {
+        "etag": "W/\"5f3a50929c484e111087bbd34c23c43a26097e6d0372beff439a39dfd7fbb6dc\"",
+        "sha256": "ad32f833963c79f12edb722bfdf701124c6c2143bac21d6d0aecd99969e59272"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-new-callbacks-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7613125a04d9a17b722c26d6bec8d47e2cfda9a2668e82726edede39f6cf7766",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._New_callbacks.md.yaml": {
+        "etag": "W/\"231864c2262a4edc146b115a84a44efd14f9da31ec7367f36186c181bed7e50e\"",
+        "sha256": "31f31979f64cb19e1039f61ab11d87045e0a8c68f8d57896cfd2a4c6615db2da"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example1-from-new-links-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e1ab329177a65c040aaad00609b5dacffacfb10b6604b0b1d275db297da80892",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._New_links.md.yaml": {
+        "etag": "W/\"520eb0a5db24b27a107dc3fe3dff4cfa8bd254254eb2a12f4df5cbda9dfa6988\"",
+        "sha256": "1ca5bff55ed6c7264a1e9c08b7e1b252eb78d9660f9ab01f64e506dbcc421b82"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-different-parameters-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce18a7a7ff7e5087e991aef052ea56d1205c091517fec53edc628814f4acf48a",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._Different_parameters.md.yaml": {
+        "etag": "W/\"9bbf88277d2d7a31c0a93a8d48db1800db750c061beedc299e1fd93b97810a05\"",
+        "sha256": "46b0215566c5c0eb44f48b72ced3c37b2a07fa6bed3b309fa1944ab1be7d0a93"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-different-requestbody-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4ee1626490ef791fc2187d83617b213a987b9c6ffd665027a08a7bd8f8dbc13a",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._Different_requestbody.md.yaml": {
+        "etag": "W/\"dd353a02faa1a9fb4a2fef9342618dbcf85cd37026030e04e4b3d993ac5cd686\"",
+        "sha256": "c9c7e64414d4780ed45c92f4de2269c7ad1700071774782a510be545ea556c1b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-different-servers-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f98ac54753dfc576238a4433b0fe69911a7c4ae3672639a330b753784a07a104",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._Different_servers.md.yaml": {
+        "etag": "W/\"64fab44a2cf33c795518add7a93b7178dcc861909f5b363eedbb36b7371e5d82\"",
+        "sha256": "e8039abe4847adc8ff2a6af2f205fb2b2d4029b11d5bd16189e95907057dcb76"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-fixed-multipart-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f88c6d81df5e6ca01292c081a2a497661f77e98592b043877a0db2e867caa820",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._Fixed_multipart.md.yaml": {
+        "etag": "W/\"e1cb965864bc9888b8c6aba4dfb34e54ed8b797c80591d432f472c21a4cea3f4\"",
+        "sha256": "fb682b929d50f82f8749652223a3ffaf564f1dd570581850e81275cfbe0ec542"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-improved-securityschemes-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b3a39a1c5344038e90278796675610200674cfc5afdcce651ec4b9c2ae9c7a2d",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._Improved_securityschemes.md.yaml": {
+        "etag": "W/\"92cbe5c219a8b90be4ae4b9a98e98ecbb2a11e0d1c68191d0ab0590776dc22e8\"",
+        "sha256": "ff1f266d60be698e74e3edbb4ea3404caba501d10264bde1e3d091229958e2a7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-new-callbacks-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b2bdd1e3d19b2bae484bbfc40c9f7b549ab487b694b586ac1debae77d0a033f",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._New_callbacks.md.yaml": {
+        "etag": "W/\"50dfdf5c50900f6b54200a68cbf9f73620cc24b82ee22ca6429723119ff12145\"",
+        "sha256": "07ab73211151490ab5c2f5eeb0b463cb21db7ee59c2d83851406fc46d91ea037"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example2-from-new-links-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe119f2856d43c80e46ef637aad649b06525db658c83e36fbd6021c1261cb8ec",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example2_from_._New_links.md.yaml": {
+        "etag": "W/\"9cca5932ab4a1c9a05f2368373020a02911708485756f375450a97d1e9f152a2\"",
+        "sha256": "7f9fa233c2a0008bd9309b4eb5c6901a4f05128380b812ce89cadcfb319722a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example3-from-different-parameters-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "93493d43d6e699589edd655bdc82ae027be1d7bde5c12faed0707a00db091eb1",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example3_from_._Different_parameters.md.yaml": {
+        "etag": "W/\"242a84f856eeed8d0c8de86d773eab6811c49e54d549dc57a969a2961d841011\"",
+        "sha256": "9697f949da21d12cff88deb52a341de546045c73828d1f5d71011a1d91abde2d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example3-from-different-servers-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7586a7643c82a447f0970f087e79e1a8b2f8dfd7a5ae4f6e2d70fe4ec9b01736",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example3_from_._Different_servers.md.yaml": {
+        "etag": "W/\"f996210bd4bb76c67bdba6a639c40fd75ef7354c693bbfc90f0851595bc805cd\"",
+        "sha256": "51f6cc5256ca544b7957fa7f4001e77e4674bca0cfc120ff75deb2eeb8d24669"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example4-from-different-parameters-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "64d58f6ffdee6da07a7f4e3eaac063b454a8e85d5b16146e4f20235764ae326e",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example4_from_._Different_parameters.md.yaml": {
+        "etag": "W/\"ad4d50de8df33444536cf901b546a729f7dc5537fd4c5b6790074618b28ca635\"",
+        "sha256": "0e357aaf0266266a378c68ae3f19e02968e205b8a0387e29919d097311b34183"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-gluecon-example5-from-different-parameters-md.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8eea8d928dfdc204418bc0caf4801f49691d1ff66e67ba25e8f9824f824dad8f",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example5_from_._Different_parameters.md.yaml": {
+        "etag": "W/\"7c5425e3f9bf19fe805d1afa44588ec5321da2011d28942062ac9b6388d02797\"",
+        "sha256": "f39d0b7a960c2eeb7499fe3feab27d637af55d80f7878ecbd43f1a6b5d2fe399"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-hello.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e0348d015eb97c8dd8695e6466647eec26c9cfa67542e9b61050e058b3f7533",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/hello.yaml": {
+        "etag": "W/\"0065be6fd1d29c5082910b46e9405e85f22195e37e9c3b612655f5ab252b1af9\"",
+        "sha256": "1d41bb3e145c33b3d51cb416afbe1194e4718d3f63976fe606b17e6175edc618"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-minimal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bd7402836b50093b16699ac935ba92e9cf7a03e5a6a3959c20877a0f80238fd9",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/minimal.yaml": {
+        "etag": "W/\"5b667a86a03b2bb847eb86c16abe1cf81bf4d017011f159d02f986c8e0001d5c\"",
+        "sha256": "f1910affeb7cb562a62960f4b5ebb7e22703674ac2120619fcdad3875a654952"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-nonbearerhttpsec.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cd03c97b8683666aedadf06e6c6436280b3dcaf34491e829a01921b2fa51e3a6",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/nonBearerHttpSec.yaml": {
+        "etag": "W/\"3da2b32fadf6cb9e726a9805ac6a4f98d8782f4e196685fc24ac298de50ebd8c\"",
+        "sha256": "86ae5aa0310261afb67b917c98c89960795cea0e5bd01b0d9b4270c1369be17a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-api-with-examples.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c610ae1d359ba971db7b83bf6427cacf0a1c20cf1b984020aa3a29d86386a15f",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/api-with-examples.yaml": {
+        "etag": "W/\"c1b6267f36163aba04e5a18397f8be2a82cbf1b9dca30f86d39e052865fb6c02\"",
+        "sha256": "f5789a8c5b33162dffc6f143ab21c6f107bebc4e5e7fee91ef4cb80daa133181"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-callback-example.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "350e91785979fab637aa3cd08bf23a22dff69e8b4bfe54e10f114caf9b7878e6",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/callback-example.yaml": {
+        "etag": "W/\"4acaf0d3d8fe55eaef1dd1b24dec19567352d057e706ba883e6899a5eb2e3cdc\"",
+        "sha256": "bc72afa54a67af68358ae68e85676bc3b76b7882b1c91e6bf07b77c8eac1da5f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-link-example.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f86f741e6e4e99bcbe510b5f60a65adaef1ce0d868667a819173321703735563",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/link-example.yaml": {
+        "etag": "W/\"c5df8698deec2254e46dac4c2291c6c2978fd938a709d552a8256c0cbcc046a3\"",
+        "sha256": "4b7b29d7bda1cf95f8c027500c86a9eb3761dfee42f1a8aeb095c5c0b5ccde3b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-petstore-expanded.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0e1e8f52443636987efe10f2cbba882f9be75b4fd2ffcae71d0dcbd74e3581f0",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/petstore-expanded.yaml": {
+        "etag": "W/\"50f699e065e3d93f215cc8e09baf17128c60c8763e6bf98c889af67f7ca07ab3\"",
+        "sha256": "9c6de60cec825dba331ed4c0e1f8e7423721af31d6d05aa7538945bcdb81ed84"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-petstore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a852dfc01cb19bb2ab0cd890f2034fdaacc01c7cee7edecb50d63389ddf43c39",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/petstore.yaml": {
+        "etag": "W/\"05939565e02cf8bb2b8ea45b27b48ae7bee574956fd2578729429ed7072774b1\"",
+        "sha256": "78b5883fe36e0db717cf21206169978c182ddf41d42342596f98c149a1456e11"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-uber.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b7bda8456c81f4d5f50c7c98c38f1ea1ee969cebf0202dc2382c34b0f17ea372",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/uber.yaml": {
+        "etag": "W/\"b2258e10efcf5085cedb55e9d411b82cfa5cc5d4317e831d945c7088b0f74cb1\"",
+        "sha256": "be1c978c11828aea7c3f0558446029408e21fa9b69fb605c5478199c1995d985"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-oai-uspto.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "69b01c9d0111eb6a539887426e52a8a15ece0cf40872c87b62346a4d80ad9824",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/uspto.yaml": {
+        "etag": "W/\"ea1e707b1c78a87c7f3db9a9539251f5cf622b676e2c1a543b847ce5091a3d9f\"",
+        "sha256": "19973722fcb551687bd70b4336838e9326a8484769018c840932f9af82545a15"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-openapi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81fba0c6923d5cec3c8c8e458d5499ff4be07c110dbc1d99c0a34e53d6064f52",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/openapi.yaml": {
+        "etag": "W/\"5b667a86a03b2bb847eb86c16abe1cf81bf4d017011f159d02f986c8e0001d5c\"",
+        "sha256": "f1910affeb7cb562a62960f4b5ebb7e22703674ac2120619fcdad3875a654952"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-server-enum-empty.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "5f15f78b32a01af299fc9a28655f81d80a741e57138b86bfdf35b60960183267",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/server_enum_empty.yaml": {
+        "etag": "W/\"cbd83e1866da67c97900853ec3da5111bff6cc42bb031a28a3b688ef4660b9df\"",
+        "sha256": "3e60b0a3f9a639f7f44f71f8048f2bf2dcbd9c2dcfa9368b71445585aebcac4f"
+      }
+    }
+  },
+  "configs/3-0-server-enum-unknown.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "e1523e38c02bd060550b857ab58f2cebb05d609f8c1c041cb9faba521b49ce27",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/server_enum_unknown.yaml": {
+        "etag": "W/\"5e21af29569d15b142528a2973aff0b36bc5586b20bc167a94cf31a863f49799\"",
+        "sha256": "cf0a2a3c18b81d5a9dd1c2d0a44ab9270526130654c403843149551b96a84b53"
+      }
+    }
+  },
+  "configs/3-0-swagger2openapi-openapi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "abda62f246fd32ca4993dcf5c9c227be97369e8a269ba3ce47108c44890fa238",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/swagger2openapi/openapi.yaml": {
+        "etag": "W/\"8e5007df6cebf951198219476dc88251d166f1cdfcff47ab73ced1c531e868e7\"",
+        "sha256": "462c4cd179d57cb4617f6bb83aff0452c704b2ec9037672858c916cab5cbf066"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-comp-pathitems.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "9c893e77b081bec590f923bd1e987a2d4adef1c6ac6c605fca289842b9c9084d",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/comp_pathitems.yaml": {
+        "etag": "W/\"7024d4049866566c09847f798874d963fa67112c17ac0898cfdbf919d8cd90a0\"",
+        "sha256": "70ad9a99f78a67aae715337c839368bc6969276274c250a8acd25d845ea4cd7a"
+      }
+    }
+  },
+  "configs/3-1-info-summary.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "c35b00ad761cf4181d366e1e3838c757686d2828da161c0792cc52862e7258cb",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/info_summary.yaml": {
+        "etag": "W/\"45dd5f6f6b9e8c48c5d9495b6c34881636080049ca7086531f15cc78194ad8f8\"",
+        "sha256": "7f1d10743acc25dac12d05ed31682d65f84af74edb6fcececec61703f63feb63"
+      }
+    }
+  },
+  "configs/3-1-license-identifier.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "8f49bb4fb1bcd782ddfa2a55fa1b9f3ad095b9ddedb3ca0af9ff6646450a377e",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/license_identifier.yaml": {
+        "etag": "W/\"3b77a652f6780eb96f5f6c005043a511b18bf37b4ca3a65189e9e6d47485adad\"",
+        "sha256": "25c23bd9471636f09fd1b3e74597a2bf9e617902831b3821beea2f487162fb33"
+      }
+    }
+  },
+  "configs/3-1-mega.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1230161dcec41bee6c2b788bddfe3798ee4ea30dbb134e00ba301e268015acf6",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/mega.yaml": {
+        "etag": "W/\"6d8bff4dddf391ec39bf7df911dde84260a6ed2417ca060208009ecfb1e462f3\"",
+        "sha256": "84b4814674f1ba97fea4608d9ce72731ee7be59680a6434c40d894a53b51eaaa"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×2",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-minimal-comp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "40b7136224ab954ab525045c1b2fee93c74ee448f513bc4e2e8ca64a430665a4",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/minimal_comp.yaml": {
+        "etag": "W/\"bda94206268844ca592913f0434ff0fab028e787124bb99ccd9f5612284bdb1d\"",
+        "sha256": "4ddb612c64c14661cebcccf6dd0723c9b1a98e24beffc4b186ce5c88de82a357"
+      }
+    }
+  },
+  "configs/3-1-minimal-hooks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "550161e1e18cc812112f28ddedc6c7b15fa54038d3eb5a26a2ef164c50ce79d2",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/minimal_hooks.yaml": {
+        "etag": "W/\"1d1a0fc2f616e8a2a2aea5f9737f3b0a605bd3fd84a38710644cf44421ddd462\"",
+        "sha256": "c3dab11ccf72be21125385b39e8af38bb69967fc43b0beaf86b62c374cc578a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-minimal-paths.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f16e28f66c196c2e6770fcb4aef4031043c81add15d8d13e0af957694b5ba00",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/minimal_paths.yaml": {
+        "etag": "W/\"550e663b9f48ae58e6e5c01e53c42e638b675c22ec518979f0fb7d33a7bb4246\"",
+        "sha256": "7349cd5760c3272e3f11ddd5c31fdcc829ba672fbb7d41566792c06b3091381e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-path-no-response.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "88161c4d4b66bb63192cb064f4df47eea38a3ef7bcecce1aeaaac2c187c22e7a",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/path_no_response.yaml": {
+        "etag": "W/\"731db5a71c3f25d251f8d5932dc79d6f4caa602a0236618679095009b6be9703\"",
+        "sha256": "bc241c8ef6ec65b3b94c2255618e5c334f4c7912683bb1e2025a1f2686193179"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×2",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-path-var-empty-pathitem.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "91ae802dfee8af88158cf7f2ae5dabda041f5518fa3df42f123e424f3a8a7ee5",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/path_var_empty_pathitem.yaml": {
+        "etag": "W/\"fe73f26895bf013682bcc00ced8af631d5944977ea4b73e92c89920f49ec0847\"",
+        "sha256": "9c0c157ee883bdbc8d556b6c125d2d9dd8089b83acdbc7b5274361a216a0f6ed"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-schema.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5ab5cab6dd24372ae284112d444d9d377ba591f228564f8767ef32b3a68ca2f3",
+    "sources": {
+      "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/schema.yaml": {
+        "etag": "W/\"45918e89deeaa905929206336d1f039f41de10579cd895c5aa20baae878147da\"",
+        "sha256": "051ff2b77c3fe80f4719ca83fc474f2439aefe5f39e058e95cf3852d1bc83df6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

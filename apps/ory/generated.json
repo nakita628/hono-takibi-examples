@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f444e1a6d9281eef7f7d28e88c9098b95bb0a6c1349c87417d664b3b3ec6cf4e",
+    "sources": {
+      "https://raw.githubusercontent.com/ory/kratos/master/spec/api.json": {
+        "etag": "W/\"5477478705979a6be72088e630860cf9f9b58a9ed9ed38c9aa00360d62c628c9\"",
+        "sha256": "b89835261389eac1cb6919b045c0b244375b1acfade88264c4d4c6399cbbe051"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

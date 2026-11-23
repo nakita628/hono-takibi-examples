@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b07dd978cd7b5613d7557730fd8c3f6faa36c431764e1601cda662db33e4a05",
+    "sources": {
+      "https://raw.githubusercontent.com/apache/fluss/main/fluss-gateway/openapi.yaml": {
+        "etag": "W/\"5e606850325a931d5e36af242000f9962f538149e6d61392568b690b24275eb4\"",
+        "sha256": "8073c8a1b16caae69557eafb82c542140dac8d62c388fea4604ad81def98c2b3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

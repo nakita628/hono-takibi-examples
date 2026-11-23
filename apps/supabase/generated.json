@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ddcc09ae6cf0b2f4636bea268f9845ffc26813429ad5e6e8c3a5f377f2375a5f",
+    "sources": {
+      "https://api.supabase.com/api/v1-json": {
+        "etag": "W/\"59fd9-d6NIOFmmNocTAav9o0zNSzh/b2A\"",
+        "sha256": "9dea9aa28a93fcdc223fa3e003bdf7189c2320cc6f7c4c8ed792c1428c83c080"
+      }
+    },
+    "typecheck": {
+      "errors": 1,
+      "where": "`client.ts`",
+      "codes": "TS2589 ×1",
+      "issue": "deep types (TS2589)"
+    }
+  }
+}

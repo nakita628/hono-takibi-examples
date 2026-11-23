@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cd652e62fc571e3206228847b0126ea0f66fa801258edc3ed6cc9a7835d749a8",
+    "sources": {
+      "https://raw.githubusercontent.com/elastic/apm-server/main/docs/spec/openapi/bundled.yaml": {
+        "etag": "W/\"cef463f3cd59f64ede62b1f6872f43332f7e798d5db62584c970987c2e845e6a\"",
+        "sha256": "e73735c84d80214c88e98e256b43c80f6f7db3150534bbccee7efb528f89564d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

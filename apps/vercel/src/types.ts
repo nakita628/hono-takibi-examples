@@ -4584,6 +4584,7 @@ type UserEvent = {
         signingEnabled: false | true
         signingKeyId: string | null
       }
+    | { projectId: string; sandboxId: string }
     | {
         alias: string
         projectId?: string | undefined
@@ -4596,7 +4597,6 @@ type UserEvent = {
         projectName: string
         sandboxName: string
       }
-    | { projectId: string; sandboxId: string }
     | { projectId: string; projectName: string; snapshotId: string; targetRegions: string[] }
     | { email: string; name: string; projectId: string; sandboxId: string }
     | { instances: number; url: string }
@@ -6555,6 +6555,7 @@ type UserEvent = {
     | 'saml-idp-material-set'
     | 'saml-idp-material-system-deleted'
     | 'saml-idp-material-system-set'
+    | 'sandbox-ai-gateway-credentials-configured'
     | 'sandbox-alias-assigned'
     | 'sandbox-alias-delete'
     | 'sandbox-drive-created'
@@ -7443,6 +7444,7 @@ type ListEventType = {
     | 'saml-idp-material-set'
     | 'saml-idp-material-system-deleted'
     | 'saml-idp-material-system-set'
+    | 'sandbox-ai-gateway-credentials-configured'
     | 'sandbox-alias-assigned'
     | 'sandbox-alias-delete'
     | 'sandbox-drive-created'
@@ -8275,6 +8277,7 @@ type ListEventType = {
         | 'saml-idp-material-set'
         | 'saml-idp-material-system-deleted'
         | 'saml-idp-material-system-set'
+        | 'sandbox-ai-gateway-credentials-configured'
         | 'sandbox-alias-assigned'
         | 'sandbox-alias-delete'
         | 'sandbox-drive-created'

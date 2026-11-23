@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "70b76500cb02e09c65d36b9181d726b755dadde6c5af2eefa73ee93e4bd99a0b",
+    "sources": {
+      "https://raw.githubusercontent.com/growthbook/growthbook/main/packages/back-end/generated/spec.yaml": {
+        "etag": "W/\"a6604aa640840f992a89028e6e7968f166b1110f367154dd39fdb2480d0cbc66\"",
+        "sha256": "43ec5f4c7dcd33cd34c6db9c697c6764a3810ac6f30bf1d9baf9aac2f5872cf0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

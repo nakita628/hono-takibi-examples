@@ -1,0 +1,32 @@
+{
+  "configs/v2025.0.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f51bd8ba39ad26055ac6eb1510d8946724efd5a6b6869a67a3e7a9a35ada7cec",
+    "sources": {
+      "https://raw.githubusercontent.com/box/box-openapi/main/openapi/openapi-v2025.0.json": {
+        "etag": "W/\"65be663043b4030e3aeb97b30c11cd38c67e573094cc74a8f0246b29eaf27687\"",
+        "sha256": "408e86ac3bb533628cf586ef4a2041ae662c4109c4313eb4d9e894e2c1e04fbd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/v2026.0.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "04841983084d675b3b0787bd0dbb7bf24eba00acd838a806510546cb3849d5a2",
+    "sources": {
+      "https://raw.githubusercontent.com/box/box-openapi/main/openapi/openapi-v2026.0.json": {
+        "etag": "W/\"cc62b71eccb09c2d7721ba0fb9490e5ba056aa348bde011b8fe473cf8083d110\"",
+        "sha256": "262f2717e6b9f6e88eb902d451174061b39de2fae5496efe62fbe049751c9444"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

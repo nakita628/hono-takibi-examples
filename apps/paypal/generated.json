@@ -1,0 +1,197 @@
+{
+  "configs/billing_subscriptions_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "63d9a40e9e947b9b51c9463c26520b90d246c86a9c32d5c8475067a7047294e0",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/billing_subscriptions_v1.json": {
+        "etag": "W/\"4a81613377cf28193133adab6d3159c8a3b9d657258cebc01d13e560138b5d80\"",
+        "sha256": "ef9d5dd5d81fba9d951c2dba2d76cf958ab1cd9d0a2dc6b8415df7fac5829a8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/catalogs_products_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f6cadddad20aff55dd61ce378b52580dd83735fed3b525ab431d4ae4ed0103d",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/catalogs_products_v1.json": {
+        "etag": "W/\"ee0ff7f4410710688457fb32f0afd842617d32a76c3b9e5eac25d9f0fb67ffce\"",
+        "sha256": "32a729f6373cf2f2bf801ac577bb2cd87505959e5de543585cdfe7981b5ffb97"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/checkout_orders_v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dfa10bea56b59da8e4d8d37c8b6cf36f0bf686a8589337b1a12bdc098ede6db3",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/checkout_orders_v2.json": {
+        "etag": "W/\"022a09443abd43b1772479a6ff13b252c22841586bbf1385c5ed76744442e0f4\"",
+        "sha256": "14db0b9e0d7440e38595b823724599edc7ab8b7a2b41ac442463e81b7d477fd6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customer_disputes_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffa0f532e0961b6e0b1bbd9a9f8ce73fa626d118cc67f578745ba806866140b4",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/customer_disputes_v1.json": {
+        "etag": "W/\"6ea94d5858f101d3e802a7b47fe448b8b51d8cdd9be509ecf3928b1b1602a27e\"",
+        "sha256": "a72134c1a48d800f4da69d5c331b5b74ddde3eb71c97fc61c8e221f3aebf035f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customer_partner_referrals_v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5041298f904884d394a38f410116848aae032f7ce69bd7876f8629d2469d8128",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/customer_partner_referrals_v2.json": {
+        "etag": "W/\"e053a58358792cf64c3176e77a96a2f26e86f9a5c5d9c930d971da6eea7c8d66\"",
+        "sha256": "0556960b0d44afc0f021484d394e4602e1f77b7430b6af5cb726f3e274b25fac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/invoicing_v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ddb8e9e852d3a6529a828c5e5f9ced48948298eeb7fb1b35355c88b13af19ecf",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/invoicing_v2.json": {
+        "etag": "W/\"45cea32423ff9894618c8474d736bf9f37f1052a2018f8484563773c6948867e\"",
+        "sha256": "b38ec179b0a904eed50825cd0b456e788569dc3fdb6efd08e131751f7cc19f52"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/notifications_webhooks_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f4ce151ffecbf171944e30e0227c9c3ba97c2ec32de5b4cb889fa856470ce0c7",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/notifications_webhooks_v1.json": {
+        "etag": "W/\"0da034798b5a20dfec41cfeaad5b8e3599eec9db2d558f35778016bf40cacc97\"",
+        "sha256": "4702a4c2601a087cdde7481f1b55800abb568906e50dde867bb958b4b25afecf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/payment-experience_web_experience_profiles_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2bcd6944b1469b636f53a8beffa81f81aaa1df799520fa6b7c2da10c8f0ca4d4",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/payment-experience_web_experience_profiles_v1.json": {
+        "etag": "W/\"b4a2374c588c5101e374832108c74120881438d9af3a9afbab6859e3d5448077\"",
+        "sha256": "51b0bd6bab29279f86684e446b2152a7ace62583f47ef8106da1ad6172f30a3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/payments_payment_v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e8c6d6565426f5ee3a52a9e7bb61384131b4d4ea1b9deb99d29375a05b819bc",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/payments_payment_v2.json": {
+        "etag": "W/\"51a263a205f759556d9d2c091e448cae4d2e729fa7ca7f4284db616f4fe6a915\"",
+        "sha256": "ecd8bc60e133bd4bc54de10daae3011a451e3a69e971ddf19c09213aa0f15c21"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/payments_payouts_batch_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5d062740f00b8c0663971dfbc359b504a95da3fbad2ea8dabbed55ddcd01f522",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/payments_payouts_batch_v1.json": {
+        "etag": "W/\"7e2cc935f13a33dbbee8e820d27047b15da33d6ddb9f54345c2b9a28f6042d52\"",
+        "sha256": "2a86549e2e7e42e9f082d9e43051fe55b83ef19dea1f76cff549377756374cc0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/reporting_transactions_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9aaa3e31ed8a90a85db429e8948fb286a736edb418665e5711521ff8720ac17a",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/reporting_transactions_v1.json": {
+        "etag": "W/\"7c9a5a6c0ba21147eb2616a9334da4703a18b93258915ad5d623bbf8f2aa4ec7\"",
+        "sha256": "40f2af0c02c204dde9227b14a6f9f91c2a6cc4222fe2c7c20983c6bc6f9e52b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/shipping_shipment_tracking_v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "61cc2154aa3968e32b6e6e811af50a6e9dd978fabc7ed324ada76b6a97550751",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/shipping_shipment_tracking_v1.json": {
+        "etag": "W/\"44d5d2dbd77b27dfb63ba57400ac49702f8d9e9b35fd013fd23f0d03f20534df\"",
+        "sha256": "837c6db98ebcb6599b463b6f75233aad84221bd644e6bc67a761906c68d26cfb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vault_payment_tokens_v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9e018e3bcd3c1e844bf6a5bb9d284c384f827d1cf6f83808eb10cc532ae333ce",
+    "sources": {
+      "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/vault_payment_tokens_v3.json": {
+        "etag": "W/\"a3aa8306d5b1645c4db8e5cd60f3e5158e7fca9334d587889aee0be60273c5b6\"",
+        "sha256": "acac6fb026868e361a967d4106b7ca39da41f1751ebe205e1df8365f559aa3d3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bc1a94127609e0d87af0278e0ddc7ae2cca6f3e8963db7c0e0f21c5ed482b7b8",
+    "sources": {
+      "https://raw.githubusercontent.com/haproxytech/dataplaneapi/master/specification/build/dataplane_spec.yaml": {
+        "etag": "W/\"6bc32dfc63d2068571382db3577dddf36d3113e35696bea2eac9f25fbe296120\"",
+        "sha256": "b8b2504908a1c3a6252b5472c688c8c4e71097b644a97f7f8be1df1de14d1aad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

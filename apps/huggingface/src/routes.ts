@@ -12811,14 +12811,14 @@ export const getApiOrganizationsNameBillingUsageByResourceGroupRoute = createRou
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-20T14:04:03.691Z')
+        .default('2026-11-23T09:11:57.043Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-20T14:04:03.691Z',
+              default: '2026-11-23T09:11:57.043Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -12925,14 +12925,14 @@ export const getApiOrganizationsNameBillingUsageByInferenceSessionRoute = create
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-20T14:04:03.692Z')
+        .default('2026-11-23T09:11:57.044Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-20T14:04:03.692Z',
+              default: '2026-11-23T09:11:57.044Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -13021,14 +13021,14 @@ export const getApiOrganizationsNameBillingUsageInferenceRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-20T14:04:03.692Z')
+        .default('2026-11-23T09:11:57.044Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-20T14:04:03.692Z',
+              default: '2026-11-23T09:11:57.044Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -13339,14 +13339,14 @@ export const getApiSettingsBillingUsageByInferenceSessionRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-20T14:04:03.692Z')
+        .default('2026-11-23T09:11:57.044Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-20T14:04:03.692Z',
+              default: '2026-11-23T09:11:57.044Z',
               type: 'string',
               format: 'date-time',
               pattern:

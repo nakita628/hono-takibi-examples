@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a04bff108ed92b59b821ad71cc2803173eb72b4bdc7e4d395673bd0b76b38048",
+    "sources": {
+      "https://raw.githubusercontent.com/octobox/octobox/main/openapi.yaml": {
+        "etag": "W/\"02345b1ccf1ed62e7d60bf918514b961f4206d7a531731f0c2f7050c64c9a006\"",
+        "sha256": "97190ddfcb2779db6a5cf047723e80d66f2862d772454122722e401898e9057b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

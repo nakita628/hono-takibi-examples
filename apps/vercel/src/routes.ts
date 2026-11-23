@@ -13747,6 +13747,12 @@ const UserEventSchema = z
             description: 'The payload of the event, if requested.',
           }),
         z
+          .object({ projectId: z.string(), sandboxId: z.string() })
+          .openapi({
+            required: ['projectId', 'sandboxId'],
+            description: 'The payload of the event, if requested.',
+          }),
+        z
           .object({
             alias: z.string(),
             projectId: z.string().exactOptional(),
@@ -13766,12 +13772,6 @@ const UserEventSchema = z
           })
           .openapi({
             required: ['expiryNotificationLeadTime', 'projectId', 'projectName', 'sandboxName'],
-            description: 'The payload of the event, if requested.',
-          }),
-        z
-          .object({ projectId: z.string(), sandboxId: z.string() })
-          .openapi({
-            required: ['projectId', 'sandboxId'],
             description: 'The payload of the event, if requested.',
           }),
         z
@@ -17886,6 +17886,7 @@ const UserEventSchema = z
         'saml-idp-material-set',
         'saml-idp-material-system-deleted',
         'saml-idp-material-system-set',
+        'sandbox-ai-gateway-credentials-configured',
         'sandbox-alias-assigned',
         'sandbox-alias-delete',
         'sandbox-drive-created',
@@ -18869,6 +18870,7 @@ const ListEventTypeSchema = z
         'saml-idp-material-set',
         'saml-idp-material-system-deleted',
         'saml-idp-material-system-set',
+        'sandbox-ai-gateway-credentials-configured',
         'sandbox-alias-assigned',
         'sandbox-alias-delete',
         'sandbox-drive-created',
@@ -19705,6 +19707,7 @@ const ListEventTypeSchema = z
             'saml-idp-material-set',
             'saml-idp-material-system-deleted',
             'saml-idp-material-system-set',
+            'sandbox-ai-gateway-credentials-configured',
             'sandbox-alias-assigned',
             'sandbox-alias-delete',
             'sandbox-drive-created',

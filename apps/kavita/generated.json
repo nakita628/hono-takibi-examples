@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3fe95a8887cedac1c71bcb9a4ed1ada383f963372161806c751fd90a152646a1",
+    "sources": {
+      "https://raw.githubusercontent.com/Kareadita/Kavita/develop/openapi.json": {
+        "etag": "W/\"3687159e2082b06e3af8898d397f62e42aade84e9eecf941d8cab4b0c50f3574\"",
+        "sha256": "e8744a3d01ef2ef629f4a00a0bc3fa6a628f73004de66ccbb1c4315962fd3fc5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

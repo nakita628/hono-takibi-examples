@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5c411748a78d6a637a68cb2b01625e6158c2e0bb1a53f2ac3c734482c377d8f1",
+    "sources": {
+      "https://raw.githubusercontent.com/nilsteampassnet/TeamPass/master/app/api/openapi.json": {
+        "etag": "W/\"1de8b53218ea999e48a65ce29cbf0b54678e9ef2708bd1b173343bcff55b5f7f\"",
+        "sha256": "df84f038004609c3036858558c2fbe6edbe5c81bd634b054a7b38938222956d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

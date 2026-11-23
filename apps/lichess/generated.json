@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "34d310a169cf2ca9e4bd9db02bffdab09966181400dbfa35e120741d3b4ec6ed",
+    "sources": {
+      "https://lichess.org/api/openapi.yaml": {
+        "etag": "W/\"6b007e5c-1226a2\"",
+        "sha256": "271f94c12aceff394e9f4fef20f8299924935c9b773e6013c457f015e134685d"
+      }
+    },
+    "typecheck": {
+      "errors": 1176,
+      "where": "`hooks/*`",
+      "codes": "TS2339 ×1116, TS2551 ×42, TS7053 ×18",
+      "issue": "upstream: @hono/zod-openapi types an `application/x-ndjson` response as `never`"
+    }
+  }
+}

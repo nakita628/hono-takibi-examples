@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b14086eb7fa9c8c2a8a1c24ed9f0887da04cdf9b8f2d8ff807a5b5287b138268",
+    "sources": {
+      "https://raw.githubusercontent.com/triggerdotdev/trigger.dev/main/docs/openapi.yml": {
+        "etag": "W/\"6b084f5e01eb8cd862584f100c5b3b89e0693aa0e0521a4034b958e83fd7859d\"",
+        "sha256": "0f61d649d288edd6c49516feaafcc04ec52f07f52d2c289eb0e78082934155ab"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

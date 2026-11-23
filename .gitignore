@@ -2,3 +2,7 @@ node_modules/
 dist/
 .env
 .DS_Store
+
+# Temporary files of scripts/regen.sh and scripts/typecheck.sh (they delete them when they finish)
+.regen-*.config.ts
+.typecheck-*.json

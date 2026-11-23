@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b333fb8cbd0953ad0af1f6285769e655630f93727a4dec173fd30f84ac64aa4a",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoft/mcp-gateway/main/openapi/mcp-gateway.openapi.json": {
+        "etag": "W/\"b241ce4e6bdc55af2dbe8e158b2d1259a714033d13e851c806e4fad2dddbd874\"",
+        "sha256": "0925122b0ad5018ae2c5fbdd16b1e23a606acfc2bf9c830ab35bad210ea1590c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

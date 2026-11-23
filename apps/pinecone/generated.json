@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bb568bfa83871312da7e0b4883b84667e4c57d55569b685066f3716773edcf58",
+    "sources": {
+      "https://raw.githubusercontent.com/pinecone-io/pinecone-api/main/2025-04/db_control_2025-04.oas.yaml": {
+        "etag": "W/\"8490ba08ff54d203ce1e57b7fc9bf50712d96b89b8d9aecf69469680fb947f46\"",
+        "sha256": "20e30578add7b435f79916ddc85b7abf5544611eb9b33a50732a35737cb5ffa5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

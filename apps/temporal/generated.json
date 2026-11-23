@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81771f2fc6c8adb5d65ef89cde10f9c9919f628e9e8f90842868a5dff1497cda",
+    "sources": {
+      "https://raw.githubusercontent.com/temporalio/api/master/openapi/openapiv3.yaml": {
+        "etag": "W/\"752cbc9f2e6eb734fef154c08ea2cc4be528e5d43516a0689c85cad045a6c50c\"",
+        "sha256": "f4956ad40786769b5ff41b227bb4a28ec5438acad4f74833f74cdde3f71a3527"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

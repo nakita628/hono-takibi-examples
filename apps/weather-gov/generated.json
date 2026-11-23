@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "77fedcac30f3ad4fb5adf4cdee7f90d3e630ee8ec4be7250088c939ba900a717",
+    "sources": {
+      "https://api.weather.gov/openapi.json": {
+        "etag": "\"d35176a841b8e1b2385a44e7cafc1ae80f8e401b\"",
+        "sha256": "ae478b69cdac6449e3b834dca636300f830dde552ac6abc180b1d5e82e2f1d35"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

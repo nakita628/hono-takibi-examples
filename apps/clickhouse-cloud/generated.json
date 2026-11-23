@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bb47864c61d96ba9468ef14f47a60f20373e736423febe95143f27282ba9f3e9",
+    "sources": {
+      "https://api.clickhouse.cloud/v1": {
+        "etag": "W/\"1aedb0-yeqYcY2d0FOPz5P8aw4L5sztjAU\"",
+        "sha256": "8c4f8f52b6007cbec835fcd14667af339a5450947a603234f21c33c384a31379"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

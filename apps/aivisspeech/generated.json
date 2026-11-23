@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6dfaa83f4b5cd69c48c377a6f70c275a382e6652cfd4003f31d9102844d3fb28",
+    "sources": {
+      "https://raw.githubusercontent.com/Aivis-Project/AivisSpeech/master/openapi.json": {
+        "etag": "W/\"211d18a4a7113876f8eb09305449c9fc8ee44d4a846dbb13342689685154e7d5\"",
+        "sha256": "1d935a3e31b82b6136a48a80241ba9ba666214b3899e7efaf7616dc064318aa1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

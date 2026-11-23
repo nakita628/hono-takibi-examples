@@ -1,0 +1,347 @@
+{
+  "configs/adhocprofiles-v1-adhocprofiles.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d7cc5ba1c708d7a2049e5dd76839014518c5929994cfaa3278234e7c8ace3c91",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/adhocprofiles/v1/adhocprofiles.openapi.yaml": {
+        "etag": "W/\"56828c22e396710c6f047af81d3a67a060b815e6a6fd704ea830f097e8f47a24\"",
+        "sha256": "5b15b7bc62e07b0f33ac8091e9ce72923711d22ede0c452ee5c6466473c6260f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/capabilities-v1-feature-flags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3dbcc218dace25ce078ba86d58623401a7db56296763a7a63041e2c1b391d40e",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/capabilities/v1/feature_flags.openapi.yaml": {
+        "etag": "W/\"9cab4f49c8a8ee6ffbceaf1b1f5070f3d485b84914bbff82687aad62db7e1591\"",
+        "sha256": "654a0bc02b73790b924ad1eedf50afe10a46a70c547b7a19552818bc8788bf3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/debuginfo-v1-debuginfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e673985ea88d038345f0534c24bdc1cfd1e4664b7fe9b0518354e9e1d8c5a7f5",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/debuginfo/v1/debuginfo.openapi.yaml": {
+        "etag": "W/\"71b1120c13a7d77f592d4c3bf024ac65194e44d47fb5df175d2ecb56a1987fb8\"",
+        "sha256": "a8be6982802f1fc89d48eaa8da2bb2bf19fe00d48612ccdd6d1c40ad49c00883"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/debuginfo-v1alpha1-debuginfo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "43bfba4e8f7743200918e8e68e479f9e4a68496d02b818d9e2db9223f66720a9",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/debuginfo/v1alpha1/debuginfo.openapi.yaml": {
+        "etag": "W/\"70a71c68edb35edf3abe58755a7364ef2bf94a150d50836876586911681e7ab9\"",
+        "sha256": "3d26c6a0ff3a5da6f97743c67f3f575e89e50d04db88ab9541bea1aa675380ba"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/google-v1-profile.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e43fa1250e28c6139321e9b0866e2f88a3bc295684d6363bec124f224ad656d1",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/google/v1/profile.openapi.yaml": {
+        "etag": "W/\"05b96a19a86606069dc865f1631ede8cd1fd54f1168b5af2603765e1cfb4d4b4\"",
+        "sha256": "28d8b6a491e38d78e46848cb9e2bf41ac6c4adff82b1c42a83de3f2d1ecd2db3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ingester-v1-ingester.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a31483977260f70e62ab8b3997887a1663fb8d5f8a2cf7fbc002931a97b8c28",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/ingester/v1/ingester.openapi.yaml": {
+        "etag": "W/\"57d1a16d625b9560864444fb7afa49cbfeab72f3129244fc09b0d4bdffc199ac\"",
+        "sha256": "697dd54ff0847098c8659b3c42100c87909f38bb16376c03966da05434db6418"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-compactor.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f62378325a58b7d6b3300deae4025366ea101cc562f9a61bbe19d8790de57fe",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/compactor.openapi.yaml": {
+        "etag": "W/\"1e92f59664036dc94393643368ff78b09d86cb39818c5a64dbf9d50d3bc04cc1\"",
+        "sha256": "ee63e67bf341bafc3d6994e34e1ea647dceef902cd75e9c7d8cae0249406456d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-index.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "010080a7eb0395b46eb1a2efb5ad6c918d9de930ca4e36d4ce038372235350e5",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/index.openapi.yaml": {
+        "etag": "W/\"0439ebc2c0425cf6e9c6a8f6e6bda7705ef97b5a78a297f52decf559d0a5b90f\"",
+        "sha256": "c85f997f82387bbb8f990f76966ac22eafd38801c923e00e217ca09eb7bde4ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-query.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7df9d86598625e4aa00087f26c3ccfbdec64038f0e42c112c10f5e1b65808b20",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/query.openapi.yaml": {
+        "etag": "W/\"c835574621116b08106923fe5b0a14931cb15ff4d95dd790ff8704f7719940bb\"",
+        "sha256": "f12e390b1f14dbdea60324a38e966384c41e0023d9cb05478c8fe9987fdc872b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-raft-log-raft-log.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5734dc2c6d8a5bbc94606d7f70e54cc89f472d362dbf33e60b9dd65bbc77a5f9",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/raft_log/raft_log.openapi.yaml": {
+        "etag": "W/\"a4799c966ca547b4b51858c6abc686a7c6cd90988fb048d424d3002fae4a564b\"",
+        "sha256": "cda97a5dc3c5da67977b7b1e7e6b2fb7c18e44e2f8e317d027a3aa6b705071cb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-tenant.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ca0c246a2acfd9f74df2684d8a1d6954c543904b16fbae8ad80706f07bc565a1",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/tenant.openapi.yaml": {
+        "etag": "W/\"54778959452570c377d443c85b595f51b95335cbaf23f0eac2dc3ff0583ed1b9\"",
+        "sha256": "904355aa82ed45db2049dafc05d050c28896ed1da663b666ddff0682b4a8a14e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/metastore-v1-types.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1264d1f2c4cafac0a09c33160f9908834ee4d5d7081b3dc57277441184e6a2fe",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/types.openapi.yaml": {
+        "etag": "W/\"225b6539cfc356b3ecebca0ef1f33e210efe418aba98155c04cf9c1484d39634\"",
+        "sha256": "13964dc0c8c459da7cd2254b763f8326007cc8809b4e89d49f5e56b70abc5296"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/push-v1-push.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "085daa1abb7768fbda80a975b0f120500e499462d1249fec17baa244bae48660",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/push/v1/push.openapi.yaml": {
+        "etag": "W/\"58bc0a1e1584340984d6c9f88d43d7d9c46bce151f526db0bda5388cd10c1da3\"",
+        "sha256": "9ed543f415093bb695997a7e0afd0c3ee0ab0d6ff74c302b1c466675caa76303"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/querier-v1-querier.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "706a3f6d3bbffcb7e3e6f2b2a8a328b153d6d60c37b124b9f5b1784c4e359307",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/querier/v1/querier.openapi.yaml": {
+        "etag": "W/\"c7cc6f35ed4a32bfe8f6dd84b8a4856647d3801bc37f76b9a2a55e5666b79ba2\"",
+        "sha256": "ced9f02ff51f127e36bb63dbbd051cf5865eb6a00c2419fd217b1843344770e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/query-v1-query.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e482b011955f2b59ca29294eee648cbecff40e0f97879122f03f70969c56ad6",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/query/v1/query.openapi.yaml": {
+        "etag": "W/\"e7746742616e3099cffa19b1aeeea8438556a165cc07a61084bea92d1b4c8ec6\"",
+        "sha256": "5fdeafc8f4a96a6c151b499265a8cc64072d3a8551bd123ad57df5cf6f9a4bff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/segmentwriter-v1-push.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e94f8697f2fb5a03dea31d473b327ea90846d002953b9203b3ef5ccf2fe55792",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/segmentwriter/v1/push.openapi.yaml": {
+        "etag": "W/\"f07692e9bc3597c95590be061b6db784c93682278e1e572a6477b09ee2356065\"",
+        "sha256": "8998df6ead149e83d2bdd231a69acc016db132b3380538130742d00cf0f31a12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-v1-recording-rules.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "69e4d5c9a23bd8a58780269e0c666abdb1e50a09f83113cfe177bb3fec5f6e88",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/settings/v1/recording_rules.openapi.yaml": {
+        "etag": "W/\"440291bb7ded890935c0e7f2f962054bf97bf855b23e89b26b8515ca40d687e4\"",
+        "sha256": "b6cfbec9fd1d99d6519dc7ceb0a4505ac96cc2330259fa960f59262a4e6092b9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/settings-v1-setting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8944176289cca62d83f8600cd6db030614d56100723b1bb348bea11d1a33671d",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/settings/v1/setting.openapi.yaml": {
+        "etag": "W/\"ffe323ce2929f2f7175fe3a4f6fae9f0372569bdef3926e6d35d75b38340bcd8\"",
+        "sha256": "96f9e9fb416a0ff0881a72f6680396e14d7646dac07a5582e7e638a0b7b23c94"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/status-v1-status.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "66b2c96c1cca55fdecccbc8058fe3dd828d600784bb19bb384f37a07b8bf0bc5",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/status/v1/status.openapi.yaml": {
+        "etag": "W/\"ec8417c096ecb2557b9c3bc3cc381cbcaf06a9a4f67319a3e3fff52efa9b5e60\"",
+        "sha256": "44d8c5bf2d68a482c7e3aeef363ce0ef83efe1f4c0684405fc667454b17f9ac8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/storegateway-v1-storegateway.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "be72860278ee42ee8922400693ff1f06508e904a2627c4382a8c4940e3a9b2c3",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/storegateway/v1/storegateway.openapi.yaml": {
+        "etag": "W/\"c75c457b269ac430949fd63079f4703b6c8a16590422c0258a80320b4f019e0b\"",
+        "sha256": "a7a4f327e2b5ee7e08c88f133b380345a8a0970cd80cf43b6c0955b19feb934f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/types-v1-types.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c61b82af6a64e5da80b8bdb0b04c58ab30f5e61ee87822d22e0a5600a2cd6a4c",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/types/v1/types.openapi.yaml": {
+        "etag": "W/\"d9c7c716976a1decba69ce2ffa498cb1e8d28c5b59f28b75037cc7caca1dbedf\"",
+        "sha256": "33fa29998618dd671a61d0f2eff5bd1af56fdbf91918590ae913c878ea9b0800"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vcs-v1-vcs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f73b934075ce79bc9bc23b6f932b9c5077eaba4b51cb629eb0b2dfb09add08e0",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/vcs/v1/vcs.openapi.yaml": {
+        "etag": "W/\"e2b4c841588631a729a0095b2b933b20c445353c487eda9130cc33a7bb70e97f\"",
+        "sha256": "5c8fe401175d60550855ac67ded55cbb595f7633d7a636ad84798b9e71a11114"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/version-v1-version.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0b6b28769d8c8f93f63c68ba041c99e4a47250e0255822a51d73d4d020ed2403",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/version/v1/version.openapi.yaml": {
+        "etag": "W/\"7a8414c91ea4966fd789f6f301adc4ac6c2b14c3ebd6be94b35bb9fb60263637\"",
+        "sha256": "e02424d6571d2d6f41bdcd8bde11195b7f10d3dd2f14ff816e5c7bcdb1722778"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

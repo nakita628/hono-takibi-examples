@@ -1,0 +1,4067 @@
+{
+  "configs/accessanalyzer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c26218ea35e0927ecfa510c5a41c7e56e8dbaffc7c1aaa029889750b1811158f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/accessanalyzer/2019-11-01/openapi.yaml": {
+        "etag": "\"f87e121b513d5de2a915f6d64f0f7e19\"",
+        "sha256": "e570a3a3cc5cc2b1e88793fb27fecbe0f2d5f3e8dee7252a41569f95778e8653"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/acm-pca.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6e0df39516fc9ef28fc36280c3dda5aa708bf5bbbb5771821433c4e286d26e3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/acm-pca/2017-08-22/openapi.yaml": {
+        "etag": "\"8b292e9713ac0492e228eb248043390e\"",
+        "sha256": "ed35113fa5b0daad931534b5927020fab6a66a70b8266206c87b975327013d3d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/acm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "61bc1b1dcf93669ece3501ff5230304877602e4d54d680829a1debd823a980c4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/acm/2015-12-08/openapi.yaml": {
+        "etag": "W/\"6fdfb041657a745e73ace8e1494f53c709f1caa986206960957c3957caafd9a8\"",
+        "sha256": "fa6be56efaed8fd617383003b558f8024730363c99771605873c9e5314f32aac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/alexaforbusiness.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0e8cb597bc05415e90e8382290365afe63f22280eaba59bfa1e6cb4d5036b8a0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/alexaforbusiness/2017-11-09/openapi.yaml": {
+        "etag": "\"4a086be2d9be6166f789086819bc5bc2\"",
+        "sha256": "4fd422a2ff7d628117788d0276a0a16c919a068af98525008b9d9bc92fb2ffae"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f1303e0fbef10084c3c24c16f9bbe6f2ab0e663055ac7c9ca1159691132fa46c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/amp/2020-08-01/openapi.yaml": {
+        "etag": "\"5e9031d5198516d8861d60cf1987371d\"",
+        "sha256": "c4ae6df6b16c9a282dbc7aa61c915e31bef953c9a38d646acd93270720412675"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amplify.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "de81e0deadc3a95e40b48e2f1d944f25b6ce07f5292236faa4cdf86391a42177",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/amplify/2017-07-25/openapi.yaml": {
+        "etag": "W/\"106759fd63e0a570bdb7b0a098a8a903b386506ea689a6ea934cb2eb450b7c3a\"",
+        "sha256": "297faef4a41cbf10b4631d11440d1136821a440ec8227b763082ac6c47e347a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amplifybackend.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a0775e15f8cfa26d86718bc7c1181dd792f2c7e5a3fcc35b64f283dbc691436",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/amplifybackend/2020-08-11/openapi.yaml": {
+        "etag": "\"9ef867d6e706d65343b546421fba7e2f\"",
+        "sha256": "09e21745cd6dc5396cd6b3a7e0bd8eb098d3834b8092582dd34fbca6f4da23d6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigateway.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "684d5b7093ca9294340c0c62dfdc566caee7336c04370accac32a14c7a018ce3",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/apigateway/2015-07-09/openapi.yaml": {
+        "etag": "W/\"1566b3cbb279e6fc6eed774507ef09200aa62ba800aed59bb4aea9364cd5a7e2\"",
+        "sha256": "b38e21b01a2eab0363c36ee4266efaef995d760f19fb6225bb34004bbf6cb470"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigatewaymanagementapi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "444184d2b67194bbf2fff7686db309f41efc76eac83e86d7100faefab5d60aee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/apigatewaymanagementapi/2018-11-29/openapi.yaml": {
+        "etag": "\"3fc98dcf0cd71c76369912696c979c71\"",
+        "sha256": "0585607de7845db61360180b00331506ea5015b9c6b23f9814376a170f7712cb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apigatewayv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "11e210fa184603ce9d5039353d5121861ce8194cf9a142e9c8a98b431412c52b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/apigatewayv2/2018-11-29/openapi.yaml": {
+        "etag": "\"7b801ae474650c062ea10e85a2ab5e76\"",
+        "sha256": "c8a873d513bef8ac901dc8bd8d7ad619835c6816bce74f55150b59b4b25dae83"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appconfig.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ff0e36d997c32dc5a124389c3295dd1b1c48b5b6e39d9faa26ebbaaeb49d2975",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/appconfig/2019-10-09/openapi.yaml": {
+        "etag": "\"640b059a8445176eb4b66395d78dbd73\"",
+        "sha256": "4db203cd35ffa6256db20c9cbf59aa90c792d5f2dcd894bf18739eaf772f63ae"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appflow.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "59143db54e3057657661f3933f5e6aeb1061beab0dc6a8497621c61b0326a21f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/appflow/2020-08-23/openapi.yaml": {
+        "etag": "\"65a1239e04cd435adde0534f2037f546\"",
+        "sha256": "bd988a51f4d92d502018b86454f26cf96696559875da7f6048550fd4c21eb883"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appintegrations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a4fa0488fd57659073db2b34b36a83d6c47311a1336a77ec3d4f46c4de0670c8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/appintegrations/2020-07-29/openapi.yaml": {
+        "etag": "\"dafff9e5f38973de06473a91fa678258\"",
+        "sha256": "290afcf06e374b6a6c8f7df7d51c6e4c00d594ba8c0da55510ba2ca9b3c16101"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/application-autoscaling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2d615aa4fcb63de16fd13e558b1035ec89149779c59a67a5b20dcc1fc2624d55",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/application-autoscaling/2016-02-06/openapi.yaml": {
+        "etag": "\"cb614edc01e5b2681ffc70238b2ec585\"",
+        "sha256": "8e38165ae39fc49fdab6e62d534af9d71d3d8f921dc7a10281491442b3728ca4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/application-insights.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e5dcb7356a66cfa20110d6ec8b4e50f88464b534263250c1994210cc94306055",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/application-insights/2018-11-25/openapi.yaml": {
+        "etag": "\"b1c048172210694014c87fbf92bcbcd6\"",
+        "sha256": "6af64c27e8e8e565bfdd6e3d5e05d55ed2fa55431cf1fda8460d92f88d797f7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/applicationcostprofiler.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "612e7638aeb61f1f416ac13737b7b2a6a5ff32ddd79793a6ecdb5f1033c26b53",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/applicationcostprofiler/2020-09-10/openapi.yaml": {
+        "etag": "\"15a58891b3bc331bd06a6fdc8d40bc58\"",
+        "sha256": "a87178edcd3e973a1fca5e52aa6867f0407ce22fb2d35b9bc2556b62c3ea0e99"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appmesh.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5dea9ce47cf745b12caefd0693fb00d4bca7da1ff1899ec133e2a78df0aad98d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/appmesh/2019-01-25/openapi.yaml": {
+        "etag": "\"43ebdf0aa4694a15c8fb880732178994\"",
+        "sha256": "e8e92266b856f7267750c578419b13ed6a501d7a2da2b8f7cfe4d2eb350638a9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apprunner.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ac3eddb50df5d687f18dac5cee76a8288c2d17afee3b3b65cd8108c1ae819d74",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/apprunner/2020-05-15/openapi.yaml": {
+        "etag": "\"3270947b7a6da2c1b86ab70b59ec3038\"",
+        "sha256": "b593e60b235dd9504a827fc8872fcd095ef8f42bf0b4cd3993b1ee45b7c781bf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appstream.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7784da253eb9f2ac59f908e812fb39c3881ac846e7fefc67aeac3d4d7faebe58",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/appstream/2016-12-01/openapi.yaml": {
+        "etag": "\"28d5ceb5671b408ae9cdbb2215f59145\"",
+        "sha256": "6f95d8cf52ad351ec657771d5049a2d88cb14d69ea6b1354adbce56921bb083e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/appsync.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49ef99657051b87020c3da66576bbe8da449dfc028658fcbb68c253a6b07be1a",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/appsync/2017-07-25/openapi.yaml": {
+        "etag": "W/\"f8288bf2f3de5c8e85b12049592476fce4838491fc637c16c0ffac5550028885\"",
+        "sha256": "99a5e6a5fde7cd1eb5303cd8ff39b7c750bc67bc9050a2cd2d3a0248dcef404b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/athena.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bb2c4b73b251c5627d1e7373a137a19cfac0d4139eb073ed4f2f95af83a307bc",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/athena/2017-05-18/openapi.yaml": {
+        "etag": "W/\"e3876ccef0ed397aa885244424a4f1ffd22fdff22d5ac5b1ff9e3fc9b3d3c5a0\"",
+        "sha256": "cfd32ff656fe94c1aadbde70a071478706d8dafdabe58791f095c1a8980fb08e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/auditmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3109644de805c5a8825dd85f82f57326cae2287b03ccab58d04d029396ce05aa",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/auditmanager/2017-07-25/openapi.yaml": {
+        "etag": "\"354635bcf3b925b758632e2acec8a4d5\"",
+        "sha256": "8d58697d5c48c4ea45d6fbf43c8fb85872b737a98efa3dc75bb406f61dff8a61"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/autoscaling-plans.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b5b18d5568d54c22e51f409e9e5bc49956e5cb91afc59988332836b00e2898dc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/autoscaling-plans/2018-01-06/openapi.yaml": {
+        "etag": "\"5aae5a642e29bae543fc4bd5865e1733\"",
+        "sha256": "79dcb9cf1b60c35777a33df1844dc1cf53079c5b31621d2a72620beea2b35368"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/autoscaling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c3294a17e0d576fc4f814d28d61733371fab8511cf7378fe47616469210a2c5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/autoscaling/2011-01-01/openapi.yaml": {
+        "etag": "W/\"924df098fe6e36f5ce9530418111bdcba1d33ab6f58db08a4d8ef8e4b352cb58\"",
+        "sha256": "afede5724cba405d5c2e74811e262cf18c1fb2f00220ec25d34844c5160460d1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/awsmigrationhub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "afaa81ad06c5c0582ea3db2e75fd70806e1573aa1db894b5ce14c32d6d1bfefb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/AWSMigrationHub/2017-05-31/openapi.yaml": {
+        "etag": "\"bc65673856cce1771aa45c200f860033\"",
+        "sha256": "23b373fe574dd99fd5765be3f71a7778200883e4b486a6de12e1b64a4288a91e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/backup.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "02f0849be158c2c638913b0f6f4cb1545b2589496c6f1759116f375769bd074e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/backup/2018-11-15/openapi.yaml": {
+        "etag": "\"a1054aa88f29388aa9ac3550f0eb794b\"",
+        "sha256": "dd3a6333e14eceb6cbef4cd73d5f30604e0951588c44e79fd3dff4e607ebcf0a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/batch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8b3987f266d5676437cb5f4639ece5a23a364f8bbcf311cda7c561ab18533f4e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/batch/2016-08-10/openapi.yaml": {
+        "etag": "W/\"4670287f04a5467b7cbb2479ccd3b1214a238cdc344da5bd2f6db2fa25f2c940\"",
+        "sha256": "d0ff1b6d9e45f8d2f6eeb4eea80541fcd53dad2fe6404377e9c379629785dbcc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/braket.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f709a336c29117d90b556bf785403721f14f8ae55b2b7695d1804b24b68f687",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/braket/2019-09-01/openapi.yaml": {
+        "etag": "\"4a95978e81b2693d5d4aa672deec83d3\"",
+        "sha256": "bff5dce09b9d4a44faf35ffe9f753c9e81ede4ad9cc8cff9b4290d64529a4e45"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/budgets.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2987b6800c0c2cf1473c3521124a388b77afe3717756225d6d73328f49166726",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/budgets/2016-10-20/openapi.yaml": {
+        "etag": "\"f8886a395930558d162a60d3f3bfacca\"",
+        "sha256": "dea7644dab36a912093ed71a53df863a008e9e3ee5aa1f1d59b7c6381a896584"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ce.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b31e0b3b9809d301a923a50d0e900cee47718bd6403fa38139b8477e5de13e25",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ce/2017-10-25/openapi.yaml": {
+        "etag": "\"dd6f9fd994bfa3f21dc352b2a0160097\"",
+        "sha256": "d8b64f4ebd04e940a18ede5740b2f3ac1e0e364a6c562d525239b382e30dbf53"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/chime.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "21a0e140673cc0685874198d6ebc1d8960419b808a43a87e4dc1e1488b3bc636",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/chime/2018-05-01/openapi.yaml": {
+        "etag": "\"c7630f30780c7f255a66e0543907139b\"",
+        "sha256": "54d3f5dbd05c50708d058b4fc36df164715cffd1a5603b4d79deebbcc1cb8035"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloud9.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba943a58e2b43cef54ecae3874bc9926fffbd062311216635ab2e1524bf2371a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloud9/2017-09-23/openapi.yaml": {
+        "etag": "\"f0cab5bae0ae3f3802451936c6a5d6d3\"",
+        "sha256": "a734c50f178afe2c50b701ed46075e3b9efd6579ca10156048ebbea41eacb824"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/clouddirectory.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "54729b9d71d6e472228eaa866b20eb6996118e68ea19980cdc557de5a21a21c8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/clouddirectory/2017-01-11/openapi.yaml": {
+        "etag": "\"2996a1d9deed7f1d76f76667b5d470be\"",
+        "sha256": "1cd4e637fbb8ba80225c59299fa29e424b37f77f80c7e008d93583a5e70d89e8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudformation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "387c94006b434938f86094a1b04e094e78cdda943de1ce0b63588b295c38d709",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/cloudformation/2010-05-15/openapi.yaml": {
+        "etag": "W/\"d616c1cedd5e498fdae38cdb7c46882c0c010697f2c1743e5cbcd6c2a3332a81\"",
+        "sha256": "cbc89071b2a1f82426db9c4a0d16788f13752c6f527b85507901fd76a8a47c2d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudfront.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "145a6af12dfde67db91c7833c6bde272b8f6fb9eb6160199232b9dd50dfceeff",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/cloudfront/2020-05-31/openapi.yaml": {
+        "etag": "W/\"2a99715510dfbceeaca3378963adcff532db21979e8a4f78970e1c75fe1f9728\"",
+        "sha256": "5faba00e57ef0af89609f6e45e48fbf28a879d43920b1039c3035578d1d62f53"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudhsm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ac117f9d6f284d0081a95b38eb6d941ce04aa3fc49ee4561a13bc21469feeee0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloudhsm/2014-05-30/openapi.yaml": {
+        "etag": "\"1adff8aa6d610a3dbfc03daf70d1d4a0\"",
+        "sha256": "aae0561bb7e1b162a0e3ceaee50c2121f7730e88153ad18a23640fe355a66d48"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudhsmv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "73186be7b7d04799dc6c699afa6b529ea071a153311858aab9e1962036b7574f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloudhsmv2/2017-04-28/openapi.yaml": {
+        "etag": "\"ceec3db1a1fc2f65716d0c7110b8603b\"",
+        "sha256": "e97abbb96f1b38ce350b27896a73910504bd7e63e743a205b5344c3f8fe07002"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudsearch.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "731a6f1816455d03c6f13c922e6e4002d523a12e26516b2bbb6bec764d407bd3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloudsearch/2013-01-01/openapi.yaml": {
+        "etag": "\"c4c80b1f28e19f8a5da5cf7533875bd5\"",
+        "sha256": "1a229aa6461eed984111ee92f3569af9583f1c8fb916f4848910bb685afd0106"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudsearchdomain.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0311bf4224c4f0d4e8a51bcba075e78d62defae2a3fecb373b3a75a477d0083f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloudsearchdomain/2013-01-01/openapi.yaml": {
+        "etag": "\"b363646be6c1bce5c7e580d61181a65f\"",
+        "sha256": "eddcfca481149af4acb9d582cd42fe7212d43f23d4c0452deb89b6904f0f44ae"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cloudtrail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6228fd0d5576b1bb6c52f7f1f7d7d2830247b950c45e74d607ded3310ec13df5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cloudtrail/2013-11-01/openapi.yaml": {
+        "etag": "\"9c79e8dc9da31c712e79e8338b5c6c4d\"",
+        "sha256": "333784bd9c096a6cf5887036795ba47777a7ae1ec22ab79dfc11db7f0889db0c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codeartifact.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c0dddaab48249824cfeb53fef28f5684cdfb0f83bd3b2914ff0dc118929befdb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codeartifact/2018-09-22/openapi.yaml": {
+        "etag": "\"45f1591ef7307d06765c50a1275ef0fe\"",
+        "sha256": "ba458645ee3eac31a0baff98c7fc736c54bc99991618e48e65864b52cd2118ef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codebuild.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e5022c57ef63233f0f3b8cbfa66ca2e5888b5508cfcec88efb5660096fcdec04",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/codebuild/2016-10-06/openapi.yaml": {
+        "etag": "W/\"c05be0893205d911ba0c5d2c255ab8fb971ca1b9f12a6034c3860ff68401ea60\"",
+        "sha256": "7409cd7fe899fc73af6a994060f01303fa8fa462991c70d1b931f18f1b883b81"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codecommit.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e6079ea711f11f29d7dd81453f6e61172c18e616bd3b49c7aca0ebe33841694",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codecommit/2015-04-13/openapi.yaml": {
+        "etag": "\"5c88b661108e0c264b2bd2cc4e6c23cd\"",
+        "sha256": "8306d5d02ba6411dc2a7e6d6996b23e4046103c6e150f5cea3325cd2306741ac"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codedeploy.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3a13cb5d617be0b74ec9decab6d5a23af4cd114c0b7cd807e2040710dbe72c9f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codedeploy/2014-10-06/openapi.yaml": {
+        "etag": "\"0801c4f32459090d1fb7a51be0ee05a7\"",
+        "sha256": "baac0dcee0881b3dfd81315917cd071d733bd405ef6472a98744907e87cf06b0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codeguru-reviewer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3a6ba8406b47347e221bf78fe47d45c5559a5dfb64f23975a1b5a995e3bc0ead",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codeguru-reviewer/2019-09-19/openapi.yaml": {
+        "etag": "\"f2d442d8fc985c4b3f2d54f7e0ab44fa\"",
+        "sha256": "2fa94d54898c440a7b42d3622277a6f1fe1b226e0fe9b8e35a1eb760b44d5e42"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codeguruprofiler.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c821de15cd1abcaffeedb069a2420acd79c07a272212e1fa0b9483e5fc7ed8d4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codeguruprofiler/2019-07-18/openapi.yaml": {
+        "etag": "\"8ddc885368405f81427f02717bac9075\"",
+        "sha256": "1f9b03651f9de8efb3a1fffe46836de913f5a123de64e2bb412cb8179a7d04a3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codepipeline.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a80c5eb59b4ce3cb6f62cca06de2caed2602c03bf95cf6111d8fb11efee6e543",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/codepipeline/2015-07-09/openapi.yaml": {
+        "etag": "W/\"12ab1512ca7d3cc36473f58a7aea9bf332419d48dd2e1efa8a4bb49a88106533\"",
+        "sha256": "9e95307d4e7cbf4f9c34f01afc53282e328c84f246af34b57ae9a8b7fcc63ae6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codestar-connections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e9b28623291bc4c9cfbb2b95aac6775d394a048105526cbd3e5f67277e21df68",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codestar-connections/2019-12-01/openapi.yaml": {
+        "etag": "\"4c188c9e18b8337e861d7ea7ebbcc456\"",
+        "sha256": "a1eb5ff30de6f7d3aec659e8e71e6bde8bc3fd10c1a9ac8ad75e8d0fdd3a22d9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codestar-notifications.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "be5dbb0c759652dc46b016e5149477c8c8a438ab03f3eba216a60d9134fdb965",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codestar-notifications/2019-10-15/openapi.yaml": {
+        "etag": "\"55b7aa334e208ee5648f4de9ff2f4bce\"",
+        "sha256": "277f92af9d9b3fc116696592ac418fead1e118bd7d8f12f7f16d1dffd5b90731"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/codestar.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e4d65e4eb913a107c9daf9eac322f6f9832488f1b5626655b4cc422f27293db2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/codestar/2017-04-19/openapi.yaml": {
+        "etag": "\"6427f6900c049e063c8b07236a53e557\"",
+        "sha256": "e9924f93558b698496548941ff796632ffa2e02e5d7ce79bb8a0ee250f46c4c1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cognito-identity.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "30cfe7f2008dbc3a2bb8e752a7754bf81b87c8b5bdd50ca4467d6aada4f8d457",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cognito-identity/2014-06-30/openapi.yaml": {
+        "etag": "\"bdaf6bc2a2f734a07d69c1ee07a471a8\"",
+        "sha256": "f86a376760c9322505f54a285b62efacb65e2c5d6a1012c88649a6920d22bb8e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cognito-idp.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6194187b9f26ac25c2a6d3f2ac570d84fea92d0935f77ca509da1beb524d73d1",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/cognito-idp/2016-04-18/openapi.yaml": {
+        "etag": "W/\"5036a7fdbc67dd596c4d96563e38e90e46228d65659db62f92442f19471cc86a\"",
+        "sha256": "19e1e272bae8d2441860656fb5229685c9f7bcac2b045912ca484059b37acdc2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cognito-sync.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "66bc207d2b382b6d508c75764919a4ea731ca106578b13e1a1d4fd9a4187251b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cognito-sync/2014-06-30/openapi.yaml": {
+        "etag": "\"7768b52b296507278730b980cf4457d4\"",
+        "sha256": "5630581a0a36e895c3deb9fe9416596f3c481a5d1e04e696916c2b9e082d7f75"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/comprehend.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8fb146d09201e22138a4fe9ab24f44f846fd2200cace38f55dd801619cb1e79a",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/comprehend/2017-11-27/openapi.yaml": {
+        "etag": "W/\"073756aa7c749de13ec0ae985bc59d3ccb9e55e38842454d69de86391ef5f7c5\"",
+        "sha256": "0f82bff16c6408a4ed11c84ca42d59462c00a7fabe524dd273c6cf6d74f0f44d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/comprehendmedical.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c9163f17d99a19f4a24335c9c7b92a7924e5d3a0046258265cd619f19ca1dc32",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/comprehendmedical/2018-10-30/openapi.yaml": {
+        "etag": "\"401cc3f740310d4fcc1256cfd0e433fc\"",
+        "sha256": "0511e177ef875606b6a37ba8e2295c46297f624165aceaf19ff6562111b9bcb0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/compute-optimizer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eaf2dd229c34e547dc06fc1882afe93b31a8830dacb75ce6a81d15d886ae53c4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/compute-optimizer/2019-11-01/openapi.yaml": {
+        "etag": "\"5aee6bac63e6503e437c909503a94eb2\"",
+        "sha256": "d822c75163d3245fbbe84753b4843087a49e08d5062077346e5f6eb0d47d483a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/config.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d7cf18334ab97795e54818475bf3bde250041862a237f2a691d48b7f16debbfc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/config/2014-11-12/openapi.yaml": {
+        "etag": "\"64eecde4101dc670d508d40636f6aee1\"",
+        "sha256": "72c73682d5451cfa675add3ad3dcd769927054366d11bf648c24c451efc8cbfc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/connect-contact-lens.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eccc75acf58406338db14bb649d0d30ecd91e1b68baca9a53d44051cb0bf9636",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/connect-contact-lens/2020-08-21/openapi.yaml": {
+        "etag": "\"7879b891631f664e7cfaf9e038205241\"",
+        "sha256": "7b19ef84e5f0d4bfb99f5ca082017b93531de8535053c9696b04b6e6b0835757"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/connect.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0963a8b6fed4d20feadc97ca934cc269db7e80c1a32f129f5c7e376980c45fee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/connect/2017-08-08/openapi.yaml": {
+        "etag": "\"8092ab4de239aa588c4dadf7780ee9e2\"",
+        "sha256": "63921eec7328ee55b2dd541ef8208b1c4aa3cc616f1fa1a55b1fce4edcbeea68"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/connectparticipant.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "07a7901858469dfec2e630dab02aea25a280b3be28c439684e45e5d54059190e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/connectparticipant/2018-09-07/openapi.yaml": {
+        "etag": "\"4bebade5f3667007b3a842d822b0ecbe\"",
+        "sha256": "da0b00275fad072f8ba96dd0ef2abd1962c612754a766918c8527f0975f2c356"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cur.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d240f2a4b21ef2386703f61d5849d6b4a7ed9272c8f98225e8dafc7f0dbc4ebf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/cur/2017-01-06/openapi.yaml": {
+        "etag": "\"abe98eb530bcc3af2428ad2eaa6b7bc0\"",
+        "sha256": "dabd879246de3e777d4e2d5cb1deeffaa096f6d0ce71573b42dabb8b29939e23"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customer-profiles.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "164acc5507fcce3e7c8b3ecfe27b92ed7f8c93b64048c91a6c2a3fc24a77fca4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/customer-profiles/2020-08-15/openapi.yaml": {
+        "etag": "\"f4dba015d5a97abe8af203af34956b5f\"",
+        "sha256": "7ab7367fc8d4b83c1085a1c1a5f0dac299ad46aadb576b162c2c61e611ee38eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/databrew.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6818cacd806c91194950a2941051d9638eae407ae6d0e40eb9b5fa788188faee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/databrew/2017-07-25/openapi.yaml": {
+        "etag": "\"80e8146e732a23a2d2499fe294db9db3\"",
+        "sha256": "9f368af19cebf65964e78455175836e6de9d145a889239d56ef956742514c4ea"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dataexchange.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0520162df0fa2e104df3e046d65b167fe1b6f07adb0aef93b7679ae3639d656c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/dataexchange/2017-07-25/openapi.yaml": {
+        "etag": "\"5c4ac41f320a3c33649e6cf6f69b6228\"",
+        "sha256": "c7c64628b5790d3766328cf3b9fbbf0e6a331b582c4d5604b4e68790a587f658"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datapipeline.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cf7122984eeefc32c99ecaf6ad14f42c1231b6a61d0572cf065fa9c00b2289b0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/datapipeline/2012-10-29/openapi.yaml": {
+        "etag": "\"2bfac1ddae7762328d9ac5d85d39a524\"",
+        "sha256": "40dda32d456f34f1f19f9016e4d0999734aa3fe76129d98f4973d79d42302afb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/datasync.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "587d3701645bb468ecc22720641c8764a095ee1a7d78187a3e97a5a78116bd00",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/datasync/2018-11-09/openapi.yaml": {
+        "etag": "\"1aa18b90b5d1d55b8043692946adcd17\"",
+        "sha256": "e01d040f80713c7ca1e0e6d5468590cd1d0e8de7feb13c63c16b470d65d524eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dax.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7eef6f8d0d5a7ec6b46e6f3303c59a2b0669e6af6c508dd99fbce289f92b6460",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/dax/2017-04-19/openapi.yaml": {
+        "etag": "\"7d5a60de5e2875e1493bfdb01b8de6f1\"",
+        "sha256": "86ec072b70d8e4d2f57abbd499c9ed18a11946bca80af4f6c0bd667ff7a413ee"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/detective.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bb0f6dfdd7316000b1f496660d360863d8153f648e56e7c7c6932601fba0c7e2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/detective/2018-10-26/openapi.yaml": {
+        "etag": "\"0f3b5949a1337c087501d5ac833a0b7a\"",
+        "sha256": "6d2827fa1d4f4bd348fa08f0cd3c0baa569b3c1fa29529a01a871ecad76030a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/devicefarm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "66c9644adccf0ab6784fcfdd092ee1bb4f5e8924f19a1478f7be4a4ee6345a99",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/devicefarm/2015-06-23/openapi.yaml": {
+        "etag": "\"fb90505ed772bc6f25fa4fb52553b75c\"",
+        "sha256": "33c1049eae6932fd1d64fe92172e8cab88ee1495f5860cc12540437611de6aef"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/devops-guru.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3afcfb814487b39ec77ea5fd208d7e46627d56844e749e4492602a1541910b79",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/devops-guru/2020-12-01/openapi.yaml": {
+        "etag": "\"6b1834744932f1ec5e298e2c1ceb259d\"",
+        "sha256": "6270add1d8f2d2589987df372d564cc44f6aa2bde380b1f8895c0002e2b9a87c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/directconnect.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "411fef53ad53ee27f4c9005008643628890fe3b6b43b2ad2e22d3626666af82e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/directconnect/2012-10-25/openapi.yaml": {
+        "etag": "\"993f5e605b881f172aaa402a7dbf2a19\"",
+        "sha256": "dbdd50d51bd3391567619dadf3bf137170bcd228c7887bb3cbd25761215913da"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/discovery.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e894135bc84bf0065259d9380ba1672284fc4740be74924a44b83a5b7119e345",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/discovery/2015-11-01/openapi.yaml": {
+        "etag": "\"83b31a5c6b0a178e85a375b194594824\"",
+        "sha256": "26d1cdcb9514ef68b0e3a5b2b2f23ff6cb195b267d11e5b214546e522cfd3a7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dlm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "37adb8f3ca81f90d1010e40f982ed4593631cd4a36d6e6dd9739e3b619561985",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/dlm/2018-01-12/openapi.yaml": {
+        "etag": "\"5148e3730bd64552d5f09da42be95c2c\"",
+        "sha256": "3899ba817b941827a4db83872ba57edb835edd801945b26ef09448bbb55b80bf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8423cbe6acf0bb7210af21f98d16b3d1a5c906e9314939f762da699c25985fb6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/dms/2016-01-01/openapi.yaml": {
+        "etag": "\"77590758014ba304cd8e9b3e7cd01ea3\"",
+        "sha256": "814780114328b928add9c7dd662463eefa72eac88f756c39c1c5e5236dc61d3a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/docdb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "94d212d43ebe4503e5a1ae33f15aec7a537cfb3a2681614417920ba2f6b2ff38",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/docdb/2014-10-31/openapi.yaml": {
+        "etag": "\"787b52bcc62797819bbd7a4a53639ad7\"",
+        "sha256": "340a341780d32a0d74f9c221bc4e9065827f1d20e27f5be4dae94b0a70ba9a7a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ds.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "921d856d8f0c70e0ac0231042d6205ffad601bd09c938e10857b651e7657b5e2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ds/2015-04-16/openapi.yaml": {
+        "etag": "\"974a557122f0c6259d7a493b0cd3627c\"",
+        "sha256": "a81f66e6934456b3d5ea0322f24a20d96de3a78d53dbc05c1056be70888735b6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/dynamodb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b39ad366084c8b4b50397f8863b26aa5a02aa89c5a5eec1bac6c72a6f9fbd758",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/dynamodb/2012-08-10/openapi.yaml": {
+        "etag": "W/\"99a45496324284dd2f6b498b39b8b2b84fd04a3ae0c37c234a66aedb41db79d0\"",
+        "sha256": "0236c0164cd34dee448dd13222746f2ac29ce0c9006663c8544b383a4591392f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ebs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "19426963c8c277ad60f2da8133e71d47b4ff6572bb0f460d6dbbcb3faaf79a42",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ebs/2019-11-02/openapi.yaml": {
+        "etag": "\"6b92203b0979329d9256cba4fcc51938\"",
+        "sha256": "a1a9c1cf62b614f0db01e47684fa2aca163f51d8d7ed06ada7a31183ddaadeb5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ec2-instance-connect.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d36ec0a540bc594cd518ff9114ea9affd4c1dd2eff1d9233dfaedae88b6b0703",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ec2-instance-connect/2018-04-02/openapi.yaml": {
+        "etag": "\"f784637c8f404d2b2f57e0e9b0e58e70\"",
+        "sha256": "5752765ca8569f0709345b9367a5066f57cdc0ee40537567ab950dbaf48ec695"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ec2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bd20f2821413f85786edf3ae8a7852d84e5db85baa69dff21b65ff76c96d0bb6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ec2/2016-11-15/openapi.yaml": {
+        "etag": "\"d579a9791a7a0986652cdf1596c34d4e\"",
+        "sha256": "bdb6d4976f919f8d9bb7d2afd2e434eaf352cfa21a6ca328d787c73fe6159108"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ecr-public.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4e353708efc8c0d6c566ca3a7b4ba5ec15df9a38146570a702e3ddbc072c4b5e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ecr-public/2020-10-30/openapi.yaml": {
+        "etag": "\"9f4c59d21a8b4763e613c607a3d846ab\"",
+        "sha256": "f89b2ea7555762c163a5ad7fc7c362f95b90f816a8be6c11468ec961fa5720c6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ecr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e1b6abee2fc27da18629596e42318f26a94480bdc804a61f3bfbb59702de807d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/ecr/2015-09-21/openapi.yaml": {
+        "etag": "W/\"de1c1c4bf7684fcf7e6ccadd9f2f9cac082d2c194c5462bd701325a9fd8bbf28\"",
+        "sha256": "40087f6c59f07bfc315ba6846ab6ed6cfc5361a38637a9d8855cc34c2adc2765"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ecs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a565d253939e2e205c2a5fa07b997971581ed0c91397c7edbf24cfb578cf1347",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/ecs/2014-11-13/openapi.yaml": {
+        "etag": "W/\"359ccab4b3b33f92a45872fe4c3eb70e89c3a23bb8fb4c3f5963a269429e4b66\"",
+        "sha256": "6de2389dd8386e6bd43f0f230724909b1475e6be6fc8db9237d58fe7aba302c6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/eks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "abec06a10a3987037a5d81194c293356137dd0e5c05745f8bf0617eece225c26",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/eks/2017-11-01/openapi.yaml": {
+        "etag": "W/\"b8d245e823e3daa1154130dce34a35f00314035470ade55830eac25aaea829be\"",
+        "sha256": "586aed26ac973ed9da25f7d11e6673d767fb934ed4b7ef9d165767604f2ae009"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elastic-inference.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9496e99aeaf20863d4bcb91d44db7167410a248183acd4f65b302573db21b0ed",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elastic-inference/2017-07-25/openapi.yaml": {
+        "etag": "\"1a6d2816ce8f7bbdb4799bc7e0141b49\"",
+        "sha256": "ad61d73613bb4f8b20fb736a81acc5d6be1f61b6ff356875287d871bd5930b9f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticache.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "79c357e3973a73e68bddf2c1689effc96631721862b5ebdf6a775173446b7158",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/elasticache/2015-02-02/openapi.yaml": {
+        "etag": "W/\"651ede2e880991f93c20dbcc418ada6d1f99032547e3bd8083acfb8f0c129ee4\"",
+        "sha256": "730685d51cf7e4c1f830cbfdda023c37a665c11a20f081fd9b3f2bd6ec9d38ca"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticbeanstalk.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7523956edd6f0f537becd097b928f861c47fe219b60a6380447be93b925fc15b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elasticbeanstalk/2010-12-01/openapi.yaml": {
+        "etag": "\"620bb172915f9ab42a95eb869b589065\"",
+        "sha256": "d2a8622ab4d79ce1d0575d2a591c0ae25d3dcac8b6639fc49efc56c773d56f13"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticfilesystem.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81584cb4787d90729260b95a0027d4027546007c805942210ef3791b70d3ae65",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elasticfilesystem/2015-02-01/openapi.yaml": {
+        "etag": "\"cfa3abd4defc9d63bedca5978fae5c14\"",
+        "sha256": "c1dce7630077a3d6bd6a724d7aefd04d506374b17d2e8d62372eb1e0fce4a266"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticloadbalancing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "808814bdb73a3893cc18758bfe861a19e62142ab1d009b5fd431e4a84d89736b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elasticloadbalancing/2012-06-01/openapi.yaml": {
+        "etag": "\"d2de616a0a7707e939a39bbda57a35a4\"",
+        "sha256": "3000ca42dccaf3667b3edb9af32a2a9a2c3b50bff7fd5696ec79b3cfd77b58de"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticloadbalancingv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f000ad1f3941876e32ab70b76c4913387c92a5833a33153cdb44873f9c5f86f5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/elasticloadbalancingv2/2015-12-01/openapi.yaml": {
+        "etag": "W/\"55fab278430512bcacda8f5fc8b0a472996200dc4739ce3f6cdd26fdef7cba10\"",
+        "sha256": "cc928509dbdb05f4f8bedb9e1093a0643ae3e9cfd1bad3bb1f17f466d8193ca1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elasticmapreduce.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "806b90bd8b13a609a33a587a93f466b8c6a713f1a10e083dcfd6bff04134d33c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elasticmapreduce/2009-03-31/openapi.yaml": {
+        "etag": "\"1fd6f446f8f989535ef16265094a54fe\"",
+        "sha256": "3cfa042df0f82c6aca292f82da617cd26793407263b2677209797958f9c63f67"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/elastictranscoder.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f8213fa41d8e7915b50512e7a69ee387b17145cd5a7f5502893b2c8b7074680d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/elastictranscoder/2012-09-25/openapi.yaml": {
+        "etag": "\"81b938983571dc06bc6852bc318b86f2\"",
+        "sha256": "599fbfbbb2ae8fb71fa5a70ee5025bd78264bb6574a8bb7a5a8cb9afe1b065e1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/email.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a52ec38b9fe25429d22928b9d3f509686aaf6c3bca3a8acdc068e10b1686b3c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/email/2010-12-01/openapi.yaml": {
+        "etag": "W/\"14550ad1618f508b98fd0ade94ab44788862733dbc9984e17a183c9730cb1f4a\"",
+        "sha256": "ef59d8376f76d21cd64a610ac6b20239434dd6e04872a348e01ad923de298013"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/emr-containers.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "61858ec4b657de2a7f2a3302a11b3775913f098fa17f134f5e148ba53cf1c779",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/emr-containers/2020-10-01/openapi.yaml": {
+        "etag": "\"8156a6348e1d91a9afd2b4a18cf9c0fb\"",
+        "sha256": "78b7712d3f9c5bdab3fa20211251f266619631350b687fb816f857ec8cc61c71"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/entitlement-marketplace.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "19511b571680e95eb4ddb7fcd3f76f4ea341a1c8bb62033e0e2b57d7bd926703",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/entitlement.marketplace/2017-01-11/openapi.yaml": {
+        "etag": "\"a1509a3d5b0602e859cb8e60cc738185\"",
+        "sha256": "4301a73ce7b02269776c58f6f80ab132187bf7400b37495381b18b78d8cfd0ba"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/es.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "285ac2ad20086af72939df12b47e508953f2bde4654fd6ba4dd60c85a1dcab32",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/es/2015-01-01/openapi.yaml": {
+        "etag": "\"df55437594d38d1097d1f07eaabd45e6\"",
+        "sha256": "93bbda28b084605b551a47c63e52264dd0028bc551c2ba772f8c001b43b2701a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/eventbridge.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "be92431f3646e5afcb163e178a3ba8e1d0fb682e479d6f4cd10ffc34a943104e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/eventbridge/2015-10-07/openapi.yaml": {
+        "etag": "\"42c37e4c4412be7a3aa6b3b7e20d272c\"",
+        "sha256": "77967e0532f443c070ba5ace9077f0402c515a9e4a471833733e2b616176559f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/events.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f238d5d3534a03e2d946ad9291d1f1d00a5b530ac13a0de1f190ea68ed9259a",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/events/2015-10-07/openapi.yaml": {
+        "etag": "W/\"b2af87bbe7588ce50126e958a071d75c6ca26c50b52768579de054ce20ec1091\"",
+        "sha256": "99625f4517dc6196fd55264b882ce4ce4db0e44b99f9c46eb06040a615b9ae6a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/finspace-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8d9153753af0b4922b0316be8133b5df3c71de727848443b5faf5ce4c63a6a6a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/finspace-data/2020-07-13/openapi.yaml": {
+        "etag": "\"7ecefd6f985b9b7af0d7fff93b6ddcfd\"",
+        "sha256": "23678687881dbd7ee5a506d5e5b5e26f1e7a2b3dc6bdd9b44e2d51c718fa7b43"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/finspace.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f5ea31f57107c2b42189ea1d298d12a2ebeaf7658b76f76a36b5681c8cc9cd17",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/finspace/2021-03-12/openapi.yaml": {
+        "etag": "\"a0c7ce914751bdc4b4e6503bedbe5212\"",
+        "sha256": "d37ba50dbc034dd4c73c1fab620a15b1e4b1878e2da43a844e8625c6d7b3b83e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/firehose.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f10e72eaf3e2e7f3307be8725c5d9abfc1ee47f4e773eb09143a36c44198e9ac",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/firehose/2015-08-04/openapi.yaml": {
+        "etag": "W/\"a869ce4b71dc4e1989c0be4d6696d093c1d9329f336871d9b3b4552feda4f553\"",
+        "sha256": "d7f92f586d6f7042f1b11b8ef05c7f219527ff3d5e1a80c895f5e524dc9a8938"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f243c8d76ebebdb13c3b43f60d1f3d2cf7171e9bac80b01724383f4c6777fd22",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/fis/2020-12-01/openapi.yaml": {
+        "etag": "\"0c520be95df2526af15be19acae9b3ff\"",
+        "sha256": "b63a50d6317ed546d3dce9ac95223aeac34c1f1fc99d387850cdb65e62231e36"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f0b7ff6e24b3d8ace409915cfdb6c38b30f6fcb3d03cd1018d80e780ef206ba",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/fms/2018-01-01/openapi.yaml": {
+        "etag": "\"5c1db47fcc9e45b620eaf8ee65df32e1\"",
+        "sha256": "ee64a990ef13c962df9c83721d4fe6919571b088a29ac0c2b6d4ec73357e1bc5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/forecast.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "acbf2bcd5ce9b11c23850b64cf9b8a01807079fadf69079afb7335dadcdbdefe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/forecast/2018-06-26/openapi.yaml": {
+        "etag": "\"e892f236515eba5f85bed871d97a7d8c\"",
+        "sha256": "759c1b04360db408e95dcfab54d81c06498d5eff05a2d797097edb16d07bbdd6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/forecastquery.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2d0811f840eafbce5e43f1dc4ef9ceadf10ad18628b11c3e50b11b7773e54aa4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/forecastquery/2018-06-26/openapi.yaml": {
+        "etag": "\"ed3aa4f86cc4be9d3bec72261faff468\"",
+        "sha256": "bf463ccbec4eff988ba084706f41059769fd374026fd157673c320f820808f94"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/frauddetector.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5e4119e856a4e7e6d8dd91f3f848ae8d4362e51cace22762f0e71e8e85f79f5d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/frauddetector/2019-11-15/openapi.yaml": {
+        "etag": "\"2a6e5e85768a1b4f65fe325d1e1b98b3\"",
+        "sha256": "77b9904b97a5742dbfbbb0b5c644bfb454a66935957dc1f98a1c06686de8ae85"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/fsx.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7ad6c2f6e9efd95601b614128b35f0b6f107f100725d5fdd3d4c5f276da08c09",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/fsx/2018-03-01/openapi.yaml": {
+        "etag": "\"434bd696cae4bc5c2eaa18e8f3869b85\"",
+        "sha256": "c5faa888c1b9e044a84bd18208f4c98e7daaf6169ec712787ab73ad8ec70ebda"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/gamelift.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f48ef4057fa1b8d2ad25cd864ce51c548b6391cfc8dc8a3b6eab1b95f61d841f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/gamelift/2015-10-01/openapi.yaml": {
+        "etag": "\"3eb61c18bb6da96ed0a82a84d5ec200a\"",
+        "sha256": "75fd80e0fa93c2f8b2331fd6f8d93226cc55e3d3eda0b45c634ba7294c3012e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/glacier.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f22cfef0a1260d2057b9413453d0e734a9d6217a56be9eb22e6b659a2429b9e9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/glacier/2012-06-01/openapi.yaml": {
+        "etag": "\"83fe8fb77c49adab0d2697884d44ce4a\"",
+        "sha256": "653f12d8fcb5e39b071dc4f87da2aed456e3fca4d0d801724d489c657c16dfc1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/globalaccelerator.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "21a5acd51f723860f744b4699dbc3f67f98fae7a45ec73a4037bfc59aaab7447",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/globalaccelerator/2018-08-08/openapi.yaml": {
+        "etag": "\"642eb100f9a7798a5266de06e52fc44a\"",
+        "sha256": "45177f68dffb4e8af095ef303f069bcc114cd37a5ffc8f0f63843da053761294"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/glue.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "291652694c18a68d398c8d09eff593fa8a2aefb1f61060678fef93611423fb0e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/glue/2017-03-31/openapi.yaml": {
+        "etag": "W/\"55f186f47867507bd53655b0af71737ebcfd145d9a18a3bd7091b2aa4719b860\"",
+        "sha256": "76f941f3406a4c05602be11b8d440a5ec238ccfce2fc720838644e332378cc5e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/greengrass.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c96bc15dd143d57aabd7d1118e800c64827761d189853dfcdb46677c480b442",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/greengrass/2017-06-07/openapi.yaml": {
+        "etag": "\"934b1fe2e7715d047b4b7f3e0b9f3242\"",
+        "sha256": "264a32663843182c241616732569fb28b896725f10cbd331df29ce40c4e8b329"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/greengrassv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "68f7c9022760623a628970e7238a794e7b4b16410ed48a306ab6e6c2591f68bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/greengrassv2/2020-11-30/openapi.yaml": {
+        "etag": "\"43e174aa6760b16de894d500906af182\"",
+        "sha256": "c80e50aa27b05a42aa29b3d133910e6784198dd90dddf06972baaaf66ff703e7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/groundstation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "26a68e25d939efa655eb1a554e579212dc8d94c1d87ad56aa868f3fcd54cba83",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/groundstation/2019-05-23/openapi.yaml": {
+        "etag": "\"29ab211187c4590a9ce536a754eee173\"",
+        "sha256": "50c67b6d8b6fe4d83f65c60aaf0fe753fabee5c4cb51433c117a81291dac6f13"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/guardduty.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2338a00aadb423382e17a059690842d280fb63b4da4dcdf501b7e844d3b419fd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/guardduty/2017-11-28/openapi.yaml": {
+        "etag": "\"a6b3a6161a301dfce5e0797a985b0d64\"",
+        "sha256": "e029a4acd374db27f786367c506228c7fa25487cc76d8ba1fa50d1873134d8ec"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/health.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b07a6cfe2611b9ef62ebe961fe6127191d43c6041f109b12d4a7c11e428ad1e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/health/2016-08-04/openapi.yaml": {
+        "etag": "\"2bdaa204b53c66f5a159a433c7523c17\"",
+        "sha256": "a6f2bbe34013ce4d172fe3a6bbe9e9463ddeee10554715bc103e64a85f82acc9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/healthlake.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e31d144ffe7c6300481becb60199ba5ec2f412dbfe43f3aebd21633f693d1afb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/healthlake/2017-07-01/openapi.yaml": {
+        "etag": "\"752c9e6aa9123b68233cd1a190c63e21\"",
+        "sha256": "73c40a0fc628e5b9f0daa935600863f2cbf632985d15082997a31b18133ff4f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/honeycode.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d155566c380b77f74d04e937c5778bd7f2dec79cd4681433a6aa489b37e1c419",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/honeycode/2020-03-01/openapi.yaml": {
+        "etag": "\"b0caf597098f0400b1e98f1c45c6efd8\"",
+        "sha256": "e8057c89c62dd84009da32eceb97f9bdd623c04e240b0114950764ce01c9e6f5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iam.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e9643801f8470c9082e99b6d986203e566a506476c4fa3dead3d5a7dc9717465",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/iam/2010-05-08/openapi.yaml": {
+        "etag": "W/\"5f35ff5ab15d9893991c3cdee16bace59012690082ec46e3f71294fe2f253d6f\"",
+        "sha256": "f96be26bcfb5daca6aa3f74e920de0857ef032aa43e1b50a52de2f16e80d96c0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/identitystore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "89986d5e27c0f4c8cebe74941a9c555f1edcab5c35a55012c6215c041685c554",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/identitystore/2020-06-15/openapi.yaml": {
+        "etag": "\"e9dbbff3636c6999fafd01058049dcbb\"",
+        "sha256": "ecb9a49a36d4bbc6369715e2c7c34538733ad3f50f1f190f67ca6ae5fee41e54"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/imagebuilder.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "de7aea4566ef33d83f6131b539387ea791ac6ae9a4705575eed4fc9fbe7abc72",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/imagebuilder/2019-12-02/openapi.yaml": {
+        "etag": "\"e9cee2265652ae225ab739564dd264d4\"",
+        "sha256": "c89c18671f39fa5634fc9c8754efafda170fc8c0d8e4698981a7066070a1352f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/importexport.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fc20a8e09e6d0fe734808aec242dd04461fae1bbcca54c86cef906b8e8767b9a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/importexport/2010-06-01/openapi.yaml": {
+        "etag": "\"a25d443f0ef700e4e6ba477c5c345994\"",
+        "sha256": "f93ba25897ba40bc0b7ba032621f6ce11a552202dc13f58fcb201fbe9198ab12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/inspector.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d5329e8c3d750354a1f5cefe80722fda958ba9210054c856a802ccdc0bcfc44c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/inspector/2016-02-16/openapi.yaml": {
+        "etag": "\"474c912ad16abff3ffd6c32a8625e552\"",
+        "sha256": "797f3899cbc8c4a0b8d06bf65bd87fec2acb2ce40a8c18080dfca863d32fcd44"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iot-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1a8513a74f07b76adfb70d97b19b933f76b028d95070db6f1bb232e78e87e9eb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iot-data/2015-05-28/openapi.yaml": {
+        "etag": "\"1e084263c0c4d745ca0827d40d236a07\"",
+        "sha256": "2249cc5d798fd4e33e568b85ba8f794a27fd4017277976251509ff70a2669d5c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iot-jobs-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8f47209b360fc6f38a1e21c35462bcce1d5d8937ffe86a135a7ceeaed2ed5ae7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iot-jobs-data/2017-09-29/openapi.yaml": {
+        "etag": "\"576169656ae94770ee39e017580a559d\"",
+        "sha256": "a16a5eacc52c26beeea8510020d1257ca8fdf7e3d377b2c292d2747e5ef56ffb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iot.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c7ee4390497e71e49d699aa0361739a41627f8ff1055ae31b3da3e37a3eff943",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iot/2015-05-28/openapi.yaml": {
+        "etag": "\"cee193e5696a222c239edff799d72219\"",
+        "sha256": "5643d940525397fce7fa919badc5598fd71a0ee61dfc69bdfe983b14d42eb1d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iot1click-devices.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "beb9e97484b588cde643d3795141ca2a9733cb8c9deea30ff9286a358c92a4b2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iot1click-devices/2018-05-14/openapi.yaml": {
+        "etag": "\"3532e10fc175ab11aa17ba7066a5a02d\"",
+        "sha256": "12d56880f6e68c95ef10b06aa2c1d1bf6134c84ab6a5c76acfba5bd3639dcc39"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iot1click-projects.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "38f0760b04911b7e36dcd0f2d159ba44aeb47c934838b536f661ba511541ad8d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iot1click-projects/2018-05-14/openapi.yaml": {
+        "etag": "\"e584e404f7be634eba460ab0c8b33144\"",
+        "sha256": "c73efc67591d01f23aa2294a71d5870f3cf40a57e44d51901a2423e7c05672b5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotanalytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8130907e0c6ca15fb913619549f92d8fb0db186e3cc23b5249da0dc0da3da95b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotanalytics/2017-11-27/openapi.yaml": {
+        "etag": "\"8519ecda19526b4c46141c32142464da\"",
+        "sha256": "4125deaa35bb21e8df8612341af88064d7447766f9cf37522d93468bb4514b3a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotdeviceadvisor.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d999e25b3b4b0cf1a53c4a3f2dac3649a01bd0343db904f3fbcb53a097a87a07",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotdeviceadvisor/2020-09-18/openapi.yaml": {
+        "etag": "\"d95467165f52e4a03b6e2a8a885d305d\"",
+        "sha256": "8ad8c96adac327509ee6c398147a4143a0c4870ccadd3aeb2f7263c79ebbad8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotevents-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "01da299cf5abd19ba8d5ad72dc30de5fbb29ed8db2590e925f13d6da320d0e58",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotevents-data/2018-10-23/openapi.yaml": {
+        "etag": "\"6d38373f8083b80e95179982f34efeb4\"",
+        "sha256": "600d83d016f40c11a32e4f70f8c915fbfd1450464328828e3999192b1a751c3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotevents.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "71d5552ee137049c13b97f93b54c5e0cb37be9513187d6feb6a6a5871e587123",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotevents/2018-07-27/openapi.yaml": {
+        "etag": "\"1a2be9a11df70d21c05fe3c1d9be41e4\"",
+        "sha256": "6ebeef633671f186ab01c43b6cef3ad805cbb7fb33ff19b11db89ef984d20675"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotfleethub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6da8951b7b7e10a82d346082c9cad3362aafd568ab83ebb21f87645db381e9a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotfleethub/2020-11-03/openapi.yaml": {
+        "etag": "\"78e3a71b7cbf79db957ad2d5a7487bdd\"",
+        "sha256": "6549704eba7f8c54383c701f7e49e746fc4c485daad9fe7463f33582ef9a9d3e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotsecuretunneling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "844733e4b61a6fae13be611b9ccab979e93767c69b4e0ea554afb14b62449144",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotsecuretunneling/2018-10-05/openapi.yaml": {
+        "etag": "\"9b9af0bbebb7bdb8eeb4af83b6ff451c\"",
+        "sha256": "ddecdfd2b17294eb22563c928babd69481145ec0265647aaeefda622e2f4436d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotsitewise.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1b7735fd41a03e11ef0ff71ddfd8340c2232214aa82b7a89a1728726beab3bfe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotsitewise/2019-12-02/openapi.yaml": {
+        "etag": "\"e634f39e3c71493a37917beadeaf2f93\"",
+        "sha256": "9d7c50ab9e8e1571521cb5c17d9f2a49974a1c022e9f6e1c6a90d2a5e364057f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotthingsgraph.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c028d81c2032a5936efde39ecabe5e8d8ebb7e340fda3e846f40268884cac506",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotthingsgraph/2018-09-06/openapi.yaml": {
+        "etag": "\"63d91909aedc32c5f06f50a88575172b\"",
+        "sha256": "df0182a16606327cd596a4b57386d29d009ed55f413c68608ded8cece6d3dae4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iotwireless.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3e06397035a52ff57f3d48785cba2527dd273c9c6ffc95dab0847d2fcb9d92e6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/iotwireless/2020-11-22/openapi.yaml": {
+        "etag": "\"6e3a2682a0810fed43cbcfe5c850d04d\"",
+        "sha256": "3c9ea7eb1cdfe1e2854bfb41e583accfd811ca7246d5bb6e2efe06e847a24b56"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ivs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a45f2e6b26416a14449e3517ed7e25be158796ac5e6b5e0e58ce82ff5ca8b353",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ivs/2020-07-14/openapi.yaml": {
+        "etag": "\"51604692d99c8bd3e29e01da03c0b286\"",
+        "sha256": "73d5a24de5167eab192f21d63523cd3636dc72d0c1fed65d7b49aec98c58d355"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kafka.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "63ef1de896be6498b7ce341828d11595ffcdc49a233b0b496c87a933695e6c9d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/kafka/2018-11-14/openapi.yaml": {
+        "etag": "W/\"cf1b0ac401610d546ee41de5eec523b02132b76fa48ae35f7fea8353387b351a\"",
+        "sha256": "bf1908268775771dd7d7c2482849b1708738597cc61ab6d43ff84f70e068adc0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kendra.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a8ed3f0d6fdb8e86566f052246ceeecc9592dbb726ebaabcf3e7c803fb22a6dc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kendra/2019-02-03/openapi.yaml": {
+        "etag": "\"b4fd9c36b0a47148368834fda2b83a42\"",
+        "sha256": "a548ff0855dde65a86a8290b13571b327444ce09e6ede7b4be011a065d423367"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesis-video-archived-media.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d4d0fbce5fb60aefa3d5009aa6c720d3516746d074a9682d25f5aff52cd69e1c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesis-video-archived-media/2017-09-30/openapi.yaml": {
+        "etag": "\"b56189be088c97e8b106e60f546b4192\"",
+        "sha256": "1967f9b8c39017d1c3f6823dd281922a5a7d218b9286a1a3e5edd54570ae66d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesis-video-media.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e6f8cadd8b980d67140577c2f6a5dbba3715d4631b5229d723db8313b8fe0702",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesis-video-media/2017-09-30/openapi.yaml": {
+        "etag": "\"e3bf78c0777f18b466b2d748096be2e3\"",
+        "sha256": "f42c780fa90f13d941b3e49b8defb05c5353861c56ea2f035020debdd129cbce"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesis-video-signaling.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b3f67692a150029ba22b80c123a79abb53fe63cc6a8f1ff79f866d8b58c06ffc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesis-video-signaling/2019-12-04/openapi.yaml": {
+        "etag": "\"7b4edfcc60d87c1334fe88f8fe176d38\"",
+        "sha256": "c79c5bb9ec90b9c0f6ec7e4f07df633f1bb84cee521bb34a1178343594f3229f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "56fbd57f5232f2a93cc60df907658cf868e292c597fde0f9786311236cd9c072",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/kinesis/2013-12-02/openapi.yaml": {
+        "etag": "W/\"8d43ad03e4a036f8aa6bbcac158e31e62c66a862d9aa60efe8f8db19ca19453c\"",
+        "sha256": "8a0a452912bfbf6d3e2393835bbcabe60034ffd9d4163d899a7e8baa217ae62c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesisanalytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "80e6bf70952e5fe39575de2805a0c0fa9d85c84dd6bf0ff48352cf4de50f9090",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesisanalytics/2015-08-14/openapi.yaml": {
+        "etag": "\"4404c89974af64bfcdc17262b98398eb\"",
+        "sha256": "256e0b55a597128cace3b9c68527c3a4190e231d390a38244180b30f8dc928a9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesisanalyticsv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "28409b7d898eafceea025e1152a509c618cb175bb6a259636a9167b59a17cf7e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesisanalyticsv2/2018-05-23/openapi.yaml": {
+        "etag": "\"8c47f606c63d427b772e14b279414b12\"",
+        "sha256": "5975bbbb5ab7e39bdec3965a46c91420654e3d46e828d6b879b5ea0760ab7e8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kinesisvideo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "30e098608d75f4a337f1bc2ae92933093a1a44f077c3df810fce18d5a93a16c1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/kinesisvideo/2017-09-30/openapi.yaml": {
+        "etag": "\"e4078c968d0b96f7025785587dbaa7ad\"",
+        "sha256": "798991555f98899e604d24f6cdb2c876233b77a67cfab708373af95a53e58931"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/kms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6fdd2a58bc51add975122e1b70f0b49aef72135af075dc5c406c4b354860799f",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/kms/2014-11-01/openapi.yaml": {
+        "etag": "W/\"d430c35696ea776e359a5497cf09d2c6a79a2f28b09374c4f5dbeb8162d33fc7\"",
+        "sha256": "3fa52a80dbffd1d19e7b5e8c7eba44dfc6541f4294712addd0d2e2ab7c153372"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lakeformation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "537fa38058b9b06d7a41dea3f9b2573327d6a0a0cb7a000d672929402f0652af",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lakeformation/2017-03-31/openapi.yaml": {
+        "etag": "\"945b7bbc1804f1647abc6e546fe67404\"",
+        "sha256": "87243de3e63577c1c07bd212ab6d69f7f7589c72304bde1b3909198ebf44df6d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lambda.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d2147ce365c3839711562ee72af9db57d2cd6885157986bcca2c3fcc245026f5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/lambda/2015-03-31/openapi.yaml": {
+        "etag": "W/\"c4c10de2d45547e2c8efb51423b013964e1111ecb80c0f7027cbf811305002f8\"",
+        "sha256": "9c96dc5c3cd3ee0e49c18e7aafbec47027368d30acca009d364a0b9fc3db990f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lex-models.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6ed04f7081602b51f5a29573acf150aea9cc843b631b7a7da8fe2c277aef958c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lex-models/2017-04-19/openapi.yaml": {
+        "etag": "\"f7507cf2a021f211566e33abc4ddc0f6\"",
+        "sha256": "a0df132e4c4febaf902697498d2cf472b430bc26d90ca3899edf40571b920515"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/license-manager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a052cbdd7e9552336273f45cad0d91dcff05615b4f5483c98a613d8113cd6f5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/license-manager/2018-08-01/openapi.yaml": {
+        "etag": "\"ecd9507e261644a9fbd1fd208202c8c3\"",
+        "sha256": "d836c267f00aa43753e2f79ec2fc11a6d4753b67609c0f691deb23c447aa37e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lightsail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e5028fb7a050be2c4d4294947fa88b5bba12d2dc656dfbd72b11d6e1c2c6ccf3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lightsail/2016-11-28/openapi.yaml": {
+        "etag": "\"e320155c368772a4bb03e683076482a7\"",
+        "sha256": "3ceec634bf2d41d7d382f9f06587d8b64e30ff1c80536e0141c881097ff63314"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/location.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5f0cc100f85abee70de28ed171c455722d17cedad1089a28021092a5529ed5a3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/location/2020-11-19/openapi.yaml": {
+        "etag": "\"e10eeffce81fdc478e16a7eb8b689895\"",
+        "sha256": "bf597e23e4de403a05e5fdea34ecd1c7cb761373b5d73beb55c7b444284b6d83"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/logs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d2551351aca1649c04f8777614c62af5a90d809be920a6f12b697faa5e47be2f",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/logs/2014-03-28/openapi.yaml": {
+        "etag": "W/\"f5eae6c948f83006307298c6bd6bb863a54eedd1032aa6108e6c5bc5fbd07e21\"",
+        "sha256": "f614ca1065e622d12f2b1614e058679349a9c5e242422fee7e0f770c3a20ed16"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lookoutequipment.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ee807d123497f2069d76c0575772dd589e3381d03742b56800ae9acd084a69a9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lookoutequipment/2020-12-15/openapi.yaml": {
+        "etag": "\"8fc1bb28ea837b3f236773b4751e7ab3\"",
+        "sha256": "be4d639917e727d1884ee367d05c476b80f558e5e0ae8326d8c110edfe012acc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lookoutmetrics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3bbc05ba5c11cda8cbd81cbeca81a474ff34a6c99c66c3001215acd917dff405",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lookoutmetrics/2017-07-25/openapi.yaml": {
+        "etag": "\"179d7827baf51081f28460e86262dc9b\"",
+        "sha256": "3cc0c60d72801ee4f8fd12828cb45aba196a71a5d771887f8310fa9a12d6e7d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lookoutvision.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cdcb320ab5a16023767c8d6229cac90e394e4cd37fc551f44454d2325b33bb74",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/lookoutvision/2020-11-20/openapi.yaml": {
+        "etag": "\"70bcb3875a38c115d4d3cb93c0d8986a\"",
+        "sha256": "178a4c69c6002ccaf177fe934e35406466301c6b0a23005c1de8413df104174e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/machinelearning.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "157af5c7fccf51e5f8f64b2fcb06e5387b2065f97358870b59751b99b58807bb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/machinelearning/2014-12-12/openapi.yaml": {
+        "etag": "\"0c5274ccd3645a5b552cad6dc56df55a\"",
+        "sha256": "bc005c48dca89e25b1ea453e0d8b064faf81421cf6ee903382450100ba39f5f3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/macie.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d5cb8970f44e41810835c15f2d612f65a01770dde90d296cd352c0550351e41d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/macie/2017-12-19/openapi.yaml": {
+        "etag": "\"0bc16b4b0c8117a908a3863ea8a56202\"",
+        "sha256": "df8bd72c3c8571c28af84e7d34075dcf45d3633e04e9a35a825cac16d4b5321d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/macie2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2f745552e06217787ae1eefbf70ba64041828bacd4d1874f7d44076b2bcd676b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/macie2/2020-01-01/openapi.yaml": {
+        "etag": "\"cbefa2c85fa30354854616b19a665dea\"",
+        "sha256": "a5ed77dfd13d6574df36467af607cbd25c5eab95343d0d0c6939687b09d6c2f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/managedblockchain.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c608e4e62083a82fae4d6cce0d93f34c793f582e48ada694bb1e1b29780ea0a5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/managedblockchain/2018-09-24/openapi.yaml": {
+        "etag": "\"76f8f5c46492bc153ef23e10eed00957\"",
+        "sha256": "20701f5c4412e71792afbe26a347cd2b74f4ede2a0e2e7c6968e5655e1486ddf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplace-catalog.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f99a10db1a3e58ca9fe58bd5d0691438fb62e5433db3632adc31e81fdc99e257",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/marketplace-catalog/2018-09-17/openapi.yaml": {
+        "etag": "\"b42127d5ac33199206863f9a3c1bcf9d\"",
+        "sha256": "b454f645895414922670f41a1ee2724ea620635857c1b7bb71e44bf873cdf95e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplacecommerceanalytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cbcfe3a7be407322576f3fd74839679773fbc408fc4eaf26647546989f3b7087",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/marketplacecommerceanalytics/2015-07-01/openapi.yaml": {
+        "etag": "\"7439fc8834baf7db0b7a81f1e7c44685\"",
+        "sha256": "194fb849b3a55598e2bd8741f5a594f21e007b0c5d9ef3fd6c7c6de0c5ae3e68"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediaconnect.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ac9bc9f3f24375620cd9c1d8ec39a83c615ace0bfe10b702a2685b4f8d1601e2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediaconnect/2018-11-14/openapi.yaml": {
+        "etag": "\"0804ba8750c2e071dc031c3d9d139205\"",
+        "sha256": "c5228fa2a30132965a03462a79021b2009a6a0bd535262d811fb8802d6ebb95a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediaconvert.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "24eb820fcd1e227cf0a6e0a38ab2dd240b94da720baac9a96e1347cd2955873e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediaconvert/2017-08-29/openapi.yaml": {
+        "etag": "\"0d6723d486f761280da337233ed023fe\"",
+        "sha256": "89c76466c0983b68335d0ac253b240eb432a736cb42fbfbb56a4133236233e6d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/medialive.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "46a5f16a69ee644f215ef91d9c295977885a22328510340efce0c446d7c782be",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/medialive/2017-10-14/openapi.yaml": {
+        "etag": "\"5870f9b90ca83085973dcfbbeb90924a\"",
+        "sha256": "aac5e5c892633e1b3e34728b0818656594bd1ebc62317bde2f18f80adb5a7e87"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediapackage-vod.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fadd36b61a725b7f85e31c9c7ffa13bd559fea0dba7310d9684b003f83b924e7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediapackage-vod/2018-11-07/openapi.yaml": {
+        "etag": "\"e7315a6e572ab9c0edcdbce16d8f9b05\"",
+        "sha256": "355c44275f332dbcce65e5bc11f988b3837e6ee64fe250732c6641e6ca6a6ab4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediapackage.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1ae54f77567a765d069ce72600e053c519f3dfe6803a6d09ad1860d7e0d626da",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediapackage/2017-10-12/openapi.yaml": {
+        "etag": "\"a7699b57d65c59c9c5dbec4a5a07d38a\"",
+        "sha256": "a57d92f6d3439a88b0814c8d34815a5bb2336b91247661a5cbe6ab18703479a8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediastore-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4922b31ac9a39a9094d3bc1c7da9fdbaad2a7fe4f7db60a2a5cdfadbd9a885ee",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediastore-data/2017-09-01/openapi.yaml": {
+        "etag": "\"79e4f47081ecf4b52d85cdb3f0b01b0f\"",
+        "sha256": "40879123ba4c81c88b3433f29341586b3c49d7e89b97064ad98329d486e578a2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediastore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c518e72d3f483b5aa249087d82fbb08143b2080c7c5b112a2316b743a64d46d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediastore/2017-09-01/openapi.yaml": {
+        "etag": "\"3acf7ecc8d976f430d3d63160252baf0\"",
+        "sha256": "8f8b36f021b8522b65853a3a56bb733da560ea218553f410996b74eb49627f2a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mediatailor.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ef0cc288dbb9a5712591325b646d544866e5969ec4f143ecd91bd24708b8210a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mediatailor/2018-04-23/openapi.yaml": {
+        "etag": "\"45d8cd8abf686d8242c496f385ff37c4\"",
+        "sha256": "e50ee429a9c84b7931ce5b6fd855a38f4e69ecbe31c4881b010a0dfb28f92dcc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/meteringmarketplace.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c532643ec98ebf886e6565e925b155faa1609e74af2661a9622d16525d108f84",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/meteringmarketplace/2016-01-14/openapi.yaml": {
+        "etag": "\"9cbbcfabbe907a5b73c92c51bd49f2cb\"",
+        "sha256": "598cac6e1b21bc7e9cf348a0c76531af0a907e8d9014c2fb84792a6b85edaa7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mgn.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7baaf7ed99ecfbcf0f2a3a160c60492b33711351c6e9a57c7a8eac27c17f9cdc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mgn/2020-02-26/openapi.yaml": {
+        "etag": "\"9cb6112040810c21ba99ea636d204b7d\"",
+        "sha256": "956b217ba46f7dceaf0e0472bcf16de1af3b44bef104d58ffa2e839de9a4d84f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/migrationhub-config.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bff229f9a130ac3885f674eee1d66c281dd3b3c50890de6c266820f886a85b20",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/migrationhub-config/2019-06-30/openapi.yaml": {
+        "etag": "\"351806291305fa49249e9057c3e17cc7\"",
+        "sha256": "93760fdcbff4b2e0d49305279de99ef4724c9e8445d2be5508422fe9b4404c11"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mobile.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "51001480fa626ad34376dc95a4fe46a95a54c657df89ec228ff7cd9e1953d7e4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mobile/2017-07-01/openapi.yaml": {
+        "etag": "\"2e51650829959fabd5eb2570f8d13b78\"",
+        "sha256": "33ec7971de2961fe0d067f33724b4d21245afbff4736e34f4c09a910483d9b55"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mobileanalytics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "804c38990546740d963f0a4da7847052b4770eacaf5cb4470391d45d1a0176f6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mobileanalytics/2014-06-05/openapi.yaml": {
+        "etag": "\"a2ec8fbd2e44137cc9a472be68d10cee\"",
+        "sha256": "bf5fc3338da56a6f3b4277169e59b3429d0f205fbab433035291a391c0f4d4d5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/models-lex-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4ac7106e26fb5b68091dfd4c28d96efcac34bc42f56458741268008a57ece577",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/models.lex.v2/2020-08-07/openapi.yaml": {
+        "etag": "\"2691c5a0b05109967704e0bf48906d2d\"",
+        "sha256": "4748df7585b8f86c0e88a909b37e6b2975df45e06bb1d518c3faf58428121665"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/monitoring.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bc5c2bc2a87b1247ec2749f80c44a49f7c6568f9c150a95980d030879ebb345b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/monitoring/2010-08-01/openapi.yaml": {
+        "etag": "W/\"8b4bfe9d17cc3c9d940cec488be247f647c0d0e30a3e0838d657913dae6274f9\"",
+        "sha256": "ebef8efd176d4d90d4708a975f4e337ed4337a27d1ee473574559e9cbe8a4f53"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mq.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "94b522ef41a0f6b6b6050645e7305bfc30c7383ddd5d0cc0535f39ac31c1690c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/mq/2017-11-27/openapi.yaml": {
+        "etag": "W/\"cffb82acf9cdc9ffdf084646975ea2a8c66463990c820b99510106de72627418\"",
+        "sha256": "f0e70a770fbc91dcffa485c01638bb5c03394530cd7034ca89ba2445dbec0423"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mturk-requester.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b39d9ef6c354472604e02d37e8e2f6d4c10c50b7fd760001dd30b9172d686c23",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mturk-requester/2017-01-17/openapi.yaml": {
+        "etag": "\"4ff9af8cfcade49491bb1ebd79b5594a\"",
+        "sha256": "e72b16794fd10df371e259c27b5cdd9ea75d5643370b2a1b20557315717a6663"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mwaa.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c8b3a653ecec951480818f27463bffbb98ffd8097bf044b9318191276ca2a954",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/mwaa/2020-07-01/openapi.yaml": {
+        "etag": "\"fe254de72ba5c59f549552d09f3c5319\"",
+        "sha256": "c7009fd93a372ba18e2cf3415c80a79074f929375a4bbaf9f28d2662e49341fb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/neptune.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "11241ea740f84d64e8140a74b2c0a5488208bfcbea8b505fecfd7ee5c600d939",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/neptune/2014-10-31/openapi.yaml": {
+        "etag": "\"5e4293054be4318d7433baa322c9df9f\"",
+        "sha256": "43151964fa51cd5e4f97ddd63dc2a0ac4b0677d672a43ab0125ac54fad2378d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/network-firewall.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0fe621cdb372b80925077f3d160bc6d0d92ae8d4b49a352e73f475693dabbdb4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/network-firewall/2020-11-12/openapi.yaml": {
+        "etag": "\"ec541579e4d9fda92e255c9a5a44a2b1\"",
+        "sha256": "a201b3ab9567a49dd981c21179ece8ca93c13cd05600a13223b2e0e4ff02ad0a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/networkmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c33ca00c5a0770297054b7c90a3ca73b7c379088d7cc101a631df39e00012754",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/networkmanager/2019-07-05/openapi.yaml": {
+        "etag": "\"61dd80a08af05f357b6da71da87ae23e\"",
+        "sha256": "f815cfdd04b51274ac0e3efdbf4d3ef494ae3bee70736fb3176e857ea1954111"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nimble.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "345d52b59506d1481a38fcf127f996b35320817e0bb4d500376cc1382225030e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/nimble/2020-08-01/openapi.yaml": {
+        "etag": "\"2f96739bc4cfb5e9f0be999f44d59223\"",
+        "sha256": "39c9800ea7731cdaa25fa1ccb2401eae64ee254a562e14ef26a4751488f13823"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/opsworks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f51aa3fbf5bb1cce08d1f9498e67abf0df8f37f84ae8174487875116860716b0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/opsworks/2013-02-18/openapi.yaml": {
+        "etag": "\"f7243a61c96c8dfe98a5c3532fb34597\"",
+        "sha256": "2bce0712f57493db8a061bc00ba53a5f273c64d05cf2469c64daa84df561f455"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/opsworkscm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f4945cdbb27282d9f7c4af352165898774b96321b87bb2eb22d71017c185af12",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/opsworkscm/2016-11-01/openapi.yaml": {
+        "etag": "\"e171ab15f6cc022b9edbe2cbf8002e27\"",
+        "sha256": "76fc51e0293be081b67fbe066d337e2f36c908f1a00e0b342dff60f87c6ec6a0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/organizations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "558c5730b245ad5fc313b20bd80b828af3f0e1fa5519fe0f104fa8b71ddc872e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/organizations/2016-11-28/openapi.yaml": {
+        "etag": "\"1001e7e67da77dd2b6a5c23b2c668c96\"",
+        "sha256": "e17a2e2f986bcae521a6e3df6b26316c27a6b8ea205badc7ea24273212ff49a0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/outposts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a49de629f15a5ffcb98654b295bfc121f5166e49a467717cdd57aeab0d0bcc15",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/outposts/2019-12-03/openapi.yaml": {
+        "etag": "\"59aaa37b6fc03c42f238ad137ddd9237\"",
+        "sha256": "6632acadfb6fedcbb8d9eddde063a7a76f491e7c16a1d8aa53207ed27065ca9e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/personalize-events.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "27a31d2b68744830c3fb4058bd5822e413da6bc746d33900b96dd3a117a9d1f0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/personalize-events/2018-03-22/openapi.yaml": {
+        "etag": "\"495c0c54d2225634b092bd8f89b5cf7e\"",
+        "sha256": "49014276465a1732674553b77fc0e3ea2782c5027b537067f1e46b33586e5246"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/personalize-runtime.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2cdba42c4bbe95919f92a7e4bbf0a29a6d3066430d5f81098899ff7f9b82cdc5",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/personalize-runtime/2018-05-22/openapi.yaml": {
+        "etag": "\"cc8a0a02a3ece2e994de1e3218c8a21b\"",
+        "sha256": "81713b5e958e64e7f92e4ca6f443d99a82b610d7a3aa955211764cc96de02e8a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/personalize.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4297613b6c881b4955b312d63fe222aef71dc1b03e869dafcaae5a9a4ba49ff6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/personalize/2018-05-22/openapi.yaml": {
+        "etag": "\"c79a837c7b46dde0bd897850a7697d4a\"",
+        "sha256": "ef86f087c8fcf0bb85a616106475755cd4b754b18e8524c4c18583c7257d3c02"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "416856e8abe797ea4f1dc8573aaaeb61fc870754c7026707e6851da107a804fd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/pi/2018-02-27/openapi.yaml": {
+        "etag": "\"49079225d1d27997c9eb924ea24115f8\"",
+        "sha256": "3c0db7cc771d3d2a6ceba05c7b43632da58cc9156971ca0fed8b9e8c0d5e27fd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pinpoint-email.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba2c87bbf460b725de32c256801eb444c038613e264dfe334e40942cdb4db297",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/pinpoint-email/2018-07-26/openapi.yaml": {
+        "etag": "\"f58cebc322113382f0fc067290197d96\"",
+        "sha256": "75319e9674555bb84c9af47bea0b47cb3194ed9f63c55d53f54d403b47ef5b68"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pinpoint.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "858a1dc970015274d70732cc43c9fde0ba6c686874025082d506c604cb02e53e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/pinpoint/2016-12-01/openapi.yaml": {
+        "etag": "\"8f929a74cc0b62bf671beb4f3718399a\"",
+        "sha256": "9f459e727dc067c6545fde62ece8a4bf067e7622b692f92771d3c0d039551467"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/polly.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "15692127e25e93de13c712507b630e1d523c3f367b5e8b0bcfffcdd6abaaedec",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/polly/2016-06-10/openapi.yaml": {
+        "etag": "W/\"43a2c032118f13cb17528b77ad99a756ccddf29b3fcca2f915e9f7d53a744fff\"",
+        "sha256": "7308cacb7da4a95d11264a335030fe6f8328c3b383a5cfc23e535a27db98d2f0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pricing.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffb758e4d2d505a1a45c74251acafcb313df07ddae8f7fc556a2521aa4ec7950",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/pricing/2017-10-15/openapi.yaml": {
+        "etag": "\"b0e911401dd083a5235222005fb9b9a6\"",
+        "sha256": "6a5eb8894599c9686fda3d5bf2eb73cb55fc2ccdbacedf23032335e28077dcce"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/proton.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1a5ab27696d5daa6fe40553c98eab2677ab940303a4f1e4c8a8b9c185ee0d286",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/proton/2020-07-20/openapi.yaml": {
+        "etag": "\"5a4954ad9e7984347155f028ae8c7062\"",
+        "sha256": "dd799bfe4ce9bd280ff8b98cdb87323826cd4d1e1e6bd5275ca0d1391f3b4a98"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/qldb-session.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "31d3e6273160e3d2fe8be891cbd5648167e17267e5a7a41ad6b59047b1530091",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/qldb-session/2019-07-11/openapi.yaml": {
+        "etag": "\"93850db970f18fb9032f4327d54ca9b3\"",
+        "sha256": "fdc52664435683120050508c0d3fd26a469bb935001c1418a4dd4a929010c0bc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/qldb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8a6bb5ddb69a2e231e8954280c5716a0f2ca3c4cac2e291f37c8ee9f80533e87",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/qldb/2019-01-02/openapi.yaml": {
+        "etag": "\"630b30ab0b5c367be346e28ee80e445d\"",
+        "sha256": "639ac040bd5c00cd789868f40bf1a1f779ec04793f28668f1575939034c4304d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/quicksight.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "75cc9197ba5b574d31d503e76b9a59e3f986372fe29f959e7f6b434f2ac898e1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/quicksight/2018-04-01/openapi.yaml": {
+        "etag": "\"c4db7fc2d4c3fa7687a29ff847f87bc5\"",
+        "sha256": "6d69a004c2b9f4a44cbf2b5677d45a61d3e0bffb20f042acbec119b5008975fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ram.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "da167cb20acb0ece6e84fab329ecfbdf0cbd958021acc61461314fc950f6fc19",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ram/2018-01-04/openapi.yaml": {
+        "etag": "\"380d96ba33caff3031a4d7ac24439716\"",
+        "sha256": "4661c7d291beaac9d7e59d2806c598af22a3fab3e291f2d488acb28b5024cf9e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rds-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c3916ca389b4750df3bff1e8c09e42f0bb5fc9c9200493060d7265a783a50fd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/rds-data/2018-08-01/openapi.yaml": {
+        "etag": "\"8dd17f066b6f2873d02f94c72d4986fc\"",
+        "sha256": "5e37ad0b3a98694d04990dcddb2523afb3da2d03ef2c4edbaa229d5dd24743d3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rds.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3adcae986d10642698392f68f8b8e52d82dbc75cf6141d8abf673fa05ffe3d29",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/rds/2014-10-31/openapi.yaml": {
+        "etag": "W/\"7b41e8cc2621563a13552fcd933a092e4aa09c21a7359629c408f0bdbea3a473\"",
+        "sha256": "98ecba13962fe584aa696192c509e4be6349c31b08efcbf331b04b0af9e37a06"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/redshift-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1eabb3144f2384aeef370e239cd48145b7e31f5605eed14f110e5d0ec14241d6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/redshift-data/2019-12-20/openapi.yaml": {
+        "etag": "\"79cd0108c05bec5307da084cb37feebd\"",
+        "sha256": "606ffba591863154ed948f9cdb140edb3258546cd6333a324322b4b33ba83d90"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/redshift.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e39a35807d8bdd614b91a6957e8f97446e5e8b7fde8d0543e8b8c84f6cb96bde",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/redshift/2012-12-01/openapi.yaml": {
+        "etag": "\"13dd223393a6d3690522ee8612622230\"",
+        "sha256": "0491977fedd0eba7a4217d4dc772b94f8d15958c00f16231e4d12036daf2916e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/rekognition.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b0bd2529bbe78cebef2a5d7d830b5112ab5d2fe07034f53618d305472e3bbb32",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/rekognition/2016-06-27/openapi.yaml": {
+        "etag": "W/\"fdf7c9baba9e66023db3968f7b802d08d578d08d45be12f7bc726b4f44231d37\"",
+        "sha256": "cdead0011ac2ca6d89ae65d6797083a87ee5c4d56f2e3ffd3a6bdc2d375f5f9e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/resource-groups.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fe6bc2dcdcd911bc31f370aeefd3d0c8660985d60806d832105f9759b293e29b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/resource-groups/2017-11-27/openapi.yaml": {
+        "etag": "\"2e47156a8df731495dbbc70b2479626c\"",
+        "sha256": "e8ba74182aa888980dedf9334fef1149304e4cb1ea655f7d6531201627e89281"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/resourcegroupstaggingapi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2b179fd08382d0a1c25e5ae62598df1b0a74fca4a43f2b15a0439307f5c1b264",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/resourcegroupstaggingapi/2017-01-26/openapi.yaml": {
+        "etag": "\"baa6f7753cb61dd0fe355512690b2ed6\"",
+        "sha256": "c914c20037cd19badd8cab2803234766da8fbfe47ff696e7fa20974ed1dbaa0a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/robomaker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "01243ce0bad5e00b4abe3644db6acc4e276fff32b5840b1b252e645a624b8f3a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/robomaker/2018-06-29/openapi.yaml": {
+        "etag": "\"08ea20e738cba089b319f891febf696e\"",
+        "sha256": "2c3cfc30977a3f4b4734fd2b15f6757148b71d77b9a10f874a524c9d10305eae"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/route53.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c012cf8df985760ad33ed595cd3e4f220ff248d0a55442b552e6865432274270",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/route53/2013-04-01/openapi.yaml": {
+        "etag": "W/\"f70bd3f17a92560b447c2d4ff1cd0e29923d31cd304e6eee394e81c3222e2930\"",
+        "sha256": "d773387958a187f8f1b8c217cf0059dccbdd5d5cf16372dbcd41475b60b44206"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/route53domains.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a403211ddb81413181e5cfbfdb271704ce10fd8f76ce37ff5ad37009a9b0a430",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/route53domains/2014-05-15/openapi.yaml": {
+        "etag": "\"b7176072cd520df60d58e1a12d43e542\"",
+        "sha256": "6733197008106e7ee1344e867b63e3c65cbfd3ae2516b2120225352e30007ce3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/route53resolver.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1770bb80238ba8c972ad3a323730307e055fa9ec30c2e81c370222abb469f8dc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/route53resolver/2018-04-01/openapi.yaml": {
+        "etag": "\"27b32cbdbd559a7d2f73938e90f69f65\"",
+        "sha256": "efd109962d3059174cb48a96b3c19216f40431d568367c538999cfa311fac8ba"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/runtime-lex-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9bde92668be657c58083c6197e663e2e3719f968684d4ed3ef63e94cedad900d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/runtime.lex.v2/2020-08-07/openapi.yaml": {
+        "etag": "\"814736467129ea18b6dd82be17fd26e6\"",
+        "sha256": "6131ccadff3a6b818cff9617246460727676baeae0b24faa08c48e5110acd020"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/runtime-lex.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4d52c488e35b1bfa0db29892689404b862fbff6fd031ee2b67f20cd16f5e7c75",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/runtime.lex/2016-11-28/openapi.yaml": {
+        "etag": "\"405da059ac6ba3824bcefa3e2beab06f\"",
+        "sha256": "1bf28f1826389f82d06e7c60bca657f940a993a1548591331c540e4033c9ea1a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/runtime-sagemaker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f2ca706330d3957a9a25a3f8343613d3e7bccfbd6740a06a374fec5c2c63a978",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/runtime.sagemaker/2017-05-13/openapi.yaml": {
+        "etag": "\"383e6b4881d77d95a7421042ea8b5820\"",
+        "sha256": "3a021c35b0d9e2935123486279414854dd529193dcc1064394353343925f632b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/s3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b1decdaa339ca6761de48a9dd0b68ff6dd6092042efe179cc2f8f9f280e6b6e5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/s3/2006-03-01/openapi.yaml": {
+        "etag": "W/\"7744fb048bc7486dcf5cae68381e514e15ea579d489bb507808fd8f50c045e94\"",
+        "sha256": "043afe0dc9212eb5512743fbcf4d56ac72f5f6bb79663d509a370b599cb157c0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/s3control.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f558a6c3bcc7ad3decc06ebd6ae5ede55c4f21cc2d8515b2d8def155f6bb7367",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/s3control/2018-08-20/openapi.yaml": {
+        "etag": "\"450318f42aa0fe9715313bbe20fb3ba7\"",
+        "sha256": "0cf820c1450429e1b30c83820c84e477cc283b791895e47bca4790e15eb17020"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/s3outposts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "be49c171a7f20f9d51775da0f4f09273c1824ab6f8a93e67f2675131a762044d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/s3outposts/2017-07-25/openapi.yaml": {
+        "etag": "\"93bc619a53c4badfa65e9b56bfe20974\"",
+        "sha256": "01442388da3421e444d4801483354272f79e821b9757ccffff94aa498ff93821"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sagemaker-a2i-runtime.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5162ccafae1f1f2e1651befa39d5fce5a4fc8fe562b348d038a626fde7039475",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sagemaker-a2i-runtime/2019-11-07/openapi.yaml": {
+        "etag": "\"4453df4eb5f236185d6477a1d97da04c\"",
+        "sha256": "7f28075de788936edb386966df10144e239212e789893f5f8f491ce0202e9070"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sagemaker-edge.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ec7aac4cba78b2f1615d4b5df2b54f9695fad2f9a0e8458654383a55c62a8063",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sagemaker-edge/2020-09-23/openapi.yaml": {
+        "etag": "\"f33b3cde555d3163d28982f052baeb92\"",
+        "sha256": "0a243523dbcab955041a77e31fd5f0a42d205b8adba5be6aec0a28df93f35765"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sagemaker-featurestore-runtime.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "78ea641c213ecde621347656d978967102efbcb37d026c317263a432549b9d75",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sagemaker-featurestore-runtime/2020-07-01/openapi.yaml": {
+        "etag": "\"4efccffb16e8c7448f6f7eaf880ca063\"",
+        "sha256": "9b6b5c3f9dee62473e8e311f46296f29527c52338ea546f10bd67a33e02b6eb0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sagemaker.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fdf8185ce70ed6c69fc544708dfeec5c50143cdcad6d45a78e40077bc57c5c25",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sagemaker/2017-07-24/openapi.yaml": {
+        "etag": "\"4f891ab68f17e5131c6b1c2817f70b49\"",
+        "sha256": "2715dbf606ecbadb988ca43441ce33e090613ff4e450156761bb7d64786ef9e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/savingsplans.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "22634e5ea60962d9e72dfc7f31b9535389767ee84d7f46934f930ef7de518ae2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/savingsplans/2019-06-28/openapi.yaml": {
+        "etag": "\"7799be5f6cb254018ac01bfd6454a907\"",
+        "sha256": "21f99bca0306c742028893948c44a7941c059ae1d987299497d1f1a5452e093e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/schemas.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba257e51d3b30fd111a174cca39927b22bd1395841acb6392ffea58d7a074026",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/schemas/2019-12-02/openapi.yaml": {
+        "etag": "\"5c1050125e52db3d02c6263f2831acb6\"",
+        "sha256": "d84f13679bb11beaece6e218b32cc1e13f78b1e841ee282795a418575b4fecf8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sdb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f141fcad408ceaed928d20d1f6f8eb5bce2951fe5cbdb5a35a1df094b48c0c0a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sdb/2009-04-15/openapi.yaml": {
+        "etag": "\"0ef7484979b1ef78484e136a9fa87cb4\"",
+        "sha256": "0d953dad12eef9784f7455806884df8f97e6400a75f2c240908f71fc10a8c62f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/secretsmanager.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e7d60e313e2345be24b9697d4b45861bfb986048733352095cd2fc503d554258",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/secretsmanager/2017-10-17/openapi.yaml": {
+        "etag": "W/\"62b40c2ea08f61cad99d4a732a62d60fb9ff15280dc9fb42a6466b6515056401\"",
+        "sha256": "ad4d7db5a51d0c11aab8d7751c4f19475a47f1b3b9d8aa9aacc54de266346ca2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/securityhub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3b49969d5fb754854edc1b2add04798ac0f499589e2752ae8d218c0af6833a9f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/securityhub/2018-10-26/openapi.yaml": {
+        "etag": "\"5cc25098bf93ccbcc5a00dc53425caf5\"",
+        "sha256": "8d73a1836851a579946fb9ca4b5f1e7e67d18610d3a4442bda31d27c8b51ab60"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/serverlessrepo.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0ed144d85f4a0bf6c862d8a4777ddf3cbc8f7c10ff7b73ef850d919cf8d4f51a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/serverlessrepo/2017-09-08/openapi.yaml": {
+        "etag": "\"3a3eb7ba391abce2f01c68929f533161\"",
+        "sha256": "bb374561cc39ae9377d84c6ac39c577b20fa04dc2250feccafcf58673e452ef1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/service-quotas.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c34dbb0895890001d132fd0afa729d30091597fd7dd337a5b09a21aa3e0936dd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/service-quotas/2019-06-24/openapi.yaml": {
+        "etag": "\"1c021106ecff22e79f10777b855787f2\"",
+        "sha256": "987c13f2e8b04b97d79c4e35ab1e105718b9e2af54c6d6695c63791aefbf5bcd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicecatalog-appregistry.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f9613e6aa8aa1114c065889fca3873050d3d32776944f3b132d4930466b1cb6f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/servicecatalog-appregistry/2020-06-24/openapi.yaml": {
+        "etag": "\"792733723c23b9a109cfbb6b07c00151\"",
+        "sha256": "d3eae51f25ebd693dac0b28c1c6d79e872e8bb7a698d7a9f71846b230bdabb9c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicecatalog.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7e22b221249a06e0db85469537ef0901bf836f2800b3a9eedf1dca862c003007",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/servicecatalog/2015-12-10/openapi.yaml": {
+        "etag": "\"3badbd3e94035aaa34b0c073bbaea104\"",
+        "sha256": "7a6edb0adf765c9539baebba16f9ae6526809c51059ef17768d638da227ef5f8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/servicediscovery.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "25433fe08ca8edf76796ebe6c1bc5a151338be2b6f4c7b703794e6b38890025d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/servicediscovery/2017-03-14/openapi.yaml": {
+        "etag": "\"4358a26bd50d9a6305fa2e36b543b6e5\"",
+        "sha256": "64c6a15ead7197e2207bf5265834783fb8cbf64718fd60a1d69328fa45b26ccf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sesv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49cfb898d7b8db23ea087db8bd71e28cf4de97242c9b8b567618f3235744f0a5",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/sesv2/2019-09-27/openapi.yaml": {
+        "etag": "W/\"d796cf9da4284f563b65f2d464afcecbf850da9832bcd469de7ddc60e5ed18c8\"",
+        "sha256": "0d6df7185ed1e5fe01d9240af61fed579435a5fb9696db3074a187280bcac2be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/shield.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1f4e7b8f76590d46703bcd9b8c6433e3ce37db123ea7e256a0eb0119602ff833",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/shield/2016-06-02/openapi.yaml": {
+        "etag": "\"10cafaf9ba95ceb1380d53ef08db41b3\"",
+        "sha256": "561cbeac0dce570b115024da5a6215023e6b7837db955794ed5afe5dfb5688fb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/signer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e59ef2971610166842bc47ba7cb96a4c36e8008665ec4747b37c973c9eae37cb",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/signer/2017-08-25/openapi.yaml": {
+        "etag": "\"67e840f45802bb197e9fa51ba6fed6e6\"",
+        "sha256": "ba482e7de50792e7bbcbaa8e99e330ee7feccc1bc729015b6b27f5a793861df9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sms-voice.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "89def3d64ac119477f2c5293bb9bd2d293d3d0ce37cac07763e892cd0838f07c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sms-voice/2018-09-05/openapi.yaml": {
+        "etag": "\"e30cb828952d1a0df259db6dbe3de391\"",
+        "sha256": "52fb24a1c50c1de4001426c326fc5622a3f7368432c7113fe6027c21ae2c00df"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sms.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "21e0bf103c506d827fc27cedd8660c4b9f1c3e2a5c6e25707dfd1123d7166b9f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sms/2016-10-24/openapi.yaml": {
+        "etag": "\"4a3acc807ceac852f76a40d54b374b73\"",
+        "sha256": "219a811cbfa86246c04be4c8fe03b3eb15667dc856758e697d2828315ceaeccd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/snowball.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e1c9dcb51428be901672a0c01ac15f99f996bc473ea6430539ae34e292ada44f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/snowball/2016-06-30/openapi.yaml": {
+        "etag": "\"3492631001f02305d0046abdb5b4c87b\"",
+        "sha256": "5bd82119b1f6840d778a3d3356968161c618a9e02ca792be4cec8dadcfde680a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sns.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ac57754c68d2a01b1435c7ac50ee9316aa92031fa36079e5b2c9b669c8d20070",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/sns/2010-03-31/openapi.yaml": {
+        "etag": "W/\"e55bb691a62756255c28e14da252b5d48e44eddd797a2d05d4dd82142cb895be\"",
+        "sha256": "a00fb09864096aabf90ec41cab56fe90bf968671a6bd2bf53407b33c43e71d04"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sqs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "406b93710bcb650daa47be2fecf5def0fea0842519f98a5424e54fc9f33b98c4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/sqs/2012-11-05/openapi.yaml": {
+        "etag": "W/\"fa62fb694acd0c635a6acb0c9fc0d0d404d2d7a941e414eb084df12a1290b52e\"",
+        "sha256": "603a85901e582c4832c14c3ed58dca52d79ad39f7905fd402a29b1cac82fe332"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ssm-contacts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "63cecb8eba30813f0bf89834dbd25aae957218ed736beb8983d5b37ae3ed22cf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ssm-contacts/2021-05-03/openapi.yaml": {
+        "etag": "\"ea7b3fb3b29b3d2219876d300918ba06\"",
+        "sha256": "520be942a8724530d69656eed33fa7248db883145dc69ba18543cbb8b9354d7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ssm-incidents.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "67d4bdc9b5cbbb96ca5e068b7865b5cde79ebd907020437353316e27ed2db2df",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/ssm-incidents/2018-05-10/openapi.yaml": {
+        "etag": "\"bdce7a4875efa1bc2ce1ded0f5885ab2\"",
+        "sha256": "0268f2cce670ab5857f4f01c0c8be0b58b7c1ffb1caf2b3fb4dfe28cece30ebf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ssm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "90960f3850117e5a0e1307431cbc4f5caeb0e19a18af1271283515a7fd04bc4f",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/ssm/2014-11-06/openapi.yaml": {
+        "etag": "W/\"2395a68038a3163e06819a48a08834dffbd201e889d724ee63dd9950fe9551db\"",
+        "sha256": "8b9ddff5bc32e71b8af159d6110b355578b0a9e2417ad6442517ff85b959a0f2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sso-admin.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3258fb65ccded665f56fbdb24b387a2decaa23ecb27817f26ffe3d9468ae6296",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sso-admin/2020-07-20/openapi.yaml": {
+        "etag": "\"e087230c739b962b2674522d7b526bb5\"",
+        "sha256": "ed61bdaad54058b1f1b11f934bae1043a497683f110de1c82d985b670a05272a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sso-oidc.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "482450005d6722e329ffe3c2bbabd31f13a72042ba4d15c245da7005a7d9890f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sso-oidc/2019-06-10/openapi.yaml": {
+        "etag": "\"629b0ed98fb83ff57ba0afe343337dd3\"",
+        "sha256": "2d1062a5a0525333245bd1849b7ed4be5449b16260decad816d83e7963f97a9e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sso.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8dd4a161156138e0dedb915c08f70189bb5eaa3b90dddfbdc89355c3bd514584",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/sso/2019-06-10/openapi.yaml": {
+        "etag": "\"b5bdff7ce19c210e71ad7f956ee73913\"",
+        "sha256": "91fda5d1814d8e635a9ecdc51eff6ada0db8a8508ae0f05cd8310b440ad8b5e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/states.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "045a0eff50eb319ad478f5482aedcd2c5e31151c8f68ffa17370b6d7c55952c0",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/states/2016-11-23/openapi.yaml": {
+        "etag": "W/\"6066f5fbc633903f414bf347aa4b1f5f5a11c273d5e51576d3d3b1890b195276\"",
+        "sha256": "76601f2d21171acf7c9f0fee328589f2e1cdcd4cc9a4b53139016bea17af81fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/storagegateway.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "221c2e07c4c332d976b159c73e35b6112cf2c5dfd753af9d53f0084a61324462",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/storagegateway/2013-06-30/openapi.yaml": {
+        "etag": "\"5c6c0df2f1bdbc6d7e94637b5041c148\"",
+        "sha256": "43531ee3fb2fcb2b681e2d5a7e870c6b3df5e215735ada4275041f3955b05fcc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/streams-dynamodb.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d14aea8a38405646f83baebecaf5029cbf5b5cacdafbdf1d63f0e2a09b9cfc55",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/streams.dynamodb/2012-08-10/openapi.yaml": {
+        "etag": "\"0b5a4d5b0da4450e5e8d466ba63b3189\"",
+        "sha256": "bda0f37bdd857c263040de45cdb25f12ed221a94b32ea4c5a1e1afa3d1eb1ba1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sts.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ccac7b0059951ee5a597592608441efcf9d28248e1fd7cf7892f6e31520310ca",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/sts/2011-06-15/openapi.yaml": {
+        "etag": "W/\"3789c47eee0bcd276fa36e422af9223a8363868fc2eddef1ca533ceef74aed88\"",
+        "sha256": "9ee29721aae3fadd22e0b1743989de73331cba8bf641543a61cf1b64f1c47109"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/support.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7a52fd54f4c39eb4d8845eef4b8b45b27dfba2dfbda51e1b1178fb21d1eb11d2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/support/2013-04-15/openapi.yaml": {
+        "etag": "\"1d54a4f3dd8037ec76952442797d4397\"",
+        "sha256": "a79b9687eb77fc2acb9db0ffffc460df05f937d24fdeac336012e5ee4509d500"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/swf.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1d880777abaadba68c676894d1c4764ff70bdb8653e06fe84a90c8630a6b3d78",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/swf/2012-01-25/openapi.yaml": {
+        "etag": "\"8d8a656f65c7b3ff9a7cd865394d28ec\"",
+        "sha256": "c6756cd24d398f10b7b5c7726c656b96ecf76fcbe0e5ce013cab3561ab0e01e3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/synthetics.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "976a36d3ea508000d3c5b61dfb40dbcea039a5810563b4f4c76d8da26f4073f8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/synthetics/2017-10-11/openapi.yaml": {
+        "etag": "\"d4a33dbf34a33e5fbb3045d21041c9e9\"",
+        "sha256": "da71d215093f5829b6b232b8bdba58ef540d67669141b8617a62c153289db687"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/textract.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "779fa556bd930b0731dfdfa9c07cb54ca4407235a8223871edf4e9d209e5d19d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/textract/2018-06-27/openapi.yaml": {
+        "etag": "W/\"b0a9060f8c65aee9e775a3a21b351f82d636e5a8678595efee31df03ed256c52\"",
+        "sha256": "f57240c13958c630041916d62d0e7636a6dbfe9361886921c9b11718a2762de5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/timestream-query.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6c3478e3d8015fbfced45a9eb91e3570791b7645b1809fff21ef7718efc4d1a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/timestream-query/2018-11-01/openapi.yaml": {
+        "etag": "\"a691d62ae89c63f22e02313c14a777dc\"",
+        "sha256": "e1a1e4d78b0fdd76db08ed10f843efc6d5572d7aae41128b0ce23854312fa84c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/timestream-write.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e530a9f9ca1cf3080766e1dd7d3462230c19413e75bd7f221afb20dc13f36dd9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/timestream-write/2018-11-01/openapi.yaml": {
+        "etag": "\"3360d1952bb8c7f444cd3e2a4f48e74d\"",
+        "sha256": "e59935cfd54d1811909a8ac7a6117747544b547fa3581d7f7e55a8b20eab4871"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transcribe.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab023cc184eaf1aaced6c7d58adbcacc1f2d1239f54a13d29f37be94b0a73751",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/transcribe/2017-10-26/openapi.yaml": {
+        "etag": "W/\"06fd79c11f984f69b62370c101a0fa1fb2e3cb24f39a774a46a15eda457c6b20\"",
+        "sha256": "fe76d9ad4cc84e2e1df470b3d14b6daf6db276817ede028697091c6d89db5e63"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/transfer.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b8a41082dd1f989383751bb77c9bbb278c7f4a9d6896e6fa2fee5a5a7d0581bf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/transfer/2018-11-05/openapi.yaml": {
+        "etag": "\"9cbae326620e2c0d3a0693da3d02ca05\"",
+        "sha256": "2224fe73386670a37a19e7a66d0a519cbb71579e1fecaff4a8101ec60a533fd6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/translate.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f4f0246671187e5bc328f75c978045558fdd472113fa3106dee3f2765bbc6f6d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/translate/2017-07-01/openapi.yaml": {
+        "etag": "W/\"3e869fe6cf3df119cb58978328321d2585ec52eb4068d9337d487934a529ca71\"",
+        "sha256": "cc17649ae2cebe30cb2345d17fa18dfce2943cf0f8872c670ff0ea43d533818b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/waf-regional.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d63947b95f5afd43443e519f431f71df393c22f6fd4bf18d3a352ac1076260cf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/waf-regional/2016-11-28/openapi.yaml": {
+        "etag": "\"39aeb0f7ea7b310771db5c7db23b1556\"",
+        "sha256": "7f99aac027685a66cbb379065928be5f4d58a0c8ff671139cd3152d693ecb1cd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/waf.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c5da9acafcff538b8e068a275b1a7849b9a0af3c89ea1a1c09fcb94424e438e7",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/waf/2015-08-24/openapi.yaml": {
+        "etag": "\"72ade6bd1309eee7975766e1a0ff7167\"",
+        "sha256": "34b36432c8c928fc6743803d6b7bef9192e70b9d78cee13fc1232b1be1889271"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/wafv2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8a6da81f2fec237f7b9974516dc585a20a5cfbfbfff3318085210dc143fe64b0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/wafv2/2019-07-29/openapi.yaml": {
+        "etag": "\"02924996a565fc2f33db62b04b9e916b\"",
+        "sha256": "aae27bcdd10583b633bb9f55f588e7e87ef2009a6670495e28036bc18c063e83"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/wellarchitected.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d7129663b507ec7783b0ec998a9175da86dcf7d9f509cfb6477f1ddf8c533f32",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/wellarchitected/2020-03-31/openapi.yaml": {
+        "etag": "\"1a689f35ec064c44ba2be40413a88b02\"",
+        "sha256": "a25e46361a73decf6dd5bb796414e6c3c9e7e3081f66ee122d8462cdb0e33a57"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workdocs.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a5d4c2816bd5128d0ad37deaae033248a0882274c32190f4a549232c8df3009f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/workdocs/2016-05-01/openapi.yaml": {
+        "etag": "\"9854c913fcc1e7b96b9646e4439f38c7\"",
+        "sha256": "c889a6a73cb34024edbdc41d6f0e2e3093e68e3c3b302ebb3803122dbbe69297"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/worklink.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "188442035e8e0fd26733648fdfd35986c1b469f543ebde97f3eaf1751693cb59",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/worklink/2018-09-25/openapi.yaml": {
+        "etag": "\"2218deeb88b7cbeee148bdddf60ddeaf\"",
+        "sha256": "2c8e654426bd29fb61b2086d9d96f033ed8636544cee3b2a61014a64c2e8a573"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workmail.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "035ccf39059363f681ce2c6729d4b3c9f384e14a901144cf99fa9b3647336554",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/workmail/2017-10-01/openapi.yaml": {
+        "etag": "\"e1e832d7effd520589111e6e990be8c7\"",
+        "sha256": "9cb7cc11a8de3fb1f70c3784b87e1a6162e25c8eecbc0e2982af970970f81554"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workmailmessageflow.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b5d6ff5e1996591c9c2afe5a35328c0be73ea5430766e5953c78cee5f4f790e8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/workmailmessageflow/2019-05-01/openapi.yaml": {
+        "etag": "\"7089a9ae020fd4f220f4240efa44e34c\"",
+        "sha256": "076bfdc5df97e2f1ccf6a8b7d9671667215d06f4550877f7bbc6cc2c61b9d8bc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/workspaces.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "be796ffd62224b90681b4d628738f578e0c1c4394648c866429317129fae9019",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/workspaces/2015-04-08/openapi.yaml": {
+        "etag": "\"8a41d5fe2e596e6570d21068dd7144e0\"",
+        "sha256": "73f65b90e2055b69df003cc614948623fd17577d443690f6d07c4ca7659c0674"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/xray.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "18d04c0919502905aa2d65eb2f98055963a2480a9f08d2fa9fba67e2e9fd90d0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/amazonaws.com/xray/2016-04-12/openapi.yaml": {
+        "etag": "\"89a014cc4896da2a22d6b08983252cba\"",
+        "sha256": "3ab0d8917adf18cb604a7bc8b506050039a50d23e3c33f539bcc7aed7c04b454"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

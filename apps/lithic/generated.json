@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "13d0590c15cad93dc1a190bf3a85a3d9c795c775cd74972f9d1fa2f048c56236",
+    "sources": {
+      "https://raw.githubusercontent.com/lithic-com/lithic-openapi/main/lithic-openapi.yml": {
+        "etag": "W/\"aed11be70fdd236a0d8cbf8467c737ed4443d06c95642191748dc615ab111857\"",
+        "sha256": "104905a6eed807db422fe4b7e57acb3ee020cc5cc9425d855482d8d404171891"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

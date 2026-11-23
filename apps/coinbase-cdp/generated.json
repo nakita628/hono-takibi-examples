@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bf2cba16faee75a38ba2f052a594614022837a8b62e19639ca81a18feb8a3dda",
+    "sources": {
+      "https://raw.githubusercontent.com/coinbase/cdp-sdk/main/openapi.yaml": {
+        "etag": "W/\"4e9b911b8b2eefa9f81abef4eb39d994193443ef2aa49b798a13674c8895516d\"",
+        "sha256": "cb7be3d96142d8430b85a3497641ffb08b53bf71bbf25ec2822e114a20dea9e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "17b5d8ddefd332db2c3d28e312df3e8ae0b0c248b15009fc38e8cc71f7ef2968",
+    "sources": {
+      "https://raw.githubusercontent.com/superfly/fly-openapi-sdk/main/go/api/openapi.yaml": {
+        "etag": "W/\"78ec72f427bbddb9b126fb306a6a93ee640f0ba480247b476637d5f95b8f9208\"",
+        "sha256": "d29d313ba07c44feb58ab3db36b4e1ccaaae21b65a07fc692db6c1bd9564874d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

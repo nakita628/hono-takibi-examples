@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bd54a512604c7ec2c5e2a8a1dc1df5d57642ef89979ad37e53d0eaeb3415c6ab",
+    "sources": {
+      "https://raw.githubusercontent.com/backstage/backstage/master/plugins/scaffolder-backend/src/schema/openapi.yaml": {
+        "etag": "W/\"0f2cebcac3d4d116de0568dc068fae92ffede63f3759d56284ffda5f734fdf01\"",
+        "sha256": "bd16868ebd23257af43b0685b14cf46853781793e26fc1006ae3e9b64f2745be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

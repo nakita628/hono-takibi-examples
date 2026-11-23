@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dfc9e25d8c3c13cbe3a7313c08266c399e0126eb84e22c6f9fe0394f11e48c41",
+    "sources": {
+      "https://raw.githubusercontent.com/hashicorp/nomad-openapi/main/v1/openapi.yaml": {
+        "etag": "W/\"1cbeae41c56d6eee597e418ff7378868485f87359060122a6e03af95f8f9eb97\"",
+        "sha256": "3c401ef1f743a629d0ba1b393994049d754743ecadb59a256b5cd74619bb9ea9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

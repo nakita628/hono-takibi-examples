@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "a8abf81a774e724cdca00bd1e134aadc752d0eed498b142fba56fe2407fc7d77",
+    "sources": {
+      "https://raw.githubusercontent.com/traefik/whoami/master/openapi.yaml": {
+        "etag": "W/\"e40680e366d127a29d70b4d4ec64ebe1243791bea551fcf5366ef72af6dc22a8\"",
+        "sha256": "173ae6e491a3032a695945bbfb18699a90fa01addc131a1352844aabc8729cc4"
+      }
+    }
+  }
+}

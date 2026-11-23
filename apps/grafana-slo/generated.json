@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "41c89835dfb8f765669158feb07e2b36f819bbe41d9f7aae0d420c21c0d69662",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/slo-openapi-client/main/openapi.yaml": {
+        "etag": "W/\"4195c76c02bb1c958f2f7f830c49c282f22a9ec2e0516a7e1f2f7b3b490bfb1d\"",
+        "sha256": "a6d17858e513b9c9305ca59a701b853512c398f84e2ba77512868a80f007b48c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

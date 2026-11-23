@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7d1d94a20a4885162cf9237ce386c74495e5cb58d41ba6876a54252dffa86fe9",
+    "sources": {
+      "https://raw.githubusercontent.com/apache/airflow/main/airflow-core/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml": {
+        "etag": "W/\"29286fb8b5924a0a3678b0b77686cdedf89f5210a1c691b7677b4a0b754a9b01\"",
+        "sha256": "84a0eb98068518fdbd7f7bf3c05f259fe9dffb623f93c207c49c310a08df4db9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

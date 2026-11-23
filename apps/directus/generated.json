@@ -1,0 +1,489 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f84583bcdf1e1e256ebc405aac6b5a231c71ad6742c99be98c53e4f435b720b9",
+    "sources": {
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/activity.yaml": {
+        "etag": "W/\"f2e522c93bb93cb7c2b3b82983702dbbb81ad50a299117591ac255a83c9d52e2\"",
+        "sha256": "8f9bce10ef2754eec07e009c8fa35e778ed20fd17af84ef5cf6f4033b13adaa3"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/collection.yaml": {
+        "etag": "W/\"d35463c51a3b25dcfbada834bef6bdc1ac0fc4c6e979a9f213aaf8249415c676\"",
+        "sha256": "b3dfc4db15a33cdeaa9119645b9b2d78c11eeb3e169fbafce79c6e924c8beffb"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/comment.yaml": {
+        "etag": "W/\"fd3cae94d559e2822611f82a966fb3054641ad27612f7bd150ded70b09d3811b\"",
+        "sha256": "7a91bd15384139141a8a39161735fd1908fe22ef6a4df9f4fe645c62df56c185"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/diff.yaml": {
+        "etag": "W/\"40d0ad8b536c9fea7df395063b8a52f2a4dfd07011565818da08236c035fae5f\"",
+        "sha256": "f7053a42e3222d78598d5ed070e5d227e86a1e7da54166ece4e7a010924b35fd"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/error.yaml": {
+        "etag": "W/\"671bd4e4832eefcd8c42ad61e529f9635c1faa09d909a1cc9f883d5bb9dd948f\"",
+        "sha256": "3f89c61c69b127bdcde2f53b82ef5003a7a33f3e1f88c7164c4df2bae06649f4"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/extension.yaml": {
+        "etag": "W/\"d4f4a6f012b65347a83759776affd99d77067c6dd6884568c0e06d3d33796534\"",
+        "sha256": "ae6d1b4459b3d1d0c7478f5c0fe722e626c1fab0212c0577d3938d26f9450fbc"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/field.yaml": {
+        "etag": "W/\"9209ded51791bdba55e1d7957ae60c74c031014f21db7fe6595a8ced0f00d297\"",
+        "sha256": "01dbfb0c2886baa0c490e3a8643935171739da1ac5551d3aa68ad5cbdc85e747"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/file.yaml": {
+        "etag": "W/\"42424b56b46d174cb2053b69bd90c6a724422c683fb656d3977da09f184df678\"",
+        "sha256": "a21170f9c88de5a78156fd4483ecd7f64caed7cb2725533ead6c0e2925ef0f4c"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/flow.yaml": {
+        "etag": "W/\"1bacfdc3f1b5373b0ed1182d2ec7c5f715d5d95f36a9ee816a0ba0b93d5f8977\"",
+        "sha256": "6c492e7987eecf0ca37c49b80b1066b5a525347c0db91b153105339d79e5540b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/folder.yaml": {
+        "etag": "W/\"8dfb8308c5cd2020286531ee187fd8691fe75e1f63baca7c0cb098fc4ff23521\"",
+        "sha256": "d492104b7e686e4f43eaf847dae11d52855feebb03e11adfbf78f82250d61581"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/item.yaml": {
+        "etag": "W/\"b98f0c0aef503b3b60782c0807b3725487fa78372e58d596049073f39502182d\"",
+        "sha256": "22c3243a69ebdc5c46d9e0e5d2514a9e8fdf3b7539ee14ab9ea19cd770e2a28f"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/operation.yaml": {
+        "etag": "W/\"2c54a3513c6db9f87c5ee53355734b8fdc41ae5517a43587c6f5927e77799ac4\"",
+        "sha256": "499445e39f0bf00b417ffb12deffda04afc8c20d13add19a57dd6082389f5379"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/permissions.yaml": {
+        "etag": "W/\"2ccc2e500dbf643023e2a8300d2afb1364e13653314998872f527f86bec37202\"",
+        "sha256": "dda5d9899ea4cfb04629968187d8be4ce0578a5104f22881c8ec46df4830ac4a"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/preset.yaml": {
+        "etag": "W/\"ab0a2aa839fa0af4e4d0a24d1a508c33f01805e393b41cf954672c54cd51ddc7\"",
+        "sha256": "c56acc1f4b21ef1fb1fb68b8678b22a044f29a7dbd6d226a72e2a692c663065f"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/relation.yaml": {
+        "etag": "W/\"58b9b61d2fdec64ca961a39e9b61e22ba45ac9f49e59fdaace17f25e560e021f\"",
+        "sha256": "e237b67a52fa2012ce50ad6f5771ea99d676aa98a6601d841dfe0f320481c2f8"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/revision.yaml": {
+        "etag": "W/\"6ae9632da289e30dfea5c84d9de7a874493b3bb45735e633170efe7169b28550\"",
+        "sha256": "84e5e70a99a709e964bdf1d9748c9d8f0780041c23e0ca00f1920c38b508a848"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/role.yaml": {
+        "etag": "W/\"734e9d32ab8a8b131fe659c0413206ccf795ee0ae8703a313459915ed0bb5d6d\"",
+        "sha256": "acd991415121675b833d7a0c9d394c4ec2260567786ae39ae37cc32465744e57"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/schema.yaml": {
+        "etag": "W/\"70260b1ae5d63171e535bd77e84904e2caec85adcb5dcac36b9bd6304b23e66d\"",
+        "sha256": "e28d8717ae061b984909e8853a7b06574e773cbd21a0912a5cf0a5bb75c187e0"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/setting.yaml": {
+        "etag": "W/\"e7bf52d06168b5b71cd1e501364c90bf83e742b188344b3669493dbd5dc2a867\"",
+        "sha256": "c11dc6e3cadbc64741fa229bc11225b20e62b90403fbb7c80ea757ca604dfd38"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/user.yaml": {
+        "etag": "W/\"55c08115f3cd1487c47689b63938ef0e1859f65dde05fe102435c634969b48a1\"",
+        "sha256": "5c415f5c942d6cc1815e61e2eb0d4dea3da98e14620a4667e3ab08df32acd451"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/components/version.yaml": {
+        "etag": "W/\"678f5420976b56e7d247e582de205083b811313bd931c9d847468873ff092dad\"",
+        "sha256": "530322c4b5d0fde355b5ee7b3b99ef7d0309554d217cd0f6338acbb9bb1c3c56"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/definitions/query.yaml": {
+        "etag": "W/\"8e8c64a2691f6e6bd5efb5f70b934e856e76dc6b804306dd9f3e16466d712e15\"",
+        "sha256": "8756224056b9fd7f8d0fdd95bd31a3954e2a895a9892766fa0f34b471da2f5ae"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/openapi.yaml": {
+        "etag": "W/\"c0ab23940892f3f72d71f8d9a3505300f3018301e8476a96362903d569e6abce\"",
+        "sha256": "9b8259d8194ed331ee372955d721da9ffa27abb50dadd276d03ca5aad9d3c9b7"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/aggregate.yaml": {
+        "etag": "W/\"f1d2cfe666463774ac4557533139441a3a712fccfc234e753d63abb1f336b7d3\"",
+        "sha256": "dca47d959ed25aa5bb96ee2bdc22975ab744544d60689b07df3aad2f28eb666d"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/alias.yaml": {
+        "etag": "W/\"7c67878138bbf40431ac92fdf08540c402f8e65154768470ab8548d41e349931\"",
+        "sha256": "5d08781fbe8042414c471f612008c9c5eb6a0399ca5006c998e94aa8cb7e1c5d"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/backlink.yaml": {
+        "etag": "W/\"5e05df2763d581ee04b717c7fc35566ab154e0703a502a4b27574ce3dde6c8d8\"",
+        "sha256": "0c063fa1d00707943f94b82ca7d1a6dccfb23c626f9d1f4aa65475e37c0be199"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/collection.yaml": {
+        "etag": "W/\"cacd52ecf0cb7568d9f594121870277f29bc8a7e556cd10945c05ace9f749aa0\"",
+        "sha256": "1ec1d8978872c47198be773836a6ac3e2bcddf467dee15939566be63ec417701"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/deep.yaml": {
+        "etag": "W/\"a6cf789980199f4955610f91e16295c6930a9a27a28eb2b0c9b1def6a2836f22\"",
+        "sha256": "8399a5d2f7a3b5dc58b1d31df7ef7e049bea850898bc9ed975cea44512cf511a"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/export.yaml": {
+        "etag": "W/\"bccf9f0aee338bd5b6e8ef438771a1a0bf56f70815efd5c3c6d26909264d9792\"",
+        "sha256": "27cd7c5c7198bc596886b2b095f737cf7fd4cdf2b1c91f3a869339ae8f4e64de"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/fields.yaml": {
+        "etag": "W/\"b5ba84d84106fd672fb99f848b456bf7bb7dd988a53bdac2f8f4e697ec4e61f4\"",
+        "sha256": "0d540e6c5f42fb57773067d6de90c4fb9fbb1a5a22195667351a188d509d340e"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/filter.yaml": {
+        "etag": "W/\"d046e4d58e23b89bb2738099c9e26bd630a6072c65f24ccd3a98929621a994f4\"",
+        "sha256": "f80e0817b707e2bd02f7b687c868a5e88d160c03dee5b81ac823d9ccd72b634b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/groupBy.yaml": {
+        "etag": "W/\"3bf920f6f1685a5962471800f0a47868603f6bc5f0b2d2eb27c8af10e860020a\"",
+        "sha256": "92ddd84e4e01d5b1c61a9a156505a7890ec541fcec4e891b2a560c29a7f3ac95"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/id.yaml": {
+        "etag": "W/\"beb52bd68a4760ec1d1020905492f1e7c1e7f7ca7d590c7c023a52bf711e5aac\"",
+        "sha256": "28e33804380bd47715a0d0e4b85495ee0e6540dd9c312b7aabeb0e649eb0c4e5"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/limit.yaml": {
+        "etag": "W/\"14ee40420fff910a9b04c1704a0a3cb056ce2d7191e54d754cca47d0567d57f4\"",
+        "sha256": "6a158143b0521dfbf122871c2f2af3f3b97242e383bb738cdfec3ce7bcb3a05b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/meta.yaml": {
+        "etag": "W/\"dd663708be9e8ae830749abe79cf828dfa79565ff490fefb73c154d5adf43996\"",
+        "sha256": "c479f5fa5f258d5c14e8cbe333de5dce43b52a1295d412807956c782b46d89cb"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/offset.yaml": {
+        "etag": "W/\"1774a0d588b890a2c8b7152628b49416016d93607070b03bc29bff4fdb3254ba\"",
+        "sha256": "2fc13dbbf5073a0c08409ce9e0edc4242dc8c88b4913258d2073705f67a86c5f"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/page.yaml": {
+        "etag": "W/\"afbf6c179a93c689734050131b66e0d62ed537c48b2f4c8b32eb8ec19edf4665\"",
+        "sha256": "f74c9f050465429156a1bd8b1b5048f8357452d93f2143ceb5c4ad12053300c8"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/search.yaml": {
+        "etag": "W/\"6491f1a78c30c859a3f8bcbc29cc50aa7e86383acafbaa83b348c5e4ab807107\"",
+        "sha256": "ab3324100ab1052824935f73200b150df479858c28472e240f4e90a72141ccfd"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/sort.yaml": {
+        "etag": "W/\"0dab273d4671565c9c1c7cc2075036d77910070c4e9c6329ba987429c6dabd07\"",
+        "sha256": "5ef957cec6a0f494d8ff71c76d436913839074439579a5b340ee9a2eee2a38c7"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/uuid.yaml": {
+        "etag": "W/\"bed3b8f50d9271b544b02384777d2b6911c34683203dc34a833c8305567b056e\"",
+        "sha256": "544b3e82eb0af2b758016a4c8687b7729ba5118837d08159e0b8e7855606ba9c"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/version.yaml": {
+        "etag": "W/\"71637c5a481be11838549cffe394f345ded64518d82f8a45ea6d8084e423bf6b\"",
+        "sha256": "24a89301cc1c400b143b10d257e97737d12e45a51fd951880ce2081ee7a24ec8"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/parameters/versionRaw.yaml": {
+        "etag": "W/\"8d4bd03403ec1e3bf574e78d9636fafa9844e4a384c6d563c30f1c2075e99357\"",
+        "sha256": "3b1cc4d539110de7d91e5e72290a6d56425aa609d930791c698fd5031960f1d4"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/activity/activities.yaml": {
+        "etag": "W/\"2219eeff9e8ecd056ec16ecaa6f628bc2ce703d5c5ed3a19a7d05bd81b3e2aa6\"",
+        "sha256": "25efad57225ea7529444bd4955d711ac3c24e13452c892ec73cb238f2d5fa1ea"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/activity/activity.yaml": {
+        "etag": "W/\"7c295be91ff915a0b503cc5840c81ab390f300cbc28f44292309df318a06d70e\"",
+        "sha256": "0f5f5e5b0b2082de1627df22a8b97167c5776fed666fc4eaf085bf9d44656e18"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/assets/assets.yaml": {
+        "etag": "W/\"c7620e81bc29c2566e52a49903de83e99af0d63f7891de63d91bf170e417d606\"",
+        "sha256": "2f81391b5342587a32825a00d080d1495a40571f039c95d51e6d64c6f25c9c2b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/login.yaml": {
+        "etag": "W/\"55fdce9113701db115c222120e51ca1a4604cc5f9f1ea69a84795afc7fd8ae85\"",
+        "sha256": "6a0aac91b3612c99d840df648433b39804742d20e2fbfdd745ebadde36446844"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/logout.yaml": {
+        "etag": "W/\"0c4c98c5531d25b4b2420558374f8d57ff6445323a8c26126480804f0a1e7251\"",
+        "sha256": "aa599e2bb191070de185f5c91f8bbed4b7b6c908ab2b77231626e3eaf7aaa808"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/oauth-provider.yaml": {
+        "etag": "W/\"3abfbe595bc193d606284b6cb7b0f4a11aecb8fa15e2b7466b8d39fc0f46a082\"",
+        "sha256": "9fa602038754c4735b7106838617eed62d26d342eb6c6b10f5810001ea76dfb5"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/oauth.yaml": {
+        "etag": "W/\"ac14898cf8f67af0538b1bdf73aa0b3b51e0f073ef476efc98286787c698dd86\"",
+        "sha256": "63db1e6e62738bdf67734a295e980fe1821dcf23bc93d5de597d90e20a978ec1"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/password-request.yaml": {
+        "etag": "W/\"2018af277fa63da0c07eb4fd7aa6cc6c87267f35e7660b43bd2bdcb342d507ef\"",
+        "sha256": "4b2bda9f4a9eb2ef8b6ba1b5ba7364afde28c60d4fb1573b46339cba987f6956"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/password-reset.yaml": {
+        "etag": "W/\"bb86bda07656630a15d55ac64718b0043f52b6f822669ce9792114809bca439b\"",
+        "sha256": "9a4c74b6b6d7073a860ce9cecb970dd3b66396b5683e4e0c02ae20a2784fb044"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/auth/refresh.yaml": {
+        "etag": "W/\"c420aabb6547f4abe94cf46c2f1dffc912198c0cc1bd5d29ca2ce5e6ec09e684\"",
+        "sha256": "c62127a01e18a5708208e2af61e5b2666d1884eca3a87ae8d99336e09594ddce"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/collections/collection.yaml": {
+        "etag": "W/\"ec02fc5a9399279434316d4244cd58311ab1705fa2f6d7b1e505ec6437feb187\"",
+        "sha256": "a92e63739f595f1f3ec2b870a17f9c61a021c98857ed2c72f5904d2381515a94"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/collections/collections.yaml": {
+        "etag": "W/\"ddaec2101185398814104883c345cc74ad2e7665734a0d7b47228097491428d1\"",
+        "sha256": "8a6c4617f41b7be50fe5114e121208883fc3da177bf4ce75a138783cb547177c"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/comments/comment.yaml": {
+        "etag": "W/\"bdd8ce4a547b53e1ef271058e375512af541d01664a73b0bb8cb14533b4ac2e7\"",
+        "sha256": "9a5235b3690c9ea2323779571ad4865d2995948578a0e7330dc5d14cc3d71e35"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/comments/comments.yaml": {
+        "etag": "W/\"5d5c456666309c1d799ca1d207e70b578e5de6f31c4a1397d1011a1aad63dfe5\"",
+        "sha256": "6d4f373e0df4bcadf405bef7523b9c6e188554f23df2eb94eca7e071139696b9"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/extensions/list.yaml": {
+        "etag": "W/\"8ab27cf43704dd543cdd48c6a1eef3f887592a6809bf976edad10be67d36d859\"",
+        "sha256": "2e3b25bdd54c7ede6033e383b55f5ce2f9e8fe57db616b220159210bf7739dff"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/extensions/update-bundle.yaml": {
+        "etag": "W/\"c2f2d32f3bcc89810ea37b5823b88759891a069e57e9132d5b8484dcaf6bc5b0\"",
+        "sha256": "a708b4e15a774316659647a07fceb398167db77abfca384934dfe485c96c31ac"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/extensions/update.yaml": {
+        "etag": "W/\"7a244cf7a752677d7651f51b48f0f6680c99191a17593acea6462a6a119ffcf5\"",
+        "sha256": "36712025bdb5e3533ffda3af451becfdba8273c3ab218cef34042262243d0154"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/fields/collection-field.yaml": {
+        "etag": "W/\"7a5c3b8b25d149ee58be49614c23f861e296fe6e0e89631c80ad807c5bd1c426\"",
+        "sha256": "8f694c2cd33548f047d3dc407df268d95cf2e691d6620456032d651bccacb786"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/fields/collection-fields.yaml": {
+        "etag": "W/\"3075041ab22a74f97a681be9a7a01287161c7302b844cd8c3069769857cb1437\"",
+        "sha256": "8306e46a6b2d51429c739908c710133f15c906a45333f06ac645501cfb6925a3"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/fields/fields.yaml": {
+        "etag": "W/\"015c347c53b7bd089717949269644b5d467529887aeab009e571abe2ef614d5d\"",
+        "sha256": "b9539566f72b6f1feac0340e572b910ce8c0a4102149076b4f443fe41d490d23"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/files/file.yaml": {
+        "etag": "W/\"260a783a5d15411a99d7a3e8e598c212c2d0aa24a754e6e9440f77c2504cd66b\"",
+        "sha256": "19ae3127e2c4e8b44c796e185f42dd43965a60337bffd56bfe889ac3eb2588a4"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/files/files.yaml": {
+        "etag": "W/\"e5ba018fe852dd1960f950753ecb331ab3008bde4cd2f32f839a503e26bac431\"",
+        "sha256": "bd42413e3e74596107967007985e08fa2fdfd79fb6f582a5f1389d56d6338eed"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/flows/flow.yaml": {
+        "etag": "W/\"6b12029a3c2ec951d00e77c281bca01cdf44d803c2a4c40cd903f4769ce9c61b\"",
+        "sha256": "383c3569be0f0710e60a67fd8365ab549121cf2a760ff776b2066d8c2bc38b2e"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/flows/flows.yaml": {
+        "etag": "W/\"2b862f3f2549a3c66bbd5558d40ba93c8801302ab729d63b60608f1903e971db\"",
+        "sha256": "0f4b4de4cd17a3b517abfc54219660937314c5984a162f6dec54101e128fd074"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/folders/folder.yaml": {
+        "etag": "W/\"c5f064e801bb2636eea75b6f750024c1ddd94f51451e71ae015e5d753761bcad\"",
+        "sha256": "7aa9070d27990df208c32fd01aeaadb1bc8d04ee001d018a864b70c1c553ed6c"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/folders/folders.yaml": {
+        "etag": "W/\"5afdec719f1aa00ccbd318b4108789c7e7d7c69c29194850e7903100f210e7ed\"",
+        "sha256": "cb8a0d2afcc5711eba209786794bf5185a3c2f7f4dfe6651f382d0c75a8a5b67"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/items/item.yaml": {
+        "etag": "W/\"b44e3be965f42a0e76047e0c06d270979fde11343fb5e60efd3d2ad930c86b8d\"",
+        "sha256": "785a5b37410a158b7548c3974ec000592c42c7e5511923fcf6cc5ff8264040a9"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/items/items.yaml": {
+        "etag": "W/\"0e4d811ad92146d19b0bfa128e9487117c8ee19439c1ce8e1f37ada5b02ead74\"",
+        "sha256": "ec7d398e76754c916cd5d37cbafdd7171ae408e8959218643c934f8a832f6a51"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/operations/operation.yaml": {
+        "etag": "W/\"60ce52917747975e1b848f56d492883105792d72d138d37f4ed4eba837ef2873\"",
+        "sha256": "f9345bcec11a516dc8519dccabd66d1998494a624bdf36ffecb90c80639e1c5e"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/operations/operations.yaml": {
+        "etag": "W/\"9e11d232fd4700c31aac9ae065ba5d84a336caae06f65285654c0b323aab63a3\"",
+        "sha256": "051fd2fdd30ff484a895a1a2b841f43f36c129ad318d6df5cc9fe2c3c04c7d83"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/permissions/permission.yaml": {
+        "etag": "W/\"b06b0b39bbb035a1cc9795c8e72b873236b7db46a714d11df276b4d03ab5b68e\"",
+        "sha256": "0a8da5df598018282edfe08c2243b0894fcb678aa397030382a294d42cd092de"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/permissions/permissions-me.yaml": {
+        "etag": "W/\"6f88a7c229e662c5e5bd699b8a88e4a19632d555f8496e7a08c38206a375244a\"",
+        "sha256": "cc8bb034d73711bd497cf1ec67d8c9aae9f486efb00f8d5e16a092be534e42b3"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/permissions/permissions.yaml": {
+        "etag": "W/\"20783b5d6c6daa8b32c65b2693f12888d2e7e2f46d58d76ddf9427754c9b3279\"",
+        "sha256": "556d950e2fbb6ddc7ebd8dbcc40dd37448456d03faacead6330d8f0a6c7566cf"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/presets/preset.yaml": {
+        "etag": "W/\"05f4a02b15b351f6f3383118bf45fe32860375000abf770ba415b2821eba5c29\"",
+        "sha256": "e98e5e3525f232177c2a7dc1df6da5a29207c2e5b45c74fe8888af5e3ab6ffa0"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/presets/presets.yaml": {
+        "etag": "W/\"4e880c4bf7aa03a7e211235fb2d0b967310dc5d9b73e03c18e964ac770b05774\"",
+        "sha256": "76d40fade48865bd893e98a36963c12477165573df0a982a17c1569efd20072c"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/relations/relation.yaml": {
+        "etag": "W/\"8b6f23bfcb80a42790ce51d664947d6991972ed3499884e781c963a41509bc75\"",
+        "sha256": "69256aeb842a14a4f56d1fdf6d7e21a98ed01270c4ab817b0a7694131d86f588"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/relations/relations.yaml": {
+        "etag": "W/\"643b72215dc364eb52ab5e25353c46d16888a82d4eca06dcb941621e98d60f59\"",
+        "sha256": "c3b6b4bcbaccfcf23adbf9736999521e7f3072ce080dcd6a78ddf11f439d141b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/revisions/revision.yaml": {
+        "etag": "W/\"c5cef8b188f180f5218d951f98a6ea3cb1360c02c351b2e602e6bc372cca7b5c\"",
+        "sha256": "01d945caae2605d210baeaa99f4b4bc37a8ae0007443afad2200255d637857ee"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/revisions/revisions.yaml": {
+        "etag": "W/\"cdf5ee914152f65766c9b0c7c8b11b38ca0bdc615acd8ab8bd7fb574ea2d23d7\"",
+        "sha256": "c81bc862d035fc7aa2c88b9d5b0234583bcbd4b7dbe063f388de358319887b7d"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/roles/role.yaml": {
+        "etag": "W/\"044ead3a3967a3a157bd685f886440b5ee1f80109ea043b454161bde3e211357\"",
+        "sha256": "c0a80a9cb774670d7006f94cbc48a5c2f6f48ab1e630ce872be9e6a11e29a449"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/roles/roles.yaml": {
+        "etag": "W/\"8e299ff97fe27b29a37b3478ea3314383949b5e7e107c20e296ed7662bb96f91\"",
+        "sha256": "372b0f7a74722234376d7ee441554c802288194894a0cdf62b019da01ed28c92"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/schema/apply.yaml": {
+        "etag": "W/\"6121e3ba009e1ec698f9903e1b60f97a2d0038aef1ca446d4eda11219725ab83\"",
+        "sha256": "6bebb5a8f46e986a0feb267d7ddb8ef35d6d723858414bbb8375b31ef8b554c5"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/schema/diff.yaml": {
+        "etag": "W/\"f847f87e04cc7e9ded1cc086b7742d2334eb0aff679a230871a41c9921a8489c\"",
+        "sha256": "c218cb129128a45ccda0b078d44cbc4b1a57ed3ae15bfd157b76f0b5a2ef12de"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/schema/snapshot.yaml": {
+        "etag": "W/\"02da1917bb0a0752623fcc0c63696b2b8c353c60f034ee17e4a2b7d417b0df40\"",
+        "sha256": "a9a03dd25aec45502adf4f6023d35d9d4841d29f211d7a5e8d205c1b42bd28b4"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/server/info.yaml": {
+        "etag": "W/\"434a1962162ee54ec8a19f9bb2e39f618a29c17480998d86f05d10e7dbe16bba\"",
+        "sha256": "3865a7134ccf9539a63eb57a69d8c891d539bf4b148070aa3786ff32fc7685f2"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/server/ping.yaml": {
+        "etag": "W/\"b28c9ff9dc234e50ce666e91b1dc704cd9a66f2b200eb7bcd317194eb9bbb3dc\"",
+        "sha256": "f3365e36fa8ac49da938159aa422f6a74ed897f232425d0c12b42e3fa448600b"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/settings/settings.yaml": {
+        "etag": "W/\"ed5862801a49e5f5c6cc936d4a3a009bfb0ca59a7482030e864a5039cea998d8\"",
+        "sha256": "36165f4610dab988620a9b0581869601b1ee7edea536aec3ee42d87d5c96c7b0"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/invite-accept.yaml": {
+        "etag": "W/\"51e5e168c77c6f4677e7494d2dddc58e22baa87d5a9f4e176f1a9d0ebc704a70\"",
+        "sha256": "955763c0d326bf8c99461d31bf60cb856ac94942538e451a2c01b02b3eefb09d"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/invite.yaml": {
+        "etag": "W/\"5f6284f8b44dae19bca442254f718bf29b2aad88c79aa1472c7273532e7a5c1c\"",
+        "sha256": "7e33c6de46045ef9fa584212a0ce84145c117e06882bb1e0e46ffb71affbedf5"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/me-tfa-disable.yaml": {
+        "etag": "W/\"ad4de05857d58585998b2e81620eb65ccb3140ebefe467ccc799a5c86e96ac58\"",
+        "sha256": "314b27246c1fc9d3eb6e2c9d2d4276771215330ed1c5ec29a4730e00bf059ecb"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/me-tfa-enable.yaml": {
+        "etag": "W/\"63897f55cfede91be5418b681ffdf706dea85a774a61a16d58c50d8f35e7523a\"",
+        "sha256": "35f466b10957c2ebd8c998fd672c7df41b70924347187bde3d1dbe9a6d9e39cd"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/me-tfa-generate.yaml": {
+        "etag": "W/\"121db57ddd28c908563447636b8f86ab4c8f5e845f55756e9934b301f85832e8\"",
+        "sha256": "4235b12da7373c6f569d775fab9cc079fdcd23feb7f607ea2e9a93a8655a27e7"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/me-tracking.yaml": {
+        "etag": "W/\"21505943518770b91c8d182fdae1f18d7bff555e721f17a25d634fb752644d38\"",
+        "sha256": "1bb47220c573608fd6fb99c8440c23a0f2060c888c016c0edc3fd6e0e2d22b04"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/me.yaml": {
+        "etag": "W/\"cb097ac58cf96736a111d66c8a4a2c97ae1de9ca9eda03ae6f2688feedb66244\"",
+        "sha256": "fd9cdbf73b3d1c85abfce834c4cb4bab00cb66979a563c182eeb97526d08fc2a"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/pk-tfa-disable.yaml": {
+        "etag": "W/\"363e92554d1341b8a65cee78a51d81a32314a6cb7e3257afdf6495f59ff8743b\"",
+        "sha256": "9846c09982ff9dcd8ef9401a29bfa2eb3501dc597d38d5152f756af9f89f3db2"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/register-verify-email.yaml": {
+        "etag": "W/\"38ffe774c128cdc09d57432e1736933350a51765467dc4201f4083ce08e8fad8\"",
+        "sha256": "f52e3d3930b1b8d5a301888a215a5af6b7a6a538aabe14edef809cf7f7c8df89"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/register.yaml": {
+        "etag": "W/\"524ebacad4db62f1fae33ff91ff5aff24a936f0ee518e35f0b28ffd77e9d9294\"",
+        "sha256": "c0c162ba71a1675ad5427c8792ac32c04ae63bbd89692f01be19f2256b9a9706"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/user.yaml": {
+        "etag": "W/\"b1c72ff3b7615822aaa8b52d5e6495f7426e4625ac87403d449c1883164eb7ff\"",
+        "sha256": "0d07aa9d1c62bef55e74d2946dee8f9568ed4a3fd5a6bd5d0c0cd0417e65f0d4"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/users/users.yaml": {
+        "etag": "W/\"4261c45d1555ce824fabcb8998b06cc3434cffeeecf275a6348109e20a148880\"",
+        "sha256": "6d574177ef505e274d9d050b933c0e693597ae2ca7f06f37abd04566fab63dc2"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/cache-clear.yaml": {
+        "etag": "W/\"e86cd8d5f9ae2a4c8a811aa0210f85328e6f866428a831df871b414826608f88\"",
+        "sha256": "d06e3d462cd6f85223e80a0549c7ddb8480fdc35e8667b40f550ccfd3f7c0628"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/export.yaml": {
+        "etag": "W/\"a3af13f0bb119884de24b03b82ef166f6ff1e6f1a5e87079a9debf5d7f0db3cc\"",
+        "sha256": "933d8e282801e56b055fe99f9c5210c47d29bd1b2cb61f0a41408e85f962706e"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/import-batch.yaml": {
+        "etag": "W/\"612afdc1ec31ad093c21928ea621c6ae3002aa81f3550fa0c3198416012f1194\"",
+        "sha256": "c1c744d6ca6ab0ad3270bd45504c43493bd579f9df7bc3d3d0d10b4b3972a789"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/import.yaml": {
+        "etag": "W/\"838e8976e06bc5cdb60ed9801b874b63b1518a1dbe31a5c8ffdc52a45bf1522a\"",
+        "sha256": "8d3a6f3e2e3e48088c373ab337af8f4f450e7a4e3f258ce9376505b8f5ac3fe1"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/random.yaml": {
+        "etag": "W/\"001170d70452033e70bbc6fe72bebdec01344772870b1efaddef270b3b485619\"",
+        "sha256": "482bcb265deb8b4b67d1856d0768d95b0836af934a456a2f9832c2898cfacc94"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/utils/sort.yaml": {
+        "etag": "W/\"0af6928bd4bedd5e940da23f44925bdc3ccd73f8518e1eb032eb91badbfa2222\"",
+        "sha256": "d64c93b3a4c67476e234307da660bc97b2a26c6cd1a1f4a987a26178adf6c8fa"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/versions/compare.yaml": {
+        "etag": "W/\"129a2766c42bb64efdccab277ea601fbb5a4a7a15275c2cc548318a1c5adbd5f\"",
+        "sha256": "546e1767575e488684fc41f30f708ce882a530cf23f456017ad36d37ca8c42c3"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/versions/promote.yaml": {
+        "etag": "W/\"1e9f96fdf07be60b607d4c20af8d047d2415ccf6d88695f4fa1909458f8439c2\"",
+        "sha256": "6ca65e07f9ea8bde5523a30a49397a7883e2be7d6824b77327066d5f7cedd838"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/versions/save.yaml": {
+        "etag": "W/\"865a4230fe07f7744fda004ca7471ab990866f33b0340d65d3f5d74a50b8d7aa\"",
+        "sha256": "cb56f4605022dd2d6639ad84a8fca60a80db39eb00648bb68633497fd7ce64b7"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/versions/version.yaml": {
+        "etag": "W/\"195d4bae96efe2eaee3b0588fb8cfc5770ae9b2be1c375be9b465a0c9cb7e94f\"",
+        "sha256": "5761a91b5e60a1611a616b10ac058e95402946823e42c3d5a3ebcc460c5f7378"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/paths/versions/versions.yaml": {
+        "etag": "W/\"bba9bbff53c40aaa1fbb723df37f9a7b786ab1e63f5c80d9997f7dce45749497\"",
+        "sha256": "6febf46fcb0331930c8670bf1a478e1c3e866a45d33e425b4c10505e97f6aa7a"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/badRequestError.yaml": {
+        "etag": "W/\"5358cc7645739ee6272472eeeecbbd9e01148a9e87ca9f28e5c6e56927e4b98e\"",
+        "sha256": "033609c0c07ac4a2786185a6f944b4b81f536d662ddefef1c0215ebba8b4929a"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/forbiddenError.yaml": {
+        "etag": "W/\"af64fed26100c48bf842e478264726754e49e47bdebce874f67d24af2561a857\"",
+        "sha256": "726174d3570c469ed09bed51156fc044f69c96a1993f793d1fee384ed850c111"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/noContentResponse.yaml": {
+        "etag": "W/\"7bc89f134f9ad5c74b9a9c87c49ee6bb30cab5f1dff53d590557baa78263adea\"",
+        "sha256": "13e608e9da01b6c58a2f5721079ea65cc3a6a846aa45fe4346aab895e04fda91"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/notFoundError.yaml": {
+        "etag": "W/\"3dd88bcdc027fce17acf626bbaf5a524d47eb1c968619aa4d2861db457bf7c9a\"",
+        "sha256": "3cb34a92a5b78be87c11f8e9edb3d95549d7153d5cc1c1695662f1b290077c14"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/redirectResponse.yaml": {
+        "etag": "W/\"72b28651cc80f275dd5692aeef72217de5cfdee2fb2d0c98b075ba09493d3d2b\"",
+        "sha256": "ea8aa9e962b4368879d19b8b458ee0c267907b5a21275428e21fbc37a8735ad3"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/tooManyRequestsError.yaml": {
+        "etag": "W/\"281d7df55b92a972ede8008562951f70b411119301506e33d0a90f727b1afcec\"",
+        "sha256": "64486282c1e8afa8b359c2c68491b07db1c6663c540244257a1befe63c490dd2"
+      },
+      "https://raw.githubusercontent.com/directus/directus/main/packages/specs/src/responses/unauthorizedError.yaml": {
+        "etag": "W/\"c158a6723f8e0a36a1d6556656bb73f6edfe8725187bd66a38c022e1635f4b5c\"",
+        "sha256": "38a7164f0839735653fb834986771a1eeaf3e650c645ab26c748facdef653288"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

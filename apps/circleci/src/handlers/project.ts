@@ -22,14 +22,14 @@ import type {
   postProjectProviderOrganizationProjectPipelineRunRoute,
 } from '../routes'
 
-export const deleteProjectProjectSlugRouteHandler: RouteHandler<
-  typeof deleteProjectProjectSlugRoute
+export const getProjectProjectSlugRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }
 
-export const getProjectProjectSlugRouteHandler: RouteHandler<
-  typeof getProjectProjectSlugRoute
+export const deleteProjectProjectSlugRouteHandler: RouteHandler<
+  typeof deleteProjectProjectSlugRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }
@@ -112,14 +112,14 @@ export const getProjectProjectSlugPipelinePipelineNumberRouteHandler: RouteHandl
   throw new Error('Not implemented')
 }
 
-export const postProjectProjectSlugScheduleRouteHandler: RouteHandler<
-  typeof postProjectProjectSlugScheduleRoute
+export const getProjectProjectSlugScheduleRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugScheduleRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }
 
-export const getProjectProjectSlugScheduleRouteHandler: RouteHandler<
-  typeof getProjectProjectSlugScheduleRoute
+export const postProjectProjectSlugScheduleRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugScheduleRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }

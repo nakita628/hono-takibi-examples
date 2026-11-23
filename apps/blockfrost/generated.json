@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dc120f36525c80ef54cabc70e550c3a8810f18a1a330115d99228e59fc0c733a",
+    "sources": {
+      "https://raw.githubusercontent.com/blockfrost/openapi/master/blockfrost-openapi.yaml": {
+        "etag": "W/\"3630644c1d0e599d3b134fdfebf2a2072a71c3b088fa127c5c0496cec3426795\"",
+        "sha256": "6f41628e70d528faeaec50aa1b43874849074c5b8b9e157da9c0b2bd732a9e6d"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×2",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b855ff72653729409a95070dcebe039abdcc5380843257dab9c3e79e244a4805",
+    "sources": {
+      "https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json": {
+        "etag": "W/\"662f36acc0ee2ad8a2bca5c71f14446948382e3690bae005f2d74d8830b3e269\"",
+        "sha256": "01520188df1e1039d41f03f9dfb22e488dc04365195762ea92e0825e7ecb217f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

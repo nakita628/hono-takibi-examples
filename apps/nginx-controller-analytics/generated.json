@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7732a40855025089a74fdebb50d94bd493d0c3117b09359dcae8f12a2a057df8",
+    "sources": {
+      "https://raw.githubusercontent.com/nginx/documentation/main/static/nginx-controller/api/reference/ctlr-analytics-openapi.json": {
+        "etag": "W/\"db10db36205bf2132a10496d0f214e340305194bd77e2f5086f91e091f08c227\"",
+        "sha256": "e188bb1f0c96340827c7abfceac81ecfb6db4bf514e1c4d4d43e314f2ec45b12"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

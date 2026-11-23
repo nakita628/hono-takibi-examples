@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ae20f36f4bdbe68639912518cf44baeac14650c1a03b22b1ae95ee210745305e",
+    "sources": {
+      "https://petstore3.swagger.io/api/v3/openapi.json": {
+        "sha256": "00441c05add60f28da55eb4563d3fb6bbda364ba8eb7b381e2e2c98613005c82"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "470f5cf2394f5cccd48582dee21990cc4b54a00c073cc8eb8efff033252b9322",
+    "sources": {
+      "https://raw.githubusercontent.com/NangoHQ/nango/master/docs/spec.yaml": {
+        "etag": "W/\"a8cc09251451f3ad4ed0402d9fdf3e4fe11908a99c67bf631b400fafa6d2cd72\"",
+        "sha256": "54d786f4ec95c0fb3df71f1224f3f733bc14de59b42e4e2a4796ebbbca4048b2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

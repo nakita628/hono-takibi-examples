@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "72bf4f438ac6592a7145b30471aca76dfde32d54ec3d9580b6c5e96aed80aa7c",
+    "sources": {
+      "https://raw.githubusercontent.com/Budibase/budibase/master/packages/server/specs/openapi.yaml": {
+        "etag": "W/\"0e306a1263c7e398236cf950c1872e1559f69166aab9d01f690d177ef90edf52\"",
+        "sha256": "f96a603b373e6c093ce730e8572c5311738c3adb54d053b0e2765443e6f4bbdf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

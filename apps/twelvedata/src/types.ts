@@ -3515,13 +3515,24 @@ type GetMutualFundsWorld_200Response = {
   mutual_fund: GetMutualFundsWorld_200ResponseMutualFund
   status: string
 }
+type ResponseMutualFundWorldCompositionBondBreakdown = {
+  average_maturity?:
+    | GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMaturity
+    | undefined
+  credit_quality?:
+    | GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInner[]
+    | undefined
+  average_duration?:
+    | GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDuration
+    | undefined
+}
 type ResponseMutualFundWorldComposition = {
   major_market_sectors?:
     | GetMutualFundsWorld_200ResponseMutualFundCompositionMajorMarketSectorsInner[]
     | undefined
   top_holdings?: GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInner[] | undefined
   asset_allocation?: GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocation | undefined
-  bond_breakdown?: GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdown | undefined
+  bond_breakdown?: ResponseMutualFundWorldCompositionBondBreakdown | undefined
 }
 type GetMutualFundsWorldComposition_200ResponseMutualFund = {
   composition?: ResponseMutualFundWorldComposition | undefined

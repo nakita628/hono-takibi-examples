@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cf42f6b4e4ef80b873437fa90fb006976c33867cbdb54eb08836109eb72164c9",
+    "sources": {
+      "https://developer.atlassian.com/cloud/jira/platform/swagger-v3.v3.json": {
+        "sha256": "2f42d2cce182b7e2f7bc4170fcf098af7ba462e5fa29bfb8300ddc3e9750f1e1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

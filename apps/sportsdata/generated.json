@@ -1,0 +1,527 @@
+{
+  "configs/cbb-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8141f31527ac93e7e0bf6894d1e62b9687930682cab02413af99762eb5a5b22d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/cbb-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"a8d6b03e9c621f0b0c73ce0ea9709aec\"",
+        "sha256": "caf6ddf7ff80547e76de7007da481a22f9e3cf61b2845238479145a853699f1c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cbb-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ddd5e321292065e5f5a1249e91d0713b4bfb6e05f0b901817a5aa3b3cdac49ff",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/cbb-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"98814976272d49fdebb233dd40d537f4\"",
+        "sha256": "3dc2c323d1ac0c2ca98d2958d486745116dd00a552d3779a8e36b14414f407ea"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/cfb-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2a3552e641bcabb04b9f763d21db5ec9c7a113a44b0b5df78d3dd121979208f1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/cfb-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"7ae9e2f69e15c51e1b32fadae3612300\"",
+        "sha256": "05de334dffef68fd1eb0657c18de036ed1ed5206d3754fecda76eab7a3a71056"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/csgo-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "85489a581e03dbb188c23567a57d0a6769a170746f058524d9b76e6070e09d00",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/csgo-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"01022fb87a4b3fb3c21d40e8aac50984\"",
+        "sha256": "706fc1dd46827201247398af19848dd6ce13b87802bbd84f075fc5d51d52c603"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/csgo-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "66359349274904d80c5e5a9e2391003123b7dd18d8361cee40e6188bbbcb4d59",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/csgo-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"7ff2c96d5b8d4e7a3b2099bd7fb7930d\"",
+        "sha256": "e82d6bb62b6f819b3fed960497306c5dd6da4a6fb44b36e19245cd16ec4b6bd8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/golf-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "32b1245312bf6fcb8585d05e971fdf3abfb6eb16eed060ed0a5d9043cedaccda",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/golf-v2/1.0/openapi.yaml": {
+        "etag": "\"91f89e9e555c7959dde78f137f2b1621\"",
+        "sha256": "365246cb9bc7c27602c3dcb6427c2e4fc980896b613028ace1b2f6505177fe25"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lol-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c2dd0c2c52e8750467f08b5053a2bb2393c856aa67d63a8c4d2167f75a9ac35f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/lol-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"26345dc8aff52ac21a632c1377b6ea44\"",
+        "sha256": "f4ebadea8c312ab13723bfc20c472aa783c85b0267563e9d1973b3cadf9d0dff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lol-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d950d63ab723758cd81ee33b677b51350e241584acd53bffa61d8b3e803dacf2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/lol-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"8b2e0a9bd8c66c7a9ad72e2bf0c5c563\"",
+        "sha256": "363a5de4dc1e921b88f6f482e6dcb4d7cd96e201526302b4d9c91ee58b67bc21"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lol-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "64e41ccb4c2f3ef1f9ce9745951eeeea119c93e71ece371f38a4cb6d93241d99",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/lol-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"d75d0d60916d51ccb8754fbd2b2f87be\"",
+        "sha256": "77d8e90ee480796690bd122b019e6175f116a68b48f90e0f0a474d3c9ec694b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-play-by-play.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fab050f34dcd4746a7a2245edca7beb7ee453a35e191a87639b51aeac870f05f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-play-by-play/1.0/openapi.yaml": {
+        "etag": "\"8484c0d45e2493fbec0663748c7740bc\"",
+        "sha256": "d9a8dc20ed37cbaa34b79dcc013e88ac4217b17428b99caa5bbac20c3d613c81"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f87f03ab7843f6b88afe39835c0998cf41f3ed3da6fc24d9441d29c0e65cfaa6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"55ab156cf40a3fee9caa5de8e7024591\"",
+        "sha256": "45f3127aa56f54958873e55c8717c8e8d7bc30b7e42c80a3b923f903c18b9219"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-rotoballer-articles.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "de6cfdf4fe119c64ba41459a3a84bed05417faa59a06c6a2425d114342fcf170",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-rotoballer-articles/1.0/openapi.yaml": {
+        "etag": "\"653c7ac6a5ba241ed536152ea85c9b2e\"",
+        "sha256": "3156c1bc815e614cd305f732a75633cd7a7915576e83752dd8426fadcbf194e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-rotoballer-premium-news.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e4a5be5be64efeebf643471b3dbd4c1bc5610c3a6a946eda8b7c453410742444",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-rotoballer-premium-news/1.0/openapi.yaml": {
+        "etag": "\"7d0055aa70666b264719df93509adff3\"",
+        "sha256": "6676ac2923fff2c08a4e1f29f4514d4459383a53339423ccd80d898a8bd71b49"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cef023119878367e4d7efdb96ec3a109f7c7cf19320bcddd9ed5a398a17be14a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"dcc02c953ccf1c842976b9e8cbae03ee\"",
+        "sha256": "e2567ce4992c3ef90ccd1d6a62d2711b654d19e3e920445f6a1ee4e950d10b89"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/mlb-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1a8411d19ea70815a0d82f398ce10d853378e08fd876c4d233d098877f4078fc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/mlb-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"c4da77cd788665da07d7371c3f157f82\"",
+        "sha256": "3088c5b4a410971e2c70e66ca271ed93700f1f27f7aa492cab8c5e24d55f380a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nascar-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3c638d28ddebade3490558efcd615714f143db2b2b4b529dc2241e29a41e3d04",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nascar-v2/1.0/openapi.yaml": {
+        "etag": "\"4a55c0bbcd965fa68a3685bc7eae7703\"",
+        "sha256": "957adf11a9457a77d1673f64bf1a8f6a0f86fb1011b9a22547f643c688d6b924"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-play-by-play.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6c2065adad83c9d8c06e7c725a84b0db36d9c6ba86b9c9165f57b80669819702",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-play-by-play/1.0/openapi.yaml": {
+        "etag": "\"bd575114c1288c13c9033f55d592ac09\"",
+        "sha256": "60ca76a0a4a25c3ba58d9db5b162bf81194c104c70dd58e5c70b34b378027838"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a236dde0c7dcf7f775064ad12a845eb047af8f7ab070329630b65ec4584a4f5d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"6d46ceebf08ffe33778730eda99ba6a0\"",
+        "sha256": "76feb52c5665734b9f4a49b1f0891dd391a26e487201e77f89a84d7272a9a602"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-rotoballer-articles.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "57d974fff3a30d6fa7f85d3de4d3dc58a5072010dfd623b1185a442ba2fbf29c",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-rotoballer-articles/1.0/openapi.yaml": {
+        "etag": "\"077923039dc578aca48a8158eac1d023\"",
+        "sha256": "ef4fbf9c2afc7437c93ddc01bfa7d483c1c04bffae23e7c813ccb4e307fcd018"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-rotoballer-premium-news.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7603f1aa082cf9dccedcc5cc96157f9099cf4fdc21f29effa108dfcca01ac270",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-rotoballer-premium-news/1.0/openapi.yaml": {
+        "etag": "\"deb98304d400cd5ed07680cbc7afdcef\"",
+        "sha256": "2fdf8daf8927339f44904c20a9268dc92a94888658c3ec1e1442709a78e79e50"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1ffc66d6c0d9bd053a9070bc1c63d748df483ca3b3c032e351844e05b240de1a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"2c5cf974f1bbc44f8bbee667482fedfc\"",
+        "sha256": "4b1f1bf81d3aa95c8d32824a252a944c994026634f02f62d838008ce77f5d5c6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nba-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cd9408c70664df2793df5023b27a77ac97b11b481b0eca472db0d7e0a40fed2d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"f362d5e6c131ad8beb748f4b4a72e370\"",
+        "sha256": "218269568ad0c4dc4cd31d8c157e9445de2209bdd5d43635b1c414069f204981"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-play-by-play.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c5075697f740616ba840e1b4b33459222427b6eb416e676c2b74d592ecc0ef9f",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-play-by-play/1.0/openapi.yaml": {
+        "etag": "\"d841acd5bf4a0d1c99962a6ed1d4eebd\"",
+        "sha256": "180cba139fe5e6b637960303b2fc976e7fcf8f90b5fe0ccfa8eaf98bcb9be0c7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a70396809d3d5a60f0a6bd49708736b5de02b1d93eb2cbdd839b5ee49e504c47",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"1ac255eea5db0af55756a5dce1dd41c2\"",
+        "sha256": "1f2b6a336190b4d43114998d45d570790b16a5b22c4ca6fb2374d6edaa902955"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-rotoballer-articles.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "98f2bebff4fd0f7d35aa20b1c7aca0e76b30c1f70a628723b301b0dc623a26b8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-rotoballer-articles/1.0/openapi.yaml": {
+        "etag": "\"621dc0614e25abfdc5c91dfe8e094ed5\"",
+        "sha256": "630adcc2a22da4eba28c32f57e19813c97ff551908ae6171e79c48cbacc247e6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-rotoballer-premium-news.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "577a5af71193756c8ed2e3a7406d2d8a6b3273912ace8d538ebc7c7036bbb268",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-rotoballer-premium-news/1.0/openapi.yaml": {
+        "etag": "\"669c618a42e6e188fb4d3a8e48252bd8\"",
+        "sha256": "a7ef96a1d5c1550faafa05fb53d0338530e2501661bc3cc3d5a573dd4e95e3bc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "78a1528e0371f92adc6a30339bf2fdb49cdb6f145ce4fc2d3dafeab4a05aacb4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"7914c8c15863feb00cedcfe1a627d9b9\"",
+        "sha256": "97f76dd3225eb69d921793ff36e4a4f0ae8ef6abb58da898159b6af4a76f59ce"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nfl-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4304b29e3701ea5f91a120534c3ff19c12e95e9fdf1cfc26e9bf10ff5073f211",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"0214bbd254dbf81cefc2412a72094828\"",
+        "sha256": "6b3fda2534fe032d3f8723ad003e633fe8baefe3171d0966fa19abb13ee2e3ff"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nhl-v3-play-by-play.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "24ab98f279231c373a0a0c8517e04f8df15c79e0ccd47e3384d5c83116163f08",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nhl-v3-play-by-play/1.0/openapi.yaml": {
+        "etag": "\"298df25cfa11924afcc05410ea85a498\"",
+        "sha256": "8d52bf3c2b862988bca3c052cf65ff70a6e802d97a6484239c47b928c2ecc53e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nhl-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "91ba922e9e4af79b7af30a00086d10099531b9a2ec2301581bd54a7cd74e81ff",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nhl-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"394f4ba03d1fcb2fd198179e103dfc64\"",
+        "sha256": "d7c487be228d4978dc3cda31544a4d626eb6542226dcfbaef3790f244dd596f8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nhl-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f07c182cd72c6fb8e9d58d2ed1242e80b43e18bc9ae07d0f7964574bd0d38072",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nhl-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"c7e21735299b81d150a1fa421c047a59\"",
+        "sha256": "d25730911e86a98ba47a60672abba19e3673e53f9e7472261fda560c8c9dd6d6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/nhl-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a6f22b7eba253d44e15e43a33545513509357c92b200bcfc40f654b212894e9b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/nhl-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"269b2fa73e9eaa6e203b6b5665bb179f\"",
+        "sha256": "f913fc72bea2a3252f8988f3cda61a0fcb8a861e8d95a30e46164c07e31d0dbd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/soccer-v3-projections.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c970797f41f410751176f69227446c353e9e867060a3a397116d2890bec4a9a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/soccer-v3-projections/1.0/openapi.yaml": {
+        "etag": "\"bc80de70594fe27f1367fda2d00db798\"",
+        "sha256": "be301711f7e4251f2fd5e445a9b6a6288ea6e9ad8f461b10ff92e8bfcc2a2a27"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/soccer-v3-scores.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6e3c55a98c2bb74174e9f92749add563bd3e1a883eac071bcb2f3c5690737c2",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/soccer-v3-scores/1.0/openapi.yaml": {
+        "etag": "\"bb0080e13eeeebbef978d51270d7bfa1\"",
+        "sha256": "584c0bde70500f2e97134d34b51f287f4e9c533323bed542ecc304e2daad1788"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/soccer-v3-stats.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b140c44e0cfe103ecf4bc9b53adf42bfffdee31baddd8f3a1c0f5b9098276f77",
+    "sources": {
+      "https://api.apis.guru/v2/specs/sportsdata.io/soccer-v3-stats/1.0/openapi.yaml": {
+        "etag": "\"271dfcc089918d6c8918b57aeca01186\"",
+        "sha256": "1e0c88b9721d93601a6a6990729d2363ff70085212bd4390302f8fd772a8d2f8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

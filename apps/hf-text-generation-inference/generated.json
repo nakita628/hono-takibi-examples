@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ae596229d791ecf0d2e546b0c9a3c94ecb5c9a185b6f9a2b4dde878346cd31bf",
+    "sources": {
+      "https://raw.githubusercontent.com/huggingface/text-generation-inference/main/docs/openapi.json": {
+        "etag": "W/\"62fd668caa49a022b7761517c1ed517f316843676ba2231cdfaba470bbe6aace\"",
+        "sha256": "2b7899d65399cd86c393e6fb1fa4b028e678298d570a0a11ddbd8709894a159c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

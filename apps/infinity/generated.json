@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba7632847323e05e91f4bd1f7a37f1f751e2a3956c2f40697250174f5419d3ca",
+    "sources": {
+      "https://raw.githubusercontent.com/michaelfeil/infinity/main/docs/assets/openapi.json": {
+        "etag": "W/\"a0114aaf50425399f9796ed9bb2219a0a0fffc1cabff4ce3cd10ab8a4c3fc2f4\"",
+        "sha256": "89665da8c596ff800b29ca0981e956431a107248be893e97e1895e2523b5a8cf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

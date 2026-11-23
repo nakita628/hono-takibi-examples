@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f05a20d62b82ac1944a8b67d4c3fcabb423942b93e91fc622870f2f2e02246b6",
+    "sources": {
+      "https://raw.githubusercontent.com/blakeblackshear/frigate/dev/docs/static/frigate-api.yaml": {
+        "etag": "W/\"a08bcea554d47349548ce2b7d22434bb1d73324859e1a62b5d86e9efeb952ca9\"",
+        "sha256": "aaab53a8657f6bff06d9f4bd221cd60dcb1538ef44bc463ec828be92b0893d9d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

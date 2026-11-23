@@ -9166,6 +9166,12 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/create
 
 `POST /api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/create_many`
 
+Creates one or more variants. See [Create Variant](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#create-variant).
+
+#### Response
+
+This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.
+
 #### Allowed For
 
 * Admins, Agents
@@ -9202,34 +9208,20 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/create
 
 > Example responses
 
-> 201 Response
+> 200 Response
 
 ```json
 {
-  "variants": [
-    {
-      "active": true,
-      "content": "C'est mon contenu dynamique en français",
-      "created_at": "2014-04-09T19:53:23Z",
-      "default": false,
-      "id": 23,
-      "locale_id": 127,
-      "outdated": false,
-      "updated_at": "2014-04-09T19:53:23Z",
-      "url": "https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/23"
-    },
-    {
-      "active": true,
-      "content": "Este es mi contenido dinámico en español",
-      "created_at": "2014-04-09T19:53:23Z",
-      "default": false,
-      "id": 24,
-      "locale_id": 126,
-      "outdated": false,
-      "updated_at": "2014-04-09T19:53:23Z",
-      "url": "https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/24"
-    }
-  ]
+  "job_status": {
+    "id": "V3-29e0814a9a29cd66c201831c1e218429",
+    "job_type": "Bulk Create Variants",
+    "message": null,
+    "progress": null,
+    "results": null,
+    "status": "queued",
+    "total": 2,
+    "url": "https://company.zendesk.com/api/v2/job_statuses/V3-29e0814a9a29cd66c201831c1e218429.json"
+  }
 }
 ```
 
@@ -9237,7 +9229,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/create
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|Created response|[DynamicContentVariantsResponse](#schemadynamiccontentvariantsresponse)|
+|200|OK|Success response|[JobStatusResponse](#schemajobstatusresponse)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -9280,6 +9272,10 @@ Updates one or more variants. See [Update Variant](/api-reference/ticketing/tick
 
 You must specify the variants by id in the body. To get the variant ids, see [List Variants](/api-reference/ticketing/ticket-management/dynamic_content_item_variants/#list-variants).
 
+#### Response
+
+This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.
+
 #### Allowed For
 
 * Admins, Agents
@@ -9320,30 +9316,16 @@ You must specify the variants by id in the body. To get the variant ids, see [Li
 
 ```json
 {
-  "variants": [
-    {
-      "active": true,
-      "content": "C'est mon contenu dynamique en français",
-      "created_at": "2014-04-09T19:53:23Z",
-      "default": false,
-      "id": 23,
-      "locale_id": 16,
-      "outdated": false,
-      "updated_at": "2014-04-09T19:53:23Z",
-      "url": "https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/23"
-    },
-    {
-      "active": true,
-      "content": "Este es mi contenido dinámico en español",
-      "created_at": "2014-04-09T19:53:23Z",
-      "default": false,
-      "id": 24,
-      "locale_id": 2,
-      "outdated": false,
-      "updated_at": "2014-04-09T19:53:23Z",
-      "url": "https://subdomain.zendesk.com/api/v2/dynamic_content/items/3/variants/24"
-    }
-  ]
+  "job_status": {
+    "id": "V3-98953fc49904266ca361ee711cdf71a8",
+    "job_type": "Bulk Update Variants",
+    "message": null,
+    "progress": null,
+    "results": null,
+    "status": "queued",
+    "total": 2,
+    "url": "https://company.zendesk.com/api/v2/job_statuses/V3-98953fc49904266ca361ee711cdf71a8.json"
+  }
 }
 ```
 
@@ -9351,7 +9333,7 @@ You must specify the variants by id in the body. To get the variant ids, see [Li
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Success response|[DynamicContentVariantsResponse](#schemadynamiccontentvariantsresponse)|
+|200|OK|Success response|[JobStatusResponse](#schemajobstatusresponse)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35073,7 +35055,7 @@ List all reasons for an account
 
 ```json
 {
-  "reasons": [
+  "satisfaction_reasons": [
     {
       "created_at": "2011-07-20T22:55:29Z",
       "id": 35436,
@@ -35138,17 +35120,15 @@ curl https://example.zendesk.com/api/v2/satisfaction_reasons/35121 \
 
 ```json
 {
-  "reason": [
-    {
-      "created_at": "2011-07-20T22:55:29Z",
-      "id": 35121,
-      "raw_value": "{{dc.reason_code_1000}}",
-      "reason_code": 1000,
-      "updated_at": "2011-07-20T22:55:29Z",
-      "url": "https://company.zendesk.com/api/v2/satisfaction_reason/35121",
-      "value": "Agent did not respond quickly."
-    }
-  ]
+  "satisfaction_reason": {
+    "created_at": "2011-07-20T22:55:29Z",
+    "id": 35121,
+    "raw_value": "{{dc.reason_code_1000}}",
+    "reason_code": 1000,
+    "updated_at": "2011-07-20T22:55:29Z",
+    "url": "https://company.zendesk.com/api/v2/satisfaction_reasons/35121",
+    "value": "Agent did not respond quickly."
+  }
 }
 ```
 
@@ -44059,8 +44039,16 @@ oauth2 ( Scopes: account_settings:read )
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34/options \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "custom_field_option": {
+      "name": "Grapes",
+      "position": 2,
+      "value": "grape"
+    }
+  }'
 ```
 
 `POST /api/v2/ticket_fields/{ticket_field_id}/options`
@@ -44072,6 +44060,8 @@ To update an option, include the id of the option in the `custom_field_option` o
 `{"custom_field_option": {"id": 10002, "name": "Pineapples", ... }`
 
 If an option exists for the given ID, the option will be updated. Otherwise, a new option will be created.
+
+If the `id` is omitted, the endpoint looks up an existing option with a matching `value` and updates it (returning a 200 status), rather than creating a new option. A new option is only created if no option with the given `value` exists (returning a 201 status).
 
 #### Response
 
@@ -44094,11 +44084,29 @@ The rate limiting mechanism behaves as described in
 * 2000 options per ticket field
 
 
+> Body parameter
+
+```json
+{
+  "custom_field_option": {
+    "name": "Grapes",
+    "position": 2,
+    "value": "grape"
+  }
+}
+```
+
 <h3 id="create-or-update-ticket-field-option-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |ticket_field_id|path|integer(int64)|true|The ID of the ticket field|
+|body|body|object|true|none|
+|» custom_field_option|body|object|true|none|
+|» » id|body|integer(int64) \| null|false|The id of an existing option to update. When omitted, an existing option with a matching value is updated instead (see value)|
+|» » name|body|string|true|The display name of the option|
+|» » position|body|integer|false|The position of the option in the list. Defaults to the last position when omitted on create|
+|» » value|body|string|false|The value stored for the option. Required when creating a new option. When id is omitted, an existing option with this value (including a previously deleted one) is updated instead of creating a new option|
 
 > Example responses
 
@@ -44293,8 +44301,17 @@ oauth2 ( Scopes: account_settings:read )
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/reorder \
   -X PUT \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "ticket_field_ids": [
+      2,
+      23,
+      46,
+      50
+    ]
+  }'
 ```
 
 `PUT /api/v2/ticket_fields/reorder`
@@ -44310,6 +44327,26 @@ You can pass in the following parameter in the payload:
 | ------------------- | ------ | --------
 | ticket_field_ids    | array  | An array of ticket field ids. Example: "[2, 23, 46, 50]". Not all ticket_field_ids are necessary in the payload; only those provided will be assigned to the first positions. Missing IDs will be assigned incremental positions automatically.
 
+
+> Body parameter
+
+```json
+{
+  "ticket_field_ids": [
+    2,
+    23,
+    46,
+    50
+  ]
+}
+```
+
+<h3 id="reorder-ticket-fields-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» ticket_field_ids|body|[integer(int64)]|true|The ticket field ids in the desired order. Not all ids are required; only the ones provided are assigned to the first positions, and missing ids are assigned incremental positions automatically|
 
 > Example responses
 
@@ -85358,18 +85395,16 @@ A sandbox of the current account
 
 ```json
 {
-  "reason": [
-    {
-      "created_at": "2011-07-20T22:55:29Z",
-      "deleted_at": "2012-03-12T12:45:32Z",
-      "id": 35436,
-      "raw_value": "{{dc.reason_code_1003}}",
-      "reason_code": 1003,
-      "updated_at": "2011-07-20T22:55:29Z",
-      "url": "https://example.zendesk.com/api/v2/satisfaction_reasons/35436",
-      "value": "Agent did not respond quickly"
-    }
-  ]
+  "satisfaction_reason": {
+    "created_at": "2011-07-20T22:55:29Z",
+    "deleted_at": "2012-03-12T12:45:32Z",
+    "id": 35436,
+    "raw_value": "{{dc.reason_code_1003}}",
+    "reason_code": 1003,
+    "updated_at": "2011-07-20T22:55:29Z",
+    "url": "https://example.zendesk.com/api/v2/satisfaction_reasons/35436",
+    "value": "Agent did not respond quickly"
+  }
 }
 ```
 
@@ -85377,7 +85412,7 @@ A sandbox of the current account
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|reason|[[SatisfactionReasonObject](#schemasatisfactionreasonobject)]|false|none|none|
+|satisfaction_reason|[SatisfactionReasonObject](#schemasatisfactionreasonobject)|false|none|none|
 
 <h2 id="tocS_SatisfactionReasonsResponse">SatisfactionReasonsResponse</h2>
 <!-- backwards compatibility -->
@@ -85388,7 +85423,7 @@ A sandbox of the current account
 
 ```json
 {
-  "reasons": [
+  "satisfaction_reasons": [
     {
       "created_at": "2011-07-20T22:55:29Z",
       "deleted_at": "2012-03-12T12:45:32Z",
@@ -85407,7 +85442,7 @@ A sandbox of the current account
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|reasons|[[SatisfactionReasonObject](#schemasatisfactionreasonobject)]|false|none|none|
+|satisfaction_reasons|[[SatisfactionReasonObject](#schemasatisfactionreasonobject)]|false|none|none|
 
 <h2 id="tocS_SavedSearchError">SavedSearchError</h2>
 <!-- backwards compatibility -->
@@ -97143,7 +97178,7 @@ validation.
 |custom_role_id|integer(int64) \| null|false|none|A custom role if the user is an agent on the Enterprise plan or above|
 |default_group_id|integer(int64)|false|none|The id of the user's default group|
 |details|string|false|none|Any details you want to store about the user, such as an address|
-|email|string|false|none|The user's primary email address. *Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)|
+|email|string|false|none|In responses, the user's email address selected for notifications. This can differ from the primary email address if the primary email is unverified or undeliverable. Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)|
 |external_id|string \| null|false|none|A unique identifier from another system. The API treats the id as case insensitive. Example: "ian1" and "IAN1" are the same value.|
 |iana_time_zone|string|false|read-only|The time zone for the user|
 |id|integer(int64)|false|read-only|Automatically assigned when the user is created|
@@ -97211,7 +97246,7 @@ validation.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at|string(date-time)|false|read-only|The time the user was created|
-|email|string|false|none|The primary email address of this user. If the primary email address is not [verified](https://support.zendesk.com/hc/en-us/articles/4408886752410), the secondary email address is used|
+|email|string|false|none|The user's email address selected for notifications. This can differ from the primary email address if the primary email is unverified or undeliverable.|
 |iana_time_zone|string|false|read-only|The time zone for the user|
 |id|integer(int64)|false|read-only|Automatically assigned when creating users|
 |locale|string|false|read-only|The locale for this user|

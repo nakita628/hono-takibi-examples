@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a2989c4182ea508b5466d834610fbed10d1877b111b27b296e842bfdedc8b8cb",
+    "sources": {
+      "https://raw.githubusercontent.com/trezor/blockbook/master/openapi.yaml": {
+        "etag": "W/\"d0dc64cabae8075b639d548057c59d1113105c697cfccc0ae52831d9eefb9717\"",
+        "sha256": "f95cbd8c1e82e721f86dfdf751aa52a9a0684f2b6e8d50a0dd700e0b531ed413"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

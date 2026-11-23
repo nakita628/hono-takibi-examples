@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2cf19d1ffe1af2e3f073aefd35f7be4d0b654421ec77bdf541bf3ec3d6b3ca45",
+    "sources": {
+      "https://openapi-v2.exoscale.com/source.json": {
+        "etag": "W/\"e1b811e681c1b0febb2f199f8efb360b\"",
+        "sha256": "63da6f74c845fd05467d43776d169f3d01c5137fb42e492b8c437573817038f5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

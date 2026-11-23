@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e87e89816629600ba09ffac2a8ff3a92f747239b173c9a08d9f09ef0f0075a75",
+    "sources": {
+      "https://docs.alpaca.markets/openapi/broker-api.json": {
+        "etag": "W/\"bc279-EVT70gShyXof96XR4hLrN1iFkpM\"",
+        "sha256": "03382a25e5382fed0fef269255da11d8fab70615be0844966645e868554b1397"
+      }
+    },
+    "typecheck": {
+      "errors": 1,
+      "where": "`hooks/*`",
+      "codes": "TS2589 ×1",
+      "issue": "deep types (TS2589)"
+    }
+  }
+}

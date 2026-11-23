@@ -1,0 +1,77 @@
+{
+  "configs/amadeus-flight-price-analysis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "323ea1094708e021418d11689c10bdcaf64c0e17c0dda92f34a6953bc333635d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-flight-price-analysis/1.0.1/openapi.yaml": {
+        "etag": "W/\"ed8378c8b29839ecc07df7b80da9fbeb2868808f63641d3a925e819dd1fcf387\"",
+        "sha256": "3ae403c8b7eb5cca279f54650bf62d9220ea70ec8e4dd6b4b3c82c3a72962841"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amadeus-location-score.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fd7ca8d82fa1e81ae367612da935585052b06b53b52ca0dcc4ef397c3c1d03c4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-location-score/1.0.2/openapi.yaml": {
+        "etag": "W/\"3309d7a13262953bcbec5fe052e36f83139526f5d22a4f6b73733c467b7684d3\"",
+        "sha256": "86e3908ec28e9a2e582a27dc6b475af5b500975f392a9514013203bb874cb080"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amadeus-travel-recommendations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "366219c34f6a355e88ec02e01f7b6864cc25f817a0f79b29d20f15ed809395a4",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-travel-recommendations/1.0.3/openapi.yaml": {
+        "etag": "W/\"629e3cbbcba3d65a96dc5239db2773e1a0427403bef808599555c9dd514f32a4\"",
+        "sha256": "6c3c8b089e6b405b1665c346a3a7a2a3d49f771ff8cb7c31fd2eb1e9000c89f1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amadeus-trip-parser.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "684bcae613a75d125407255d806de7ee9e8ed0d23382fd40f8bb4912095fd233",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-trip-parser/3.0.1/openapi.yaml": {
+        "etag": "W/\"bc27df27f21949bd42bdb7e3dc95602ebc57a6e33668417392579fd850945652\"",
+        "sha256": "353950eb44d32f8edbb9d344708afb60a667044507893e297e3056a6018da09a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/amadeus.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cdfbb0a6b84d2ccc111e6bbc3faf861cb666870c91a85fbd0dac6c763207ef37",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/2.2.0/openapi.yaml": {
+        "etag": "W/\"c83d4426804733e8dbadd3e3d6f49b26542c8db7d148e74946d8e31188760d62\"",
+        "sha256": "2a00a46ca8b2cb951d96eae55956d62ec376568310ae299aacbd38a4c2edb811"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

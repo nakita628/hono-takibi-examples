@@ -1515,19 +1515,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/project/:project-slug': {
-      $delete:
-        | {
-            input: { param: { 'project-slug': string } }
-            output: { message: string }
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { 'project-slug': string } }
-            output: { message?: string | undefined }
-            outputFormat: 'json'
-            status: 200
-          }
       $get:
         | {
             input: { param: { 'project-slug': string } }
@@ -1544,6 +1531,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 default_branch: string
               }
             }
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { 'project-slug': string } }
+            output: { message?: string | undefined }
+            outputFormat: 'json'
+            status: 200
+          }
+      $delete:
+        | {
+            input: { param: { 'project-slug': string } }
+            output: { message: string }
             outputFormat: 'json'
             status: 200
           }
@@ -1966,6 +1966,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/project/:project-slug/schedule': {
+      $get:
+        | {
+            input: { param: { 'project-slug': string } } & {
+              query: { 'page-token'?: string | undefined }
+            }
+            output: {
+              items: {
+                id: string
+                timetable:
+                  | {
+                      'per-hour': number
+                      'hours-of-day': number[]
+                      'days-of-week': ('TUE' | 'SAT' | 'SUN' | 'MON' | 'THU' | 'WED' | 'FRI')[]
+                      'days-of-month'?: number[] | undefined
+                      months?:
+                        | (
+                            | 'MAR'
+                            | 'NOV'
+                            | 'DEC'
+                            | 'JUN'
+                            | 'MAY'
+                            | 'OCT'
+                            | 'FEB'
+                            | 'APR'
+                            | 'SEP'
+                            | 'AUG'
+                            | 'JAN'
+                            | 'JUL'
+                          )[]
+                        | undefined
+                    }
+                  | {
+                      'per-hour': number
+                      'hours-of-day': number[]
+                      'days-of-month': number[]
+                      'days-of-week'?:
+                        | ('TUE' | 'SAT' | 'SUN' | 'MON' | 'THU' | 'WED' | 'FRI')[]
+                        | undefined
+                      months?:
+                        | (
+                            | 'MAR'
+                            | 'NOV'
+                            | 'DEC'
+                            | 'JUN'
+                            | 'MAY'
+                            | 'OCT'
+                            | 'FEB'
+                            | 'APR'
+                            | 'SEP'
+                            | 'AUG'
+                            | 'JAN'
+                            | 'JUL'
+                          )[]
+                        | undefined
+                    }
+                'updated-at': string
+                name: string
+                'created-at': string
+                'project-slug': string
+                parameters: { [x: string]: number | string | boolean }
+                actor: { avatar_url: string; id: string; login: string; name: string }
+                description: string
+              }[]
+              next_page_token: string
+            }
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { 'project-slug': string } } & {
+              query: { 'page-token'?: string | undefined }
+            }
+            output: { message?: string | undefined }
+            outputFormat: 'json'
+            status: 200
+          }
       $post:
         | {
             input: { param: { 'project-slug': string } } & {
@@ -2143,85 +2219,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $get:
+    }
+  } & {
+    '/schedule/:schedule-id': {
+      $delete:
         | {
-            input: { param: { 'project-slug': string } } & {
-              query: { 'page-token'?: string | undefined }
-            }
-            output: {
-              items: {
-                id: string
-                timetable:
-                  | {
-                      'per-hour': number
-                      'hours-of-day': number[]
-                      'days-of-week': ('TUE' | 'SAT' | 'SUN' | 'MON' | 'THU' | 'WED' | 'FRI')[]
-                      'days-of-month'?: number[] | undefined
-                      months?:
-                        | (
-                            | 'MAR'
-                            | 'NOV'
-                            | 'DEC'
-                            | 'JUN'
-                            | 'MAY'
-                            | 'OCT'
-                            | 'FEB'
-                            | 'APR'
-                            | 'SEP'
-                            | 'AUG'
-                            | 'JAN'
-                            | 'JUL'
-                          )[]
-                        | undefined
-                    }
-                  | {
-                      'per-hour': number
-                      'hours-of-day': number[]
-                      'days-of-month': number[]
-                      'days-of-week'?:
-                        | ('TUE' | 'SAT' | 'SUN' | 'MON' | 'THU' | 'WED' | 'FRI')[]
-                        | undefined
-                      months?:
-                        | (
-                            | 'MAR'
-                            | 'NOV'
-                            | 'DEC'
-                            | 'JUN'
-                            | 'MAY'
-                            | 'OCT'
-                            | 'FEB'
-                            | 'APR'
-                            | 'SEP'
-                            | 'AUG'
-                            | 'JAN'
-                            | 'JUL'
-                          )[]
-                        | undefined
-                    }
-                'updated-at': string
-                name: string
-                'created-at': string
-                'project-slug': string
-                parameters: { [x: string]: number | string | boolean }
-                actor: { avatar_url: string; id: string; login: string; name: string }
-                description: string
-              }[]
-              next_page_token: string
-            }
+            input: { param: { 'schedule-id': string } }
+            output: { message: string }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { 'project-slug': string } } & {
-              query: { 'page-token'?: string | undefined }
-            }
+            input: { param: { 'schedule-id': string } }
             output: { message?: string | undefined }
             outputFormat: 'json'
             status: 200
           }
-    }
-  } & {
-    '/schedule/:schedule-id': {
       $get:
         | {
             input: { param: { 'schedule-id': string } }
@@ -2422,19 +2435,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 parameters?: { [x: string]: number | string | boolean } | undefined
               }
             }
-            output: { message?: string | undefined }
-            outputFormat: 'json'
-            status: 200
-          }
-      $delete:
-        | {
-            input: { param: { 'schedule-id': string } }
-            output: { message: string }
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { 'schedule-id': string } }
             output: { message?: string | undefined }
             outputFormat: 'json'
             status: 200

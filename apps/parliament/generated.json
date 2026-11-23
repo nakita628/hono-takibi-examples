@@ -1,0 +1,152 @@
+{
+  "configs/bills.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "478b1553faaf6496a0bd27cccaa75e2591648ec5cb5e11f83568b1c179baa8f3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/bills/v1/openapi.yaml": {
+        "etag": "\"4298250eea36daf215063b1d3c42387d\"",
+        "sha256": "0b571a36a83351bbd5d057f3a64e3d6d4f646a0bde9f1975a279b0cd3343f171"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/erskine-may.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "659a5122d649dc5e3b9df1ba9d027dc054010565cae73e77526db4248cb25efe",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/erskine-may/v1/openapi.yaml": {
+        "etag": "\"8ff161d6508fcfe5a162bffa5a0f9d0c\"",
+        "sha256": "56fa6d0d40fe8ec8daadda52d39a8ceb5ed1332b1912f0789b5f1811672be7c8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/lordsvotes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8bb5214eb562b8313619a6cc4516062809f39efa550c6ea3ccb2b68779c93b60",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/lordsvotes/v1/openapi.yaml": {
+        "etag": "\"2ca6b180978a79c152d5dd8199cda08d\"",
+        "sha256": "934db2ccd2d0813793acdce9b4b6c96254e4bee57714fa352be2f106fa675d58"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/members.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6d99c01e616c19b4df11d0e0e511089b842f5612ee5d661af2f3cef19dc56676",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/members/v1/openapi.yaml": {
+        "etag": "\"703002a9d2f697fbd006a899316fd312\"",
+        "sha256": "94d6beeb8e79eb084cb1ce36a9939d6786d68e3085dfa2b59b0a4da5b49526f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/now.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9661890a57ec8be7698f179e2733fa0f6e0dd5d968d40e572567e318ace35fcc",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/now/v1/openapi.yaml": {
+        "etag": "\"25156cd5d92c61d5087a9e0bbb190215\"",
+        "sha256": "7055099bdf2e30b3093b8487b184926b80fd20c9be30429c782caf4945534b2d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/oralquestions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "094cb3e2740d6e9b37114ce20019523de039c21ed30fc5d5ad0d87a03e0fc01a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/oralquestions/v1/openapi.yaml": {
+        "etag": "\"414bc4c77c190e84c620e2ede2755c79\"",
+        "sha256": "46fe8490f4f0ae04ab517ead1aab6ad686211e8e700dc51d02b3e605fb8b7b81"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/search.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1458947f41f211f00a7662266d34b80eed045c898dd250d1933cee838b71328a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/search/Live/openapi.yaml": {
+        "etag": "\"8d0017e96270f56dc190f2a44d1ab796\"",
+        "sha256": "062dc2927d3d49a93e18c6ca1231de8459772ec5f8862f562094f0c533b1e03b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/statutoryinstruments.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a03dba4c8c049b4ae9f70e2be9f24518424d9cd604ae7c411913339ab96ec5ac",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/statutoryinstruments/v1/openapi.yaml": {
+        "etag": "\"e4664e6df6cd723e3de77e16671b0d42\"",
+        "sha256": "183828c9be9ff6fee943bd1c4a9c706917356bc45e2bf46fe88a514664edcff1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/treaties.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c63351175c841cf2b862d9905254184119420b916786e0ecfafd1a08a6cf50e6",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/treaties/v1/openapi.yaml": {
+        "etag": "\"95d95332b137c8300128054ab79e5c1c\"",
+        "sha256": "e45366648f655192ab42c7965145a6a9f4e69e3add1c79b4f87aad2aa8192384"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/writtenquestions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4166c55d4b0a778169d3688706ca007f29a98dc28639b1a93f7f42508755ab0d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/parliament.uk/writtenquestions/v1/openapi.yaml": {
+        "etag": "\"7d8a7b69b307940567300da3b5ec53c0\"",
+        "sha256": "288e4c9cc0c229e4881b74a8f48b9da9002072e1d6ebb3fcd76764048fe6726b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

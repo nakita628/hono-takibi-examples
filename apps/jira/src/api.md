@@ -1,4 +1,4 @@
-<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-eac1257d8e1582ed7dd2a97a93dbea3c277d24be</h1>
+<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-6e27052da36f05e0a0b0bf27ca91a6601810e967</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -26993,6 +26993,7 @@ In a next-gen project any issue may be made a child providing that the parent an
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |updateHistory|query|boolean|false|Whether the project in which the issue is created is added to the user's **Recently viewed** project list, as shown under **Projects** in Jira. When provided, the issue type and request type are added to the user's history for a project. These values are then used to provide defaults on the issue create screen.|
+|preferFieldAssociatedErrors|query|boolean|false|EXPERIMENTAL. Whether you prefer errors that relate to a field to be returned as field errors (`errors`) rather than as general errors (`errorMessages`). A response can contain both kinds of error, regardless of what this is set to. When this is `true`, more errors are returned as field errors, and which errors are field errors and which are general errors isn't part of the contract and can change without notice.|
 |body|body|[IssueUpdateDetails](#schemaissueupdatedetails)|true|none|
 |» fields|body|object|false|List of issue screen fields to update, specifying the sub-field to update and its value for each field. This field provides a straightforward option when setting a sub-field. When multiple sub-fields or other operations are required, use `update`. Fields included in here cannot be included in `update`.|
 |» » **additionalProperties**|body|object|false|none|
@@ -29403,6 +29404,7 @@ This operation can be accessed anonymously.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |issueIdOrKey|path|string|true|The ID or key of the issue.|
+|preferFieldAssociatedErrors|query|boolean|false|EXPERIMENTAL. Whether you prefer errors that relate to a field to be returned as field errors (`errors`) rather than as general errors (`errorMessages`). A response can contain both kinds of error, regardless of what this is set to. When this is `true`, more errors are returned as field errors, and which errors are field errors and which are general errors isn't part of the contract and can change without notice.|
 |body|body|[IssueUpdateDetails](#schemaissueupdatedetails)|true|none|
 |» fields|body|object|false|List of issue screen fields to update, specifying the sub-field to update and its value for each field. This field provides a straightforward option when setting a sub-field. When multiple sub-fields or other operations are required, use `update`. Fields included in here cannot be included in `update`.|
 |» » **additionalProperties**|body|object|false|none|
@@ -36301,7 +36303,7 @@ This includes permitted classification levels (with status), the project's defau
 |---|---|---|---|
 |200|OK|Returned if the request is successful.|Inline|
 |401|Unauthorized|Returned if the user does not have the necessary permission.|None|
-|404|Not Found|Returned if the project is not found or the feature is disabled.|None|
+|404|Not Found|Returned if the project is not found.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:

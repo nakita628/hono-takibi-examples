@@ -4495,8 +4495,8 @@ type SatisfactionReasonObject = {
   url?: string | undefined
   value: string
 }
-type SatisfactionReasonsResponse = { reasons?: SatisfactionReasonObject[] | undefined }
-type SatisfactionReasonResponse = { reason?: SatisfactionReasonObject[] | undefined }
+type SatisfactionReasonsResponse = { satisfaction_reasons?: SatisfactionReasonObject[] | undefined }
+type SatisfactionReasonResponse = { satisfaction_reason?: SatisfactionReasonObject | undefined }
 type SavedSearchObject = {
   created_at: string
   filters?: string | undefined
@@ -9031,9 +9031,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { dynamic_content_item_id: bigint } } & {
           json: DynamicContentVariantsCreateManyRequest
         }
-        output: DynamicContentVariantsResponse
+        output: JobStatusResponse
         outputFormat: 'json'
-        status: 201
+        status: 200
       }
     }
   } & {
@@ -9042,7 +9042,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { dynamic_content_item_id: bigint } } & {
           json: DynamicContentVariantsUpdateManyRequest
         }
-        output: DynamicContentVariantsResponse
+        output: JobStatusResponse
         outputFormat: 'json'
         status: 200
       }
@@ -12320,13 +12320,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
       $post:
         | {
-            input: { param: { ticket_field_id: bigint } }
+            input: { param: { ticket_field_id: bigint } } & {
+              json: {
+                custom_field_option: {
+                  id?: (bigint | null) | undefined
+                  name: string
+                  position?: number | undefined
+                  value?: string | undefined
+                }
+              }
+            }
             output: CustomFieldOptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { ticket_field_id: bigint } }
+            input: { param: { ticket_field_id: bigint } } & {
+              json: {
+                custom_field_option: {
+                  id?: (bigint | null) | undefined
+                  name: string
+                  position?: number | undefined
+                  value?: string | undefined
+                }
+              }
+            }
             output: CustomFieldOptionResponse
             outputFormat: 'json'
             status: 201
@@ -12353,7 +12371,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/v2/ticket_fields/reorder': {
-      $put: { input: {}; output: string; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { json: { ticket_field_ids: bigint[] } }
+        output: string
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/api/v2/ticket_fields/show_many': {

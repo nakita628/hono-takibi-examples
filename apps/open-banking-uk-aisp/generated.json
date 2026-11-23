@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "57ba871533cb0464f3b6d69c4cdb63568ec1093827bf76549592979326723b84",
+    "sources": {
+      "https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist/openapi/account-info-openapi.yaml": {
+        "etag": "W/\"e9e74b000e95ddcb6aae85b3531c9d20c21d0493d59aa1d5379deba6f368a71a\"",
+        "sha256": "705bbf8a4a6533b4da37798ce2920da933278a50118811ed44df8f189197565a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

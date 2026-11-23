@@ -284,8 +284,8 @@ export const api = app
   .openapi(getPipelinePipelineIdRoute, getPipelinePipelineIdRouteHandler)
   .openapi(getPipelinePipelineIdConfigRoute, getPipelinePipelineIdConfigRouteHandler)
   .openapi(getPipelinePipelineIdWorkflowRoute, getPipelinePipelineIdWorkflowRouteHandler)
-  .openapi(deleteProjectProjectSlugRoute, deleteProjectProjectSlugRouteHandler)
   .openapi(getProjectProjectSlugRoute, getProjectProjectSlugRouteHandler)
+  .openapi(deleteProjectProjectSlugRoute, deleteProjectProjectSlugRouteHandler)
   .openapi(postProjectProjectSlugCheckoutKeyRoute, postProjectProjectSlugCheckoutKeyRouteHandler)
   .openapi(getProjectProjectSlugCheckoutKeyRoute, getProjectProjectSlugCheckoutKeyRouteHandler)
   .openapi(
@@ -311,11 +311,11 @@ export const api = app
     getProjectProjectSlugPipelinePipelineNumberRoute,
     getProjectProjectSlugPipelinePipelineNumberRouteHandler,
   )
-  .openapi(postProjectProjectSlugScheduleRoute, postProjectProjectSlugScheduleRouteHandler)
   .openapi(getProjectProjectSlugScheduleRoute, getProjectProjectSlugScheduleRouteHandler)
+  .openapi(postProjectProjectSlugScheduleRoute, postProjectProjectSlugScheduleRouteHandler)
+  .openapi(deleteScheduleScheduleIdRoute, deleteScheduleScheduleIdRouteHandler)
   .openapi(getScheduleScheduleIdRoute, getScheduleScheduleIdRouteHandler)
   .openapi(patchScheduleScheduleIdRoute, patchScheduleScheduleIdRouteHandler)
-  .openapi(deleteScheduleScheduleIdRoute, deleteScheduleScheduleIdRouteHandler)
   .openapi(getUserIdRoute, getUserIdRouteHandler)
   .openapi(
     postWorkflowIdApproveApprovalRequestIdRoute,

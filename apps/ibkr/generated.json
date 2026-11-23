@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b8e2fb226125e077d321e75b7a3e470f995ad6f52bd118c57b18fd931bff44de",
+    "sources": {
+      "https://api.ibkr.com/gw/api/v3/api-docs": {
+        "sha256": "d4a5d6659a1114bda77401cb48ab460b9f1cc8c2bfc39ba06afecef0e4e9719d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

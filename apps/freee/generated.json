@@ -1,0 +1,62 @@
+{
+  "configs/accounting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3cb2ce7242b8f1ab5b0ca2b9d133811df42e4d68947f7d68538ca7763127da95",
+    "sources": {
+      "https://raw.githubusercontent.com/freee/freee-api-schema/master/v2020_06_15/open-api-3/api-schema.json": {
+        "etag": "W/\"b70504108199edee56c33a884801fd861bf1e21545c8e3682e152dbd9ad13cb8\"",
+        "sha256": "561ece2c7d1c0f7ce82e5d1ee57d3bde068cdd8286b663a3057ba51de2aa9c01"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/hr.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8887e5fcda49504d7989de0bcf38e2073bb1c45e7feb458b910161a7529c8cb7",
+    "sources": {
+      "https://raw.githubusercontent.com/freee/freee-api-schema/master/hr/open-api-3/api-schema.json": {
+        "etag": "W/\"773069f814e36d6418e8b0fad9f7e93fd00a4e43913dfedcb9f4312dea95ec0c\"",
+        "sha256": "05da288b7cd1a5bb09a7ec411da59352d9ff95df40f6858bbb684c32f6c6d505"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/iv.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2189aac0d2da97d99c26e83056d170c5388fab4c2771a6ab829453abcd72271b",
+    "sources": {
+      "https://raw.githubusercontent.com/freee/freee-api-schema/master/iv/open-api-3/api-schema.yml": {
+        "etag": "W/\"dbb451710020d1256eda2def5a10322515a8d1f9dd313e0e2a0b2041a4a094fd\"",
+        "sha256": "ffb3c6abf6f3af8165bddac6cd62197c28b4fade58525787c3def3755723a7e2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sm.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "111627a1dd48ad11e30b6dd4d8af751aab1b76c6d41c10620346a973eb610e2d",
+    "sources": {
+      "https://raw.githubusercontent.com/freee/freee-api-schema/master/sm/open-api-3/api-schema.yml": {
+        "etag": "W/\"0f7f2121ca1f5eaa98433b075bc9af0fa015a1d40f7cf0dfe1fb7e76f529419a\"",
+        "sha256": "8fd2204b9edfde2ca79b5a2e4bc9d0243aabcea3dd54096550465002f16e651a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

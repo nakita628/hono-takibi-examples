@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aa4e85caf502a1e47df67fb4a07d79f84ff546176ee26c8f622c3e83d6ebe108",
+    "sources": {
+      "https://raw.githubusercontent.com/typesense/typesense-api-spec/master/openapi.yml": {
+        "etag": "W/\"ab2868b41f0a82f707221090fa1e0b817b973a0e9ac513fc2d08b9b99567ab1e\"",
+        "sha256": "26c0966bccbe9f0b84ca235159f74ba77dccf31c93371392dddb8f82d1a864e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

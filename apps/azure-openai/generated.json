@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9aa76534fae330998e7acdf0f9d6944a48ef9c13a1b33caea5fdd02123a9043a",
+    "sources": {
+      "https://raw.githubusercontent.com/microsoft/AzureOpenAI-with-APIM/main/api_definitions/AzureOpenAI_OpenAPI.json": {
+        "etag": "W/\"8f44efb848b1a8e264fa38f42d791ce7a582d3e9f0b222d3e63e6801bbb12a4d\"",
+        "sha256": "38f0989dc4effc153d8edbac8a6649152e657b7bb2d87d8881d436019f094291"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

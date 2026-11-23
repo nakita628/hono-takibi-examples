@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8bcb1533b984ecd3fb0b289c781afc070fc84799c367ef268ec0cf47122db6c6",
+    "sources": {
+      "https://api.vapi.ai/api-json": {
+        "etag": "W/\"2352e6-p3CiWOvKkC2dv2+UHvQuegN6A5g\"",
+        "sha256": "a3bb33784daa72c9eea428cbfe1a92e55d001972e02aa6f9120b975c490087f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -506,7 +506,7 @@ Returns multiple Action objects specified by the `id` parameter.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -518,7 +518,7 @@ Returns multiple Action objects specified by the `id` parameter.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -535,8 +535,8 @@ Returns multiple Action objects specified by the `id` parameter.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-multiple-actions-responseschema">Response Schema</h3>
 
@@ -566,7 +566,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -575,7 +575,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -639,7 +639,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -651,7 +651,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -668,8 +668,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-responseschema">Response Schema</h3>
 
@@ -699,7 +699,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -708,7 +708,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -817,7 +817,7 @@ Returns all Certificate objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -829,7 +829,7 @@ Returns all Certificate objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -846,8 +846,8 @@ Returns all Certificate objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-certificates-responseschema">Response Schema</h3>
 
@@ -899,7 +899,7 @@ Status Code **200**
 |» » renewal|failed|
 |» » renewal|unavailable|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -908,7 +908,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1019,7 +1019,7 @@ For type `managed` Certificates the `action` key of the response contains the Ac
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1031,7 +1031,7 @@ For type `managed` Certificates the `action` key of the response contains the Ac
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1048,8 +1048,8 @@ For type `managed` Certificates the `action` key of the response contains the Ac
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-certificate-responseschema">Response Schema</h3>
 
@@ -1109,7 +1109,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1118,7 +1118,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1189,7 +1189,7 @@ Gets a specific Certificate object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1201,7 +1201,7 @@ Gets a specific Certificate object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1218,8 +1218,8 @@ Gets a specific Certificate object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-certificate-responseschema">Response Schema</h3>
 
@@ -1263,7 +1263,7 @@ Status Code **200**
 |» » renewal|failed|
 |» » renewal|unavailable|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1272,7 +1272,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1372,7 +1372,7 @@ Note: if the Certificate object changes during the request, the response will be
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1384,7 +1384,7 @@ Note: if the Certificate object changes during the request, the response will be
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1401,8 +1401,8 @@ Note: if the Certificate object changes during the request, the response will be
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-certificate-responseschema">Response Schema</h3>
 
@@ -1446,7 +1446,7 @@ Status Code **200**
 |» » renewal|failed|
 |» » renewal|unavailable|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1455,7 +1455,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1495,7 +1495,7 @@ Deletes a Certificate.
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1507,7 +1507,7 @@ Deletes a Certificate.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1524,12 +1524,12 @@ Deletes a Certificate.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-certificate-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1538,7 +1538,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1643,7 +1643,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1655,7 +1655,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1672,8 +1672,8 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-responseschema">Response Schema</h3>
 
@@ -1711,7 +1711,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1720,7 +1720,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1784,7 +1784,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1796,7 +1796,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1813,8 +1813,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-1-responseschema">Response Schema</h3>
 
@@ -1844,7 +1844,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1853,7 +1853,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -1958,7 +1958,7 @@ Only type `managed` Certificates can have Actions. For type `uploaded` Certifica
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -1970,7 +1970,7 @@ Only type `managed` Certificates can have Actions. For type `uploaded` Certifica
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -1987,8 +1987,8 @@ Only type `managed` Certificates can have Actions. For type `uploaded` Certifica
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-certificate-responseschema">Response Schema</h3>
 
@@ -2026,7 +2026,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2035,7 +2035,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2115,7 +2115,7 @@ Only applicable if the type of the Certificate is `managed` and the issuance or 
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -2127,7 +2127,7 @@ Only applicable if the type of the Certificate is `managed` and the issuance or 
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -2144,8 +2144,8 @@ Only applicable if the type of the Certificate is `managed` and the issuance or 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="retry-issuance-or-renewal-responseschema">Response Schema</h3>
 
@@ -2175,7 +2175,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2184,7 +2184,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2255,7 +2255,7 @@ Returns a specific Action for a Certificate. Only type `managed` Certificates ha
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -2267,7 +2267,7 @@ Returns a specific Action for a Certificate. Only type `managed` Certificates ha
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -2284,8 +2284,8 @@ Returns a specific Action for a Certificate. Only type `managed` Certificates ha
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-certificate-responseschema">Response Schema</h3>
 
@@ -2315,7 +2315,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2324,7 +2324,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2447,7 +2447,7 @@ Returns all [Data Centers](#tag/data-centers).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -2459,7 +2459,7 @@ Returns all [Data Centers](#tag/data-centers).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -2476,8 +2476,8 @@ Returns all [Data Centers](#tag/data-centers).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-data-centers-responseschema">Response Schema</h3>
 
@@ -2512,7 +2512,7 @@ Status Code **200**
 |» » last_page|integer \| null(int64)|true|none|Page number of the last page available. Can be null if the current page is the last one.|
 |» » total_entries|integer \| null(int64)|true|none|Total number of entries that exist for this query. Can be null if unknown.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2521,7 +2521,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2605,7 +2605,7 @@ Returns a single [Data Center](#tag/data-centers).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -2617,7 +2617,7 @@ Returns a single [Data Center](#tag/data-centers).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -2634,8 +2634,8 @@ Returns a single [Data Center](#tag/data-centers).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-data-center-responseschema">Response Schema</h3>
 
@@ -2661,7 +2661,7 @@ Status Code **200**
 |» » available|[integer(int64)]|true|none|**Deprecated.** This field is deprecated. Use the `available` flag in the [Server Type](#tag/server-types) `locations` field instead (`server_type.locations[].available`).<br><br>[Server Types](#tag/server-types) currently available in this [Data Center](#tag/data-centers).<br><br>These [Server Types](#tag/server-types) can currently be purchased. Types that are temporarily unavailable<br>but are supported in this [Data Center](#tag/data-centers) are listed as `supported`.<br>|
 |» » available_for_migration|[integer(int64)]|true|none|**Deprecated.** This field is deprecated. Use the `available` flag in the [Server Type](#tag/server-types) `locations` field instead (`server_type.locations[].available`).<br><br>[Server Types](#tag/server-types) available to migrate to in this [Data Center](#tag/data-centers).<br><br>Existing [Servers](#tag/servers) can be migrated to these [Server Types](#tag/server-types).<br>|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2670,7 +2670,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2799,7 +2799,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -2811,7 +2811,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -2828,8 +2828,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-firewalls-responseschema">Response Schema</h3>
 
@@ -2884,7 +2884,7 @@ Status Code **200**
 |» » type|label_selector|
 |» » » type|server|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -2893,7 +2893,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3123,7 +3123,7 @@ Create a [Firewall](#tag/firewalls).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3135,7 +3135,7 @@ Create a [Firewall](#tag/firewalls).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3152,8 +3152,8 @@ Create a [Firewall](#tag/firewalls).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-firewall-responseschema">Response Schema</h3>
 
@@ -3216,7 +3216,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3225,7 +3225,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3314,7 +3314,7 @@ Returns a single [Firewall](#tag/firewalls).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3326,7 +3326,7 @@ Returns a single [Firewall](#tag/firewalls).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3343,8 +3343,8 @@ Returns a single [Firewall](#tag/firewalls).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-firewall-responseschema">Response Schema</h3>
 
@@ -3391,7 +3391,7 @@ Status Code **200**
 |» » type|label_selector|
 |» » » type|server|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3400,7 +3400,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3518,7 +3518,7 @@ In case of a parallel running change on the [Firewall](#tag/firewalls) a `confli
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3530,7 +3530,7 @@ In case of a parallel running change on the [Firewall](#tag/firewalls) a `confli
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3547,8 +3547,8 @@ In case of a parallel running change on the [Firewall](#tag/firewalls) a `confli
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-firewall-responseschema">Response Schema</h3>
 
@@ -3595,7 +3595,7 @@ Status Code **200**
 |» » type|label_selector|
 |» » » type|server|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3604,7 +3604,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3650,7 +3650,7 @@ Deletes the [Firewall](#tag/firewalls).
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3662,7 +3662,7 @@ Deletes the [Firewall](#tag/firewalls).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3679,12 +3679,12 @@ Deletes the [Firewall](#tag/firewalls).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-firewall-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3693,7 +3693,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3800,7 +3800,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3812,7 +3812,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3829,8 +3829,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-1-responseschema">Response Schema</h3>
 
@@ -3868,7 +3868,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3877,7 +3877,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -3941,7 +3941,7 @@ Returns the specific [Action](#tag/actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -3953,7 +3953,7 @@ Returns the specific [Action](#tag/actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -3970,8 +3970,8 @@ Returns the specific [Action](#tag/actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-2-responseschema">Response Schema</h3>
 
@@ -4001,7 +4001,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4010,7 +4010,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4115,7 +4115,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -4127,7 +4127,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -4144,8 +4144,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-firewall-responseschema">Response Schema</h3>
 
@@ -4183,7 +4183,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4192,7 +4192,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4324,7 +4324,7 @@ A [Firewall](#tag/firewalls) is applied to a resource once the related [Action](
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -4336,7 +4336,7 @@ A [Firewall](#tag/firewalls) is applied to a resource once the related [Action](
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -4353,8 +4353,8 @@ A [Firewall](#tag/firewalls) is applied to a resource once the related [Action](
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="apply-to-resources-responseschema">Response Schema</h3>
 
@@ -4384,7 +4384,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4393,7 +4393,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4516,7 +4516,7 @@ A [Firewall](#tag/firewalls) is removed from a resource once the related [Action
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -4528,7 +4528,7 @@ A [Firewall](#tag/firewalls) is removed from a resource once the related [Action
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -4545,8 +4545,8 @@ A [Firewall](#tag/firewalls) is removed from a resource once the related [Action
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="remove-from-resources-responseschema">Response Schema</h3>
 
@@ -4576,7 +4576,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4585,7 +4585,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4734,7 +4734,7 @@ Rules are limited to 50 entries per [Firewall](#tag/firewalls) and [500 effectiv
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -4746,7 +4746,7 @@ Rules are limited to 50 entries per [Firewall](#tag/firewalls) and [500 effectiv
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -4763,8 +4763,8 @@ Rules are limited to 50 entries per [Firewall](#tag/firewalls) and [500 effectiv
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="set-rules-responseschema">Response Schema</h3>
 
@@ -4794,7 +4794,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4803,7 +4803,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4874,7 +4874,7 @@ Returns a specific [Action](#tag/actions) for a [Firewall](#tag/firewalls).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -4886,7 +4886,7 @@ Returns a specific [Action](#tag/actions) for a [Firewall](#tag/firewalls).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -4903,8 +4903,8 @@ Returns a specific [Action](#tag/actions) for a [Firewall](#tag/firewalls).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-firewall-responseschema">Response Schema</h3>
 
@@ -4934,7 +4934,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -4943,7 +4943,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5065,7 +5065,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5077,7 +5077,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5094,8 +5094,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-floating-ips-responseschema">Response Schema</h3>
 
@@ -5144,7 +5144,7 @@ Status Code **200**
 |» type|ipv4|
 |» type|ipv6|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5153,7 +5153,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5298,7 +5298,7 @@ Provide the `server` attribute to assign the [Floating IP](#tag/floating-ips) to
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5310,7 +5310,7 @@ Provide the `server` attribute to assign the [Floating IP](#tag/floating-ips) to
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5327,8 +5327,8 @@ Provide the `server` attribute to assign the [Floating IP](#tag/floating-ips) to
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -5385,7 +5385,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5394,7 +5394,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5474,7 +5474,7 @@ Returns a single [Floating IP](#tag/floating-ips).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5486,7 +5486,7 @@ Returns a single [Floating IP](#tag/floating-ips).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5503,8 +5503,8 @@ Returns a single [Floating IP](#tag/floating-ips).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -5545,7 +5545,7 @@ Status Code **200**
 |» type|ipv4|
 |» type|ipv6|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5554,7 +5554,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5662,7 +5662,7 @@ Update a [Floating IP](#tag/floating-ips).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5674,7 +5674,7 @@ Update a [Floating IP](#tag/floating-ips).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5691,8 +5691,8 @@ Update a [Floating IP](#tag/floating-ips).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -5733,7 +5733,7 @@ Status Code **200**
 |» type|ipv4|
 |» type|ipv6|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5742,7 +5742,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5790,7 +5790,7 @@ If assigned to a [Server](#tag/servers) the [Floating IP](#tag/floating-ips) wil
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5802,7 +5802,7 @@ If assigned to a [Server](#tag/servers) the [Floating IP](#tag/floating-ips) wil
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5819,12 +5819,12 @@ If assigned to a [Server](#tag/servers) the [Floating IP](#tag/floating-ips) wil
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-floating-ip-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5833,7 +5833,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -5940,7 +5940,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -5952,7 +5952,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -5969,8 +5969,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-2-responseschema">Response Schema</h3>
 
@@ -6008,7 +6008,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6017,7 +6017,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6081,7 +6081,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6093,7 +6093,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6110,8 +6110,8 @@ Returns a single [Action](#tag/actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-3-responseschema">Response Schema</h3>
 
@@ -6141,7 +6141,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6150,7 +6150,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6259,7 +6259,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6271,7 +6271,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6288,8 +6288,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -6327,7 +6327,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6336,7 +6336,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6425,7 +6425,7 @@ Assigns a [Floating IP](#tag/floating-ips) to a [Server](#tag/servers).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6437,7 +6437,7 @@ Assigns a [Floating IP](#tag/floating-ips) to a [Server](#tag/servers).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6454,8 +6454,8 @@ Assigns a [Floating IP](#tag/floating-ips) to a [Server](#tag/servers).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="assign-a-floating-ip-to-a-server-responseschema">Response Schema</h3>
 
@@ -6485,7 +6485,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6494,7 +6494,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6578,7 +6578,7 @@ Allows to modify the PTR records set for the IP address.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6590,7 +6590,7 @@ Allows to modify the PTR records set for the IP address.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6607,8 +6607,8 @@ Allows to modify the PTR records set for the IP address.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-reverse-dns-records-for-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -6638,7 +6638,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6647,7 +6647,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6726,7 +6726,7 @@ Changes the protection settings configured for the [Floating IP](#tag/floating-i
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6738,7 +6738,7 @@ Changes the protection settings configured for the [Floating IP](#tag/floating-i
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6755,8 +6755,8 @@ Changes the protection settings configured for the [Floating IP](#tag/floating-i
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-floating-ip-protection-responseschema">Response Schema</h3>
 
@@ -6786,7 +6786,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6795,7 +6795,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6866,7 +6866,7 @@ Results in the IP being unreachable. Can be assigned to another resource again.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -6878,7 +6878,7 @@ Results in the IP being unreachable. Can be assigned to another resource again.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -6895,8 +6895,8 @@ Results in the IP being unreachable. Can be assigned to another resource again.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="unassign-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -6926,7 +6926,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -6935,7 +6935,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7010,7 +7010,7 @@ Returns a specific [Action](#tag/actions) for a [Floating IP](#tag/floating-ips)
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7022,7 +7022,7 @@ Returns a specific [Action](#tag/actions) for a [Floating IP](#tag/floating-ips)
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7039,8 +7039,8 @@ Returns a specific [Action](#tag/actions) for a [Floating IP](#tag/floating-ips)
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-floating-ip-responseschema">Response Schema</h3>
 
@@ -7070,7 +7070,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7079,7 +7079,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7226,7 +7226,7 @@ Returns all Image objects. You can select specific Image types only and sort the
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7238,7 +7238,7 @@ Returns all Image objects. You can select specific Image types only and sort the
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7255,8 +7255,8 @@ Returns all Image objects. You can select specific Image types only and sort the
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-images-responseschema">Response Schema</h3>
 
@@ -7320,7 +7320,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7329,7 +7329,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7407,7 +7407,7 @@ Returns a specific Image object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7419,7 +7419,7 @@ Returns a specific Image object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7436,8 +7436,8 @@ Returns a specific Image object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-image-responseschema">Response Schema</h3>
 
@@ -7493,7 +7493,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7502,7 +7502,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7611,7 +7611,7 @@ Updates the Image. You may change the description, convert a Backup Image to a S
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7623,7 +7623,7 @@ Updates the Image. You may change the description, convert a Backup Image to a S
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7640,8 +7640,8 @@ Updates the Image. You may change the description, convert a Backup Image to a S
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-an-image-responseschema">Response Schema</h3>
 
@@ -7697,7 +7697,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7706,7 +7706,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7746,7 +7746,7 @@ Deletes an Image. Only Images of type `snapshot` and `backup` can be deleted.
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7758,7 +7758,7 @@ Deletes an Image. Only Images of type `snapshot` and `backup` can be deleted.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7775,12 +7775,12 @@ Deletes an Image. Only Images of type `snapshot` and `backup` can be deleted.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-an-image-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7789,7 +7789,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7894,7 +7894,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -7906,7 +7906,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -7923,8 +7923,8 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-3-responseschema">Response Schema</h3>
 
@@ -7962,7 +7962,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -7971,7 +7971,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8035,7 +8035,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8047,7 +8047,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8064,8 +8064,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-4-responseschema">Response Schema</h3>
 
@@ -8095,7 +8095,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8104,7 +8104,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8207,7 +8207,7 @@ Returns all Action objects for an Image. You can sort the results by using the `
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8219,7 +8219,7 @@ Returns all Action objects for an Image. You can sort the results by using the `
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8236,8 +8236,8 @@ Returns all Action objects for an Image. You can sort the results by using the `
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-an-image-responseschema">Response Schema</h3>
 
@@ -8275,7 +8275,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8284,7 +8284,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8363,7 +8363,7 @@ Changes the protection configuration of the Image. Can only be used on snapshots
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8375,7 +8375,7 @@ Changes the protection configuration of the Image. Can only be used on snapshots
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8392,8 +8392,8 @@ Changes the protection configuration of the Image. Can only be used on snapshots
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-image-protection-responseschema">Response Schema</h3>
 
@@ -8423,7 +8423,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8432,7 +8432,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8503,7 +8503,7 @@ Returns a specific Action for an Image.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8515,7 +8515,7 @@ Returns a specific Action for an Image.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8532,8 +8532,8 @@ Returns a specific Action for an Image.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-an-image-responseschema">Response Schema</h3>
 
@@ -8563,7 +8563,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8572,7 +8572,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8621,6 +8621,7 @@ Returns all available ISO objects.
 |include_architecture_wildcard|query|boolean|false|Include Images with wildcard architecture (architecture is null). Architecture filter must be specified.|
 |page|query|integer(int64)|false|Page number to return. For more information, see "[Pagination](#description/pagination)".|
 |per_page|query|integer(int64)|false|Maximum number of entries returned per page. For more information, see "[Pagination](#description/pagination)".|
+|sort|query|[string]|false|Sort resources by field and direction. May be used multiple times.<br><br>For more information, see "[Sorting](#description/sorting)".<br>|
 
 #### Enumerated Values
 
@@ -8628,6 +8629,12 @@ Returns all available ISO objects.
 |---|---|
 |architecture|x86|
 |architecture|arm|
+|sort|id|
+|sort|id:asc|
+|sort|id:desc|
+|sort|name|
+|sort|name:asc|
+|sort|name:desc|
 
 > Example responses
 
@@ -8661,7 +8668,7 @@ Returns all available ISO objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8673,7 +8680,7 @@ Returns all available ISO objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8690,8 +8697,8 @@ Returns all available ISO objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-isos-responseschema">Response Schema</h3>
 
@@ -8726,7 +8733,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8735,7 +8742,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8792,7 +8799,7 @@ Returns a specific ISO object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -8804,7 +8811,7 @@ Returns a specific ISO object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -8821,8 +8828,8 @@ Returns a specific ISO object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-iso-responseschema">Response Schema</h3>
 
@@ -8849,7 +8856,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -8858,7 +8865,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -9060,7 +9067,7 @@ Gets all existing Load Balancers that you have available.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -9072,7 +9079,7 @@ Gets all existing Load Balancers that you have available.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -9089,8 +9096,8 @@ Gets all existing Load Balancers that you have available.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-load-balancers-responseschema">Response Schema</h3>
 
@@ -9338,7 +9345,7 @@ Status Code **200**
 |» » type|round_robin|
 |» » type|least_connections|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -9347,7 +9354,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -9815,7 +9822,7 @@ Creates a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -9827,7 +9834,7 @@ Creates a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -9844,8 +9851,8 @@ Creates a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -10101,7 +10108,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -10110,7 +10117,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -10280,7 +10287,7 @@ Gets a specific Load Balancer object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -10292,7 +10299,7 @@ Gets a specific Load Balancer object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -10309,8 +10316,8 @@ Gets a specific Load Balancer object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -10550,7 +10557,7 @@ Status Code **200**
 |» » type|round_robin|
 |» » type|least_connections|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -10559,7 +10566,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -10782,7 +10789,7 @@ Note: if the Load Balancer object changes during the request, the response will 
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -10794,7 +10801,7 @@ Note: if the Load Balancer object changes during the request, the response will 
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -10811,8 +10818,8 @@ Note: if the Load Balancer object changes during the request, the response will 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -11052,7 +11059,7 @@ Status Code **200**
 |» » type|round_robin|
 |» » type|least_connections|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11061,7 +11068,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11126,7 +11133,7 @@ Deletes a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -11138,7 +11145,7 @@ Deletes a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -11155,8 +11162,8 @@ Deletes a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -11186,7 +11193,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11195,7 +11202,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11289,7 +11296,7 @@ We limit the number of samples to a maximum of 500 and will adjust the step para
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -11301,7 +11308,7 @@ We limit the number of samples to a maximum of 500 and will adjust the step para
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -11318,8 +11325,8 @@ We limit the number of samples to a maximum of 500 and will adjust the step para
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-metrics-for-a-loadbalancer-responseschema">Response Schema</h3>
 
@@ -11335,7 +11342,7 @@ Status Code **200**
 |» » **additionalProperties**|object|false|none|none|
 |» » » values|[[number, string]]|true|none|Metrics timestamps with values.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11344,7 +11351,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11449,7 +11456,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -11461,7 +11468,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -11478,8 +11485,8 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-4-responseschema">Response Schema</h3>
 
@@ -11517,7 +11524,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11526,7 +11533,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11590,7 +11597,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -11602,7 +11609,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -11619,8 +11626,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-5-responseschema">Response Schema</h3>
 
@@ -11650,7 +11657,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11659,7 +11666,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11762,7 +11769,7 @@ Returns all Action objects for a Load Balancer. You can sort the results by usin
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -11774,7 +11781,7 @@ Returns all Action objects for a Load Balancer. You can sort the results by usin
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -11791,8 +11798,8 @@ Returns all Action objects for a Load Balancer. You can sort the results by usin
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -11830,7 +11837,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -11839,7 +11846,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12016,7 +12023,7 @@ Adds a service to a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12028,7 +12035,7 @@ Adds a service to a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12045,8 +12052,8 @@ Adds a service to a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-service-responseschema">Response Schema</h3>
 
@@ -12076,7 +12083,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12085,7 +12092,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12216,7 +12223,7 @@ Adds a target to a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12228,7 +12235,7 @@ Adds a target to a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12245,8 +12252,8 @@ Adds a target to a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-target-responseschema">Response Schema</h3>
 
@@ -12276,7 +12283,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12285,7 +12292,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12378,7 +12385,7 @@ Attach a Load Balancer to a Network.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12390,7 +12397,7 @@ Attach a Load Balancer to a Network.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12407,8 +12414,8 @@ Attach a Load Balancer to a Network.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="attach-a-load-balancer-to-a-network-responseschema">Response Schema</h3>
 
@@ -12438,7 +12445,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12447,7 +12454,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12533,7 +12540,7 @@ Change the algorithm that determines to which target new requests are sent.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12545,7 +12552,7 @@ Change the algorithm that determines to which target new requests are sent.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12562,8 +12569,8 @@ Change the algorithm that determines to which target new requests are sent.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-algorithm-responseschema">Response Schema</h3>
 
@@ -12593,7 +12600,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12602,7 +12609,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12686,7 +12693,7 @@ Floating IPs assigned to the Server are not affected by this.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12698,7 +12705,7 @@ Floating IPs assigned to the Server are not affected by this.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12715,8 +12722,8 @@ Floating IPs assigned to the Server are not affected by this.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-reverse-dns-entry-for-this-load-balancer-responseschema">Response Schema</h3>
 
@@ -12746,7 +12753,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12755,7 +12762,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12834,7 +12841,7 @@ Changes the protection configuration of a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -12846,7 +12853,7 @@ Changes the protection configuration of a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -12863,8 +12870,8 @@ Changes the protection configuration of a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-load-balancer-protection-responseschema">Response Schema</h3>
 
@@ -12894,7 +12901,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12903,7 +12910,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -12988,7 +12995,7 @@ Changes the type (Max Services, Max Targets and Max Connections) of a Load Balan
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13000,7 +13007,7 @@ Changes the type (Max Services, Max Targets and Max Connections) of a Load Balan
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13017,8 +13024,8 @@ Changes the type (Max Services, Max Targets and Max Connections) of a Load Balan
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-the-type-of-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -13048,7 +13055,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13057,7 +13064,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13136,7 +13143,7 @@ Delete a service of a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13148,7 +13155,7 @@ Delete a service of a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13165,8 +13172,8 @@ Delete a service of a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-service-responseschema">Response Schema</h3>
 
@@ -13196,7 +13203,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13205,7 +13212,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13288,7 +13295,7 @@ Detaches a Load Balancer from a network.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13300,7 +13307,7 @@ Detaches a Load Balancer from a network.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13317,8 +13324,8 @@ Detaches a Load Balancer from a network.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="detach-a-load-balancer-from-a-network-responseschema">Response Schema</h3>
 
@@ -13348,7 +13355,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13357,7 +13364,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13433,7 +13440,7 @@ Disable the public interface of a Load Balancer. The Load Balancer will be not a
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13445,7 +13452,7 @@ Disable the public interface of a Load Balancer. The Load Balancer will be not a
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13462,8 +13469,8 @@ Disable the public interface of a Load Balancer. The Load Balancer will be not a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="disable-the-public-interface-of-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -13493,7 +13500,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13502,7 +13509,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13571,7 +13578,7 @@ Enable the public interface of a Load Balancer. The Load Balancer will be access
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13583,7 +13590,7 @@ Enable the public interface of a Load Balancer. The Load Balancer will be access
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13600,8 +13607,8 @@ Enable the public interface of a Load Balancer. The Load Balancer will be access
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="enable-the-public-interface-of-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -13631,7 +13638,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13640,7 +13647,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13754,7 +13761,7 @@ Removes a target from a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -13766,7 +13773,7 @@ Removes a target from a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -13783,8 +13790,8 @@ Removes a target from a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="remove-target-responseschema">Response Schema</h3>
 
@@ -13814,7 +13821,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -13823,7 +13830,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14014,7 +14021,7 @@ Updates a Load Balancer Service.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14026,7 +14033,7 @@ Updates a Load Balancer Service.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14043,8 +14050,8 @@ Updates a Load Balancer Service.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-service-responseschema">Response Schema</h3>
 
@@ -14074,7 +14081,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14083,7 +14090,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14154,7 +14161,7 @@ Returns a specific Action for a Load Balancer.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14166,7 +14173,7 @@ Returns a specific Action for a Load Balancer.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14183,8 +14190,8 @@ Returns a specific Action for a Load Balancer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-load-balancer-responseschema">Response Schema</h3>
 
@@ -14214,7 +14221,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14223,7 +14230,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14321,7 +14328,7 @@ Gets all Load Balancer type objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14333,7 +14340,7 @@ Gets all Load Balancer type objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14350,8 +14357,8 @@ Gets all Load Balancer type objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-load-balancer-types-responseschema">Response Schema</h3>
 
@@ -14391,7 +14398,7 @@ Status Code **200**
 |» » last_page|integer \| null(int64)|true|none|Page number of the last page available. Can be null if the current page is the last one.|
 |» » total_entries|integer \| null(int64)|true|none|Total number of entries that exist for this query. Can be null if unknown.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14400,7 +14407,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14477,7 +14484,7 @@ Gets a specific Load Balancer type object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14489,7 +14496,7 @@ Gets a specific Load Balancer type object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14506,8 +14513,8 @@ Gets a specific Load Balancer type object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-load-balancer-type-responseschema">Response Schema</h3>
 
@@ -14539,7 +14546,7 @@ Status Code **200**
 |» » » net|string(decimal)|true|none|Price without VAT.|
 |» » » gross|string(decimal)|true|none|Price with VAT added.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14548,7 +14555,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14635,7 +14642,7 @@ Returns all [Locations](#tag/locations).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14647,7 +14654,7 @@ Returns all [Locations](#tag/locations).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14664,8 +14671,8 @@ Returns all [Locations](#tag/locations).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-locations-responseschema">Response Schema</h3>
 
@@ -14691,7 +14698,7 @@ Status Code **200**
 |» » last_page|integer \| null(int64)|true|none|Page number of the last page available. Can be null if the current page is the last one.|
 |» » total_entries|integer \| null(int64)|true|none|Total number of entries that exist for this query. Can be null if unknown.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14700,7 +14707,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14756,7 +14763,7 @@ Returns a [Location](#tag/locations).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -14768,7 +14775,7 @@ Returns a [Location](#tag/locations).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -14785,8 +14792,8 @@ Returns a [Location](#tag/locations).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-location-responseschema">Response Schema</h3>
 
@@ -14804,7 +14811,7 @@ Status Code **200**
 |» longitude|number(double)|true|none|Longitude of the city closest to the [Location](#tag/locations).|
 |» network_zone|string|true|none|Name of the Network Zone this [Location](#tag/locations) resides in.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14813,7 +14820,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -14988,7 +14995,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15000,7 +15007,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15017,8 +15024,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-networks-responseschema">Response Schema</h3>
 
@@ -15064,7 +15071,7 @@ Status Code **200**
 |» » type|server|
 |» » type|vswitch|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15073,7 +15080,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15237,7 +15244,7 @@ Routes can be added now or later by using the [add route action](#tag/network-ac
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15249,7 +15256,7 @@ Routes can be added now or later by using the [add route action](#tag/network-ac
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15266,8 +15273,8 @@ Routes can be added now or later by using the [add route action](#tag/network-ac
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-network-responseschema">Response Schema</h3>
 
@@ -15305,7 +15312,7 @@ Status Code **201**
 |» » type|server|
 |» » type|vswitch|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15314,7 +15321,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15396,7 +15403,7 @@ Get a specific [Network](#tag/networks).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15408,7 +15415,7 @@ Get a specific [Network](#tag/networks).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15425,8 +15432,8 @@ Get a specific [Network](#tag/networks).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-network-responseschema">Response Schema</h3>
 
@@ -15464,7 +15471,7 @@ Status Code **200**
 |» » type|server|
 |» » type|vswitch|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15473,7 +15480,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15584,7 +15591,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15596,7 +15603,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15613,8 +15620,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-network-responseschema">Response Schema</h3>
 
@@ -15652,7 +15659,7 @@ Status Code **200**
 |» » type|server|
 |» » type|vswitch|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15661,7 +15668,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15703,7 +15710,7 @@ Attached resources will be detached automatically.
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15715,7 +15722,7 @@ Attached resources will be detached automatically.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15732,12 +15739,12 @@ Attached resources will be detached automatically.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-network-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15746,7 +15753,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15854,7 +15861,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -15866,7 +15873,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -15883,8 +15890,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-members-of-a-network-responseschema">Response Schema</h3>
 
@@ -15920,7 +15927,7 @@ Status Code **200**
 |» status|updating|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -15929,7 +15936,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16036,7 +16043,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16048,7 +16055,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16065,8 +16072,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-5-responseschema">Response Schema</h3>
 
@@ -16104,7 +16111,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16113,7 +16120,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16177,7 +16184,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16189,7 +16196,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16206,8 +16213,8 @@ Returns a single [Action](#tag/actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-6-responseschema">Response Schema</h3>
 
@@ -16237,7 +16244,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16246,7 +16253,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16351,7 +16358,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16363,7 +16370,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16380,8 +16387,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-network-responseschema">Response Schema</h3>
 
@@ -16419,7 +16426,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16428,7 +16435,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16512,7 +16519,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16524,7 +16531,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16541,8 +16548,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-a-route-to-a-network-responseschema">Response Schema</h3>
 
@@ -16572,7 +16579,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16581,7 +16588,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16681,7 +16688,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16693,7 +16700,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16710,8 +16717,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-a-subnet-to-a-network-responseschema">Response Schema</h3>
 
@@ -16741,7 +16748,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16750,7 +16757,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16840,7 +16847,7 @@ If a change is currently being performed on this [Network](#tag/networks), an er
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -16852,7 +16859,7 @@ If a change is currently being performed on this [Network](#tag/networks), an er
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -16869,8 +16876,8 @@ If a change is currently being performed on this [Network](#tag/networks), an er
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-ip-range-of-a-network-responseschema">Response Schema</h3>
 
@@ -16900,7 +16907,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16909,7 +16916,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -16990,7 +16997,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17002,7 +17009,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17019,8 +17026,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-network-protection-responseschema">Response Schema</h3>
 
@@ -17050,7 +17057,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17059,7 +17066,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17143,7 +17150,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17155,7 +17162,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17172,8 +17179,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-route-from-a-network-responseschema">Response Schema</h3>
 
@@ -17203,7 +17210,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17212,7 +17219,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17295,7 +17302,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17307,7 +17314,7 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17324,8 +17331,8 @@ If a change is currently being performed on this [Network](#tag/networks), a err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-subnet-from-a-network-responseschema">Response Schema</h3>
 
@@ -17355,7 +17362,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17364,7 +17371,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17435,7 +17442,7 @@ Returns a specific [Action](#tag/actions) for a [Network](#tag/networks).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17447,7 +17454,7 @@ Returns a specific [Action](#tag/actions) for a [Network](#tag/networks).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17464,8 +17471,8 @@ Returns a specific [Action](#tag/actions) for a [Network](#tag/networks).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-network-responseschema">Response Schema</h3>
 
@@ -17495,7 +17502,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17504,7 +17511,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17602,7 +17609,7 @@ Returns all Placement Group objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17614,7 +17621,7 @@ Returns all Placement Group objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17631,8 +17638,8 @@ Returns all Placement Group objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-placement-groups-responseschema">Response Schema</h3>
 
@@ -17663,7 +17670,7 @@ Status Code **200**
 |---|---|
 |» type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17672,7 +17679,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17753,7 +17760,7 @@ Creates a new Placement Group.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17765,7 +17772,7 @@ Creates a new Placement Group.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17782,8 +17789,8 @@ Creates a new Placement Group.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-placementgroup-responseschema">Response Schema</h3>
 
@@ -17822,7 +17829,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17831,7 +17838,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17890,7 +17897,7 @@ Gets a specific Placement Group object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -17902,7 +17909,7 @@ Gets a specific Placement Group object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -17919,8 +17926,8 @@ Gets a specific Placement Group object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-placementgroup-responseschema">Response Schema</h3>
 
@@ -17943,7 +17950,7 @@ Status Code **200**
 |---|---|
 |» type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -17952,7 +17959,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18040,7 +18047,7 @@ Note: if the Placement Group object changes during the request, the response wil
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -18052,7 +18059,7 @@ Note: if the Placement Group object changes during the request, the response wil
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -18069,8 +18076,8 @@ Note: if the Placement Group object changes during the request, the response wil
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-placementgroup-responseschema">Response Schema</h3>
 
@@ -18093,7 +18100,7 @@ Status Code **200**
 |---|---|
 |» type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18102,7 +18109,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18142,7 +18149,7 @@ Deletes a Placement Group.
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -18154,7 +18161,7 @@ Deletes a Placement Group.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -18171,12 +18178,12 @@ Deletes a Placement Group.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-placementgroup-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18185,7 +18192,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18337,7 +18344,7 @@ Both net and gross prices are included in the response.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -18349,7 +18356,7 @@ Both net and gross prices are included in the response.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -18366,8 +18373,8 @@ Both net and gross prices are included in the response.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-all-prices-responseschema">Response Schema</h3>
 
@@ -18449,7 +18456,7 @@ Status Code **200**
 |» » type|ipv4|
 |» » type|ipv6|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18458,7 +18465,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18584,7 +18591,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -18596,7 +18603,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -18613,8 +18620,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-primary-ips-responseschema">Response Schema</h3>
 
@@ -18666,7 +18673,7 @@ Status Code **200**
 |» assignee_type|server|
 |» assignee_type|unassigned|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18675,7 +18682,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18838,7 +18845,7 @@ A [Primary IP](#tag/primary-ips) can only be assigned to resource in the same [L
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -18850,7 +18857,7 @@ A [Primary IP](#tag/primary-ips) can only be assigned to resource in the same [L
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -18867,8 +18874,8 @@ A [Primary IP](#tag/primary-ips) can only be assigned to resource in the same [L
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -18928,7 +18935,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18937,7 +18944,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19018,7 +19025,7 @@ Returns a [Primary IP](#tag/primary-ips).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19030,7 +19037,7 @@ Returns a [Primary IP](#tag/primary-ips).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19047,8 +19054,8 @@ Returns a [Primary IP](#tag/primary-ips).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -19092,7 +19099,7 @@ Status Code **200**
 |» assignee_type|server|
 |» assignee_type|unassigned|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19101,7 +19108,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19214,7 +19221,7 @@ If another change is concurrently performed on this [Primary IP](#tag/primary-ip
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19226,7 +19233,7 @@ If another change is concurrently performed on this [Primary IP](#tag/primary-ip
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19243,8 +19250,8 @@ If another change is concurrently performed on this [Primary IP](#tag/primary-ip
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -19288,7 +19295,7 @@ Status Code **200**
 |» assignee_type|server|
 |» assignee_type|unassigned|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19297,7 +19304,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19346,7 +19353,7 @@ If assigned to a [Server](#tag/servers) the [Primary IP](#tag/primary-ips) will 
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19358,7 +19365,7 @@ If assigned to a [Server](#tag/servers) the [Primary IP](#tag/primary-ips) will 
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19375,12 +19382,12 @@ If assigned to a [Server](#tag/servers) the [Primary IP](#tag/primary-ips) will 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-primary-ip-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19389,7 +19396,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19496,7 +19503,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19508,7 +19515,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19525,8 +19532,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-6-responseschema">Response Schema</h3>
 
@@ -19564,7 +19571,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19573,7 +19580,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19637,7 +19644,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19649,7 +19656,7 @@ Returns a single [Action](#tag/actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19666,8 +19673,8 @@ Returns a single [Action](#tag/actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-7-responseschema">Response Schema</h3>
 
@@ -19697,7 +19704,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19706,7 +19713,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19811,7 +19818,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19823,7 +19830,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19840,8 +19847,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -19879,7 +19886,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19888,7 +19895,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -19959,7 +19966,7 @@ Returns a specific [Action](#tag/actions) for a [Primary IP](#tag/primary-ips).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -19971,7 +19978,7 @@ Returns a specific [Action](#tag/actions) for a [Primary IP](#tag/primary-ips).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -19988,8 +19995,8 @@ Returns a specific [Action](#tag/actions) for a [Primary IP](#tag/primary-ips).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -20019,7 +20026,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20028,7 +20035,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20133,7 +20140,7 @@ A [Server](#tag/servers) must be powered off (status `off`) in order for this op
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -20145,7 +20152,7 @@ A [Server](#tag/servers) must be powered off (status `off`) in order for this op
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -20162,8 +20169,8 @@ A [Server](#tag/servers) must be powered off (status `off`) in order for this op
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="assign-a-primary-ip-to-a-resource-responseschema">Response Schema</h3>
 
@@ -20193,7 +20200,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20202,7 +20209,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20286,7 +20293,7 @@ Allows to modify the PTR records set for the IP address.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -20298,7 +20305,7 @@ Allows to modify the PTR records set for the IP address.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -20315,8 +20322,8 @@ Allows to modify the PTR records set for the IP address.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-reverse-dns-records-for-a-primary-ip-responseschema">Response Schema</h3>
 
@@ -20346,7 +20353,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20355,7 +20362,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20436,7 +20443,7 @@ A [Primary IPs](#tag/primary-ips) deletion protection can only be enabled if its
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -20448,7 +20455,7 @@ A [Primary IPs](#tag/primary-ips) deletion protection can only be enabled if its
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -20465,8 +20472,8 @@ A [Primary IPs](#tag/primary-ips) deletion protection can only be enabled if its
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-primary-ip-protection-responseschema">Response Schema</h3>
 
@@ -20496,7 +20503,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20505,7 +20512,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20585,7 +20592,7 @@ A [Server](#tag/servers) requires at least one network interface (public or priv
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -20597,7 +20604,7 @@ A [Server](#tag/servers) requires at least one network interface (public or priv
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -20614,8 +20621,8 @@ A [Server](#tag/servers) requires at least one network interface (public or priv
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="unassign-a-primary-ip-from-a-resource-responseschema">Response Schema</h3>
 
@@ -20645,7 +20652,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20654,7 +20661,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -20925,7 +20932,7 @@ Returns all existing Server objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -20937,7 +20944,7 @@ Returns all existing Server objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -20954,8 +20961,8 @@ Returns all existing Server objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-servers-responseschema">Response Schema</h3>
 
@@ -21142,7 +21149,7 @@ Status Code **200**
 |» » architecture|arm|
 |» » type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -21151,7 +21158,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -21500,7 +21507,7 @@ Creates a new Server. Returns preliminary information about the Server as well a
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -21512,7 +21519,7 @@ Creates a new Server. Returns preliminary information about the Server as well a
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -21529,8 +21536,8 @@ Creates a new Server. Returns preliminary information about the Server as well a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-server-responseschema">Response Schema</h3>
 
@@ -21742,7 +21749,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -21751,7 +21758,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -21977,7 +21984,7 @@ Returns a specific Server object. The Server must exist inside the Project.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -21989,7 +21996,7 @@ Returns a specific Server object. The Server must exist inside the Project.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -22006,8 +22013,8 @@ Returns a specific Server object. The Server must exist inside the Project.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-server-responseschema">Response Schema</h3>
 
@@ -22186,7 +22193,7 @@ Status Code **200**
 |» » architecture|arm|
 |» » type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22195,7 +22202,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22450,7 +22457,7 @@ Please note that Server names must be unique per Project and valid hostnames as 
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -22462,7 +22469,7 @@ Please note that Server names must be unique per Project and valid hostnames as 
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -22479,8 +22486,8 @@ Please note that Server names must be unique per Project and valid hostnames as 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-server-responseschema">Response Schema</h3>
 
@@ -22659,7 +22666,7 @@ Status Code **200**
 |» » architecture|arm|
 |» » type|spread|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22668,7 +22675,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22737,7 +22744,7 @@ Floating IPs, Firewalls, Placement Groups) are detached while the server is dele
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -22749,7 +22756,7 @@ Floating IPs, Firewalls, Placement Groups) are detached while the server is dele
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -22766,8 +22773,8 @@ Floating IPs, Firewalls, Placement Groups) are detached while the server is dele
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-server-responseschema">Response Schema</h3>
 
@@ -22797,7 +22804,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22806,7 +22813,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22907,7 +22914,7 @@ We limit the number of samples returned to a maximum of 500 and will adjust the 
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -22919,7 +22926,7 @@ We limit the number of samples returned to a maximum of 500 and will adjust the 
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -22936,8 +22943,8 @@ We limit the number of samples returned to a maximum of 500 and will adjust the 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-metrics-for-a-server-responseschema">Response Schema</h3>
 
@@ -22953,7 +22960,7 @@ Status Code **200**
 |» » **additionalProperties**|object|false|none|none|
 |» » » values|[[number, string]]|true|none|Metrics timestamps with values.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -22962,7 +22969,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23067,7 +23074,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23079,7 +23086,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23096,8 +23103,8 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-7-responseschema">Response Schema</h3>
 
@@ -23135,7 +23142,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23144,7 +23151,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23208,7 +23215,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23220,7 +23227,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23237,8 +23244,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-8-responseschema">Response Schema</h3>
 
@@ -23268,7 +23275,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23277,7 +23284,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23380,7 +23387,7 @@ Returns all Action objects for a Server. You can `sort` the results by using the
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23392,7 +23399,7 @@ Returns all Action objects for a Server. You can `sort` the results by using the
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23409,8 +23416,8 @@ Returns all Action objects for a Server. You can `sort` the results by using the
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-server-responseschema">Response Schema</h3>
 
@@ -23448,7 +23455,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23457,7 +23464,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23545,7 +23552,7 @@ Server must be powered off for this command to succeed.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23557,7 +23564,7 @@ Server must be powered off for this command to succeed.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23574,8 +23581,8 @@ Server must be powered off for this command to succeed.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-a-server-to-a-placement-group-responseschema">Response Schema</h3>
 
@@ -23605,7 +23612,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23614,7 +23621,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23695,7 +23702,7 @@ Servers with attached ISOs have a modified boot order: They will try to boot fro
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23707,7 +23714,7 @@ Servers with attached ISOs have a modified boot order: They will try to boot fro
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23724,8 +23731,8 @@ Servers with attached ISOs have a modified boot order: They will try to boot fro
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="attach-an-iso-to-a-server-responseschema">Response Schema</h3>
 
@@ -23755,7 +23762,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23764,7 +23771,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23873,7 +23880,7 @@ Using the `alias_ips` attribute you can also define one or more additional IPs t
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -23885,7 +23892,7 @@ Using the `alias_ips` attribute you can also define one or more additional IPs t
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -23902,8 +23909,8 @@ Using the `alias_ips` attribute you can also define one or more additional IPs t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="attach-a-server-to-a-network-responseschema">Response Schema</h3>
 
@@ -23933,7 +23940,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -23942,7 +23949,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24032,7 +24039,7 @@ Changes the alias IPs of an already attached Network. Note that the existing ali
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24044,7 +24051,7 @@ Changes the alias IPs of an already attached Network. Note that the existing ali
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24061,8 +24068,8 @@ Changes the alias IPs of an already attached Network. Note that the existing ali
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-alias-ips-of-a-network-responseschema">Response Schema</h3>
 
@@ -24092,7 +24099,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24101,7 +24108,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24185,7 +24192,7 @@ Floating IPs assigned to the Server are not affected by this.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24197,7 +24204,7 @@ Floating IPs assigned to the Server are not affected by this.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24214,8 +24221,8 @@ Floating IPs assigned to the Server are not affected by this.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-reverse-dns-entry-for-this-server-responseschema">Response Schema</h3>
 
@@ -24245,7 +24252,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24254,7 +24261,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24336,7 +24343,7 @@ Changes the protection configuration of the Server.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24348,7 +24355,7 @@ Changes the protection configuration of the Server.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24365,8 +24372,8 @@ Changes the protection configuration of the Server.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-server-protection-responseschema">Response Schema</h3>
 
@@ -24396,7 +24403,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24405,7 +24412,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24502,7 +24509,7 @@ If the disk gets upgraded, the Server type can not be downgraded any more. If yo
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24514,7 +24521,7 @@ If the disk gets upgraded, the Server type can not be downgraded any more. If yo
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24531,8 +24538,8 @@ If the disk gets upgraded, the Server type can not be downgraded any more. If yo
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-the-type-of-a-server-responseschema">Response Schema</h3>
 
@@ -24562,7 +24569,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24571,7 +24578,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24703,7 +24710,7 @@ You can either create a `backup` Image that is bound to the Server and therefore
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24715,7 +24722,7 @@ You can either create a `backup` Image that is bound to the Server and therefore
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24732,8 +24739,8 @@ You can either create a `backup` Image that is bound to the Server and therefore
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-image-from-a-server-responseschema">Response Schema</h3>
 
@@ -24805,7 +24812,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24814,7 +24821,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24897,7 +24904,7 @@ Detaches a Server from a network. The interface for this network will vanish.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -24909,7 +24916,7 @@ Detaches a Server from a network. The interface for this network will vanish.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -24926,8 +24933,8 @@ Detaches a Server from a network. The interface for this network will vanish.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="detach-a-server-from-a-network-responseschema">Response Schema</h3>
 
@@ -24957,7 +24964,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -24966,7 +24973,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25031,7 +25038,7 @@ Detaches an ISO from a Server. In case no ISO Image is attached to the Server, t
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25043,7 +25050,7 @@ Detaches an ISO from a Server. In case no ISO Image is attached to the Server, t
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25060,8 +25067,8 @@ Detaches an ISO from a Server. In case no ISO Image is attached to the Server, t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="detach-an-iso-from-a-server-responseschema">Response Schema</h3>
 
@@ -25091,7 +25098,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25100,7 +25107,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25167,7 +25174,7 @@ Caution: This immediately removes all existing backups for the Server!
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25179,7 +25186,7 @@ Caution: This immediately removes all existing backups for the Server!
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25196,8 +25203,8 @@ Caution: This immediately removes all existing backups for the Server!
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="disable-backups-for-a-server-responseschema">Response Schema</h3>
 
@@ -25227,7 +25234,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25236,7 +25243,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25305,7 +25312,7 @@ Disabling rescue mode will not reboot your Server — you will have to do this y
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25317,7 +25324,7 @@ Disabling rescue mode will not reboot your Server — you will have to do this y
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25334,8 +25341,8 @@ Disabling rescue mode will not reboot your Server — you will have to do this y
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="disable-rescue-mode-for-a-server-responseschema">Response Schema</h3>
 
@@ -25365,7 +25372,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25374,7 +25381,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25441,7 +25448,7 @@ Backups are automatically created daily.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25453,7 +25460,7 @@ Backups are automatically created daily.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25470,8 +25477,8 @@ Backups are automatically created daily.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="enable-and-configure-backups-for-a-server-responseschema">Response Schema</h3>
 
@@ -25501,7 +25508,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25510,7 +25517,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25609,7 +25616,7 @@ Enabling rescue mode will not [reboot](https://docs.hetzner.cloud/#server-action
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25621,7 +25628,7 @@ Enabling rescue mode will not [reboot](https://docs.hetzner.cloud/#server-action
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25638,8 +25645,8 @@ Enabling rescue mode will not [reboot](https://docs.hetzner.cloud/#server-action
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="enable-rescue-mode-for-a-server-responseschema">Response Schema</h3>
 
@@ -25670,7 +25677,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25679,7 +25686,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25744,7 +25751,7 @@ Cuts power to the Server. This forcefully stops it without giving the Server ope
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25756,7 +25763,7 @@ Cuts power to the Server. This forcefully stops it without giving the Server ope
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25773,8 +25780,8 @@ Cuts power to the Server. This forcefully stops it without giving the Server ope
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="power-off-a-server-responseschema">Response Schema</h3>
 
@@ -25804,7 +25811,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25813,7 +25820,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25878,7 +25885,7 @@ Starts a Server by turning its power on.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -25890,7 +25897,7 @@ Starts a Server by turning its power on.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -25907,8 +25914,8 @@ Starts a Server by turning its power on.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="power-on-a-server-responseschema">Response Schema</h3>
 
@@ -25938,7 +25945,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -25947,7 +25954,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26012,7 +26019,7 @@ Reboots a Server gracefully by sending an ACPI request. The Server operating sys
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26024,7 +26031,7 @@ Reboots a Server gracefully by sending an ACPI request. The Server operating sys
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26041,8 +26048,8 @@ Reboots a Server gracefully by sending an ACPI request. The Server operating sys
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="soft-reboot-a-server-responseschema">Response Schema</h3>
 
@@ -26072,7 +26079,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26081,7 +26088,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26168,7 +26175,7 @@ Your Server will automatically be powered off before the rebuild command execute
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26180,7 +26187,7 @@ Your Server will automatically be powered off before the rebuild command execute
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26197,8 +26204,8 @@ Your Server will automatically be powered off before the rebuild command execute
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="rebuild-a-server-from-an-image-responseschema">Response Schema</h3>
 
@@ -26229,7 +26236,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26238,7 +26245,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26303,7 +26310,7 @@ Removes a Server from a Placement Group.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26315,7 +26322,7 @@ Removes a Server from a Placement Group.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26332,8 +26339,8 @@ Removes a Server from a Placement Group.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="remove-from-placement-group-responseschema">Response Schema</h3>
 
@@ -26363,7 +26370,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26372,7 +26379,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26439,7 +26446,7 @@ Requests credentials for remote access via VNC over websocket to keyboard, monit
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26451,7 +26458,7 @@ Requests credentials for remote access via VNC over websocket to keyboard, monit
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26468,8 +26475,8 @@ Requests credentials for remote access via VNC over websocket to keyboard, monit
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="request-console-for-a-server-responseschema">Response Schema</h3>
 
@@ -26501,7 +26508,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26510,7 +26517,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26575,7 +26582,7 @@ Cuts power to a Server and starts it again. This forcefully stops it without giv
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26587,7 +26594,7 @@ Cuts power to a Server and starts it again. This forcefully stops it without giv
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26604,8 +26611,8 @@ Cuts power to a Server and starts it again. This forcefully stops it without giv
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="reset-a-server-responseschema">Response Schema</h3>
 
@@ -26635,7 +26642,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26644,7 +26651,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26714,7 +26721,7 @@ If this does not succeed you can use the rescue system to netboot the Server and
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26726,7 +26733,7 @@ If this does not succeed you can use the rescue system to netboot the Server and
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26743,8 +26750,8 @@ If this does not succeed you can use the rescue system to netboot the Server and
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="reset-root-password-of-a-server-responseschema">Response Schema</h3>
 
@@ -26775,7 +26782,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26784,7 +26791,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26852,7 +26859,7 @@ successfully. If you need to ensure that the server is off, use the `poweroff` a
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -26864,7 +26871,7 @@ successfully. If you need to ensure that the server is off, use the `poweroff` a
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -26881,8 +26888,8 @@ successfully. If you need to ensure that the server is off, use the `poweroff` a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="shutdown-a-server-responseschema">Response Schema</h3>
 
@@ -26912,7 +26919,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26921,7 +26928,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -26992,7 +26999,7 @@ Returns a specific Action object for a Server.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27004,7 +27011,7 @@ Returns a specific Action object for a Server.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27021,8 +27028,8 @@ Returns a specific Action object for a Server.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-server-responseschema">Response Schema</h3>
 
@@ -27052,7 +27059,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27061,7 +27068,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27106,6 +27113,18 @@ Gets all Server type objects.
 |name|query|string|false|Filter resources by their name.<br><br>The response will only contain the resources<br>matching exactly the specified name.<br>|
 |page|query|integer(int64)|false|Page number to return. For more information, see "[Pagination](#description/pagination)".|
 |per_page|query|integer(int64)|false|Maximum number of entries returned per page. For more information, see "[Pagination](#description/pagination)".|
+|sort|query|[string]|false|Sort resources by field and direction. May be used multiple times.<br><br>For more information, see "[Sorting](#description/sorting)".<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|sort|id|
+|sort|id:asc|
+|sort|id:desc|
+|sort|name|
+|sort|name:asc|
+|sort|name:desc|
 
 > Example responses
 
@@ -27174,7 +27193,7 @@ Gets all Server type objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27186,7 +27205,7 @@ Gets all Server type objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27203,8 +27222,8 @@ Gets all Server type objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-server-types-responseschema">Response Schema</h3>
 
@@ -27266,7 +27285,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27275,7 +27294,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27367,7 +27386,7 @@ Gets a specific Server type object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27379,7 +27398,7 @@ Gets a specific Server type object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27396,8 +27415,8 @@ Gets a specific Server type object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-server-type-responseschema">Response Schema</h3>
 
@@ -27451,7 +27470,7 @@ Status Code **200**
 |» architecture|x86|
 |» architecture|arm|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27460,7 +27479,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27551,7 +27570,7 @@ Returns all SSH key objects.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27563,7 +27582,7 @@ Returns all SSH key objects.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27580,8 +27599,8 @@ Returns all SSH key objects.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-ssh-keys-responseschema">Response Schema</h3>
 
@@ -27606,7 +27625,7 @@ Status Code **200**
 |» » last_page|integer \| null(int64)|true|none|Page number of the last page available. Can be null if the current page is the last one.|
 |» » total_entries|integer \| null(int64)|true|none|Total number of entries that exist for this query. Can be null if unknown.|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27615,7 +27634,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27702,7 +27721,7 @@ Creates a new SSH key with the given `name` and `public_key`. Once an SSH key is
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27714,7 +27733,7 @@ Creates a new SSH key with the given `name` and `public_key`. Once an SSH key is
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27731,8 +27750,8 @@ Creates a new SSH key with the given `name` and `public_key`. Once an SSH key is
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-an-ssh-key-responseschema">Response Schema</h3>
 
@@ -27749,7 +27768,7 @@ Status Code **201**
 |» » **additionalProperties**|string|false|none|none|
 |» created|string(date-time)|true|none|Point in time when the Resource was created (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27758,7 +27777,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27816,7 +27835,7 @@ Returns a specific SSH key object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27828,7 +27847,7 @@ Returns a specific SSH key object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27845,8 +27864,8 @@ Returns a specific SSH key object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-ssh-key-responseschema">Response Schema</h3>
 
@@ -27863,7 +27882,7 @@ Status Code **200**
 |» » **additionalProperties**|string|false|none|none|
 |» created|string(date-time)|true|none|Point in time when the Resource was created (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27872,7 +27891,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -27955,7 +27974,7 @@ Updates an SSH key. You can update an SSH key name and an SSH key labels.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -27967,7 +27986,7 @@ Updates an SSH key. You can update an SSH key name and an SSH key labels.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -27984,8 +28003,8 @@ Updates an SSH key. You can update an SSH key name and an SSH key labels.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-an-ssh-key-responseschema">Response Schema</h3>
 
@@ -28002,7 +28021,7 @@ Status Code **200**
 |» » **additionalProperties**|string|false|none|none|
 |» created|string(date-time)|true|none|Point in time when the Resource was created (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28011,7 +28030,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28051,7 +28070,7 @@ Deletes an SSH key. It cannot be used anymore.
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28063,7 +28082,7 @@ Deletes an SSH key. It cannot be used anymore.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28080,12 +28099,12 @@ Deletes an SSH key. It cannot be used anymore.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-an-ssh-key-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28094,7 +28113,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28214,7 +28233,7 @@ Gets all existing Volumes that you have available.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28226,7 +28245,7 @@ Gets all existing Volumes that you have available.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28243,8 +28262,8 @@ Gets all existing Volumes that you have available.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-volumes-responseschema">Response Schema</h3>
 
@@ -28293,7 +28312,7 @@ Status Code **200**
 |» status|available|
 |» status|creating|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28302,7 +28321,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28474,7 +28493,7 @@ A volume’s name can consist of alphanumeric characters, dashes, underscores, a
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28486,7 +28505,7 @@ A volume’s name can consist of alphanumeric characters, dashes, underscores, a
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28503,8 +28522,8 @@ A volume’s name can consist of alphanumeric characters, dashes, underscores, a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-volume-responseschema">Response Schema</h3>
 
@@ -28577,7 +28596,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28586,7 +28605,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28664,7 +28683,7 @@ Gets a specific Volume object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28676,7 +28695,7 @@ Gets a specific Volume object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28693,8 +28712,8 @@ Gets a specific Volume object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-volume-responseschema">Response Schema</h3>
 
@@ -28735,7 +28754,7 @@ Status Code **200**
 |» status|available|
 |» status|creating|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28744,7 +28763,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28847,7 +28866,7 @@ Updates the Volume properties.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28859,7 +28878,7 @@ Updates the Volume properties.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28876,8 +28895,8 @@ Updates the Volume properties.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-volume-responseschema">Response Schema</h3>
 
@@ -28918,7 +28937,7 @@ Status Code **200**
 |» status|available|
 |» status|creating|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28927,7 +28946,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -28967,7 +28986,7 @@ Deletes a volume. All Volume data is irreversibly destroyed. The Volume must not
 
 > Example responses
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -28979,7 +28998,7 @@ Deletes a volume. All Volume data is irreversibly destroyed. The Volume must not
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -28996,12 +29015,12 @@ Deletes a volume. All Volume data is irreversibly destroyed. The Volume must not
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Request succeeded.|None|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-volume-responseschema">Response Schema</h3>
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29010,7 +29029,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29115,7 +29134,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29127,7 +29146,7 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29144,8 +29163,8 @@ Returns all Action objects. You can `sort` the results by using the sort URI par
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-8-responseschema">Response Schema</h3>
 
@@ -29183,7 +29202,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29192,7 +29211,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29256,7 +29275,7 @@ Returns a specific Action object.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29268,7 +29287,7 @@ Returns a specific Action object.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29285,8 +29304,8 @@ Returns a specific Action object.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-9-responseschema">Response Schema</h3>
 
@@ -29316,7 +29335,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29325,7 +29344,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29432,7 +29451,7 @@ Returns all Action objects for a Volume. You can `sort` the results by using the
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29444,7 +29463,7 @@ Returns all Action objects for a Volume. You can `sort` the results by using the
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29461,8 +29480,8 @@ Returns all Action objects for a Volume. You can `sort` the results by using the
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-volume-responseschema">Response Schema</h3>
 
@@ -29500,7 +29519,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29509,7 +29528,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29606,7 +29625,7 @@ Attaches a Volume to a Resource. Works only if the Resource is in the same Locat
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29618,7 +29637,7 @@ Attaches a Volume to a Resource. Works only if the Resource is in the same Locat
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29635,8 +29654,8 @@ Attaches a Volume to a Resource. Works only if the Resource is in the same Locat
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="attach-volume-to-a-resource-responseschema">Response Schema</h3>
 
@@ -29666,7 +29685,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29675,7 +29694,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29758,7 +29777,7 @@ Changes the protection configuration of a Volume.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29770,7 +29789,7 @@ Changes the protection configuration of a Volume.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29787,8 +29806,8 @@ Changes the protection configuration of a Volume.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-volume-protection-responseschema">Response Schema</h3>
 
@@ -29818,7 +29837,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29827,7 +29846,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29892,7 +29911,7 @@ Detaches a Volume from the Resource it’s attached to. You may attach it to a R
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -29904,7 +29923,7 @@ Detaches a Volume from the Resource it’s attached to. You may attach it to a R
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -29921,8 +29940,8 @@ Detaches a Volume from the Resource it’s attached to. You may attach it to a R
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="detach-volume-responseschema">Response Schema</h3>
 
@@ -29952,7 +29971,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -29961,7 +29980,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30040,7 +30059,7 @@ Changes the size of a Volume. Note that downsizing a Volume is not possible.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -30052,7 +30071,7 @@ Changes the size of a Volume. Note that downsizing a Volume is not possible.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -30069,8 +30088,8 @@ Changes the size of a Volume. Note that downsizing a Volume is not possible.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="resize-volume-responseschema">Response Schema</h3>
 
@@ -30100,7 +30119,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30109,7 +30128,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30180,7 +30199,7 @@ Returns a specific Action for a Volume.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -30192,7 +30211,7 @@ Returns a specific Action for a Volume.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -30209,8 +30228,8 @@ Returns a specific Action for a Volume.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-volume-responseschema">Response Schema</h3>
 
@@ -30240,7 +30259,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30249,7 +30268,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30423,7 +30442,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -30435,7 +30454,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -30452,8 +30471,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-zones-responseschema">Response Schema</h3>
 
@@ -30554,7 +30573,7 @@ Status Code **200**
 |» registrar|unknown|
 |» mode|secondary|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30563,7 +30582,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30750,7 +30769,7 @@ nameservers are created automatically.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -30762,7 +30781,7 @@ nameservers are created automatically.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -30779,8 +30798,8 @@ nameservers are created automatically.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-a-zone-responseschema">Response Schema</h3>
 
@@ -30889,7 +30908,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30898,7 +30917,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -30986,7 +31005,7 @@ Returns a single [Zone](#tag/zones).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -30998,7 +31017,7 @@ Returns a single [Zone](#tag/zones).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31015,8 +31034,8 @@ Returns a single [Zone](#tag/zones).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-a-zone-responseschema">Response Schema</h3>
 
@@ -31109,7 +31128,7 @@ Status Code **200**
 |» registrar|unknown|
 |» mode|secondary|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31118,7 +31137,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31221,7 +31240,7 @@ endpoints](#tag/zone-rrset-actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -31233,7 +31252,7 @@ endpoints](#tag/zone-rrset-actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31250,8 +31269,8 @@ endpoints](#tag/zone-rrset-actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-a-zone-responseschema">Response Schema</h3>
 
@@ -31344,7 +31363,7 @@ Status Code **200**
 |» registrar|unknown|
 |» mode|secondary|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31353,7 +31372,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31415,7 +31434,7 @@ Deletes a [Zone](#tag/zones).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -31427,7 +31446,7 @@ Deletes a [Zone](#tag/zones).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31444,8 +31463,8 @@ Deletes a [Zone](#tag/zones).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-a-zone-responseschema">Response Schema</h3>
 
@@ -31475,7 +31494,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31484,7 +31503,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31539,7 +31558,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -31551,7 +31570,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31568,8 +31587,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="export-a-zone-file-responseschema">Response Schema</h3>
 
@@ -31579,7 +31598,7 @@ Status Code **200**
 |---|---|---|---|---|
 |zonefile|string|true|none|Generated zone file.<br><br>Example:<br><br>```dns<br>$ORIGIN	example.com.<br>$TTL	3600<br><br>@	IN	SOA	hydrogen.ns.hetzner.com. dns.hetzner.com. 2024010100 86400 10800 3600000 3600<br><br>@	IN	10800	NS	hydrogen.ns.hetzner.com. ; Some comment.<br>@	IN	10800	NS	oxygen.ns.hetzner.com.<br>@	IN	10800	NS	helium.ns.hetzner.de.<br>```<br>|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31588,7 +31607,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31695,7 +31714,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -31707,7 +31726,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31724,8 +31743,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-9-responseschema">Response Schema</h3>
 
@@ -31763,7 +31782,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31772,7 +31791,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31836,7 +31855,7 @@ Returns a specific [Action](#tag/actions).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -31848,7 +31867,7 @@ Returns a specific [Action](#tag/actions).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -31865,8 +31884,8 @@ Returns a specific [Action](#tag/actions).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-10-responseschema">Response Schema</h3>
 
@@ -31896,7 +31915,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -31905,7 +31924,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32010,7 +32029,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32022,7 +32041,7 @@ Use the provided URI parameters to modify the result.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32039,8 +32058,8 @@ Use the provided URI parameters to modify the result.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-actions-for-a-zone-responseschema">Response Schema</h3>
 
@@ -32078,7 +32097,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32087,7 +32106,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32155,7 +32174,7 @@ Returns a specific [Action](#tag/actions) for a [Zone](#tag/zones).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32167,7 +32186,7 @@ Returns a specific [Action](#tag/actions) for a [Zone](#tag/zones).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32184,8 +32203,8 @@ Returns a specific [Action](#tag/actions) for a [Zone](#tag/zones).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-action-for-a-zone-responseschema">Response Schema</h3>
 
@@ -32215,7 +32234,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32224,7 +32243,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32338,7 +32357,7 @@ Only applicable for [Zones](#tag/zones) in secondary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32350,7 +32369,7 @@ Only applicable for [Zones](#tag/zones) in secondary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32367,8 +32386,8 @@ Only applicable for [Zones](#tag/zones) in secondary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-a-zones-primary-nameservers-responseschema">Response Schema</h3>
 
@@ -32398,7 +32417,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32407,7 +32426,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32483,7 +32502,7 @@ Changes the protection configuration of a [Zone](#tag/zones).
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32495,7 +32514,7 @@ Changes the protection configuration of a [Zone](#tag/zones).
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32512,8 +32531,8 @@ Changes the protection configuration of a [Zone](#tag/zones).
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-a-zones-protection-responseschema">Response Schema</h3>
 
@@ -32543,7 +32562,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32552,7 +32571,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32638,7 +32657,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32650,7 +32669,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32667,8 +32686,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-a-zones-default-ttl-responseschema">Response Schema</h3>
 
@@ -32698,7 +32717,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32707,7 +32726,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32794,7 +32813,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -32806,7 +32825,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -32823,8 +32842,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="import-a-zone-file-responseschema">Response Schema</h3>
 
@@ -32854,7 +32873,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -32863,7 +32882,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33001,7 +33020,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -33013,7 +33032,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -33030,8 +33049,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="list-rrsets-responseschema">Response Schema</h3>
 
@@ -33082,7 +33101,7 @@ Status Code **200**
 |» type|TLSA|
 |» type|TXT|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33091,7 +33110,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33248,7 +33267,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -33260,7 +33279,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -33277,8 +33296,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="create-an-rrset-responseschema">Response Schema</h3>
 
@@ -33337,7 +33356,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33346,7 +33365,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33444,7 +33463,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -33456,7 +33475,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -33473,8 +33492,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="get-an-rrset-responseschema">Response Schema</h3>
 
@@ -33517,7 +33536,7 @@ Status Code **200**
 |» type|TLSA|
 |» type|TXT|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33526,7 +33545,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33648,7 +33667,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -33660,7 +33679,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -33677,8 +33696,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-an-rrset-responseschema">Response Schema</h3>
 
@@ -33721,7 +33740,7 @@ Status Code **200**
 |» type|TLSA|
 |» type|TXT|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33730,7 +33749,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33823,7 +33842,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -33835,7 +33854,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -33852,8 +33871,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="delete-an-rrset-responseschema">Response Schema</h3>
 
@@ -33883,7 +33902,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -33892,7 +33911,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34001,7 +34020,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34013,7 +34032,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34030,8 +34049,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-an-rrsets-protection-responseschema">Response Schema</h3>
 
@@ -34061,7 +34080,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34070,7 +34089,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34177,7 +34196,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34189,7 +34208,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34206,8 +34225,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="change-an-rrsets-ttl-responseschema">Response Schema</h3>
 
@@ -34237,7 +34256,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34246,7 +34265,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34365,7 +34384,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34377,7 +34396,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34394,8 +34413,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="set-records-of-an-rrset-responseschema">Response Schema</h3>
 
@@ -34425,7 +34444,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34434,7 +34453,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34559,7 +34578,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34571,7 +34590,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34588,8 +34607,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="add-records-to-an-rrset-responseschema">Response Schema</h3>
 
@@ -34619,7 +34638,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34628,7 +34647,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34749,7 +34768,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34761,7 +34780,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34778,8 +34797,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="remove-records-from-an-rrset-responseschema">Response Schema</h3>
 
@@ -34809,7 +34828,7 @@ Status Code **201**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34818,7 +34837,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -34937,7 +34956,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 4xx Response
+> 4XX Response
 
 ```json
 {
@@ -34949,7 +34968,7 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 }
 ```
 
-> 5xx Response
+> 5XX Response
 
 ```json
 {
@@ -34966,8 +34985,8 @@ Only applicable for [Zones](#tag/zones) in primary mode.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Request succeeded.|Inline|
-|4xx|Client Error|Request failed with a user error.|Inline|
-|5xx|Server Error|Request failed with a server error.|Inline|
+|4XX|Client Error|Request failed with a user error.|Inline|
+|5XX|Server Error|Request failed with a server error.|Inline|
 
 <h3 id="update-records-of-an-rrset-responseschema">Response Schema</h3>
 
@@ -34997,7 +35016,7 @@ Status Code **200**
 |» status|success|
 |» status|error|
 
-Status Code **4xx**
+Status Code **4XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -35006,7 +35025,7 @@ Status Code **4xx**
 |» message|string|true|none|Error message for humans.|
 |» details|object \| null|false|none|Details about the error.|
 
-Status Code **5xx**
+Status Code **5XX**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|

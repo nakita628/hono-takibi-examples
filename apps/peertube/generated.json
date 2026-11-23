@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c6ff6d662895be2631fd980655ea13cec188beb0558497fa287d2175a95e51e3",
+    "sources": {
+      "https://raw.githubusercontent.com/Chocobozzz/PeerTube/develop/support/doc/api/openapi.yaml": {
+        "etag": "W/\"ef73d031b1a5ae6afe2b73b1f5d531d850734ab063603e349be387b6b3ccf197\"",
+        "sha256": "fda6a990bb1b4d52c7008d40c5bd3c43953e1b827a210024ff057788b230dbde"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

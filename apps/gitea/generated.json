@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "67d4f7eb8722ef273c8f9f4dcf93246b102b69e8d47e21d70826aaa623cf0374",
+    "sources": {
+      "https://raw.githubusercontent.com/go-gitea/gitea/main/templates/swagger/v1-openapi3.generated.json": {
+        "etag": "W/\"bfd3c58234de1b020e09af9dde9ecab948e72c5a8a591f574b1a9f0304a44a8b\"",
+        "sha256": "3827b9c85f177a5c7e50631d659d1905f0c14fa6a0435651b85c1795ec53a749"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

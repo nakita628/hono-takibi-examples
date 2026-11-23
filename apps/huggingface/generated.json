@@ -1,0 +1,21 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "913d0341f6cc9dac2113eeca77e87082d878b2c2ef23278b2072c284463d4a1b",
+    "sources": {
+      "https://huggingface.co/.well-known/openapi.json": {
+        "etag": "W/\"12feb2-WYPqDhgYJD3UD/kv7eX/D2eYDyk\"",
+        "sha256": "65458fc838099311ece0b028542ec9aea8c2b1e2855f85f15097fc92705a533c",
+        "canonical": "973920a297f8f3e110347151ee0ce213f0d3cd9e8f35e2ae2f6b54089db30ad0"
+      }
+    },
+    "typecheck": {
+      "errors": 222,
+      "where": "`index.ts`",
+      "codes": "TS2724 ×197, TS2305 ×25",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  }
+}

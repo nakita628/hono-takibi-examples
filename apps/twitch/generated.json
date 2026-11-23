@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "085ecc344bbc43cf3c421c48cde13b04fe5eb79c0f083b18546af32ee8ae2db2",
+    "sources": {
+      "https://raw.githubusercontent.com/DmitryScaletta/twitch-api-swagger/main/openapi.json": {
+        "etag": "W/\"79c05565aa8f03164dc861c2a1d7bab60644b33cfa26434a451386305a34b1a0\"",
+        "sha256": "8220cef29980d08826569b080e3dfdfd00646ba9881a568b2e63a577dffa9836"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

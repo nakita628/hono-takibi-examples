@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7dff4204159070d0af4ad3a0aa8312997feeb9f45d4d3ea40344419a06c891ff",
+    "sources": {
+      "https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json": {
+        "etag": "W/\"45e91bd772ac616e5b666741a7a32ec8c70dc81b1a4538147cb27134c7e84da8\"",
+        "sha256": "40426db63ed0abc2e465d9b54781d667733efc6b9696b9bdb5e2b6426047f4f2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

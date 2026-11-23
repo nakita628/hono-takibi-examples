@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fc1c44465b4f29a2efaf8a7630edd515be3c4337f5b95d65939980b5ffdb6d20",
+    "sources": {
+      "https://raw.githubusercontent.com/sonallux/spotify-web-api/main/fixed-spotify-open-api.yml": {
+        "etag": "W/\"eee08d56ef2468961eec08d01ae6b078eb081c4459f85643fae5059e1bff1e2e\"",
+        "sha256": "ddeb078a50208d94c4538bd891bec0c9e67c9f3406617a2d887f0a482a4501f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "da03c929f8de4a12172ec53acec7e4ff51182ac26069eb296835fa4077ec27bd",
+    "sources": {
+      "https://app.getunleash.io/demo/docs/openapi.json": {
+        "etag": "W/\"10879f-rR02pgXY7FCIOhCvPoMRhF3z2bo\"",
+        "sha256": "cd382eae781863046ba71cb116b30287c540f334db398b703b25d55329ccaf02"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

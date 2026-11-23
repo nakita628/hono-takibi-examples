@@ -1,0 +1,752 @@
+{
+  "configs/3-0-callbacks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4b4a6adeb76933f8101d3e633582d997226b74c9eee60006b773e5a4b8faa477",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/callbacks.yaml": {
+        "etag": "W/\"6598da3c8391d950981058d5d7d4491eff857942a71995b4d9200a8cbe4b3403\"",
+        "sha256": "7a6f79ba522031f6b7ca865a0c1a4f8af82d94d8c72006e99376b303aa6e3121"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-circular-paths.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ccf5044109ff2cc806f4b4c4dc3906a7c843e4630181307f0cb454c6ba71d90d",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/circular-paths.yaml": {
+        "etag": "W/\"f6cb9215f106e42eba95814a2b05d3cc0d2f80530028749353fafe875ca018c1\"",
+        "sha256": "769d173434a15d485138dec5f9316797d8b1db500f840a88a9812fcb8980f9b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-circular.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5506d11b18fefa678263267212ac5ea80893178838377725746e65df9ae29941",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/circular.yaml": {
+        "etag": "W/\"0dd203691d52c0b5277bc8a4dbb9e8580279754ab69fce5d965e5790bb0c8699\"",
+        "sha256": "579864b07ccbb4dc2918f7f6ba322c7196817b1f374998d81394440d0126450e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-complex-nesting.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "48689643b8e86fd77e7e417a11b8c537f39ab3e06bc464a4a93461fbc6aa07cc",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/complex-nesting.yaml": {
+        "etag": "W/\"da98cd7b9a61a84c4c23c54bf55a8612a0d5b46622caa56c4e75f2a97dad296d\"",
+        "sha256": "d04a1a6e18f0a9a0b0dd84bc348c36323b0a1d06b6d0ca9f652a59240a324709"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-discriminators.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d7bce50ebb849ee39232bcd508f44d07c4c5396eebd7f38b7e55db4cdebbd62c",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/discriminators.yaml": {
+        "etag": "W/\"a61251ef8dc8294c512723ccfadf610d7f45a1e1db8830faf63b140b4d4e66f7\"",
+        "sha256": "bf4725a1f6dd563b8a74dae8714d6e785e1d67bb53a163af3047eae40e723897"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-file-uploads.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c2a3ba1fcd37ebb0117f24cfdb00ea245203e72d7060654142159913a1a2229",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/file-uploads.yaml": {
+        "etag": "W/\"2255bed9ce72a5237ccf2fed25b6a1845bb975d17ef9af4a0fa38613cbf3717a\"",
+        "sha256": "dc22a237529bb859fdc4729ed09cdccbd35fec58a985875f444b6c5bfde42064"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-form-data.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "911bf67a82bc39ac272876e84af6361062b427e12128561720acb4aaf437bd96",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/form-data.yaml": {
+        "etag": "W/\"edde67e6ce2216040122e5347da8362ffb6fe6b9306e147cf8139ccd75dd2ee8\"",
+        "sha256": "b718811b5ead0bbbc2a3ece731a015edc1583dbcbe8e57d80d9f32d1fd9274e7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-http-status-codes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "09ef428780506ebc1b55b5029607d078215fd47e973cb2d2b54979aa16f7c763",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/http-status-codes.yaml": {
+        "etag": "W/\"f527a539f50002ecccf2ee2f41f1d6cf3ca4843584ad39ec970a8c1da0ec0c6a\"",
+        "sha256": "4e9e6dba702976bb6ae7f0e715ee1b0fd9b1e03b21706f8651d790fa9436a793"
+      }
+    },
+    "typecheck": {
+      "errors": 1092,
+      "where": "`hooks/*`",
+      "codes": "TS2339 ×832, TS7053 ×260",
+      "issue": "upstream: @hono/zod-openapi drops the statuses outside Hono's `StatusCode` (218, 526–530, 598, …), so operations with only such responses leave the client"
+    }
+  },
+  "configs/3-0-link-example.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8338fb38e559a7d57d6d729b1e00a23d99068343ffcb2389650721b6ae6c9082",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/link-example.yaml": {
+        "etag": "W/\"bc30315b5dad713bda18ea59cfb67dd74171d0c1b564d79a1da7dd1eb0f6af7d\"",
+        "sha256": "92b502f64d80d67e2a8e634e5b82e9b7ae1f1e8fb5b754cc1c2cad1102447206"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-parameters-common.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c429fc60e7e10ee67d7e423a74feb9079e4732bf52dadba88132ee58ad36bf3e",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/parameters-common.yaml": {
+        "etag": "W/\"64af159b3ed8abe8f513a6935a8797a6fb5a5ea0d3f88af9783e64187a37c968\"",
+        "sha256": "1d0f33a776b9d0be97b11b6d01e4d1df7fd308c01488c824042daed7f3a19e24"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-parameters-cookies.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "45a55564409a05310bc6e0cdba9d8dc2be2efcc47a956f577243d0a0f4ea370a",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/parameters-cookies.yaml": {
+        "etag": "W/\"9916de63d2ad0549ccbd8123c18d72dfd0750bc7ff734068917bd6bc08624668\"",
+        "sha256": "a88ce10ddf9d9d57eee12637eae099f1ed9327cef9a5efaf5842fcb6e492cb32"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-parameters-extreme.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6b64002833bf9a43f343a5efa6995f8bf35c7c43cb1ce2fa0951f54d41dc769",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/parameters-extreme.yaml": {
+        "etag": "W/\"6d3d82d43b41a99317250a5db841181cb96752f521ae1c5890ea5e35d1c86cd8\"",
+        "sha256": "18d85f4366ab610f2b07b2bc034470725c4b0453ee89f00be27b99623cc171e7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-parameters-style.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "328221c2e34ceadc127e1b078ee31b717f968b6ef369d5a6944ed732fac77391",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/parameters-style.yaml": {
+        "etag": "W/\"fd6c189d9ee2fb0560c69d60ebf1aefef818b5d25ebff7e13c0aec6282d9c2b9\"",
+        "sha256": "4cdef68017c2aa631da9403554d98bad01758082d226f8ce39cb542b4304337c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-petstore-expanded.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "933a3798bda753d825a139d6c123fc95e904294e0abf1b7569e40d9c219f0655",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/petstore-expanded.yaml": {
+        "etag": "W/\"3d733bcbcc93296fa4821c5a5b528b03cb763ce02a4eb786a74a1bc4e6faeec7\"",
+        "sha256": "d0fa7220b32dcf797f456f011430635c2dbaf2a2c795a3b9c2c465e3c8d42a00"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-petstore-simple-no-tags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5dca2ec4e3457686d4c21dbe8c455699a696ef70f1b2d940accbcad4f70ad84c",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/petstore-simple-no-tags.yaml": {
+        "etag": "W/\"c259f680a659b99c7852095ee1db8109385f0c38016340ba7b40cd62dcd710d5\"",
+        "sha256": "d6091fbc1eb6a94412b19773d1bdc0cd6e82c580abe83ae1b7b7a6b891041b75"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-petstore-simple.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "97be658f28502d2e41ad8256b1ba461af8367c69d7329fd4622e3b1308f864ff",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/petstore-simple.yaml": {
+        "etag": "W/\"4d2d8768628b4edd279a318c2ee91ad97ddb9b896c9c84c4712a0acf721c9a9b\"",
+        "sha256": "e2881a63c51644ac7d5ad866a94119593f34eb7835873742ff680bbc792e8158"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-petstore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "dd702d16b9a6a9363bf40b5c7ca110d5da545d496e63c392b764d3f4268015b8",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/petstore.yaml": {
+        "etag": "W/\"4f06ca74a4e5ac61dd0530b320a35ca4292c697a06fa4210a6d800421a542df0\"",
+        "sha256": "e99423b51f285d18b077a2ac766041e61981d6f198e46a96a97b489112483bb2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-polymorphism.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5d8f713c2a8d0d4d8fcab37c09d9b4990bbeea0dd148222bc4d910e05460fe05",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/polymorphism.yaml": {
+        "etag": "W/\"89513fbc654b7a1563fcbd73c98d4cafe0994ab0ee9b7b0e82382144579444a5\"",
+        "sha256": "7d72b4787edafd58408f20ef04127098a785dfd351b861f76de43ae8c7cd2d4d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-readme-extensions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "52a433ec5abb44cec270cf013d951d722ed2bd62be2d6bec56df0d9acba096ea",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/readme-extensions.yaml": {
+        "etag": "W/\"c8a39a43384baad3a1f46e3a07b76183d73675e3e44114defc35fc825eb83dde\"",
+        "sha256": "e10b632f13104b0ffd0a138717a3158279c1ece5e3041d215f37b6a6bc732ccc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-readme.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "91c196866962e13cb6e07e52111e07bdd0db679ccb3dc93a1e4bb7901550fc6d",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/readme.yaml": {
+        "etag": "W/\"9d9d5b03ce7d61e38d93da6763c07555b3f9875efa8ecad973466c8f1827fd68\"",
+        "sha256": "aa24938bebd21703d185c584780afc8f86d9aca7e12fd11bb831f9b8b858c7aa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-request-examples.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "668ac043b310fdac8b090df8e907099028b826d45392890f3044db4ec0f1420f",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/request-examples.yaml": {
+        "etag": "W/\"83d7a2376dce037da5a67f7ba138b296555b69e90005f3ff6397c206d7dd7d4f\"",
+        "sha256": "b98d7e47af06002782483546e4c4287a2b4256fec57099d5813231b8bf7564d0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-response-examples.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7b4741fa369fbc7b79bc92956f9dd3566af9b54a8d6e9d852ad39ea025d4fd4b",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-examples.yaml": {
+        "etag": "W/\"26e8e18b1cf4cbc28790b2ab1e73fb3b451ff69e4573342a3e1529a29f82d068\"",
+        "sha256": "5c96f9546519cc8bd608fa3f96c4ea9018ea046d03dec5a8cac9a19c6a6f08ea"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-response-http-behavior.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5abc379f671d95d9f70c607443fe13c5b0102b1bd0e2936fb32b8b4e6f3378ad",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-http-behavior.yaml": {
+        "etag": "W/\"4f13c7e48eb9350b8a59c7a8a0823dc43701f6219e86974c70fb2fd01153e9a5\"",
+        "sha256": "26346aa99388f8aba39d512c44e9f80bd46e50532235a8a79863e160841a844a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-response-multiple-mediatypes.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d020e0afce3d454695175c94fb677b4828c4441594dc5061a7d9f196a8d92588",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-multiple-mediatypes.yaml": {
+        "etag": "W/\"7389d5dce6cb8cc558946ff3bf6a45202d4def8ea59c27639ca9549f89e87e19\"",
+        "sha256": "7fbf6ddd7f9dd5d4a0f6a1934aa8b13414b987b0340a07560c8275dd7d5bf423"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-response-schemas.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "099ba516be58bc4fbb50de3ce5fc2b3bfa9e76dae1a1387acb01a12e3c076c17",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-schemas.yaml": {
+        "etag": "W/\"e4872295e8cf61a53e29c951ea342ab2a521be4581934ae9533b9a933c947bb5\"",
+        "sha256": "a27c6f515fdf4436d880297304dfa3b10bc766b08700cba1aee683160181b903"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-additional-properties.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7db693087802242cd6506f3258c447801cd38d0d765db59ce9a101ab8427149e",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-additional-properties.yaml": {
+        "etag": "W/\"d8952e701a08f05b2a228dee70f9712c4e38c6e4c06e3416417fea435cb8d1d1\"",
+        "sha256": "5690cb24678e2d87cd939cd54e83d00431bf64a96f402ce4d4a9be6e3b170aeb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-circular.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6bcc237ab2dd8b363a0348319acdb0fe1b050addc90165534378662aa3332d50",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-circular.yaml": {
+        "etag": "W/\"e7871ef6a4e7ecbf6ddb98b53d778774ebd573552b3bbd07636d30209cd53cf4\"",
+        "sha256": "07d371ea4390bb947abe6cd01fa1866cd00d6f2bc9126365e4cfe1d37602c470"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-deprecated.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a21d5b542806169feeac807c27a573169b8c92156958dfc2c94a00a0b3aa4b77",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-deprecated.yaml": {
+        "etag": "W/\"c6dd5a7915a9a8f4db293a50b245b53994301e181bbbf915fb2fcf0d3d05cc7f\"",
+        "sha256": "33f6a2a16c142f3f27ea53f70ad1f00326af670ca5d9ed2c976078daea13220e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-encoding-style.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "64626eb8c10b2666b593968661213bbf2b52f72aa86d076064c7d193f744ac9c",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-encoding-style.yaml": {
+        "etag": "W/\"65b709ce40c601f82bd638641f64ec4e9eb56d863d72909153821708d01df637\"",
+        "sha256": "654fb199a9431a4bcedfa677289fb920e1c410770d7fc4a1707680c9aa1b943d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-enums.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ecbb2c068066ae80a987b3f0ce017df4762233cc5b7fe7486751c9ecc3a8935f",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-enums.yaml": {
+        "etag": "W/\"390e4e3c6dba62e85949cded835bdf2c6057053663ef525bee4338303f37a2d0\"",
+        "sha256": "3a61fe6969ab53fe3ada3439398f0ed0d6d0bc0e8335888d6cc49fb08a3c82a1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-types.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4a82da79f50b29fa4ae40da032f17b24bbaeb8322c98947008007544ba1355ab",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-types.yaml": {
+        "etag": "W/\"0756216ba505f4fa99b62c2d26524fa49f46ca2aeab00909eb5ca39c82f40a40\"",
+        "sha256": "c668fe2670502835457344949e7f16ec7347447157eacc3ca8f6b4c205a6d1cf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-validation.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ec62332cc70f88f81662e77d912f9b3e11cfe843955374800750c991a5d6151a",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-validation.yaml": {
+        "etag": "W/\"413559c94b9f88c2f892442d270d50e16d6243598193038814f8e8db8bde8209\"",
+        "sha256": "5e0032912b6d80ed8d9a9dd317b01e039efcc21b58c9ea0cff5f2c005a7b5cf0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-schema-visibility.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9b5f8b5702d100ce931d265d146e54a1ad3cb4ef818e5254230040f525c10504",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-visibility.yaml": {
+        "etag": "W/\"898b72380ee665624ba0d93db44e5f11424c9501937e26ff41996fbe6bf6e87a\"",
+        "sha256": "368d153b10e5e8009afdc848fe481187cf219ceaa5f1fcb766dfef00480a4db8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-security-multiple.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a460449a3b26712bb9e5f92fb0c4649f3c062003e9ed0a181da43612d191ca4c",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/security-multiple.yaml": {
+        "etag": "W/\"f4472194939995f11e31036afd84f32baeaa35cc05a86bc9b5d4a05e188b7a3b\"",
+        "sha256": "ed86e8814eacccf4728d0e892981ade33f49b05773a0be8147c78563613527b3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-security.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "994009513e6387a42525775510aa01cb3fc789a1d5fb08eafea4c612a8cb1646",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/security.yaml": {
+        "etag": "W/\"8f26a724ddd7065e4d28c65f559daf0f641b3c8085a17453e6fb9e780ae958b8\"",
+        "sha256": "731396b8089730eaf525f63c185b24b99f986469c959f03d199c896dd366b35b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-server-variables.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5d4bca9311fb8dbd1b43749f15f2aed649df4b16b6bb5539bab5124cf629833a",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/server-variables.yaml": {
+        "etag": "W/\"d103eb1a3660d09e0d06f234a422fdac3f9bc78d5d4d02c911479a45eff35a67\"",
+        "sha256": "2714a97d0ef134a5d62fa81ac3bd10f859c6cd21285aa14a6526e3ce7269f52e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-star-trek.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4c8d4b1a5684521798328a3ae7b0b78042a88076598c9b32e444a3b614b3fe16",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/star-trek.yaml": {
+        "etag": "W/\"358bc661a02f0322e8d156bd544c0f0fe6fbafb2c4b25bee648a5baec4094c01\"",
+        "sha256": "c5b188cfe5e9e72e4432460fad37eb85e4a4136ba57756912f16b5c53a5265fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-0-uspto.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "62e50c3aaa2377802a65b23d3804ec2d499c2cae630a2cfd11c8c2bc0350ae90",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/uspto.yaml": {
+        "etag": "W/\"462c843bafd8acd7f9423178d677f375b742c297ce6c1ec87e77678fde5b9053\"",
+        "sha256": "c69c12ac25e58bc9a204b28bb696bcf83312e729a4011461672e7f86acb4c65b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-parameters-style.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b4bd3f4c68c558c8e178d9538b2e3cf5dc51b7c995a39ca315c565cf40ce3a54",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/parameters-style.yaml": {
+        "etag": "W/\"c3d0c4ce93d02746e024b209ff9347d7f78ed92b25fdcae20cd5787c2df4957f\"",
+        "sha256": "bbc46485bcaf6ab2a8e4a318ccf211e83f8e88db6010eea0fd8e5eace8120b84"
+      }
+    },
+    "typecheck": {
+      "errors": 50,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×50",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-petstore-simple.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ba80693c9ab587e51439d81bdf277b32effbf22da1d5accfeeca8d5e8663207c",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/petstore-simple.yaml": {
+        "etag": "W/\"b86837ff51ca7a22b6fc57083e0e67e29a9662b07d113cfbcc3b1d81446f672e\"",
+        "sha256": "3cf8d029fbb9b6154654f17606738b071a97fafe8a448cf075c8cae835551f77"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-petstore.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "47059e835d2c331ecc08e8d5fb079371f05bf5bf72b0141d28595f0cc735cd09",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/petstore.yaml": {
+        "etag": "W/\"c592bc2434a1b5d90813dc5842ffda1bc22acc07e086f04d8850052902afcd6f\"",
+        "sha256": "038e9f146c27768f9c0f8f45016fc76a23ae001f9af67f68bf28c56a488d6873"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-readme-extensions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b58d386f7645dcdd83d4ece9c3fbf7201ec810a9609961a6fedf032266e52b83",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/readme-extensions.yaml": {
+        "etag": "W/\"06d929379cba1abac241711babcb817a0f86bcd38420b0de1e8e51eb8bd02775\"",
+        "sha256": "69f313ced92e1c5ca9852c9a95f616f6417df1abe5a404a21f690931776c1a3a"
+      }
+    },
+    "typecheck": {
+      "errors": 20,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×20",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-schema-encoding-style.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4a1cbf1469b0737fa85c8bc82a44c3444aa217ab0dfb970c8f00dbe3660f8ed0",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-encoding-style.yaml": {
+        "etag": "W/\"3d11862b9ee42ec47f005d474fefb9fe038d98f8da80297a1cf024c861a960eb\"",
+        "sha256": "c8637fefe6ab61357437bfbbf0add8966eb7c5bcb9cfb53b3000a22aa927de75"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×2",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-schema-types.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a258e964ba5bed6957d5c5085ff44f7eac3174d4b767326f927c0ebddf863c41",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-types.yaml": {
+        "etag": "W/\"9deb114a0c73ece21aaaf69dae51e581266a659f46c579a6fbed4adc31b8a089\"",
+        "sha256": "02fee91e4878b28449c3b8b1b4a8c7647dcdf912eb7b3f6485c7b0979a370969"
+      }
+    },
+    "typecheck": {
+      "errors": 46,
+      "where": "`index.ts`",
+      "codes": "TS2305 ×46",
+      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  },
+  "configs/3-1-schema-validation-local.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cbab913b6d586f9f4271f6ee7a289112f48dff40f9c2e640da5b23d134477e63",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-validation-local.yaml": {
+        "etag": "W/\"2ec4fade9e9beeae912363e027eab228dbc7993d16a017be3a7938c225ef7f4a\"",
+        "sha256": "6be0b42a0fd79e5e8e4d22c87c4fac2f641c3d90a3436cbf31a0c2706c92b6cb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-schema-validation-top-level.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9e0006c65d5cf92f6e1c33d02b3bef95179b7a000237e797371da9278e4262cc",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-validation-top-level.yaml": {
+        "etag": "W/\"24be043e5fb91d0f8239aaf5eb60d80cb310e0f440562cf3a9102c4c776e3abc\"",
+        "sha256": "05c841f361a9d851512809c2c883f3854fbb84fc8e39ca10cb00807b68c4073c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-security.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "87cb0a2c32ea8f92a48e79f98c5f10f3635f3ac1f5b1d24bf5406fc265e183c2",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/security.yaml": {
+        "etag": "W/\"c5bc87db6808a58c6eafac4178200c51d66b1f572fa51e6d09c09bd67e6f83ee\"",
+        "sha256": "bda6675f911a4958b247d0cbaa4c3d8ed0cf9d48a5e7be30acc6ae996e135b1d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-train-travel.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "07b881e2f58304e34586f1b7abbdb3882cf68f088b44264fb12a8505a623d780",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/train-travel.yaml": {
+        "etag": "W/\"51e7c6b799be174e56d1b4cc60d13fe1e4216408a121b0d966e625485c529d9a\"",
+        "sha256": "7c4bfe2493a3b486da89fbc2b2a6d0e8f23abdae8b6d14ce07c7a0c6230e49a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/3-1-webhooks.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "32efadc661937e6282f4ca0a95bb07e40a61271fcc33ec9fb26ced836a88d1d0",
+    "sources": {
+      "https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/webhooks.yaml": {
+        "etag": "W/\"481e11e816eaa3e338831491ef35ef083ec0efec09bdecb1915d38024399c3d4\"",
+        "sha256": "6daac54933a4d63c44f0a4ddc23b1de2f86e0c999fc17804543506faf5003719"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

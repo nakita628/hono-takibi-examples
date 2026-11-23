@@ -1,0 +1,45 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eeab6b6c2f076a24e9c9ef5aacc4d7d280dcb083a3c76e04ceb22beaea3b0071",
+    "sources": {
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/cohere-openapi.yaml": {
+        "etag": "W/\"7b696a5b72af71100cf67741f92e054b7d523d04be1a15d670ddba562083293a\"",
+        "sha256": "2a018e8f34bfd1ee4203c69583349290c7eedc2f0fbfe52bc65b061a70b7dec4"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/create-finetuned-model.ts": {
+        "etag": "W/\"8c67210a4884528002fec15884fa1a6a53b3b0d2a3a858be03fc7634abfd4911\"",
+        "sha256": "15b1a40d08c81554958e35c38f882e67f267fc0370f003f7b32b7a48ac001d97"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/delete-finetuned-model.ts": {
+        "etag": "W/\"70290cc8c83a2cb7388b3330c5531f2006a9fbb6e9a9b43ba2c95259d8e6ef00\"",
+        "sha256": "1b410e99ff742a20150c026a0007aa391c40f460d0a427350337e84db22e21a1"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/get-finetuned-model.ts": {
+        "etag": "W/\"c90bfeed3f6f211f4d7cc872861303a4ccfb95b2197e325f341fd5ae4e90c304\"",
+        "sha256": "9d9fbc4ff0abeb963b30a160d620f706497ed718e09be6e58d92d2b8f88a0e11"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/list-events.ts": {
+        "etag": "W/\"984a8b80034d0a6e1cb12420ff3cd9a5d22d16bfad8d6afc8a9c709b2ac61798\"",
+        "sha256": "791672434ca8b14d6ef067e2013b0a0f9adbfde4d9cdd5e3a05d9d003dca25bf"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/list-finetuned-models.ts": {
+        "etag": "W/\"652884ade8b345a51251f7484ae4af3561b5990d2319f5dfd58c866b710382c3\"",
+        "sha256": "5ed7b3880814a948791b7afc7dbc042798b9669c4d1944bb500a0b90205d9e69"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/list-training-step-metrics.ts": {
+        "etag": "W/\"66192fea91141ebd552928747a1df634ce75bd93a434304200ebf3853480c485\"",
+        "sha256": "5bd34f7ff5d0bf34ff6f99f683a887521d91a505d56bc2b5f7a43fc941473e7a"
+      },
+      "https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/snippets/node/finetuning/update-finetuned-model.ts": {
+        "etag": "W/\"f99b4b10bdce6887b22231ae1063dd7699088306f749db1a1c7f74c7131b3e20\"",
+        "sha256": "701b0e7d6c08f67a3ccb89be06089096fdd4b4717fa83d0844b00a51c2f844d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

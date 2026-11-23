@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a3451a6e194c91a5fa54d7d8b0d32eedb4184409a54547fbce5461b399f50e4f",
+    "sources": {
+      "https://raw.githubusercontent.com/upstash/docs/main/workflow/openapi.yaml": {
+        "etag": "W/\"50fde0bdee13108b9b52573ea1341c56d8676cffbf47bde885a7552054716594\"",
+        "sha256": "251bee05a7ecbbcc689ca16b2de6eb8e903cca89bff6ef8459c731776f7eba6c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

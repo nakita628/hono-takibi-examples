@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6f4da099dffc8e3aabf0d72c1517c620928e41b14f6906b7862960c16406a144",
+    "sources": {
+      "https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml": {
+        "etag": "W/\"45e5eaab1ed8ed85dc56e897360051e3a37495e038f92c4f7cd3d181b8fe2561\"",
+        "sha256": "0ef61bc26dd86bec70dcc6dddfa8ed07cf917fc7103e32efb558244291390cad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

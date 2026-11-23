@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7327df6335d3830aca16a3c26806e40aa0450b39bacbf2dca545d43d4c4032ac",
+    "sources": {
+      "https://raw.githubusercontent.com/sipcapture/homer/homer11/docs/openapi.yaml": {
+        "etag": "W/\"ff52fbe39aaee6374d6d54ee357821e1e500065d590ee2a194b3f422158fc660\"",
+        "sha256": "3bb59a3046e854745261b07af0bb0b94b58ab857d6c1364138ca6d5ba5209331"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

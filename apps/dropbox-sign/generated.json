@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "37332f0641341beca6e430d8238d92e245ca18bbd1ee297bd4bff15f7e6ed7bb",
+    "sources": {
+      "https://raw.githubusercontent.com/hellosign/hellosign-openapi/main/openapi-fern.yaml": {
+        "etag": "W/\"1ab42b644818c7c5ee23d727f0bd97b448bc2ea4d66fd61a7cf6c509087c1691\"",
+        "sha256": "4c2be02c523b77a1b2d214fb6c857e851ce842e4c5940e4b375198b0709d4b85"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

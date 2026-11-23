@@ -1,0 +1,347 @@
+{
+  "configs/api__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "81d4b5daff634a27bd458e8bbee34528936dd42d2c36d981fb5d96ea92717531",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/api__v1_openapi.json": {
+        "etag": "W/\"61e87b856021d5c51c559bd45f53da7edd5509a25eb91a29eae3c4b021ecc4b3\"",
+        "sha256": "ce6d013164ff142312b1bb1117d4671c18ce66b87be7940abcd636f4a165603c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__admissionregistration.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "630eb9fe7bd504919e8781833b89aa0be59c6269eade85c0b70c66308fd122ba",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__admissionregistration.k8s.io__v1_openapi.json": {
+        "etag": "W/\"0c159307803058eb626f568c219595b6da6651a67014742aa2d9485056703564\"",
+        "sha256": "d7d940cd73473b669a2e84238f200958f7fb56374aea7895e474b62d4b986fda"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__apiextensions.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a3aa8ea5ea2273ead1e02b1e1d635921f07547e20399a85892cd2225fcdb6e73",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__apiextensions.k8s.io__v1_openapi.json": {
+        "etag": "W/\"c8c3697eaa1e1524455f8df5b379982ad24cd56abc7cb4b7c33d54ff35670241\"",
+        "sha256": "d12a971f7d1da940f80b21e1450d610189c3888ec3f1bb39a3e50d54920e62d2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__apiregistration.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9c8f229c844175e201e35033fc229ec62415ab529428e8ec5a36882bf8d3a37d",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__apiregistration.k8s.io__v1_openapi.json": {
+        "etag": "W/\"b74c35dd158d9b80656b1edf7a34ef9353cc5a5a2ef2459045ba50bae883f956\"",
+        "sha256": "d1ef47f663c699b5ce974746737741168e674008e41e30f5c46559b6e1da1e0a"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__apps__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "41391afae8a5078db5cd0e3b4772836ff8e8d039a1d96ac7f7507f159cd937ba",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__apps__v1_openapi.json": {
+        "etag": "W/\"e3b537ab7c1fc50f9bc628091f751b9d8b4a63728ed14b39c0203419bd44cfd4\"",
+        "sha256": "5eee593af88e1a712290902258432861e27d009a7f36fc3033ac5b121d3ec55f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__authentication.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5eb4e8344fa25df60c202256737f6b13b1ea968797eaeea7193b960bcabcad13",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__authentication.k8s.io__v1_openapi.json": {
+        "etag": "W/\"6785941dd0acd4c334e48a455cfd646e339c1a4f572e911e002701ff8a73605b\"",
+        "sha256": "443427d822f77db77202c96df06d453845abc5cc67390180129a67e6c74d421e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__authorization.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7239be7c9dbe21fd27e7bb95d596ade08095b3bc13fdf1b259fa65908068604d",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__authorization.k8s.io__v1_openapi.json": {
+        "etag": "W/\"399c5b1c23892652b0e661e0c8336ad0a697ea09832dd1ac0a49bae4d714f96e\"",
+        "sha256": "4af5e18876ba51d4dffbc4bd020237c4e9d07a1a1059a16f1d2fd43ef4f8bd13"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__autoscaling__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "490d350a035f30d256e54d45d3319ad2c495cba85f1009314b58fed9f4da0ca0",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__autoscaling__v1_openapi.json": {
+        "etag": "W/\"fbeca6a640974af8f9babacf807968227943a165a96ca45e5644ab65a024bcbf\"",
+        "sha256": "2963eb89763887b131ebc53072f5dcaae6bb0b8495be9b2af0d876292305bcad"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__autoscaling__v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8efec0acf0607d4816cdd9703a1f5bfcc3f3446abce9e12150cca0dc010792dc",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__autoscaling__v2_openapi.json": {
+        "etag": "W/\"d9e36128cdb0b1d310916fc63f65bf2108b2e3bcdbb33c4d0f353252ec095c81\"",
+        "sha256": "7ceb86ecf5b070634996f39f9870c1cc4e4aa3eb9cbc85be8e509a498a7fb53d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__batch__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eb040e6e06eb70ec9254dfa4218f2c4b8314a45dbd46d52d68d211b5cb829010",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__batch__v1_openapi.json": {
+        "etag": "W/\"ef548191bf12d7f475647d7ebfc92c321ba9fb0fb2abffc2019d2b1293cea741\"",
+        "sha256": "718989488dda4f4cf0c7bbe9e7357eec5667f97e9a10e004f0e49b13d5205467"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__certificates.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c43eb049a2cae9fb5f2ad809ac5481dedc672e944788c35203cb3b3eed857bbe",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__certificates.k8s.io__v1_openapi.json": {
+        "etag": "W/\"9f9b68005cde660e4193336b76c1bd2e826100ff73a6ded05344de15d98eedd0\"",
+        "sha256": "dd837a5ee218827bda06f351d4a656dd504575992955277370bcfa149d1b8131"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__coordination.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "48657f2938515ad4aa8a3df2b67e6046abfc8271cd3f223de6deb16e5f74c33e",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__coordination.k8s.io__v1_openapi.json": {
+        "etag": "W/\"1b7c9aad84a6a41804ce26084b394a464bf2291bc00a58fca6ab7552f94cda8f\"",
+        "sha256": "f3b59bb548c4a8bc2170c1f3380713aefec173758369492df24c978d34ddbe8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__discovery.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "897479850ef6316d34349cbd42a4abe74b57080f80d69c426650e14c24aced8e",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__discovery.k8s.io__v1_openapi.json": {
+        "etag": "W/\"f2179433a6556f72c51df99345a133996be01736e9a1a5818c1f4da19b996703\"",
+        "sha256": "5d39fbf2d8c3994f8f76b304326258050171833e2df9fa6cfaf9c97837e7090b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__events.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8365e4dcd637a6ab4951d0e454cfa9ba90553827dbce7f832ed5b5a30c2c71dc",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__events.k8s.io__v1_openapi.json": {
+        "etag": "W/\"285712cd1d26ab10e46f1b2a90a26a5a152a54277a42ceae4e53e5b591ed17d2\"",
+        "sha256": "81200d3afcd34b28bcfc65d853f2aab1530b04af29a0ed93b4e5d6aa1ef1cb37"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__flowcontrol.apiserver.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2799d8bb1354bc9e76ecd1abf8e91f3546bb0ef10b33a7cec639a0541e3af1ee",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__flowcontrol.apiserver.k8s.io__v1_openapi.json": {
+        "etag": "W/\"a6f70b6c40986cb7f5f06a9fcae6a9af08e0ecd48674f7275fd7e76130318ae2\"",
+        "sha256": "6593ab7e97e88c5d57c39a469fd4db8df708cb3316e01654b86e44d0ba8c14eb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__networking.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6a49dc45002190cd0068cb52382479340de1a4409a2e59944d4104e089076915",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__networking.k8s.io__v1_openapi.json": {
+        "etag": "W/\"c3becc4e2b721362b441ec8dd5cf3ad64961555ba2ca04614c2e711dd6f4321f\"",
+        "sha256": "82d5bfec502e731609fc00439124ac952870efd578b08224b7d4d2c7491799e9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__node.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f3ab2bf8d36ed22dd11af6b13056fdc5777ee8feba5c234a1f59d6da7330586d",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__node.k8s.io__v1_openapi.json": {
+        "etag": "W/\"a6e82f988bba34a21dc813e2d89be72536dae38ba0ff3a59d558bbb82382b681\"",
+        "sha256": "fba690a3f84da0f0cef31985ea392dc3c6709b96e46897e3c0e05c0363d3adbd"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__policy__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "315b99abe4573858d8efc8d3cf8a809d63cc654b40a8f614c52e4eaeb8205d79",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__policy__v1_openapi.json": {
+        "etag": "W/\"246103059486fbd12a2050123fb2f08e24c00469a5568e7a1b3dff64636649bb\"",
+        "sha256": "6b67440bb23a9f2bf41dcef1f2ea6aebd44e3a079b9e8dc9ea7269bf2a0695f7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__rbac.authorization.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d04799a58b2545b53e43dd1b6533151d6775f0568c7ceafa0db596b5ab05fff7",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__rbac.authorization.k8s.io__v1_openapi.json": {
+        "etag": "W/\"844f1f609ad404ea7622e4679d1f14370366ebd4ba31cecf6265a695631ffdfe\"",
+        "sha256": "8610bf4724fed5077f7915c6e90b684da7d00eb987813ee1402ed660b98330d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__resource.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "513ce08c2ea8331ccb2c13ee6edc60691674da6cb74cd04f2b005c026472f795",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__resource.k8s.io__v1_openapi.json": {
+        "etag": "W/\"0e27cb739eb0febff715dd6f69f4d930a3788070e8456b812399d64f7aca3e16\"",
+        "sha256": "3782d71bac318e6cf77b5532a5f4e07c9b65e0b562c9bd2fb526a968a1ef1875"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__scheduling.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "665eea0e1c80b2557bdaacaebdd472cf82db1ae1f1d283321aa70b86c4bc33c6",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__scheduling.k8s.io__v1_openapi.json": {
+        "etag": "W/\"c58abd7c9b93fad497d9cfb955447c1e4043e1cc69c2f895fb942939f527c505\"",
+        "sha256": "b38cd29fcb1209e23deed993f97c61709bd76744fb3b542dd948789a659008fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__storage.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cc02c7093e38ca0052a6d65516de84da8bc3108bfc1b71c2919996fa2cb8757c",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__storage.k8s.io__v1_openapi.json": {
+        "etag": "W/\"b7140706127e9db546dec97bf10b261c32d5ae0ffb46bfcf3eea3bc2fcbe455f\"",
+        "sha256": "0d0a46d415289a22dee155fc8dc4190c20a17e3234a0ed2c99f2f0ecb307bad8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/apis__storagemigration.k8s.io__v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e4d3b1970377cee6c71a70ab9ec3614590b003a548249d668b6787706cf4ee92",
+    "sources": {
+      "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__storagemigration.k8s.io__v1_openapi.json": {
+        "etag": "W/\"274817ead45bbea7e1b36ec69163912a69290bd64d00b0c3ee26c14e82beb650\"",
+        "sha256": "da23b20b25d95d261b62bdaccb28f5acea512a59b1541269089a6e8a7f856922"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

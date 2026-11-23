@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f06563c34945571089ae6bd00385f7fb8070d6e052f507b1eb89a24dbfeaccf",
+    "sources": {
+      "https://raw.githubusercontent.com/LibraryOfCongress/api.congress.gov/main/Documentation/openapi.yaml": {
+        "etag": "W/\"5682defc94cad351f4e71d2d090fa3c576b009388eba509057e92fd6fd76399d\"",
+        "sha256": "6efe2fe724f6b0b7b7d709d4198e00d5e7b42e2d9fd51a645bfa28c694cd626b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

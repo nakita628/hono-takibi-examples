@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "653c991591b70e6197517c9d1a6e4e6013e18b0250b79c24b958be31aecab091",
+    "sources": {
+      "https://raw.githubusercontent.com/Asana/openapi/master/defs/app_components_oas.yaml": {
+        "etag": "W/\"f98c88ade1f75d56f08f494901930e101db8f06ef7e692cede67ee52e5e84d11\"",
+        "sha256": "a817b7dec5d740bf725c8e6d49a6739e4e5252f4c8a14f377ae261e68a594982"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

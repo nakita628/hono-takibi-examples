@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "732bd027ac8b5a3f69c10e7fe977808a2692a862b4c9d7043b68dff975880cfb",
+    "sources": {
+      "https://raw.githubusercontent.com/airbytehq/airbyte-platform/main/airbyte-api/server-api/src/main/openapi/config.yaml": {
+        "etag": "W/\"4c8f3dc484d9a9b5f1a3b3dc02a38f6431738e50142cc369c0567eefccf7967b\"",
+        "sha256": "317edf3597e3c756f589e2b0b71afa094f5cc0e763c720396783491abe9dea59"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

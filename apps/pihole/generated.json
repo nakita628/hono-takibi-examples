@@ -1,0 +1,104 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a1227cc8d2371f86e5b1ca85c076f897b87b942360bcc82519dcf65e6a12b80b",
+    "sources": {
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/action.yaml": {
+        "etag": "W/\"d7742ba37e21ca9f03ae5a5bad6a91645a329404b971c50031dffc0176a2ef3c\"",
+        "sha256": "584c60ba01696ae94431bd0f22416a63833bfd0a11d434c32ac44a38fcffb95a"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/auth.yaml": {
+        "etag": "W/\"09e6c2c8a185b2e1774b1a30961ecd514200e2aa70d5e2a5a3af016e2d4f802d\"",
+        "sha256": "15d7bb967850077ad871cf13a56c7be22fda99943607413440d4406c0606f4e7"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/clients.yaml": {
+        "etag": "W/\"16c4c2d193340b82937efda43c6fa83880715cff873d1dbbb58dc5cbc3ca8824\"",
+        "sha256": "2b2fa562d2ee29102882b10ef3c934e00811585d369ef46b2d6586193877f29c"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/common.yaml": {
+        "etag": "W/\"9c1a61f85496ac03acfe85df4a7e2ab9a2b4bc2136dab7d05abf5b83075ab80e\"",
+        "sha256": "b146e232239c029b0bbcc1f0cc51cfe019f764ce85d81b5c7aa9179743627eab"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/config.yaml": {
+        "etag": "W/\"ed219728c47329679ba9f645665d3638808ffe8e661bddb3d2795a3b8a54688c\"",
+        "sha256": "587e5c5fda3bc62008139df139879cba5618e5c7c1246ec26f60c81fdaaa35fa"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/dhcp.yaml": {
+        "etag": "W/\"11c60f8eb502818bc10952635343e32d71bd48c748874059fdc299a40e60c5ac\"",
+        "sha256": "2d129c4755c8db038183e40e81cd497a7657c292ab9cc429cc9c9088ee2e28b6"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/dns.yaml": {
+        "etag": "W/\"f1638b89813ea9be4f79bf00048f8b88d1031eed0e64ee61cbce8b5c02bd12b8\"",
+        "sha256": "e60d8c582e8fb8822b96fda5c1289baf4d91af7857daee4a0bffbc7ee74f8b2b"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/docs.yaml": {
+        "etag": "W/\"d3ece90f131f076b3102b34483a40526e3586220baa695bdf75db79da155d8a1\"",
+        "sha256": "b849bffac3d0c42efcce0f1f964f15013be98a8aa182b1983e7cee3d8e1f8bc5"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/domains.yaml": {
+        "etag": "W/\"d255bd605012ac82a314f10f549d43e18b752097de3840817ab1c0050beb4305\"",
+        "sha256": "47348880a881dbdaae21ed493e2129268227467e17a15aca258c02ffcc0236b7"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/endpoints.yaml": {
+        "etag": "W/\"cb4c590753f23a7c31decfcd89701dc366950b7cee4de6093095613f2743a413\"",
+        "sha256": "90e70b1556a3a93933346f55bc4d097955f8d590cad00ef87e16c4c2bf80bdf5"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/groups.yaml": {
+        "etag": "W/\"aa50c3ee1203a0da8475bf7676b72c03f3c39768f9f66abaa3f8c42e7cf80415\"",
+        "sha256": "dbf3d5ba1cb72afce4832f4dd05cec0f87fbccea80e36c332f34c78689fe62c1"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/history.yaml": {
+        "etag": "W/\"ee0fc3110913670293d9315beffca29c300484a6ae992f607a239c86e014c1d3\"",
+        "sha256": "c374e9f95b70d8ebf5ba20ce051ad4f6b0cefa8ee6185565b6f759112efeb413"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/info.yaml": {
+        "etag": "W/\"dfbbd5f0485308a05cb1b07907a99f04788226772d505704a258e254034dfe3e\"",
+        "sha256": "10c2314a8b8c1b67ed75e7818c50179a2542ceeec30baf6763318b7428374e72"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/lists.yaml": {
+        "etag": "W/\"5e3b5ee903674ec12fc162fcc7deb6e98c34fd3f475ae87f8d1df4a099a9970a\"",
+        "sha256": "a6536a643b8f93de173af3d1c5c7767b221fcefcb72e8200da3834805bea1d78"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/logs.yaml": {
+        "etag": "W/\"a3a742cfbcd97e66682dcfd2355728aedcb7bf24bc18f0f30c4f2e848da6be9c\"",
+        "sha256": "2a3b72cdf1a7ff4417eaa0200b8addd1ea7b98c4a1ae4043a3d3a4be4b602a92"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/main.yaml": {
+        "etag": "W/\"7b6f716bf6eba2660d970fae3fb235da3406165e890446a6aac3229bc112a3dd\"",
+        "sha256": "e69451eeb47c4b4c884ac5a00cc86a858cb7261bc96d51da74cf388494b85902"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/network.yaml": {
+        "etag": "W/\"242ae154737efce431251a877ba8f1c23329bc9eee9ac21fb9c2c64fdab63c6b\"",
+        "sha256": "f6e245f2a7d7d0e5324efc5a929d6f488d770943265f1d4f2dc022f0ec5cee2c"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/padd.yaml": {
+        "etag": "W/\"8aa21262274af4f027497a3f90d23ede00ef29ac02b073aee2e2344b58b86d06\"",
+        "sha256": "4e0ef2fc57836a04559f3b64e4579e2d22567f3a29bbfbfb7b6f5ffefdb5804e"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/queries.yaml": {
+        "etag": "W/\"83ec6e162332b4daecf285941d1477262a47b1a5893984e4c9c05a694ef4cd1b\"",
+        "sha256": "7782ba74a79493200a76fe51f84d02a141e3537f79d2dda73586f47b88a19b2a"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/search.yaml": {
+        "etag": "W/\"ac8a5819645484bc08b7c80402c4b77cef039e585987f7de4be71718ab59193e\"",
+        "sha256": "eca186f538db6e59e4236c2b44b7fa757e234049a9dea78b805b017fdf480b57"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/stats.yaml": {
+        "etag": "W/\"481cf01ac6b3cf1feda7dea40e14d11794a12e6a669459b00264f7040bd12c3e\"",
+        "sha256": "9df04a88e874fee4997af06f258f19a1a9c37fc54cc6f36fd8471eff38c93005"
+      },
+      "https://raw.githubusercontent.com/pi-hole/FTL/master/src/api/docs/content/specs/teleporter.yaml": {
+        "etag": "W/\"3a461b1d1399505b184cef15b3b5ed1f37a4bbfffb6705e60244928509f766f8\"",
+        "sha256": "3fa571efdc7c27ca7cb412a6b8690ed997e8257e481b0806a8f301de9afdee07"
+      }
+    },
+    "typecheck": {
+      "errors": 8,
+      "where": "`index.ts`",
+      "codes": "TS2724 ×7, TS2305 ×1",
+      "issue": "[#544](https://github.com/nakita628/hono-takibi/issues/544) (4 operations lose their `responses` to YAML merge keys), [#545](https://github.com/nakita628/hono-takibi/issues/545)"
+    }
+  }
+}

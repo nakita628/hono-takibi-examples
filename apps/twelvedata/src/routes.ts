@@ -7436,6 +7436,30 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMa
   })
   .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMaturity')
 
+const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInnerSchema = z
+  .object({
+    grade: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Rating of bond holding of a fund from AAA to below B',
+        examples: ['U.S. Government'],
+        'x-go-name': 'Grade',
+        'x-order': 10,
+      }),
+    weight: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Weight of bond holding in fund portfolio',
+        examples: [0],
+        'x-go-name': 'Weight',
+        'x-order': 20,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInner')
+
 const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDurationSchema = z
   .object({
     fund: z
@@ -7464,36 +7488,10 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDu
   })
   .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDuration')
 
-const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInnerSchema = z
-  .object({
-    grade: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Rating of bond holding of a fund from AAA to below B',
-        examples: ['U.S. Government'],
-        'x-go-name': 'Grade',
-        'x-order': 10,
-      }),
-    weight: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Weight of bond holding in fund portfolio',
-        examples: [0],
-        'x-go-name': 'Weight',
-        'x-order': 20,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInner')
-
-const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema = z
+const ResponseMutualFundWorldCompositionBondBreakdownSchema = z
   .object({
     average_maturity:
       GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMaturitySchema.exactOptional(),
-    average_duration:
-      GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDurationSchema.exactOptional(),
     credit_quality: z
       .array(
         GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInnerSchema,
@@ -7505,6 +7503,8 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema = 
         'x-go-name': 'CreditQuality',
         'x-order': 20,
       }),
+    average_duration:
+      GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDurationSchema.exactOptional(),
   })
   .openapi({
     description: 'Breakdown of the fund’s bond holdings by maturity, duration, and credit quality',
@@ -7512,7 +7512,7 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema = 
     'x-order': 30,
     required: [],
   })
-  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdown')
+  .openapi('ResponseMutualFundWorldCompositionBondBreakdown')
 
 const ResponseMutualFundWorldCompositionSchema = z
   .object({
@@ -7536,8 +7536,7 @@ const ResponseMutualFundWorldCompositionSchema = z
       }),
     asset_allocation:
       GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocationSchema.exactOptional(),
-    bond_breakdown:
-      GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema.exactOptional(),
+    bond_breakdown: ResponseMutualFundWorldCompositionBondBreakdownSchema.exactOptional(),
   })
   .openapi({
     description: 'Mutual fund composition',
@@ -25914,6 +25913,32 @@ const GetMutualFundsWorld_200ResponseMutualFundRatingsSchema = z
     required: [],
   })
   .openapi('GetMutualFundsWorld_200ResponseMutualFundRatings')
+
+const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema = z
+  .object({
+    average_maturity:
+      GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMaturitySchema.exactOptional(),
+    average_duration:
+      GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageDurationSchema.exactOptional(),
+    credit_quality: z
+      .array(
+        GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownCreditQualityInnerSchema,
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Breakdown of the fund’s bond holdings by credit rating and their respective portfolio weights',
+        'x-go-name': 'CreditQuality',
+        'x-order': 20,
+      }),
+  })
+  .openapi({
+    description: 'Breakdown of the fund’s bond holdings by maturity, duration, and credit quality',
+    'x-go-name': 'BondBreakdown',
+    'x-order': 30,
+    required: [],
+  })
+  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdown')
 
 const GetMutualFundsWorld_200ResponseMutualFundCompositionSchema = z
   .object({

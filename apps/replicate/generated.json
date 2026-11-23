@@ -1,0 +1,16 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "612dc91f4530ef899c99c1a40a71212aa8f26bd3c905680014682e1ded9509db",
+    "sources": {
+      "https://api.replicate.com/openapi.json": {
+        "sha256": "4500bf86453ef1ab65a9e133929ce97f468cff9aa62ab7512d00fd588abb8b39"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

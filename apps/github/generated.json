@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0e806e1288327c7e69f41063a5a58b41259f9ed9cba8a9e6f954913018e6ca0a",
+    "sources": {
+      "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json": {
+        "etag": "W/\"8f8ac6adbaea6e41b3ba0057eb8ebaec427acc4c4c7d79af180ba8376cfb3dd7\"",
+        "sha256": "6d9bbb20d8865b01464028937f2403954ad46598b4ebd3513dcb1a15b1a84aa7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

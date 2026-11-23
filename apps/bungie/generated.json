@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8d80f8d25349fb9873608daef9af597b80089e37434fbd7f886f6b95569d7dc5",
+    "sources": {
+      "https://raw.githubusercontent.com/bungie-net/api/master/openapi.json": {
+        "etag": "W/\"29ea4dece1e222fb21811ab524196d0bd9e55d717c0637b7d7b6630e8524b767\"",
+        "sha256": "9bc7c15efd1a11d63e5ea94af831b2e18f37ec80b7df1788f32cad8ef3178884"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

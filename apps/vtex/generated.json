@@ -1,0 +1,512 @@
+{
+  "configs/catalog-api-seller-portal.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "12bb6b0c909f197b367417bf5bb19ba86989483c412a1ecb1708228262b42d6a",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Catalog-API-Seller-Portal/1.0.0/openapi.yaml": {
+        "etag": "\"b349b0855a81bdd8a3e79a27b2e838f9\"",
+        "sha256": "44106315a6d2e4459899fbb861b950071d37ebeee4ccb2cd31c74cd4cd10e5b6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/catalog-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "84ac869c102babf65c1906b2f47c34f023a5df51bf8da86f8ea8f0c231a09d28",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Catalog-API/1.0/openapi.yaml": {
+        "etag": "\"4cb2c21d871d075f4091699fcf4a51fd\"",
+        "sha256": "3d4867be8c0478cc2580cbd34d11e7f6c68dee2d09f20d85f47d3c0d5cf00f8b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/checkout-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "caf40e229fea99413026dd132d7f333d644f1379954bf0313f58a95cac587b80",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Checkout-API/1.0/openapi.yaml": {
+        "etag": "\"f817faba8b98e14ea0b994ef84f0bf9e\"",
+        "sha256": "d353606f787035bf0bfba68e0bf90631e3a513a5bfe871045be53f7124a055fa"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/customer-credit-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "843de05c1c266d0646067f79766e9e2a13700c6a3200f4f9d40f82fe5bd334df",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Customer-Credit-API/1.0/openapi.yaml": {
+        "etag": "\"ecd970a1b4fa887b1019e404a2b17c70\"",
+        "sha256": "45ccfd2fca3e1400fbef1f17c987a5ad68c497a1ce930713df61d9024da7cc64"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/giftcard-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "683a7f58e4ff329a9c0b03735f2efd1b4fabdb1d9573f9fcbd7d5c734cf64a88",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Giftcard-API/1.0/openapi.yaml": {
+        "etag": "\"f7517f3d81d11b2754fb99c6b5f6c8b4\"",
+        "sha256": "afeb06347261e507df46c3f647fe29c1e8954f32e411419397495c91b71ea24f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/giftcard-hub-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cb72beea83e39eebd2f93beee5330771a0c0e1a3ba20568997fc176f15b5a9cd",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/GiftCard-Hub-API/1.0/openapi.yaml": {
+        "etag": "\"ff6740ed68a85e2a58bd5db22f431e9d\"",
+        "sha256": "7e2d96f616397149e27120ced0f0465c6c45fe8022d4a1bf7a58a7fd479656be"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/headless-cms-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3cb366db6e57d0570c22e61f9878a06ed2cc84e59f722499992493ffe6a7f9d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Headless-CMS-API/0.31.2/openapi.yaml": {
+        "etag": "\"d5c9dfadd3339a9a738d0bbee3b2f468\"",
+        "sha256": "779469c97db8cdc0c7cc016d54f3768046cd676e9504ba8b7cd84eb0bd8212fe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/intelligent-search-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e9f35bd090e760be406204cfbb61641edc890a149abb3fba23abdb2da9452df0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Intelligent-Search-API/0.1.12/openapi.yaml": {
+        "etag": "\"99b413dee856216f8cb6f5398a8d7bad\"",
+        "sha256": "ab3a8122499c0a9ce3f4c081c4c873bad61289bd598573c366253fa3812dc293"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/license-manager-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "031bcc7ca394f53c5a3d00a034795d050d393fa46da7d03d1ec55ac942c958e8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/License-Manager-API/1.0/openapi.yaml": {
+        "etag": "\"436fb212391c0f5d57a19cc583470edd\"",
+        "sha256": "36d07ec46357361181b0d17872fec96b082950081d102e99e690f72ed94f3d3f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/logistics-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a0f57cdba898d92acfa9a93818daa537caa47c1882670594bc83b1cf352a132d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Logistics-API/1.0/openapi.yaml": {
+        "etag": "\"3f0e6992f5973214da4d66250c807ec5\"",
+        "sha256": "811085a7a2eaa2ad36b479890cb1fd5169d3b57d3f8b4751d9318dc1d3a8dc54"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplace-apis-2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7f2e908a737ee2631e981338c08ab90b420f85afa5f2a8a478a0436215467fcf",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Marketplace-APIs-/1.0/openapi.yaml": {
+        "etag": "\"c15ccd5b3015bc3bf1915a6d0ccd826c\"",
+        "sha256": "20969a28e016f00c46578f49205b4660d32bd3574d0c31673128cc0457458c99"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplace-apis.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f3e7a3d4660c4fb8a1dc453840a1afe45ab56d56352077cfaf5170177da38740",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Marketplace-APIs/1.0/openapi.yaml": {
+        "etag": "\"1fe66aec2fa0d3661528771d3722589c\"",
+        "sha256": "06c1b38382eedf438822fb58de7c88839406be81ba4b0f2884348f8c9d341a74"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/marketplace-protocol.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e648603ced6360797e797a763310cc3640f2088aae70e11b4f2b3ef3cca0eea4",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Marketplace-Protocol/1.0/openapi.yaml": {
+        "etag": "\"02010023a159985e0d2087b3867603b0\"",
+        "sha256": "0ccf22251e3f4ab6925436a00a517da5ed3de4e1dc1ba6106dd932535f66295b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/master-data-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "18fb323e0db0f51cd4d87c871ed8d8e5c950e5e29a2bdf4ef93ac11732a36b5d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Master-Data-API-/1.0/openapi.yaml": {
+        "etag": "\"b3d14f8fa87bf3d6139c0551a7c9c415\"",
+        "sha256": "3c9af38442938f3e661a04712c7332d2c60f432b24262240ca955b336ff40402"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/masterdata-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "69f73cc0a4b9963d8716c8c32573d09c6ae7a51c05e4054dbd5c306071e82195",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/MasterData-API-/1.0/openapi.yaml": {
+        "etag": "\"f86b0730d0571f5c49e4f416f086d1d5\"",
+        "sha256": "58c31f82062f1901244bdaf2b16a3986cdaf5676b9ba85979917cfe1155e1eb9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/message-center-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "404f199f491dfe250ffe3e8f3955100a7f831b96bc2e70c791f3e202e2d882a1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Message-Center-API/1.0.0/openapi.yaml": {
+        "etag": "\"6128d2bfde3c7b915a7588ec050f882c\"",
+        "sha256": "a12638c51cc2b18b914b6d57e6a735aff0f609ff21a059d8d7577bd4f221ad79"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/orders-api-pii-version.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e8f982bd915a5203b68cae31ccc4fd2d7666fcffebf9cd3f61e836fe06c8310e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Orders-API-(PII-version)/1.0/openapi.yaml": {
+        "etag": "\"27056a265f220d47162c39ecfe006cfe\"",
+        "sha256": "b4642baf10f505c623a40662697199351abf300c1e1c9eb18ceba4e14f113b22"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/orders-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "bffca372b02d51eefcd9cb6af640900f0948cbc5df796930fe4608ef2a868e4e",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Orders-API/1.0/openapi.yaml": {
+        "etag": "\"1ed09900a62ae2e2af32de0b85c6ed44\"",
+        "sha256": "68dcb714f7af38061b789933191957841ab5a181f2a1c5108aa623f9d8fcad3e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/payments-gateway-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cfc10ce67b8ff3cb946c2d25598e10f50e79cf61825f52d114a912a19225cab1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Payments-Gateway-API/1.0/openapi.yaml": {
+        "etag": "\"a0aff8d51a8e38c8fa4278042f1eb277\"",
+        "sha256": "aa6406d7026ec3106e8cd4144029df2a628cc3fc20db12f78f7a6bd6ca1157af"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/policies-system-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a0f5780563320ef814a8bb9f6c1fc1fbc0b93da5d58c1226dccc70fd293720d3",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Policies-System-API/1.0.0/openapi.yaml": {
+        "etag": "\"2871ec80eefadef0d1d24210f6f88aa1\"",
+        "sha256": "a42bcfcbff3db39d0c4e5a5475df2066ed08959ab8b43e97b9bcd159a3c1d548"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/price-simulations.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0c270fef8b83a433ec8f78549b51541248f159beef8bb9bef28e6cd839bf8e80",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Price-Simulations/1.0/openapi.yaml": {
+        "etag": "\"67f03530923c549e3880120bdd002dc9\"",
+        "sha256": "079cfaf6d94dbe23e86819e80a31a09cc407b7c23aed8a5e73c3aae207d6874e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pricing-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "49b28446576aa2e20f0b12d8464d63998a3d6ea4fda6fc211f5bab90f93efeb0",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Pricing-API/1.0/openapi.yaml": {
+        "etag": "\"cc0583e678f294d775e3c9f53bb1fce5\"",
+        "sha256": "41c341196389523f6256bbac044be305fa3855ecb2a584902e559b6c33994bb3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/pricing-hub.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e16d913cd71ecab3e0f1b1c06a6f147d073103b2cdbcff035c010e1524bdf04",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Pricing-Hub/1.0/openapi.yaml": {
+        "etag": "\"95ba8c7b74a4c3f85dfea0fb1c06e86d\"",
+        "sha256": "fa485e389d115e013fa612d3ccd46f29deaa014f1e1649fd677f967e0beb8bb1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/profile-system.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "904495c7742c2fcd0da278c2d826012a867395addcadb93138c77a6c6db49b27",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Profile-System/1.0/openapi.yaml": {
+        "etag": "\"b05388b42871fc691e27e0c314678ff3\"",
+        "sha256": "d495934357ff6d08b6c949b94f4de64bc81f6e768539ad16b07e55c8b5638608"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/promotions.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "eeba585410609207b23e80d504ca722862efd6d5d95bd0095ee497f5c4552b09",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Promotions-/1.0/openapi.yaml": {
+        "etag": "\"1f61446ad00b4d0ea539eaf86ba9f354\"",
+        "sha256": "82f7dcdcaad8ee42145f5926a8e4a3a6668944ffc1154fc06e7df528d7e4b3c4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/recurrence-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3d30c784ff50521bc3d8a5e05b42fa02502bb70078fc31ab983f986afd1f3b98",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Recurrence-(v1-/1.0/openapi.yaml": {
+        "etag": "\"49ee927e736430ed80dfc9b7cd880b00\"",
+        "sha256": "258140dfd1228fcbf7e6db46d399f8847da732a60b633570e2ab4ee97df99e19"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/reviews-and-ratings-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b55cf15005b521da469abf37533c78e5a1bcc4cfb41649033e19fc23ccbb02a8",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Reviews-and-Ratings-API/1.0/openapi.yaml": {
+        "etag": "\"212bd587231faf01219c8a3393b52c8d\"",
+        "sha256": "f21aac22a4bf4ef06c1dea4dd7f314c09bc1619bc35b0f219eb077f86e9044e0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/search-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "60885eeee502d1553957ce656a799eabc091e1910a2afdbb735803e81b515257",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Search-API/1.0/openapi.yaml": {
+        "etag": "\"50175ac1a6af02f30a1b16a2209873f8\"",
+        "sha256": "ea489c9ee3dd5b374880e21a50dea0edf20ecb2a8ae12a14e1bc4d80af5bcec5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/session-manager-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ab999266a46122c6cd1f6624334b2d46238e6d3b2bd2055093e74dfd3346e7d1",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Session-Manager-API/1.0/openapi.yaml": {
+        "etag": "\"1386bbac7da09b8b111ce4bb7b58c725\"",
+        "sha256": "d78cc3c7e9ce91cc4e9ec2a50372c26cde6c04db75601feb95019aca462537f6"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/sku-bindings-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ccf9fbde9e5cf0834d8996931ca94859458943adbb08949671c7fb53987c3516",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/SKU-Bindings-API/1.0/openapi.yaml": {
+        "etag": "\"e7a81f78f82817866587dc03ceb8aeb4\"",
+        "sha256": "2bc7be75a1c143e8823147b561564a65cfc14fc3dde25d39fd8d48e82bd94360"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/subscriptions-api-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b00db2b0e667fc2dd3516b84ffaf09c0be36f4eae47a392ac7f82163553683ec",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Subscriptions-API-(v2)/1.0/openapi.yaml": {
+        "etag": "\"d3a98b6ce4116ac43dad505a03d857ad\"",
+        "sha256": "649dcb7ada8c5bccdee07adfd33e2354de1fb386ff8cc510472ac3fc27904168"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/subscriptions-api-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "621247c2e348430f7de21b288cbfd63d186fdf6ebf3d7765c57f5fe91038685d",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/Subscriptions-API-(v3)/1.0/openapi.yaml": {
+        "etag": "\"ff263124ab02d08a6de7685a1ed48527\"",
+        "sha256": "a4fd53549a557fca726f3e3385691e8d30ea0929f363b03a99ab97091f2a7532"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vtex-do-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5aad66c603e99d738b1698b51c60b69db081960b1e124112eae64895240a29e9",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/VTEX-Do-API/1.0/openapi.yaml": {
+        "etag": "\"75f8061659c36660110222627316233f\"",
+        "sha256": "3141651656df3afb035be0e76f62241a6a35ba7d1a5695dfd6501a6efadfe592"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/vtex-template.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f6f5ba56e09f217d2be43787b9aab9ab291a6d04f170cd9609b4ecf0357b295b",
+    "sources": {
+      "https://api.apis.guru/v2/specs/vtex.local/VTEX_TEMPLATE/1.0.0/openapi.yaml": {
+        "etag": "\"4b5e75b25861071d6109aebb0e3a3043\"",
+        "sha256": "f41654e18f6592d97b98549f78a4ab5e70d88abe56f7732fb52eedde170dadb2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

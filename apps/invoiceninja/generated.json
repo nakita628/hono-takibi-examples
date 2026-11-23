@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ea653b0d07256d5f5013b914b3c070f2b1515dcfe32f6728872004450529cac2",
+    "sources": {
+      "https://raw.githubusercontent.com/invoiceninja/invoiceninja/v5-stable/openapi/api-docs.yaml": {
+        "etag": "W/\"eb349a8db7bcab8b3e7ff8269f8d81574f0a3c85d9da77fcbf8fb3174eed392b\"",
+        "sha256": "bcda1f823746834e205e917bca9443ee043067f583a5b8c909c4a8d3ffa87da3"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

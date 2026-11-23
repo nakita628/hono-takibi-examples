@@ -1,0 +1,17 @@
+{
+  "configs/reisezentren.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3279a59edab1ea2e77a83e211a3740da0fe43a87881fa856149e64801e7a466c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/deutschebahn.com/reisezentren/v1/openapi.yaml": {
+        "etag": "W/\"15be6ea8c822db3f93f063fac02c1c677be469110781d7e76dfad05af13bfc07\"",
+        "sha256": "d31e01fa6ac7426ce238cd475372cde8703cebe4de02674fd0c4fd2c01ab19d5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

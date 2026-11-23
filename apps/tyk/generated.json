@@ -1,0 +1,24 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4baf24607a3e2f95b35a0bc9a23a140a4e7f20205b7b38e631a8471629231ded",
+    "sources": {
+      "https://raw.githubusercontent.com/TykTechnologies/tyk/master/swagger.yml": {
+        "etag": "W/\"232391a6c09b3aca5a123b3cc1a118a7cec277941fffdede00a7226e2a53788c\"",
+        "sha256": "9b037b0384f5c745f4d54885ccbac324cfc674bc75553463aa1e0a19c2a3d02b"
+      },
+      "https://raw.githubusercontent.com/TykTechnologies/tyk/refs/heads/master/apidef/oas/schema/3.0.json": {
+        "etag": "W/\"2423c815765a7b129ed71cfcdf51798e6c24309f161e7a23e601ebecce3999c9\"",
+        "sha256": "7a0db7311a69d8b7f2505f59c5d4cbb58539a0961df0c05724a07538014822cf"
+      }
+    },
+    "typecheck": {
+      "errors": 1,
+      "where": "`routes.ts`",
+      "codes": "TS2375 ×1",
+      "issue": "`CallbackSchema` is a lazy `z.looseObject({})` with `superRefine` (an object with only `patternProperties`), whose output `{ [x: string]: unknown }` does not satisfy its annotation `z.ZodType<CallbackType>` (not filed yet), [#527](https://github.com/nakita628/hono-takibi/issues/527) (closed; still seen)"
+    }
+  }
+}

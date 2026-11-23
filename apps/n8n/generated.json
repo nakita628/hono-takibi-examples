@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d410983ca40e2ce55bb3974a53525eca098a5f9e3fe6a25c5bb2ee78cbbb37f3",
+    "sources": {
+      "https://raw.githubusercontent.com/n8n-io/n8n/master/packages/cli/src/public-api/v1/openapi.yml": {
+        "etag": "W/\"81abc4bbb1a547f43be388e40d21387b2cbc4df457f436ddec5aff71853e96a8\"",
+        "sha256": "7f7504d3ecbe3b4bb330e5b5e80f78ce87206313bba8c9fd46e532aebac949f4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "dcfe3dba2ce61f4b5110f57517a27ca2802c26aa36e426ffe4447e4a6794650f",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/grafana-com-public-clients/main/go/gcom/api/openapi.yaml": {
+        "etag": "W/\"a588b04e0eb16f07fd69b358f20ed25c57a76e9f430600946c77a5f44542bc73\"",
+        "sha256": "60ffe50ca8d2ed5b3bfe71a766798f7cc01446ae8a79042f7563ba5604f7092e"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f80030c7058405f067a6a7d95d48f5ee4ec47507dcd6f72cecbb6ffebd27abcb",
+    "sources": {
+      "https://developer.themoviedb.org/openapi/tmdb-api.json": {
+        "etag": "W/\"2e99eb-x/pn2IKFos4wkWD5O5P5vajbvTc\"",
+        "sha256": "1c709375fe994e58c5a35aba7c9abfa7f28aa7103ed6c2052ea5ab0b62af081b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

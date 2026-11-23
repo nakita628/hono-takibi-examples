@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "c5ccfc50495e688cd115556f2fd790aa66eb54d5302a820b3efc50e70f3fac7b",
+    "sources": {
+      "https://raw.githubusercontent.com/containers/podman-desktop-extension-ai-lab/main/api/openapi.yaml": {
+        "etag": "W/\"11af4ddc4df21490ccc6a13e4efd378dee160084bce5dc66dc5b1e85e0840061\"",
+        "sha256": "5c66084a893eb94403eb18b38c135c1ce0026b679d234d00c5bcd5f7796daf37"
+      }
+    },
+    "typecheck": {
+      "errors": 42,
+      "where": "`hooks/*`",
+      "codes": "TS2339 ×42",
+      "issue": "upstream: @hono/zod-openapi types an `application/x-ndjson` response as `never`"
+    }
+  }
+}

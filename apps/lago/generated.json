@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "67e0b3b2582c8c2aec3f08198c4ea5238984e312ba178f3f98332b91572ed2bc",
+    "sources": {
+      "https://raw.githubusercontent.com/getlago/lago-openapi/main/openapi.yaml": {
+        "etag": "W/\"ca584bf221d9d4600d42f48035292f9df1dc06dc577ee6d8de2999f7856ab380\"",
+        "sha256": "a851ec0b07271cbdd80c8a04924d3240426ef931d24084bf41821d70c76a6f00"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

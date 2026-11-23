@@ -1,0 +1,14 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": false,
+    "config": "3351246f87d68fc9ec5d3bd7461d00f29008df3be00be11f22f7200afdf9c323",
+    "sources": {
+      "https://raw.githubusercontent.com/apache/iceberg/main/open-api/rest-catalog-open-api.yaml": {
+        "etag": "W/\"00d9f459492d01adff78112624f0ee86ec9c8c938cb7115e3413661da06631ec\"",
+        "sha256": "3caaaaddb481a3d7bd8a744511792c18c14c5e214850aee7e193394ed7059e66"
+      }
+    }
+  }
+}

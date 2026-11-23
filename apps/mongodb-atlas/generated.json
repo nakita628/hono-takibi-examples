@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f1236885b2b298bfcc48cdc66b64de6400e88480455c31d7420b32f135b8892d",
+    "sources": {
+      "https://raw.githubusercontent.com/mongodb/openapi/main/openapi/v2.yaml": {
+        "etag": "W/\"c3c573b6b12d856053f691f8ead4e430ffc1c1df38e889adf4df0d62c361f6c5\"",
+        "sha256": "9ca8fbdc06981e48e26bd079a10b211724171b69246d02d5cd24b32e7cd02263"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

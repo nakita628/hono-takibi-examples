@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "78bd4ccf1c785dfb927acdff947f0fd148f431a900ab1037a33d8ac6ce175801",
+    "sources": {
+      "https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml": {
+        "etag": "W/\"050039134a496cdaa27c577cdd561756db0e02039cbc095a1d78a207680bbd1e\"",
+        "sha256": "01ede8ab9c2dfdd34fb8dc8c1485f096004e1d22254a56d0940cf50cece44f23"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

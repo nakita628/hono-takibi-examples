@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b996f7d16f972e686b0d606ab33acf0c35743d43b1b53c6d6e1dd4d82f3e1e03",
+    "sources": {
+      "https://api-docs.render.com/openapi/render-public-api-1.json": {
+        "etag": "W/\"76270-0pJWi8Y15QiCwK11Xzsu85ecqHE\"",
+        "sha256": "ed3de1852c0db0676c095ac08d5aecb8ae769f67eac5a6057d7a876c913eff5c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

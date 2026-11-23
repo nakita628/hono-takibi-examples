@@ -1,0 +1,752 @@
+{
+  "configs/A2APaymentsService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4f83875f8db1f786f3de10512a112cba6ae7c32d029ff6a9a2ad24728cfd8a75",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/A2APaymentsService-v1.json": {
+        "etag": "W/\"0e3b1becf5dd62b4da061a7ca1f1b82be1b8e959e66cb4e937013a835a71b1d1\"",
+        "sha256": "33cd05b966f67105768f2cdd896106a900f20f2450321104059d649a17352835"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/AccountService-v6.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aa12cfe702f1cb8338fec3e296aa7c02a4b4f1ebe315762745a88a499f05d349",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/AccountService-v6.json": {
+        "etag": "W/\"61dbe0bc5e0b1f74cf82fc0d0c4878b6cbce6a0adc0b444b56297ec6af86b925\"",
+        "sha256": "8de73063832f9869170c915ca39220cb876e4f185f23dd22e9fc42ee3efd9e3e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalanceControlService-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1c704a03ff9a1bed1f9f1fbc2cd0a9e9f621cc4b23748751042daac5f5137fd6",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalanceControlService-v2.json": {
+        "etag": "W/\"6943c2eebc9fd6506d3b216f895395d1df71f166dbd19c87924e405e0b9d266b\"",
+        "sha256": "31a36a1390178be36c1a0832e18be60ffb17c81de999f8f955e14af4667b8474"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformAccountingNotification-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "373475625bde1a9c7d4090cad5412a546d240c11d146fe4388e4aeb30bb3541b",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformAccountingNotification-v3.json": {
+        "etag": "W/\"d299e5a5f8124af48718e0f1b7e65b8b400b020974f8ccc6e39706b8967b164e\"",
+        "sha256": "20e0d96b1e922c6ce166832d501a86f20bea933a57313393ef942a6973c824fe"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformAcsNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b6e1ba3b16bad85af0a70a576add9ed4336b6410ad02f15af2c2566857f8bb69",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformAcsNotification-v1.json": {
+        "etag": "W/\"dcfd8a1239212da2fb4a84cc977a4da9fb60493028e74f0e7fdf32065a620de8\"",
+        "sha256": "7835d86409aea5c09dc828f586753197a28fd16a3ef7ed8953eee74d01090596"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformBalanceNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "436b541d464bf0d3e4a9d55d5f1a1ab22829bbf5de7bb593ed85a199516b418e",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformBalanceNotification-v1.json": {
+        "etag": "W/\"8545b8c1e48724ac4b8141208b3725d1f0e7cf74687bd3e7192413f63257a737\"",
+        "sha256": "8f94e88be22bd1b0e1156a2d108b14369426bfe34b3ca93ad41b5634bdcd853d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformConfigurationNotification-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "acee56e18486b2cae33fc90b3827414fcd248589b76346ebe10e28e434b96ea0",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformConfigurationNotification-v2.json": {
+        "etag": "W/\"73ff4dc476f020210ba8224455793e41c6717de71eac6370461345a30a4b1dde\"",
+        "sha256": "a407f973bb89774a5db114f3123f057c2119bbe10f1247aec9f600f8d62d856c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformDisputeNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2aa3be3303579bef205f0f566ed58714776511c0a106dba3b15f1b37575317d0",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformDisputeNotification-v1.json": {
+        "etag": "W/\"d5baf29809774bc4f28364c1118bdd4913510ec90b70778b58e1f780268af952\"",
+        "sha256": "62b3032eda5660fbd1d09a8d6d5efd3a557c8430eb3164aadfbebec562d57350"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformGrantNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "efb70f5023aef7fa8afbb60c6c2da31ddf302ba0f5196e96e82494f4f80abfba",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformGrantNotification-v1.json": {
+        "etag": "W/\"cbee1051004676251f83ea85c6cac901f7d0758b69c4bf8240589b1b91c6bb5b\"",
+        "sha256": "e5c4bb577e369d370b264ad5e60340cba2397d791fbe08848043344361418693"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformManagedRiskNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a7897870f4354d5d701c1007068206e8e67c6279fdfecee5ccf763de6e64125",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformManagedRiskNotification-v1.json": {
+        "etag": "W/\"b7ed2e96d7d8814400645a51c27da98f547f8e131fe46388dabbc9081ce519b2\"",
+        "sha256": "498aab05a44d04bdbe88756d7335bf23773e3e3c5afc033c5def77f560f98357"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformNegativeBalanceCompensationWarningNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "774a298fa2f865ed3b87d2683a678d06a92c5282598bfdb79b91087c71809613",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformNegativeBalanceCompensationWarningNotification-v1.json": {
+        "etag": "W/\"b172833e5c9fe7e2e1938e1b469b0d3cacd7d3de2580050c422e225543cd9284\"",
+        "sha256": "030169fd21b1b313b95721da55a4d4801600927ed322666457c1d822bc2655d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformPaymentNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0a16f2e8e9b830a18d0875b3d6ab0c88f7014eb1d4ed669f5ec2e4a2f902649d",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformPaymentNotification-v1.json": {
+        "etag": "W/\"f592a14a2c8d4d443a275b8022d90cd89192365f6ae3d5c6597255ac80b4688c\"",
+        "sha256": "0abade189ae1dec4e4018804d801db29091e7be7c36719d11df1059a951caf8e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformRelayedAuthorisationNotification-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "164c839d2a64568774a0ef55967df1dfc24e742ae79993b5bd92a914c924a787",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformRelayedAuthorisationNotification-v4.json": {
+        "etag": "W/\"4639b2b696b4694fb1f6a7d6ea34d470ba75c0bcc1048517043b88ed6ad8dbc8\"",
+        "sha256": "3350b0808e0f64278c3e46455bc793c08e7a6fcc67f160de3593a963b5045171"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformReportNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e89ef816e5812c85ef0c36778cfdb61e48db16d8b179abd9cd8fab2830f6fa2a",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformReportNotification-v1.json": {
+        "etag": "W/\"669ddb1e8ddb93a5912414116b6acf53fe4b4485d567236f8ec59d4895d0d7fd\"",
+        "sha256": "9f2e72f66de053ac393a6f12ef1d2ec05c9666962510622b1be1a3ad8c5fb9d9"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformService-v2.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2b0b7f51404c267fde8b0c84ee977760e68d7f25ae01271f1c734d03e31d5161",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformService-v2.json": {
+        "etag": "W/\"a3b32b635e787300308abc8aaa1df2398505266fd029e50070a43218a12ee8c2\"",
+        "sha256": "89a469ab11aab9343a7e25149542018b6a3421a4508960598ce78286bb74f81e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformTransactionNotification-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e8e75b61c76b18b06f6abf9a37e9530f52351746ee000fcbbf6e4f51e8e6ec87",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformTransactionNotification-v4.json": {
+        "etag": "W/\"c1cd315a98db8f9fd70c20449a8243b5f8ea9d44e8259b0d3bfd2ddc39c98adf\"",
+        "sha256": "12f2e25ba3cf30ba7ff32ad432d310e40a83d6a848f046c280422a8ca2a6e0cc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BalancePlatformTransferNotification-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "456ea8cb9d7fc5efd28f3e443bc1d0d6ca96fc5465b960a9d30e9402fe1d9197",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformTransferNotification-v4.json": {
+        "etag": "W/\"13ac30b519730d85a22654f700d55f8c2cd27097c3f6def4885ccd4fbaccf0f0\"",
+        "sha256": "68c5f4772088b29664290c332cf397e301942fc436d65cbc6f6bb69937a1c1e2"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/BinLookupService-v54.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "08488837e4c785f1b441ed73e51beb7f40aeaaa6bfe52343e8a8ebefb5a885ad",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BinLookupService-v54.json": {
+        "etag": "W/\"76689399f0b916f75b79198c3d17c10a86d0097d1622006efb7b0d7b4ad3c1b2\"",
+        "sha256": "8169a47240a408d0436baf565856a96d1ebfefcd7e21803c8a97224829c4a011"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/CapitalService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b086eba1cfbd4fa95f7c1765e57a4009b5d0ceaa98b105055efc048551a0b628",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/CapitalService-v1.json": {
+        "etag": "W/\"4179e42ed62903a7892d848377be898e24cae2407fce41bc1cabe3b076e4ba80\"",
+        "sha256": "03969223d168d12c64c77dae327ea08a0c914a3104a77caf3ccb968ee61af0d7"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/CheckoutService-v72.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8981bad218beae3244deea3f8c1d17274781c10f8a4cd11814ccff1286a0f639",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/CheckoutService-v72.json": {
+        "etag": "W/\"aef3fec8b7c0decd3711ec92d27818572144268549b5cdd935acaf0be259ddae\"",
+        "sha256": "fc16c3c85c0e6478294d03c296f0fcdcf596c08d8862b178ee2863eda94be606"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/CloudDeviceService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3cba65cc98ad788a7c69afe41ca21897d525fd3e959e0473c2d0fcab69e18a01",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/CloudDeviceService-v1.json": {
+        "etag": "W/\"c89c4ac4b97d46056b59d52f972d891e1cfdbfcb93af118267fb64144e2c329b\"",
+        "sha256": "0971b53339fcfbac57983d81d83bd18f728b7c61293c1dd6758f2e817c9b0966"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/DataProtectionService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "4662425be0f59c8bca13a929d782bec354d916dc83c1aa083d4d6f7f63bd87a7",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/DataProtectionService-v1.json": {
+        "etag": "W/\"9507515eb7bc6f7d50f4844218e0a81ae714340c73625805a49b6cdf065e1a0f\"",
+        "sha256": "38cc577796922fb888febcb1f8b202a8bafa49249a06c2725d9a83f3d29a17a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/DisputeService-v30.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2d63cd1b71735f689b5bc565901ba61d2d8cb5636f46c18d476ba31672dbb320",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/DisputeService-v30.json": {
+        "etag": "W/\"6f6adf148a37a24acdcc1cc087e6d9bf7e987f1a58cb935fdb9003ace6ae003f\"",
+        "sha256": "2379cba0a5508a61f50503e796fa9b74ad328d0759953e7b8258e179980291d8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/DocumentCollectorService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "2199e75cbc06291c5e06b5bb7ff835e24adac5c499a7d135ea69a0ee0fe50b91",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/DocumentCollectorService-v1.json": {
+        "etag": "W/\"430631384a17a73e874d9c90c98261f7cdb20b2dd272b046f0835c02576123be\"",
+        "sha256": "1f9eb18136f27561f1196f0aabc423daa2aef2cde7c8f96ec96a52ffbd41d26b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ForeignExchangeService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "483169b7d0cf48d38e58f3fdce4f54fcef98dce7714e060f5d127b8f2b26e00c",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ForeignExchangeService-v1.json": {
+        "etag": "W/\"e1af85e8344c119832290ca9ed2ccd0e234f0911a1006725dc79ff0e1eefc7e9\"",
+        "sha256": "ee079efed5ade31ddc5b9a5c8aa86e4100113ee1c72fbe450b3e0f0f0b022493"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ForwardApiNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "5b88a43730b638072a3548f2bc326b0666af05c030c5fab229a8e52ab8b44a53",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ForwardApiNotification-v1.json": {
+        "etag": "W/\"f57a642a34e57c2609b17660532bbe3a1e03b5b00c639ee90043c7123c0f3870\"",
+        "sha256": "972282012746deff30d1cfd0f78c42dfc6273d2b4a4a31f2c3b60d7cb42b3af0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/FundService-v6.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "13ac3c5864a4eb4a471fd6b68739ea3ca2e51367b3c722d2fa81c3ae87ba8538",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/FundService-v6.json": {
+        "etag": "W/\"11b1744815dc4d1ddf38ef23af909571d0d27b12dca94ab05b8df406945845e4\"",
+        "sha256": "75d78caf83c618bde36f61b8b096b21d3354e80fca019e511d5bb59e0f0272bc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/HopService-v6.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "f8c02b026f1801c840aab9147a13e248652d7ec2fb3ab1f085192d80b76bf33a",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/HopService-v6.json": {
+        "etag": "W/\"1b9ac33dbc1576737101a71466e022d0e6916b513694519ba75422267dfd3685\"",
+        "sha256": "f10fbf469ffff94245fdcca0eb77df31bc7ff5b16b0a223b8bb133397f64ebb1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/LegalEntityService-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "20a38c191a05ffadcc16c246fa6e3644d17cd946d7fc9b70a8d0bb478d2ac33a",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/LegalEntityService-v4.json": {
+        "etag": "W/\"09161d62de8ad73c15421bcef89054d050f2d3fd406fd6c34ca6ec0a956fd64f\"",
+        "sha256": "19ce87e7a22d8f263f41a51f4fe0a92a5004a8c152420efce54f5b1e8b195504"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ManagementNotificationService-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "15fd6c8ae5bba34f28d38ec001ab5a597801078c27ccd6b9d4b5f1029d8538b1",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ManagementNotificationService-v3.json": {
+        "etag": "W/\"cd45ea4e9b15a30554a28d8bbb5bbaa527f4bb9d3843c3fc22b2cf84ae880131\"",
+        "sha256": "068ab496030f763b08dfe69c69478ee69b8ce9fe0d5be26fb68a7005b232c437"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/ManagementService-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6120f6ce10ef3b97cff4f48c1041941692d24864b017075be1da6a6dbafca65f",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ManagementService-v3.json": {
+        "etag": "W/\"a88c69601da22ac98dce49407d74d0b6a8c06c300d7347e3f08e7f747d3f0d8a\"",
+        "sha256": "94e389e51340d2701445084cc270dca5a75211d48d59716dba2730cf8235b391"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/MarketPayNotificationService-v6.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aff02abc9b4c971bcab1d3c48b6a9ff161c87c8e8265527c0ba72fc86892e2aa",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/MarketPayNotificationService-v6.json": {
+        "etag": "W/\"42cc2d6a2ee9ad11eb79cc4633324580f6e531e48630238318eca06f16154ce4\"",
+        "sha256": "2b6f04c400a53a20e6345a5655f382a6fcaae9aeebcce0116d6294a74bef54e8"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/NotificationConfigurationService-v6.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "1f1ac8566ddd851146ec014f3d75cd93a65a4a589f231499ff802fca3b3f30e3",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/NotificationConfigurationService-v6.json": {
+        "etag": "W/\"6fcd02b43763947fdf77615409444d08cd000d81a482ccd7c285fbcf26f7f10a\"",
+        "sha256": "503301410fd3f6726864bfe02e8236302be44e6532353e0b7df397a15b9ba121"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/OpenBankingService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffaaeb19c909d390d92cf8e4e5accbfbcb7ebd03936a0c17288970e384eb34be",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/OpenBankingService-v1.json": {
+        "etag": "W/\"0dcb55a485b93096725be55879dcce513886202e8269c264d77ec1d8767ccce5\"",
+        "sha256": "002cd3c2d804393cf636c54cc1f9ca5699ed1c606c1662c183776317fa530531"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/PaymentService-v68.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7c135bfb81b6aa0c93f338c1af4aa3d8ac230bfb1b771c4a656b8d23ac689c96",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/PaymentService-v68.json": {
+        "etag": "W/\"395a846415e407b21063a85cf08f1f35cf86485fac86023040b0ec96bd96dcc7\"",
+        "sha256": "dc5dd00d9e5a16fa29c798af0697486093ae8a256316c58046b4c00119d9167f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/PaymentsAppService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6af651098f800d77d2d7d41611fcae9c3243abe25962b918d65513b060cf945a",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/PaymentsAppService-v1.json": {
+        "etag": "W/\"3e829c79fb117a77876520cabd6c28855ccd331049b5e89aa104d74135b9ec2d\"",
+        "sha256": "955ebc8eeb5bb2c51ddafe88486e38b0a10232b8a4124936af0ff42161f1aa2c"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/PayoutService-v68.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "460262d0977cc8377d614c7d96ce37f8d009fcc00b4bc9afd95e59525f7ae551",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/PayoutService-v68.json": {
+        "etag": "W/\"c2a04d5856551fbc00a925a6b507f3b23dc54646e0cf86b35bc5f9520abadc98\"",
+        "sha256": "4333cb145901e32916ebd3b2a441ddce22d76cc591c5bb5abbca16803d34343b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/RaiseDisputesService-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "da5acf6e0bc57c97a5ee5f6c154ea71d9de76c781c04dbdb2fa4f0c1c2ee3b61",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/RaiseDisputesService-v4.json": {
+        "etag": "W/\"5174f70073f6c72dbf500ab11cf467009476d920183d445269fa8e0e5fb966e6\"",
+        "sha256": "e0d375564e40838a2973b1dbc52c3f2832668bda89600365d6ef5971f5b3b708"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/RecurringService-v68.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "761c78b75dc10b13e55557df98d7394807de8f6acd618e019b221a016ed4d37e",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/RecurringService-v68.json": {
+        "etag": "W/\"71bc2545d94db329f4529b071b54c2b432faf2741953abeb3e64c57bd6fbc478\"",
+        "sha256": "bba130248ed69fb535bd66498d930c68905e6b62c2a7fb04024b9d3d0f13cf77"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/SessionAuthenticationService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fb4a242308b0058c14014ca1f1106a1a9d0111dcd9b700f9c1e3aceddcec8d36",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/SessionAuthenticationService-v1.json": {
+        "etag": "W/\"f5c0e0490ba8bd021f15727192b72548bfd29649f0e8df4c6ca06b70b4ca9a8c\"",
+        "sha256": "fbf7ec1c1ed57411b7365e49cf561ef6df932736b60fa70c72283ee96744b322"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/SessionService-v68.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "24a7ebe25175e7dbb56619bb2cb7d499fd683eaa4ea805de8f00bfa6bf24cf47",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/SessionService-v68.json": {
+        "etag": "W/\"5824b6d5d5ca2e4ee3f03c3cf4b67fb761f694b20f4578d70fc8f6b1d5307695\"",
+        "sha256": "87545d3e2a0b11f5225fc4a577bd12e99c413a36519a25721c368ce20a2eb186"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/SoftPOSConfigurationService-v3.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "928655e09f27af1cbd6089a48f3fcc9b9dd96b5e9279008f0dd5cbc3f69e3b3b",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/SoftPOSConfigurationService-v3.json": {
+        "etag": "W/\"cf5292992865f57239a7e9a0264c95d4f0bae3abc0815a772fe03d22cdf30f52\"",
+        "sha256": "b3270a35570d714dfcf421401bf0cedd90c8fb99b2b3d7e5957407fdfef456a0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/StoredValueService-v46.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "cdd63e5b24495ece06d988d58dd010686edd54181478b7f92227bb599027cfc1",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/StoredValueService-v46.json": {
+        "etag": "W/\"3c02524d34ef97836766b10163d32050c8f395bddd080d091b019fb6abd60829\"",
+        "sha256": "ff9a3baf1dbaf55b013c2f6a4e23871df8bd84e692638784cfc6a7b0f2bf328b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TerminalAPI-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "212f62c25880796cbf7f77983d234d7e4a977cae423d0a3e87872d04fc9a0118",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TerminalAPI-v1.json": {
+        "etag": "W/\"0093f7caa7fdcf4cbce285d4ecf804b24274c539f98e2304e371b1865485e33f\"",
+        "sha256": "66a3740358f33160428c82a113bfc18dafe3231c770a335d9530d197e7256d01"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TestCardService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "29fd4eaf03c88eca9fa2d61fdc103cb1a149c61404eec6d0f7f4e3b777c62769",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TestCardService-v1.json": {
+        "etag": "W/\"721c27d4ef9c9e23226fc7bdcb427215764cd89c92db758f66bd45f127cfa5a4\"",
+        "sha256": "c94d45717d9e346d3b3e3b103c7a6c94c22df6a565f69284a7d6069827b0c751"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TfmAPIService-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "36c311f975a415cc79eed1015a607cc82724869f515fb4d94dedbd2d5ff16ad5",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TfmAPIService-v1.json": {
+        "etag": "W/\"0cec3911cabe63102acc936f80ee5b95bbd3eef4ea75b3675a6ddb49200af120\"",
+        "sha256": "079660320468b8b6d425593948ebc8af675fafa2831321be72f0bb0e4c9dab54"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TokenizationNotification-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8023cc26927ba1ec0862874920081eb638ec676302e5ca77e227467ef986b693",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TokenizationNotification-v1.json": {
+        "etag": "W/\"21d999769742389a14500dec5b26d49bc11ff2b8e47a754bff2823ca5eeae52f\"",
+        "sha256": "0da3d550efb8e8583b5f2dc1900fee69db36246dc2dd9e287f366f5f97f1d5b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TransactionService-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "35ef396dd244470f8a3afef953ebe019abff4e97643487ff602e514efb4bb52b",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TransactionService-v4.json": {
+        "etag": "W/\"ada6d5473fee6c7f0a78fc65fa29c43cb580f5574e18d816bf91cc52d7b7d884\"",
+        "sha256": "b0483ffe5ed3e787816560c18cbd610085141d74b3e715e2d3e7a2e0d2db2f99"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/TransferService-v4.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "9a7956d4487cc8500251341f9ba0373b05efb5133fde7bdc40362fecadc79bc1",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TransferService-v4.json": {
+        "etag": "W/\"69a2c83ca23b053db52d1bd240fc3f1dd525a439d464769782388d750d00de09\"",
+        "sha256": "5165f66661344df6affa73aeeffdb8bdb90eaef42eb2428092a47b6ee050c782"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/Webhooks-v1.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "829675cc338257ca5199949d163af5c936101caf5bd5958bed43d20b00baf16b",
+    "sources": {
+      "https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/Webhooks-v1.json": {
+        "etag": "W/\"be5b76393586715759a703f0ecc149e3314c5bdba0f8c98aa9a98b7c0f7ae2fd\"",
+        "sha256": "aca870ca131548a751bd857796455e43b8a051702c290ab62c6a4afb72efa63f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

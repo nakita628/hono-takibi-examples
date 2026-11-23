@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a8db800b14a00ecaed9ccd396a75e43207f0310268c8e2db8ff5de58f7b44e74",
+    "sources": {
+      "https://raw.githubusercontent.com/usememos/memos/main/proto/gen/openapi.yaml": {
+        "etag": "W/\"d547b8f4b81469e0c1971ccf9f7c3b6943bcc75e2276b649bd071c4b5a0765f9\"",
+        "sha256": "ccdfd0a56fd07aeb02339c2fbf8afedf920666d6c6b8113c98654592a59f5548"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

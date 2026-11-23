@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ce90b3ad3fea426738e891591045b9e27dc5958036f40d3a7dd031fb62fc8829",
+    "sources": {
+      "https://raw.githubusercontent.com/Lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json": {
+        "etag": "W/\"e645ab23c6a020ba8ac3df049d3c97970aaeaa9cbaa7a8d96500529d7e934e7a\"",
+        "sha256": "4ae9e79e9662898ed4704ce80f091161587a9f0d664f9e518b11a038616e491f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

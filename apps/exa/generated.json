@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "8e1549213e8f2ca66f8643df34e0d6b0d98a5df1029a4eb8c9d03e43119b06ef",
+    "sources": {
+      "https://raw.githubusercontent.com/exa-labs/openapi-spec/master/exa-openapi-spec.yaml": {
+        "etag": "W/\"5549021afae9ebbff77aa64d820cbf0f478697ff5c4711ed7fa7262daf576110\"",
+        "sha256": "f21ac0e3accc1cb1be6c902d73d86972f4bc1172925b5e34aa13d9b7ce9a5436"
+      }
+    },
+    "typecheck": {
+      "errors": 1,
+      "where": "`index.ts`",
+      "codes": "TS2589 ×1",
+      "issue": "deep types (TS2589)"
+    }
+  }
+}

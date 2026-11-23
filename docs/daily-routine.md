@@ -4,14 +4,14 @@ GitHub 上にある有名な OpenAPI 3.x の定義を 1 日最大 3 件、hono-t
 hono-takibi が出せるものすべて（routes・docs・type・client・rpc・7 ライブラリの hooks・template）。
 生成物に問題があれば [nakita628/hono-takibi](https://github.com/nakita628/hono-takibi) に issue を起票する。
 
-読むのは、毎日起動される Claude のセッションと人間の両方。迷ったら安全側（コミットしない、起票しない、下書きに残す）に倒す。
+読むのは、毎日起動される Claude のセッションと人間の両方。迷ったら安全側（コミットしない、起票しない、最終報告に書く）に倒す。
 
 ## 流れ
 
 0. 最新の main に揃える
-1. hono-takibi を最新に揃える
+1. 変わったところだけ作り直す: hono-takibi の新しい版で直った issue の文書（1a）と、元の定義が変わった文書（1b）
 2. 候補を選ぶ: [candidates.md](./candidates.md) の Pending から最大 3 件
-3. app を追加する: `scripts/new-app.sh` → 生成 → 雛形を埋める → 再生成 → typecheck
+3. app を追加する: `scripts/new-app.sh` → `scripts/regen.sh`（生成・雛形を埋める・再生成・記録）→ `scripts/typecheck.sh`
 4. 結果を記録する
 5. 問題を起票する: 最新版で再現 → 最小化 → 重複確認 → 起票 / コメント
 6. 記録して、main へ直接 push する
@@ -20,12 +20,14 @@ hono-takibi が出せるものすべて（routes・docs・type・client・rpc・
 
 - 作業ディレクトリはリポジトリのルート。使うのは bun, node, git, curl, python3。
 - main へは持ち主の許可で直接 push する（PR なし）。hono-takibi への issue の起票とコメントも許可されている（どちらも持ち主の指示で、[トリガー用プロンプト](#トリガー用プロンプト)に書いてある）。
-- CI（GitHub Actions）は無い。typecheck は手元で `tsc --noEmit` を実行して確かめ、結果を [typecheck.md](./typecheck.md) に記録する。
+- CI（GitHub Actions）は無い。typecheck は手元で `scripts/typecheck.sh`（`tsc --noEmit`）を実行して確かめ、結果は各 app の `generated.json` に記録して、
+  `node scripts/typecheck.mjs write` で [typecheck.md](./typecheck.md) に書き出す。
 - サンドボックスから届くのは npm、`raw.githubusercontent.com`、環境に許可したホスト（`api.apis.guru` など、config の入力元）。
   `git ls-remote https://github.com/<owner>/<repo>.git` も使える。`api.github.com` と `github.com` の Web ページは届かない。
 - hono-takibi（の json-schema-ref-parser）は取得の前に自分で DNS を引くため、このサンドボックスでは GitHub 以外のホストの URL から
   生成できない（`getaddrinfo ENOTFOUND <host>`。`NODE_USE_ENV_PROXY=1` も効かない）。その場合は仕様を `curl` で落とし、
   `input` だけを手元のファイルに替えた一時 config で生成して、一時 config は消す（単一ファイルの仕様なら生成物は URL のときと同じ）。
+  `scripts/regen.sh` はこれを自動で行う（取得は Node の fetch。`openapi.vercel.sh` のように curl を拒むホストがある）。
 - hono-takibi は OpenAPI 3.x だけを読む。Swagger 2.0 は仕様上の非対応で、バグではない。
 
 ## 0. 最新の main に揃える
@@ -36,7 +38,31 @@ git status --short; git log --oneline origin/main..HEAD   # 前回の未コミ�
 git checkout -B main origin/main                          # 作業は main ブランチで行う（ユーザーの指示）。ローカルに main が無くても動く
 ```
 
-## 1. hono-takibi を最新に揃える
+## 1. 変わったところだけ作り直す
+
+全 app をまとめて作り直すことはしない（2026-11-23 に持ち主が指示）。作り直すのは次の文書だけ:
+
+- hono-takibi の新しい版で、関係する issue が閉じた文書（1a）
+- 元の OpenAPI 定義（`$ref` で参照する別ファイルを含む）が変わった文書（1b）
+- config を変えた文書（1b の `check` が `config changed` として挙げる）
+
+どの版の hono-takibi で、どの内容の定義から作ったかは、各 app の `generated.json` に文書（config）ごとに記録してある:
+`hono-takibi`（版）、`date`、`generated`（出力があるか）、`config`（config の sha256）、`sources`（取得した URL ごとの ETag と sha256）、
+`typecheck`（結果。エラーがあれば原因 `issue`）。文書を作り直すときは `scripts/regen.sh` を使い、これが記録も書き直す。
+
+```bash
+scripts/regen.sh <app> [<config>]            # template を消して生成 → 雛形を埋める → 再生成 → generated.json に記録
+scripts/typecheck.sh <app> [<config>]        # typecheck して generated.json に記録（routes.ts が 3 MB を超えるものは
+                                             #   TC_MEM=12GiB TC_TIMEOUT=900 を付けて 1 件ずつ）
+node scripts/typecheck.mjs todo              # エラーがあるのに原因が書かれていない文書と、未検査の文書
+node scripts/typecheck.mjs note <app> <config> "<原因>"   # typecheck.md の Issue 欄と同じ書き方
+node scripts/typecheck.mjs write             # docs/typecheck.md を generated.json から書き直す
+```
+
+`<config>` は app からの相対パスで、省略すると `hono-takibi.config.ts`（`configs/<name>.config.ts` の文書は必ず指定する）。
+1 日に作り直すのは最大 20 文書で、そのうち routes.ts が 3 MB を超えるものは 3 件まで。残りは翌日に回す（翌日の 1a・1b にまた出る）。
+
+### 1a. hono-takibi を最新に揃え、直った issue の文書を作り直す
 
 ```bash
 bun install --frozen-lockfile
@@ -46,8 +72,37 @@ grep -nE '"hono-takibi": \["hono-takibi@' bun.lock | cut -c1-70   # ロック中
 
 - ロック中より新しい版が出ていたら、ルート `package.json` の `workspaces.catalog["hono-takibi"]` を `^<最新>` に書き換えて
   `bun install` する（catalog 経由なので `bun update hono-takibi` では上がらない）。以降の生成と再現確認はすべてその版で行う。
-- 版を上げた日だけ、README が `not generated` になっている app（config だけが残っているもの）を 1 度ずつ再試行する。
-  通ったら生成物をコミットして README の行を更新する。直った issue には「vX で直っていた」とコメントする（クローズは hono-takibi 側に任せる）。
+- 閉じた issue に関係する文書のうち、その版より古い版で作ったものを挙げて、作り直す:
+
+  ```bash
+  gh api -X GET search/issues -f q='repo:nakita628/hono-takibi is:issue is:closed' --paginate --jq '.items[].number' |
+    node scripts/affected.mjs --older-than <最新>
+  ```
+
+  `<app>\t<config>\t#N` の形で出る。文書と issue の結び付きは、generated.json の typecheck の原因、config のコメント
+  （外した出力の理由）、README の行（生成できない文書）に書いた issue の番号から取る。だから、エラーや回避策には必ず issue の番号を書いておく。
+  - config のコメントで外した出力（hooks や `docs`）は、戻してから作り直す。
+  - 生成できなかった文書は再試行し、通ったら README の行を更新する。
+  - 直っていれば issue に「vX で直っていた」、直っていなければ「vX でもまだ出る」とコメントする（クローズは hono-takibi 側に任せる）。
+    まだ出るものは原因の欄を残す（`typecheck.mjs` は同じエラーコードなら原因を引き継ぐ）。
+- 版を上げた日は、issue と結び付いていない生成できない文書（generated.json で `"generated": false`）も 1 度ずつ再試行する。
+- 版を上げても、関係する issue の無い文書は作り直さない。typecheck.md の版の行には、文書ごとの版の内訳が出る。
+
+### 1b. 元の定義が変わった文書を作り直す
+
+```bash
+NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 node scripts/sources.mjs check
+```
+
+- 記録した URL ごとに、記録した ETag で問い合わせる（304 なら変わっていない）。ETag の無い URL は取得して sha256 を比べる。
+  JSON は、キーの順、値だけの配列の順、ISO の日時の値を無視した形でも比べる（Hugging Face は要求の時刻を既定値に入れ、
+  Twitter はスコープの順を毎回変える）。それでも合わなければ数回取り直し、記録した内容が返ってくれば変化とはみなさない
+  （Twelve Data は版の違うサーバーが交互に返す。標準エラーに `varies between requests` と出る）。
+  変わった文書が `<app>\t<config>\t<理由>` の形で出る。理由は `source changed: <URL>`、`config changed`、`not recorded`（記録が無い）。
+- 出た文書を `scripts/regen.sh` で作り直し、`scripts/typecheck.sh` で確かめる。
+- 取得に失敗した URL は標準エラーに出て、変化とはみなさない。同じ URL が何日も 404 なら、定義が移動している。
+  新しい場所を探して config の `input` を直し、作り直す（Martin の config がその例）。
+- 定義が変わって生成できなくなったら、出力は前のままにして、README の行に理由を足す（`generated.json` は書き換えない）。
 
 ## 2. 候補を選ぶ
 
@@ -74,12 +129,9 @@ PyYAML での確認: `python3 -I -c "import yaml; yaml.safe_load(open('<file>'))
 ```bash
 scripts/new-app.sh <name> "<API title>" <raw URL> <baseUrl>   # 全出力を書いた hono-takibi.config.ts を作る
 bun install                                                     # bun.lock に新しい workspace を載せる
-cd apps/<name>
-timeout 600 bun run generate                                    # 生成
-node ../../scripts/fill-handler-stubs.mjs src                   # template の雛形に本体を入れる（下記）
-timeout 600 bun run generate                                    # 再生成で整形する（本体は保たれる）
-timeout 1200 node_modules/.bin/tsc --noEmit                     # typecheck
-cd ../.. && node scripts/probe-spec.mjs <raw URL> --app apps/<name>   # operations と createRoute の数を突き合わせる
+scripts/regen.sh <name>                                         # 生成 → 雛形に本体を入れる（下記）→ 再生成 → generated.json に記録
+scripts/typecheck.sh <name>                                     # typecheck して generated.json に記録
+node scripts/probe-spec.mjs <raw URL> --app apps/<name>         # operations と createRoute の数を突き合わせる
 ```
 
 - config は仕様ごとに 1 つ（`hono-takibi.config.ts`）で、routes の隣に次をすべて出す:
@@ -92,7 +144,7 @@ cd ../.. && node scripts/probe-spec.mjs <raw URL> --app apps/<name>   # operatio
   `scripts/fill-handler-stubs.mjs` が `throw new Error('Not implemented')` を入れる（整形で `async (\n  c,\n) => {}` と折り返された雛形も埋める）。
   hono-takibi は再生成してもハンドラ本体を保つ。
 - 0.33.0 から、ハンドラのファイルはタグではなく先頭のパスの区切りで分かれ、名前は kebab-case になる（#512）。既存のファイルは
-  移動されないので、版を上げて作り直すときは `handlers/` と `index.ts` を消してから生成する。
+  移動されないので、`scripts/regen.sh` は `handlers/` と `index.ts` をどけてから生成する（生成に失敗したら元に戻す）。
 - 1 つの出力の構文エラーで実行全体が止まる（何も書かれない）ときは、その出力だけを外して残りを生成し、config に理由と issue をコメントする:
   - hooks が止まる: パスに `'` がある（[#541](https://github.com/nakita628/hono-takibi/issues/541)）→ hooks を外す。
   - `docs` が止まる: api.md が V8 の文字列長の上限を超える（[#409](https://github.com/nakita628/hono-takibi/issues/409)）→ `docs` を外す。
@@ -117,9 +169,9 @@ cd ../.. && node scripts/probe-spec.mjs <raw URL> --app apps/<name>   # operatio
 
 | 結果 | コミットするもの | 記録 |
 | --- | --- | --- |
-| 生成 OK | 生成物すべて | README に行を足す。typecheck の結果（エラー数、どのファイルか、issue）を [typecheck.md](./typecheck.md) に書く |
-| 生成 NG | config だけ。config に理由をコメントする | README の出力欄に `not generated: <原因> (<issue>)` |
-| typecheck がメモリか時間の不足で終わらない | 生成物すべて | typecheck.md に `not checked: <理由>` |
+| 生成 OK | 生成物すべてと `generated.json` | README に行を足す。エラーがあれば原因を `node scripts/typecheck.mjs note` で書き、`node scripts/typecheck.mjs write` で [typecheck.md](./typecheck.md) を書き直す |
+| 生成 NG | config だけ。config に理由をコメントする。`NODE_USE_ENV_PROXY=1 node scripts/sources.mjs record <app> [<config>]` で記録する（定義が直ったら 1b が拾う） | README の出力欄に `not generated: <原因> (<issue>)` |
+| typecheck がメモリか時間の不足で終わらない | 生成物すべてと `generated.json` | `scripts/typecheck.sh` が理由を記録し、typecheck.md の Not checked に出る |
 
 typecheck のエラーは、hono-takibi の問題として 5 へ進む。probe の `WARN` は既知の不具合の入口を指す。
 typecheck が通っても、エラーにならない誤出力があり得る（[#499](https://github.com/nakita628/hono-takibi/issues/499)）。
@@ -185,9 +237,10 @@ _Generated by [Claude Code](https://claude.ai/code)_
 **push 前の検査。** 次をすべて満たしてから push する。
 
 1. `bun install --frozen-lockfile` が通る（`bun.lock` が `package.json` と食い違っていない）。
-2. 今日追加・変更した app の typecheck を実行し、結果を typecheck.md に書いた。
-3. `git status` で、変更が次に限られている: `apps/<今日の app>`、`README.md`、`docs/candidates.md`、`docs/typecheck.md`、
-   `bun.lock`（新しい app を足すと必ず変わる）、版を上げた日の `package.json`。
+2. 今日追加・作り直した文書を `scripts/typecheck.sh` で確かめ、`node scripts/typecheck.mjs todo` が空（エラーには原因を書いた）で、
+   `node scripts/typecheck.mjs write` で typecheck.md を書き直した。
+3. `git status` で、変更が次に限られている: `apps/<今日追加・作り直した app>`（`generated.json` を含む）、`README.md`、
+   `docs/candidates.md`、`docs/typecheck.md`、`bun.lock`（新しい app を足すと必ず変わる）、版を上げた日の `package.json`。
 
 push:
 

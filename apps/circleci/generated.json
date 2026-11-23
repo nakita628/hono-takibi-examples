@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d830899441fdaabfaf74d53b849fd813385426fdc1b292e202386fc48bada058",
+    "sources": {
+      "https://circleci.com/api/v2/openapi.json": {
+        "sha256": "d609f165b7c030e0fc259f9dad824b20a02e5a05425362a8ae0fa2236e77da15",
+        "canonical": "3599a0e524dd9dbb3de77569babc43fb4007bd230a1901e69c87538d4f287e7d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

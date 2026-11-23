@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffd58648d0b4a85b27ddc0a8e6d006385006801add6ba88d27ceb5b5e30a2e2e",
+    "sources": {
+      "https://raw.githubusercontent.com/algolia/api-clients-automation/main/specs/bundled/search.yml": {
+        "etag": "W/\"76ef11b04d0775cb5dc06d448733916e278de9cfd2937070833e4242168371a5\"",
+        "sha256": "ee8a61427ed0488e4b194550f22e084c2535544b039b5bfef42e86df46d7c85f"
+      }
+    },
+    "typecheck": {
+      "errors": 4,
+      "where": "`index.ts`, `hooks/*`, `client.ts`",
+      "codes": "TS2589 ×4",
+      "issue": "deep types (TS2589)"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "28cd01c9c50539dce6f10c38600378291b732735193f4853080bd98b1e8af19c",
+    "sources": {
+      "https://raw.githubusercontent.com/svix/svix-webhooks/main/server/openapi.json": {
+        "etag": "W/\"1aaebcd2ee80cedba32a5f49e83fde843e0b85495edeb48262fdea9b117320e0\"",
+        "sha256": "4bf95f5c36779ce870aa2b73d2e6392178308d3c8caf48765e83a0da0e0332aa"
+      }
+    },
+    "typecheck": {
+      "errors": 2,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×2",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6e701cc8b24d312fc4430a8a2724be97c1dddc0290490615d567f552209cbd69",
+    "sources": {
+      "https://developer.zendesk.com/zendesk/oas.yaml": {
+        "etag": "\"6affdcf5-26c3e0\"",
+        "sha256": "7204aaf43e02044c4bb676d73080eccd23297cf4dcecb7967e4ed14ddf69c18f"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

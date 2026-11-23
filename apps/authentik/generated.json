@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "fc52151459f1da60b32203a700bf06d37379163a3e14be485af8c9ea52486532",
+    "sources": {
+      "https://raw.githubusercontent.com/goauthentik/authentik/main/schema.yml": {
+        "etag": "W/\"4f6f123b22d26d1ea203a18879f486c4ef728ab9c679dd420c348ce271b77780\"",
+        "sha256": "69e0964749843aa313ad53cb5fca96854f388deeab50129fb4a74896fdcca450"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

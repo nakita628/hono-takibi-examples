@@ -1,0 +1,167 @@
+{
+  "configs/archive.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "117416a1789c3dd8d16c9dc3832e52c0e32aa44246f8846cd52671fd7d6a777c",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/archive/1.0.0/openapi.yaml": {
+        "etag": "W/\"1700760cdc957977e257854fdd8791d23872d82f739031f3b8428f8da6bcd57c\"",
+        "sha256": "e572027d0565a999817306ddcf188a3f37e11a717713865248de3150cd1129c1"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/article-search.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "d3110c7e467c33b97fc4f09fc85774f87b6e34031065fb5d76ed4e8eb32d4290",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/article_search/1.0.0/openapi.yaml": {
+        "etag": "W/\"6378b21ddbe70f7e47c6f3fdc112254a11d51b757ee1e7f19d4d8f3f385439cf\"",
+        "sha256": "a4d9f4c3ca256c82ca4151b209d99d97e7f09d1aa22db4291dc9bb1131c3a957"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/books-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "aa1b8935903fedb4704816388a6fa6ed94a36ecafa938a98af0bd417ed890401",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/books_api/3.0.0/openapi.yaml": {
+        "etag": "W/\"61bc73d369d959f51817d491a5853c05a26d3f2c16f10995c73f044498b3f61d\"",
+        "sha256": "6282ff0b596e2bf986ea5a58c022606510c24c6f84143bbb3eed423d799e75b0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/community.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "e766739046175f3cd41126c52d12f720cf9eba5bd7bffc52c5f25618a70d362d",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/community/3.0.0/openapi.yaml": {
+        "etag": "W/\"189fceacbb9e5c6a3e025e070ac41c2ad246cc771b3f239215081d8be74844ce\"",
+        "sha256": "cf9ad462f68b3c2d3d48157bf84fc4ddcbdaa9e9708a1feae323bbf2eaf6b6fb"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/geo-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "a2f5348de6c57a2f8ed90b8d5d9856442889b36034e7d747f3a975b6668d9d97",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/geo_api/1.0.0/openapi.yaml": {
+        "etag": "W/\"5d1886cefcb4a56a08f888cc11f895e1d975ffcc2818491cf8a32c669adcb2fe\"",
+        "sha256": "b61735029fcd25f2e1f4716f61c66bd6e7bf2e56e9ca5e6ee7351dde54830893"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/most-popular-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "7be67cae95309334e483c0801c13989a9bd5747e76a8c85b25664187afd0d1c2",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/most_popular_api/2.0.0/openapi.yaml": {
+        "etag": "W/\"48eda6a00a590281848d9e261ac7c7ecb18a13a9284c24a11aa908c7ab2ee4e2\"",
+        "sha256": "9c23269a01743e3dd719ef7b46ee1774a69d8706c813060086ba7f1067555b96"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/movie-reviews.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "0891a27da3084ef4b16efe77b0ed0a154ab804607f66c9b3ae6f072e933e073b",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/movie_reviews/2.0.0/openapi.yaml": {
+        "etag": "W/\"8f9ee817acddea7f2b037daf0c0bdda9353efb52fbfb5b86e6acbf80d4dd3ca1\"",
+        "sha256": "a7eb457c9dd47b9c6cb4747f8f4545163445b57853880d2ea94edfeab699090b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/semantic-api.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3a52eec8207c0a6adbd3bf93b2884bf02f9c930091eceabf916d99cda38c4593",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/semantic_api/2.0.0/openapi.yaml": {
+        "etag": "W/\"2420c5f25915e8cdabcee24a306611fc068a7b9eb9131758064e2442059af5aa\"",
+        "sha256": "acd80ee2b23d54af67456c5cf13f7b7ea0e559319782f43c45a9c420658fbfdf"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/times-tags.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "6b586c8cd6b0e0035eae956a41f49500ae1360f842df924c28895c0df5ac7031",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/times_tags/1.0.0/openapi.yaml": {
+        "etag": "W/\"8d3be83247f05b84486aa258e08598c1e2c0c96345ae60b8031062155c103419\"",
+        "sha256": "ffc55919320c6486d12a7a52ff69f22dc1189774229ab06439a251ff3e65f473"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/timeswire.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "010fa9e082447eaf4ee2a354684003ae656744165ebb70938c15f61918e5caff",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/timeswire/3.0.0/openapi.yaml": {
+        "etag": "W/\"0bf222ed4bf9e47dfed2f2b4cea23b5e1589fc1f4f507ee3ae8d7fa12be6664a\"",
+        "sha256": "ba70418a8c24aeca9e317d1c221211a89fafd8beb44bc783651a9600e252f1b0"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  },
+  "configs/top-stories.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3948b1ac6d81d8268240636b376b969b0382f11628aba6de0334fb9f17f7096e",
+    "sources": {
+      "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/top_stories/2.0.0/openapi.yaml": {
+        "etag": "W/\"4a101152b20e5b43b3f9932529d7c012eaf99e64582c109af3b04a63c34c4a50\"",
+        "sha256": "746b5c178615d5e870b5bfba1b1edeb63116db89a04335839ee6850eb5f179dc"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

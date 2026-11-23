@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "b7036c37dd87b2000b579d95a99fddf40e126e276b640f5726bbd6465186867c",
+    "sources": {
+      "https://raw.githubusercontent.com/hashicorp/consul-terraform-sync/main/api/openapi.yaml": {
+        "etag": "W/\"62f3288d44f2e79d256b10168fb7f094457937477c28e04476a2d48dd8bd418f\"",
+        "sha256": "b041b7c851611ab56752978e4e01d4fe8ba2926c28b62827b65aa4ae49bb28b4"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

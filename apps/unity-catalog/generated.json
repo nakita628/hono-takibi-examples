@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "54be32296d4a19e51156cc429c04d293785b788aba0acf0615e60f1c607bc211",
+    "sources": {
+      "https://raw.githubusercontent.com/unitycatalog/unitycatalog/main/api/all.yaml": {
+        "etag": "W/\"8619f9b1e0aea4ee7836d6099b93927ab28710801fe3486e2dcb5287f3577efe\"",
+        "sha256": "6a562e52f12bc9f9413bd84c0dc341e95100818895d5c16afc7a44845bdde272"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

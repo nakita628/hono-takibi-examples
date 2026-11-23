@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "3f79d91425368377e7966d6ddabff3fae9e61982e50a160ac56b8147ea981b05",
+    "sources": {
+      "https://raw.githubusercontent.com/dbt-labs/dbt-cloud-openapi-spec/master/openapi-v3.yaml": {
+        "etag": "W/\"ebeb6dcb9a8967d94022d4f6fd740adee2aaada119acd88f0979cae8b38c49f8\"",
+        "sha256": "14bf17c95cae2b7d8c9221528a5f4a561c827049d565f43790639b3c91577258"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

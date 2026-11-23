@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "ffa07fc93d152b085c3029dfc90009645764eeb885e5f264c52a2ff39ceb9b13",
+    "sources": {
+      "https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml": {
+        "etag": "W/\"9b31a5fe8bb63e651dd2fdf2f54a0375f6047555ab91c29b64e75a6e6861c77f\"",
+        "sha256": "d194959c25eaf3c29f2754c0fda5909fc614d46d25a2b61cb62fd86e1dea3992"
+      }
+    },
+    "typecheck": {
+      "errors": 24,
+      "where": "`hooks/*`",
+      "codes": "TS2393 ×12, TS2323 ×12",
+      "issue": "[#536](https://github.com/nakita628/hono-takibi/issues/536)"
+    }
+  }
+}

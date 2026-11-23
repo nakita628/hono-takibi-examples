@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "69e7adbfe49c0892bc920f0f8a57cec93cf7464b60906c9905a10ab1108720f9",
+    "sources": {
+      "https://raw.githubusercontent.com/portainer/portainer/release/2.45/api/docs/openapi.yaml": {
+        "etag": "W/\"c7e17ea474075642f09a5d0955ad42a4efb0d6e7fa056f534569c6d796cf0c69\"",
+        "sha256": "e05d4a97c9aa24a8d2623c2f2d9562c22192453f31e4a773674420e4a4dce33e"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.33.7",
+    "date": "2026-11-23",
+    "generated": true,
+    "config": "afda95d072671b34f5bf7901c7a40da9a21ce2ef685be2ae51e7cca4d67e78c1",
+    "sources": {
+      "https://raw.githubusercontent.com/grafana/gsm-api-go-client/main/openapi.yaml": {
+        "etag": "W/\"32cbad3278e0b3e3a142c16be636e044793b8707f4ac054fecb88059bea10098\"",
+        "sha256": "941c11d0d18631d0a3408763be7e320c369d76c697d837f37149cca1b7f6e5a5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}
